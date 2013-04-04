@@ -1,7 +1,7 @@
 if(!window.pathgeo){window.pathgeo={}}
 
 pathgeo.service={
-	proxy: "http://localhost/proxy/proxy.py?url=",
+	proxy: "",
 	
 	
 	/**
@@ -12,7 +12,7 @@ pathgeo.service={
 	 * @param {Function} callback function(json)
 	 */
 	search: function(key, radius, keyword, callback){
-		var url=(this.proxy!="") ? this.proxy + encodeURIComponent("http://vision.sdsu.edu/suhan/chris/PyMapper.py?key=" + key + "&rad=" + radius + "&keyword=" + keyword) : "chris/PyMapper.py?key=" + key + "&rad=" + radius + "&keyword=" + keyword
+		var url=(this.proxy!="") ? this.proxy + encodeURIComponent("http://vision.sdsu.edu/suhan/chris/PyMapper.py?key=" + key + "&rad=" + radius + "&keyword=" + keyword) : "http://vision.sdsu.edu/chris/PyMapper.py?key=" + key + "&rad=" + radius + "&keyword=" + keyword
 		//replace %20 (space) to %2520 in the url
 		url=url.replace("%20", "%2520");
 	

@@ -158,7 +158,6 @@
 
     _calculateMaxValue: function(dataset) {
         array = [];
-		console.log(dataset.forEach);
         dataset.forEach(function(item){
             array.push(item.value || item.count);
         });

@@ -7,9 +7,6 @@ var app={
 			"Nokia Satellite":L.tileLayer("http://{s}.maps.nlp.nokia.com/maptile/2.1/maptile/b9e8949142/hybrid.day/{z}/{x}/{y}/256/png8?app_id=SqE1xcSngCd3m4a1zEGb&token=r0sR1DzqDkS6sDnh902FWQ&lg=ENG",{subdomains:"1234", attribution:"Map Source from Nokia"})
 	},
 	layers:[
-			//{name:"Twitter_20121209", type: "GEOJSON", url:"db/ford.json", srs:"EPSG:4326", cluster:true, title:"Twitter 'Ford-case' @20121209 (0.38MB): 745 Twitters", fieldName:{username:"user_name", text:"text_"}},
-//			{name:"Twitter_20121210", type: "GEOJSON", url:"db/20121210.json", srs:"EPSG:4326", cluster:true, title:"Twitter 'Ford-case' @20121210 (6.04MB): 12024 Twitters"},
-//			{name:"Twitter_20121211", type: "GEOJSON", url:"db/20121211.json", srs:"EPSG:4326", cluster:true, title:"Twitter 'Ford-case' @20121211 (7.85MB): 15608 Twitters"},
 			{name:"[WMS]States", type: "WMS", url:"http://sgis.kisr.edu.kw/geoserver/topp/wms", srs:"EPSG:4326", param:{layers:"topp:states", attribution:""}}
 	],
 	searchResult:null,
@@ -22,9 +19,6 @@ var app={
 	showLayers:[] //layers are shown in the map
 }
 
-//enable leaflet map to draw feature by using html5 canvas
-L_PREFER_CANVAS = true;
-
 
 
 $(function(){
@@ -33,11 +27,36 @@ $(function(){
 	init_UI();
 	
 	//show demo
-	getTweets('demo');
-})
+	//getTweets('demo');
+	
+	$("#submit_button").click(function (e) {
+		$("#img_loading").show();
+	});
+	
+	$('#upload_excel').ajaxForm({
+		dataType:  'json',
+		timeout: 20000,  
+		success: function(data) { 
+			
+			if (data.length <= 0) return;
+			
+			 app.searchResult={
+				 name: "searchResult", 
+				 type: "GEOJSON",
+				 json: data,
+				 srs: "EPSG:4326",
+				 title: "keyword",
+				 fieldName:{username:null, text:"text"},
+				 keywords: "testing"
+			 };
 
-
-
+			showLayer(app.searchResult, true);
+			
+			app.map.fitBounds(app.searchResult.geoJsonLayer.getBounds());
+			
+		}
+	}).always(function() { $("#img_loading").hide(); } );
+});
 
 //init openlayers
 function init_map(){
@@ -52,7 +71,7 @@ function init_map(){
 	app.controls.toc=L.control.layers(app.basemaps);
 	
 	//show all layers
-	$.each(app.layers,function(i,layer){showLayer(layer,false)});
+	$.each(app.layers, function(i, layer){ showLayer(layer,false); } );
 }
 
 
@@ -66,12 +85,11 @@ function init_UI(){
 
 //load geojson
 function showLayer(obj, isShow){
-		obj.timeStart=new Date().getTime();
 		
 		switch(obj.type){
 			case "GEOJSON":
 				
-				//it seems this function needs to be defined first. otherwise, the firefox cannot execute it correctly.
+				
 				function parseGeojson(obj){
 					//create layer
 					if(!obj.geoJsonLayer){
@@ -85,9 +103,6 @@ function showLayer(obj, isShow){
 									//info window
 									layer.bindPopup(html,{maxWidth:500, maxHeight:300});
 								}
-//								pointToLayer:function(json, latlng){
-//									return new L.CircleMarker(latlng, {fillColor: '#EC692D', fillOpacity: 0.8, stroke:false}).setRadius(8);
-//								}
 						});
 						app.controls.toc.addOverlay(obj.geoJsonLayer, "GeoJSON");
 						obj.layer=obj.geoJsonLayer;
@@ -95,15 +110,20 @@ function showLayer(obj, isShow){
 					
 					//marker cluster
 					if(!obj.markerClusterLayer){
-						obj.markerClusterLayer=pathgeo.layer.markerCluster(obj.json,{
-								onEachFeature:function(feature,layer){
-									var html="<div class='popup'><ul><li><img src='images/1359925009_twitter_02.png' width=20px />&nbsp; &nbsp; <b>"+ feature.properties[obj.fieldName.username]+"</b>: "+ feature.properties[obj.fieldName.text]+"</li></ul></div>";
-									html=html.replace(/undefined/g, "Tweet");
-													
-									//highlight keyword
-									html=pathgeo.util.highlightKeyword(obj.keywords,html);
-									//info window
-									layer.bindPopup(html,{maxWidth:500, maxHeight:300});
+						obj.markerClusterLayer = pathgeo.layer.markerCluster(obj.json, {
+								onEachFeature: function (feature, layer) {
+									var props = feature.properties;
+									var popupText = '';
+									
+									for (var prop in props) { 
+										var fieldName = prop.charAt(0).toUpperCase() + prop.slice(1);
+										
+										if (fieldName.toLowerCase() != "loc") {
+											popupText += "<b>" + fieldName + "</b>: " + feature.properties[prop] + "<br>";
+										}
+									}
+									
+									layer.bindPopup(popupText, { maxWidth: 500, maxHeight: 300 } );
 								}
 							},{
 								//clusterclick event
@@ -137,6 +157,7 @@ function showLayer(obj, isShow){
 					}
 				}//end parseGeojson
 				
+				
 				if(!obj.json){
 					$.getJSON(obj.url, function(json){
 						obj.json=json;
@@ -147,6 +168,7 @@ function showLayer(obj, isShow){
 					parseGeojson(obj);
 					addLayer(obj);
 				}
+				
 			break;
 			case "WMS":
 				//default param
