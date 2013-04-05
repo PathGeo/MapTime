@@ -116,6 +116,37 @@ function enableCensusLayer() {
 	}
 }
 
+function enableSocialLayer() {	
+
+	function callback(feature, latlng){
+		
+		if(feature.properties.Source == "Twitter"){
+			var urlImage = "images/bird.png"
+		}
+		if(feature.properties.Source == "Instagram"){
+			var urlImage = "images/insta.png"
+		}
+		
+		var myIcon = L.icon({ 
+			iconUrl: urlImage,
+			popupAnchor: [-3, -76],
+			shadowSize: [68, 95],
+			shadowAnchor: [22, 94]
+		});
+
+		marker = L.marker(latlng, {icon: myIcon});
+		return marker; 
+	}  
+
+	var socialLayer = new L.GeoJSON(socialmedia, {
+		pointToLayer: callback,
+	    onEachFeature: function (feature, layer) {
+			 layer.bindPopup("<b>" + feature.properties.Source + "</b><br/><br/>" + feature.properties.Text + "<br/>" + feature.properties.Date);
+		 }
+	});
+	map.addLayer(socialLayer);
+	
+}
 
 function switchLayers(newLayerName) { 
 
@@ -136,6 +167,10 @@ function switchLayers(newLayerName) {
 	} else if (newLayerName == "census") {
 		enableCensusLayer();
 		$(".legend").show();
+		curLayer = getPointLayer(curData);
+		map.addLayer(curLayer);
+	} else if (newLayerName == "social") {
+		enableSocialLayer();
 		curLayer = getPointLayer(curData);
 		map.addLayer(curLayer);
 	}
