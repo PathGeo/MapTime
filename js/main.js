@@ -1,3 +1,6 @@
+//Load Google Charts and set callback
+google.load("visualization", "1", {packages:["corechart", "table"]});
+
 var app={
 	map:null,
 	basemaps:{
@@ -48,9 +51,13 @@ var app={
 
 
 //init
-$(document).on("pageshow", function(){	  
+$(document).on("pageinit", function(){	  
 	init_UI();
-	init_map();	
+	
+	$("#pageMap").live("pageshow",function(event, ui) {
+        init_map();
+    });
+		
 	
 	$("#submit_button").click(function (e) {
 		$("#img_loading").show();
@@ -85,7 +92,8 @@ $(document).on("pageshow", function(){
 
 //init openlayers
 function init_map(){
-	$("#div_map").css({height:"100%", position:"fixed"})
+	var map_height=((($(document).height()-$("#header").height()) / $(document).height())*100-2.2)+"%";
+	$("#div_map").css({height:map_height});
 	
 	app.map = L.map("div_map", {
         center: app.initCenterLatLng,
@@ -138,15 +146,25 @@ function showLayer(obj, isShow){
 				if(!obj.json){
 					$.getJSON(obj.url, function(json){
 						obj.json=json;
-						parseGeojson(obj);
-						addLayer(obj);
+						showGeojson(obj);
 					});
 				}else{
-					parseGeojson(obj);
-					addLayer(obj);
+					showGeojson(obj);
 				}
 				
 				
+				//show geojson
+				function showGeojson(object){
+					parseGeojson(object);
+					addLayer(object);
+					//show datalist
+					$("#dialog_dataPanel").panel("open")
+					//hide loadData dialog
+					$("#dialog_uploadData").popup("close");
+				}
+				
+				
+				//parse geojson
 				function parseGeojson(obj){
 					//create layer
 					if(!obj.geoJsonLayer){
@@ -349,19 +367,98 @@ function removeLayers(){
 
 
 //show data detail
-function showDataDetail(layer_id){
+function showDataDetail(layer_id){	
 	if(app.searchResult.json.features[layer_id]){
-		var properties=app.searchResult.json.features[layer_id].properties;
+		var properties=app.searchResult.json.features[layer_id].properties,
+			title=properties["ZIP"];
+			html=pathgeo.util.objectToHtml(properties);
 		
-		$("#dataDetail_title").html(properties["ZIP"]);
-		$("#dataDetail_content").html(pathgeo.util.objectToHtml(properties));
+		//show
+		$("#dataDetail_title").html(title);
+		$("#dataDetail_content").html(html);
+
+		//draw google chart
+		html="<li><b>Demographic: Sex</b><br><div id='chart_demographic_sex'></div></li>"+
+			 "<li><b>SocialMedia:</b><br><div id='chart_socialmedia'></div></li>";
+		$("#dataDetail_content ul").append(html);
+		
+		//chart data
+		var sexData=[
+			['Sex', 'Population'],
+			['Male',  25678],
+			['Female',  28734]
+		];
+		
+		var socialmediaData=[
+			['Date', 'Reputation'],
+			['Feb 16',  -8],
+			['Feb 17',  0], 
+			['Feb 18',  16],
+			['Feb 19',  20],
+			['Feb 20',  26],
+			['Feb 21',  22],
+			['Feb 22',  20],
+			['Feb 23',  30],
+			['Feb 24',  45],
+			['Feb 25',  63],
+			['Feb 26',  70],
+			['Feb 27',  65],
+			['Feb 28',  77],
+			['Mar 1',  82]        
+		];
+		
+		drawChart("PieChart",sexData, "chart_demographic_sex", {
+			title:'Sex',
+			backgroundColor:{fill:"transparent"}
+		});
+		
+		drawChart("LineChart",socialmediaData, "chart_socialmedia", {
+			title:'SocialMedia',
+			backgroundColor:{fill:"transparent"}
+		});
+		
+		
+		
+		
+		//show datadetail and hide datalist
 		$("#dataDetail").show();
-		
 		$("#dataList").hide();
 	}
 	
 	
 }
+
+
+//drawChart
+function drawChart(chartType, data, domID, options){
+	if(!chartType || !data ||!domID){console.log("[ERROR] drawChart: no chartType, data, or domID"); return;}
+	
+	if(!options){options={}}
+	options.title=options.title || "";
+    options.width=options.width || "";
+    options.height=options.height || "";
+    options.backgroundColor=options.backgroundColor || {};
+    options.is3D=options.is3D || true;
+	
+	
+	data = google.visualization.arrayToDataTable(data);
+	
+	var gChart, containerID=document.getElementById(domID);
+	switch (chartType) {
+		case "ColumnChart":gChart = new google.visualization.ColumnChart(containerID);break;
+		case "AreaChart":gChart = new google.visualization.AreaChart(containerID);break;
+		case "LineChart":gChart = new google.visualization.LineChart(containerID);break;
+		case "PieChart":gChart = new google.visualization.PieChart(containerID);break;
+		case "BarChart":gChart = new google.visualization.BarChart(containerID);break;
+		case "BubbleChart":gChart = new google.visualization.BubbleChart(containerID);break;
+		case "CandlestickChart":gChart = new google.visualization.CandlestickChart(containerID);break;
+		case "ComboChart":gChart = new google.visualization.ComboChart(containerID);break;
+		case "MotionChart":gChart = new google.visualization.MotionChart(containerID);break; //must include  google.load('visualization', '1', {packages: ['motionchart']});
+		case "Table":gChart = new google.visualization.Table(containerID);break; //must include google.load('visualization', '1', {packages: ['table']});
+	}
+	gChart.draw(data, options);
+}
+
 
 
 

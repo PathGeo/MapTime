@@ -1,6 +1,6 @@
 html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; font-size:85%;font-family:Arial}
 
-#div_map {width:100%; height:90%; padding:0px; margin:0px; }
+#div_map {width:100%; height:90%; padding:0px; margin:0px; position:fixed}
 
 .ui-corner-all{-moz-border-radius:5px; -webkit-border-radius:5px;border-radius:5px;}
 
