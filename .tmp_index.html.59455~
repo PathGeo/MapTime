@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PathGeo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+	<link type="text/css" href='css/Aristo/Aristo.css' rel="stylesheet" />
+	<link rel="stylesheet" href="js/leaflet/leaflet.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="js/leaflet/leaflet.ie.css" /><![endif]-->
+	<link rel="stylesheet" href="js/leaflet/MarkerCluster.css" />
+	<link rel="stylesheet" href="js/leaflet/MarkerCluster.Default.css" />
+	<!--[if lte IE 8]><link rel="stylesheet" href="js/leaflet/MarkerCluster.Default.ie.css" /><![endif]-->
+	<!--[if IE]><link type="text/css" href='css/main_ie.css' rel="stylesheet" /><![endif]-->
+	<!--[if !IE]><!--><link type="text/css" href='css/main.css' rel="stylesheet" /><!--<![endif]-->
+	
+    <!--core-->
+	<script src="js/leaflet/leaflet.js" type="text/javascript"></script>
+	<script src="js/leaflet/leaflet.markercluster.js" type="text/javascript"></script>
+	<script src="js/leaflet/leaflet.heatmap.js" type="text/javascript"></script>
+	<script src="js/leaflet/leaflet.heatmap-leaflet.js" type="text/javascript"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false" type="text/javascript"></script>
+    <script src="js/jquery-1.6.2.min.js" type="text/javascript"></script>
+    <script src="js/jquery-ui-1.8.16.custom.min.js" type="text/javascript"></script>
+	<!-- api -->
+	<script src="js/api/pathgeo.layer.js" type="text/javascript"></script>
+	<script src="js/api/pathgeo.util.js" type="text/javascript"></script>
+	<script src="js/api/pathgeo.service.js" type="text/javascript"></script>
+    <!-- main -->
+    <!-- <script src="js/leaflet_main.js" type="text/javascript"></script> -->
+	<script src="js/map_gallery_start.js" type="text/javascript"></script>
+	
+	<!-- Jquery Plugin -->
+	<script src="http://malsup.github.com/jquery.form.js"></script> 
+	
+	<!-- Data -->
+	<script src="sanFran.js"></script>
+  </head>
+  
+  
+  <body>
+  	<!-- search -->
+	<div id='div_search' class='ui-corner-all'>
+		<form action="uploadSpreadsheet.py" method="post" id="upload_excel" enctype="multipart/form-data" style="width: 330px; margin: 0 auto;">
+			<fieldset>
+				<legend>Upload Spreadsheet</legend>
+				<input type="file" name="photo" id="photo" style="">
+				<input id="submit_button" type="submit" value="Upload">
+				<img id='img_loading' src="images/loading.gif" width=15px style='display:none;' />
+			</fieldset>
+		</form>
+	</div>
+	
+	
+	<!-- gallery-->
+	<div id='div_gallery'>
+		<div style="position: absolute; left: 0px;">
+			<ul>
+				<li title="show Default Map" id="point" class="ui-corner-all features"><img src='images/gallery-defaultmap.png'><br>Default Map</li>
+				<li title="show Census/Point Map" id="census" class="ui-corner-all features"><img src='images/gallery-defaultmap.png'><br>Census Map</li>
+				<li title="show Cluster Map" id="cluster" class="ui-corner-all features"><img src='images/gallery-cluster.png'><br>Cluster Map</li>
+				<li title="show Heat Map"  id="heatmap" class="ui-corner-all features"><img src='images/gallery-heatmap.png'><br>Heat Map</li>
+			</ul>
+		</div>
+		<div style="position: absolute; right: 10px;">
+			<ul>	
+				<li title="show Cloudmade Map" id="cloudmade" class="ui-corner-all basemap selectable"><img src='images/gallery-streetmap.png'><br>Cloudmade</li>
+				<li title="show Google Map" id="google" class="ui-corner-all basemap selected" style=""><img src='images/gallery-streetmap.png'><br>Google</li>		
+				<!--<li title="show census data" id="census" class="ui-corner-all selectable" style="margin-left: 120px"><img src='images/gallery-states.png' ><br>Compare to Census</li>-->
+			</ul>
+		</div>
+	</div>
+	
+	<!-- map-->
+	<div id="div_map" style=''></div>
+
+	<!-- dialog -->
+	<div id='div_dialog' style='display:none;text-align:center'></div>
+  </body>
+</html>

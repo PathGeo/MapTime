@@ -1,185 +1,373 @@
 var app={
 	map:null,
-	gmap:null,
-	mapTypes:[new OpenLayers.Layer.OSM("OpenStreetMap"),
-      		      new OpenLayers.Layer.Google("Google Streets", {visibility: false, type:"roadmap", numZoomLevels: 20}),
-      			  new OpenLayers.Layer.Google("Google Satellite", {visibility: false, type:"satellite",numZoomLevels: 22}),
-      			  new OpenLayers.Layer.Google("Google Hybrid", {visibility: false, type:"hybrid", numZoomLevels: 20}),
-      			  new OpenLayers.Layer.Google("Google Terrain", {visibility: false, type:"terrain"}),
-      			  new OpenLayers.Layer.XYZ("Google Traffic",["http://mt0.googleapis.com/vt?lyrs=m@189000000,traffic&src=apiv3&hl=en-US&x=${x}&y=${y}&z=${z}&s=&style=api%7Csmartmaps","http://mt1.googleapis.com/vt?lyrs=m@189000000,traffic&src=apiv3&hl=en-US&x=${x}&y=${y}&z=${z}&s=&style=api%7Csmartmaps","http://mt2.googleapis.com/vt?lyrs=m@189000000,traffic&src=apiv3&hl=en-US&x=${x}&y=${y}&z=${z}&s=&style=api%7Csmartmaps","http://mt3.googleapis.com/vt?lyrs=m@189000000,traffic&src=apiv3&hl=en-US&x=${x}&y=${y}&z=${z}&s=&style=api%7Csmartmaps"], {attribution: "",sphericalMercator: true,wrapDateLine: true,transitionEffect: "resize",buffer: 1,numZoomLevels: 18}),
-      			  new OpenLayers.Layer.Bing({name:"Bing Roadmap", type:"Road", key:"AqpqMtccs90inKd61BNUi-LnEPDhQIlSpfvIm-qY4zM4Bv3_KzF7NMTAzYmco4wZ"}),
-      			  new OpenLayers.Layer.Bing({name:"Bing Satellite", type:"Aerial", key:"AqpqMtccs90inKd61BNUi-LnEPDhQIlSpfvIm-qY4zM4Bv3_KzF7NMTAzYmco4wZ"}),
-      			  new OpenLayers.Layer.Bing({name:"Bing Hybrid", type:"AerialwithLabels", key:"AqpqMtccs90inKd61BNUi-LnEPDhQIlSpfvIm-qY4zM4Bv3_KzF7NMTAzYmco4wZ"}),
-      			  new OpenLayers.Layer.XYZ("Nokia Map",["http://1.maps.nlp.nokia.com/maptile/2.1/maptile/b9e8949142/normal.day/${z}/${x}/${y}/256/png8?app_id=SqE1xcSngCd3m4a1zEGb&token=r0sR1DzqDkS6sDnh902FWQ&lg=ENG","http://2.maps.nlp.nokia.com/maptile/2.1/maptile/b9e8949142/normal.day/${z}/${x}/${y}/256/png8?app_id=SqE1xcSngCd3m4a1zEGb&token=r0sR1DzqDkS6sDnh902FWQ&lg=ENG","http://3.maps.nlp.nokia.com/maptile/2.1/maptile/b9e8949142/normal.day/${z}/${x}/${y}/256/png8?app_id=SqE1xcSngCd3m4a1zEGb&token=r0sR1DzqDkS6sDnh902FWQ&lg=ENG", "http://4.maps.nlp.nokia.com/maptile/2.1/maptile/b9e8949142/normal.day/${z}/${x}/${y}/256/png8?app_id=SqE1xcSngCd3m4a1zEGb&token=r0sR1DzqDkS6sDnh902FWQ&lg=ENG"], {attribution: "",sphericalMercator: true,wrapDateLine: true,transitionEffect: "resize",buffer: 1,numZoomLevels: 19}),
-      			  new OpenLayers.Layer.XYZ("Nokia Satellite",["http://1.maps.nlp.nokia.com/maptile/2.1/maptile/b9e8949142/hybrid.day/${z}/${x}/${y}/256/png8?app_id=SqE1xcSngCd3m4a1zEGb&token=r0sR1DzqDkS6sDnh902FWQ&lg=ENG","http://2.maps.nlp.nokia.com/maptile/2.1/maptile/b9e8949142/hybrid.day/${z}/${x}/${y}/256/png8?app_id=SqE1xcSngCd3m4a1zEGb&token=r0sR1DzqDkS6sDnh902FWQ&lg=ENG","http://3.maps.nlp.nokia.com/maptile/2.1/maptile/b9e8949142/hybrid.day/${z}/${x}/${y}/256/png8?app_id=SqE1xcSngCd3m4a1zEGb&token=r0sR1DzqDkS6sDnh902FWQ&lg=ENG", "http://4.maps.nlp.nokia.com/maptile/2.1/maptile/b9e8949142/hybrid.day/${z}/${x}/${y}/256/png8?app_id=SqE1xcSngCd3m4a1zEGb&token=r0sR1DzqDkS6sDnh902FWQ&lg=ENG"], {attribution: "",sphericalMercator: true,wrapDateLine: true,transitionEffect: "resize",buffer: 1,numZoomLevels: 19}),
-      			  new OpenLayers.Layer.XYZ("Nokia Terrain",["http://1.maps.nlp.nokia.com/maptile/2.1/maptile/b9e8949142/terrain.day/${z}/${x}/${y}/256/png8?app_id=SqE1xcSngCd3m4a1zEGb&token=r0sR1DzqDkS6sDnh902FWQ&lg=ENG","http://2.maps.nlp.nokia.com/maptile/2.1/maptile/b9e8949142/terrain.day/${z}/${x}/${y}/256/png8?app_id=SqE1xcSngCd3m4a1zEGb&token=r0sR1DzqDkS6sDnh902FWQ&lg=ENG","http://3.maps.nlp.nokia.com/maptile/2.1/maptile/b9e8949142/terrain.day/${z}/${x}/${y}/256/png8?app_id=SqE1xcSngCd3m4a1zEGb&token=r0sR1DzqDkS6sDnh902FWQ&lg=ENG", "http://4.maps.nlp.nokia.com/maptile/2.1/maptile/b9e8949142/terrain.day/${z}/${x}/${y}/256/png8?app_id=SqE1xcSngCd3m4a1zEGb&token=r0sR1DzqDkS6sDnh902FWQ&lg=ENG"], {attribution: "",sphericalMercator: true,wrapDateLine: true,transitionEffect: "resize",buffer: 1,numZoomLevels: 19}),
-      			  new OpenLayers.Layer.XYZ("NASA 2012 Night Map",["https://earthbuilder.google.com/10446176163891957399-13737975182519107424-4/2/maptile/maps?v=2&authToken=Cgg5OyyBxpoOuRD80eCGBQ==&x=${x}&y=${y}&z=${z}&s="], {attribution: "",sphericalMercator: true,wrapDateLine: true,transitionEffect: "resize",buffer: 1,numZoomLevels: 8}),
-      			  new OpenLayers.Layer.XYZ("Gray Styled Map",["http://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/${z}/${y}/${x}",], {attribution: "",sphericalMercator: true,wrapDateLine: true,transitionEffect: "resize",buffer: 1,numZoomLevels: 14}),
-      			  new OpenLayers.Layer.XYZ("NationalGeographicMap",["http://server.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/${z}/${y}/${x}",], {attribution: "",sphericalMercator: true,wrapDateLine: true,transitionEffect: "resize",buffer: 1,numZoomLevels: 13}),
-      			  new OpenLayers.Layer.XYZ("Ocean Map",["http://server.arcgisonline.com/ArcGIS/rest/services/Ocean_Basemap/MapServer/tile/${z}/${y}/${x}",], {attribution: "",sphericalMercator: true,wrapDateLine: true,transitionEffect: "resize",buffer: 1,numZoomLevels: 11})
-	],
-	layers:[
-			{name:"Twitter_Ford", type: "GEOJSON", url:"db/ford.json", srs:"EPSG:4326", cluster:true, title:"Twitter 'Ford-case' 2012.12.04~2012.12.18 (0.753MB): 1958 Twitters"},
-			{name:"Twitter_20121209", type: "GEOJSON", url:"db/20121209.json", srs:"EPSG:4326", cluster:true, title:"Twitter 'Ford-case' @20121209 (0.38MB): 745 Twitters"},
-			{name:"Twitter_20121210", type: "GEOJSON", url:"db/20121210.json", srs:"EPSG:4326", cluster:true, title:"Twitter 'Ford-case' @20121210 (6.04MB): 12024 Twitters"},
-			{name:"Twitter_20121211", type: "GEOJSON", url:"db/20121211.json", srs:"EPSG:4326", cluster:true, title:"Twitter 'Ford-case' @20121211 (7.85MB): 15608 Twitters"}
-	],
-	controls:{
-		selectFeature:new OpenLayers.Control.SelectFeature([])
+	basemaps:{
+			"Cloudmade": L.tileLayer("http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png", {styleId: 22677}),
+			"OpenStreetMap": L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"),
+			"Google Streetmap":L.tileLayer("https://mts{s}.googleapis.com/vt?lyrs=m@207265067&src=apiv3&hl=zh-TW&x={x}&y={y}&z={z}&s=Ga&style=api%7Csmartmaps",{subdomains:"123", attribution:"Map Source from Google"}),
+			"Nokia Satellite":L.tileLayer("http://{s}.maps.nlp.nokia.com/maptile/2.1/maptile/b9e8949142/hybrid.day/{z}/{x}/{y}/256/png8?app_id=SqE1xcSngCd3m4a1zEGb&token=r0sR1DzqDkS6sDnh902FWQ&lg=ENG",{subdomains:"1234", attribution:"Map Source from Nokia"})
 	},
-	keywords:["FORD","ESCAPE","FUSION"],
+	layers:[
+			{name:"[WMS]States", type: "WMS", url:"http://sgis.kisr.edu.kw/geoserver/topp/wms", srs:"EPSG:4326", param:{layers:"topp:states", attribution:""}}
+	],
+	searchResult:{
+			name: "searchResult", 
+			type: "GEOJSON", 
+			json: zipCodes,
+			srs: "EPSG:4326",
+			title: "Demo Data",
+			fieldName:{username:null, text:null},
+			keywords:[],
+			DomID_dataList: "datalist_container"
+	},
+	controls:{
+		toc:{},
+		mapGallery: L.Control.extend({
+		    options: {collapsed: true,position: 'topright',text: 'Map Gallery',},
+			initialize: function (options) {L.Util.setOptions(this, options);},
+		    onAdd: function (map) {
+		        // create the control container with a particular class name
+		        var container = L.DomUtil.create('div', 'leaflet-control-mapGallery');
+				$(container).html($("#div_gallery").html())
+				
+				//mouseevent
+				if(this.options){
+					L.DomEvent.addListener(container, 'mouseover', function(){$("#mapGallery").show();}, this);
+					L.DomEvent.addListener(container, 'mouseout', function(){$("#mapGallery").hide();}, this);
+				}
+		        return container
+		    }
+		})
+	},
 	popup:null,
-	initCenterLonLat:new OpenLayers.LonLat(-100,35),
-	initCenterZoom:4
+	initCenterLatLng:[35,-100],
+	initCenterZoom:4,
+	showLayers:[] //layers are shown in the map
 }
 
 
 
-$(function(){
+
+//init
+$(document).on("pageshow", function(){	  
+	init_UI();
 	init_map();	
 	
-	showLayer(app.layers[0]);
-})
+	$("#submit_button").click(function (e) {
+		$("#img_loading").show();
+	});
+	
+	$('#upload_excel').ajaxForm({
+		dataType:  'json',
+		timeout: 20000,  
+		success: function(data) { 
+			
+			if (data.length <= 0) return;
+			
+			 app.searchResult={
+				 name: "searchResult", 
+				 type: "GEOJSON",
+				 json: data,
+				 srs: "EPSG:4326",
+				 title: "keyword",
+				 fieldName:{username:null, text:"text"},
+				 keywords: "testing"
+			 };
+
+			showLayer(app.searchResult, true);
+			
+			app.map.fitBounds(app.searchResult.geoJsonLayer.getBounds());
+		}
+	});
+});
 
 
 
 
 //init openlayers
 function init_map(){
-	app.map = new OpenLayers.Map({
-        div: "div_map",
-        projection: new OpenLayers.Projection("EPSG:900913"),
-        displayProjection: new OpenLayers.Projection("EPSG:4326")
+	$("#div_map").css({height:"100%", position:"fixed"})
+	
+	app.map = L.map("div_map", {
+        center: app.initCenterLatLng,
+		zoom: app.initCenterZoom,
+		layers:[app.basemaps["Cloudmade"]],
+		attributionControl:false,
+		trackResize:true
     }); 
 	
-	//load base map
-	app.map.addLayers(app.mapTypes);
+	//move the location of zoomcontrol to the top right
+	app.map.zoomControl.setPosition("topright")
 	
-	//control
-	app.map.addControl(new OpenLayers.Control.LayerSwitcher());
+	//layers control
+	app.controls.toc=L.control.layers(app.basemaps);
+
+	//map gallery control
+	app.map.addControl(new app.controls.mapGallery());
 	
-	//init centerLonLat
-    app.initCenterLonLat=app.initCenterLonLat.transform(app.map.displayProjection, app.map.projection);
-    app.map.setCenter(app.initCenterLonLat, app.initCenterZoom);
+	//show all layers
+	$.each(app.layers, function(i, layer){ showLayer(layer,false); } );
+}
+
+
+
+//init UI
+function init_UI(){
+	$("#div_gallery ul li").click(function(){
+		$(this).css("background-color", "#222222").siblings().css("background-color","");
+	});
 	
-	//set google map
-    app.gmap=app.mapTypes[1].mapObject;
+	//init popup
+	$("div[data-role='popup']").popup();
+}
+
+
+//load geojson
+function showLayer(obj, isShow){
+		//show title
+		if(obj.title){$("#lbl_dataName").html(obj.title);}
+		
+		//dataList
+		if(obj.DomID_dataList){$("#"+obj.DomID_dataList+" ul").html("")}
+		
+		//feature count
+		obj.featureCount=0;
+		
+		//show layer
+		switch(obj.type){
+			case "GEOJSON":
+				if(!obj.json){
+					$.getJSON(obj.url, function(json){
+						obj.json=json;
+						parseGeojson(obj);
+						addLayer(obj);
+					});
+				}else{
+					parseGeojson(obj);
+					addLayer(obj);
+				}
+				
+				
+				function parseGeojson(obj){
+					//create layer
+					if(!obj.geoJsonLayer){
+						obj.geoJsonLayer=L.geoJson(obj.json, {
+								onEachFeature:function(feature,layer){
+									var html="<div class='popup'><ul><li><img src='images/1359925009_twitter_02.png' width=20px />&nbsp; &nbsp; <b>"+ feature.properties[obj.fieldName.username]+"</b>: "+ feature.properties[obj.fieldName.text]+"</li></ul></div>";
+									html=html.replace(/undefined/g, "Tweet");
+									
+									//highlight keyword
+									html=pathgeo.util.highlightKeyword(obj.keywords,html);
+									//info window
+									layer.bindPopup(html,{maxWidth:500, maxHeight:300});
+									
+									//dataList
+									if(obj.DomID_dataList){
+										$("#"+obj.DomID_dataList+" ul").append("<li id='" + obj.featureCount + "' onclick=\"showDataDetail(this.id);\"><a href='#'>"+ feature.properties["ZIP"]+"</a></li>");
+										obj.featureCount++;
+									}
+								}
+						});
+						app.controls.toc.addOverlay(obj.geoJsonLayer, "GeoJSON");
+						obj.layer=obj.geoJsonLayer;
+						
+						//refresh listview
+						if (obj.DomID_dataList) {$("#"+obj.DomID_dataList+" ul").listview("refresh");}
+					}
+					
+					//marker cluster
+					if(!obj.markerClusterLayer){
+						obj.markerClusterLayer = pathgeo.layer.markerCluster(obj.json, {
+								onEachFeature: function (feature, layer) {
+									var props = feature.properties;
+									var popupText = '';
+									
+									for (var prop in props) { 
+										var fieldName = prop.charAt(0).toUpperCase() + prop.slice(1);
+										
+										if (fieldName.toLowerCase() != "loc") {
+											popupText += "<b>" + fieldName + "</b>: " + feature.properties[prop] + "<br>";
+										}
+									}
+									
+									layer.bindPopup(popupText, { maxWidth: 500, maxHeight: 300 } );
+								}
+							},{
+								//clusterclick event
+								clusterclick: function(e){
+									if(!e.layer._popup){
+										var properties=pathgeo.util.readClusterFeatureProperies(e.layer, []);
+										var html="<div class='popup'>There are <b>" + e.layer._childCount + "</b> twitters:<p></p><ul>";
+										$.each(properties, function(i, property){
+											html+="<li><img src='images/1359925009_twitter_02.png' width=20px />&nbsp; &nbsp; <b>"+ property[obj.fieldName.username]+"</b>: "+ property[obj.fieldName.text]+"</li>";
+										});
+										html+="</ul></div>";
+										html=html.replace(/undefined/g, "Tweet");
+											
+										//highlight keyword
+										html=pathgeo.util.highlightKeyword(obj.keywords,html);
+													
+										e.layer.bindPopup(html,{maxWidth:500, maxHeight:300}).openPopup();
+									}else{
+										e.layer.openPopup();
+									}
+								}
+							}
+						);
+						app.controls.toc.addOverlay(obj.markerClusterLayer, "MarkerCluster");
+					}
+					
+					//heat map				
+					if(!obj.heatMapLayer){
+						obj.heatMapLayer=pathgeo.layer.heatMap(obj.json);
+						app.controls.toc.addOverlay(obj.heatMapLayer, "Heatmap");
+					}
+				}//end parseGeojson
+				
+			break;
+			case "WMS":
+				//default param
+				if(obj.param && obj.param.layers){
+					obj.param.format= obj.param.format || 'image/png';
+					obj.param.transparent=obj.param.transparent || true
+					
+					obj.layer = L.tileLayer.wms(obj.url, obj.param);
+					
+					//events
+					obj.layer.on("load", function(e){
+						console.log("loaded");
+					});
+					
+					//obj.layer.setOpacity(0.75).addTo(app.map).bringToFront();
+					addLayer(obj);
+					app.controls.toc.addOverlay(obj.layer, obj.name);
+				}
+			break;
+		}
+		
+		
+		
+		function addLayer(obj){
+			if(isShow){
+				obj.layer.addTo(app.map);
+				app.showLayers.push(obj.layer);
+				
+				app.map.fitBounds(app.searchResult.geoJsonLayer.getBounds());
+			}
+
+			//close dialog
+			//$("#div_dialog").dialog("destroy");
+			$("#img_loading").hide();
+		}
+}
+
+
+
+//switch layer
+function switchVisualization(types){
+	//remove all shown layers on the map
+	removeLayers();
 	
-	//set default basemamp
-	app.map.setBaseLayer(app.mapTypes[9]);
-	
-	//add control
-	$.each(app.controls, function(k,control){
-		app.map.addControl(control);
-		control.activate();
+	var layer;
+	$.each(types, function(i,type){
+		switch(type){
+			case "MARKERCLUSTER":
+				layer=app.searchResult.markerClusterLayer.addTo(app.map);
+			break;
+			case "HEATMAP":
+				layer=app.searchResult.heatMapLayer.addTo(app.map);
+			break;
+			case "GEOJSON":
+				layer=app.searchResult.geoJsonLayer.addTo(app.map);
+			break;
+		}
+		app.showLayers.push(layer);
 	});
 }
 
 
 
-//load geojson
-function showLayer(obj){
-	obj.timeStart=new Date().getTime();
+
+function getTweets(data){
+	//show loading imag
+	$("#img_loading").show();
 	
-	//show title and dialog
-	if(obj.title){
-		$("#div_title").html("<font size=3>"+ obj.title +"</font>");
-		$("#div_dialog").html("<font size=3><b>"+ obj.title +"</b></font><p></p><img src='images/loading.gif' width=30px />");
-		$("#div_dialog").dialog({
-			 resizable: false,
-			 height:140,
-			 modal: true,
-			 title: "Loading..."
+	//clear previous result
+	if(app.searchResult && app.searchResult.layer){
+		removeLayers();
+		app.controls.toc.removeLayer(app.searchResult.layer);
+		app.controls.toc.removeLayer(app.searchResult.markerClusterLayer);
+		app.controls.toc.removeLayer(app.searchResult.heatMapLayer);
+	}
+		
+	var key=$("#keyword").val(),
+		radius=$("#radius").val(),
+		keyword=$("#car").val();
+	
+	
+	if(data=='demo'){
+		$.getJSON("db/ford.json", function(geojson){
+			app.searchResult={
+				name: "searchResult", 
+				type: "GEOJSON", 
+				json: geojson,
+				srs: "EPSG:4326",
+				title: "Demo Data",
+				fieldName:{username:"user name", text:"text_"},
+				keywords:["FORD", "FUSION", "ESCAPE"]
+			};
+			showLayer(app.searchResult, true);
+		});
+	}else{
+		pathgeo.service.search(key, radius, keyword, function(geojson){
+			app.searchResult={
+				name: "searchResult", 
+				type: "GEOJSON", 
+				json: geojson,
+				srs: "EPSG:4326",
+				title: keyword + "around " + radius + " miles in " + key,
+				fieldName:{username:null, text:"text"},
+				keywords:[keyword]
+			};
+			showLayer(app.searchResult, true);
 		});
 	}
 	
-	switch(obj.type){
-		case "GEOJSON":
-			obj.oplayer=new OpenLayers.Layer.Vector(obj.name, {
-	                    projection: new OpenLayers.Projection(obj.srs),
-	                    strategies: [new OpenLayers.Strategy.Fixed()],
-	                    renderers: ['Canvas','SVG'],
-						protocol: new OpenLayers.Protocol.HTTP({
-	                        url: obj.url,
-	                        format: new OpenLayers.Format.GeoJSON({
-	                            ignoreExtraDims: true
-	                        })
-						})
-	   		 });
-
-			 //event
-			 obj.oplayer.events.on({
-			 	"featuresadded":function(){
-					if(!obj.timeDuration){
-						obj.timeEnd=new Date().getTime();
-						obj.timeDuration=(obj.timeEnd - obj.timeStart) /1000;
-						
-						//show loading time
-						$("#div_title").append("<div style='float:right'>Loading time: " + obj.timeDuration + " s</div>");
-					}
-					
-					//hide loading dialog
-					$("#div_dialog").dialog("destroy");
-				},
-				"featureselected":function(e){
-					if(app.popup){app.map.removePopup(app.popup)}
-					
-					//info html
-					var html="";
-					if(e.feature.cluster){
-	         			html="<div class='popup'><ul><li><img src='images/1359925009_twitter_02.png' width=20px />&nbsp; &nbsp; <b>"+ e.feature.cluster[0].attributes["user_name"]+"</b>: "+ e.feature.cluster[0].attributes["text_"]+"</li></ul>";
-								
-	                	if(e.feature.cluster.length>1){
-		               		html="<div class='popup'>There are <b>" + e.feature.cluster.length + "</b> twitters.<p><p><ul>";
-							$.each(e.feature.cluster, function(i,feature){
-								html+="<li><img src='images/1359925009_twitter_02.png' width=20px />&nbsp; &nbsp; <b>"+ feature.attributes["user_name"]+"</b>: " + feature.attributes["text_"]+"</li>";
-							});
-							html+="</ul>"
-		               	}		
-	               	} 
-					html+="</div>";
-					
-					//highlight keyword
-					var rgxp,rep1;
-					$.each(app.keywords, function(j,keyword){
-						rgxp = new RegExp(keyword, 'ig');
-						repl = '<span class="highlightKeyword">' + keyword + '</span>';
-						html = html.replace(rgxp, repl);
-					});
-					
-	                app.popup=new OpenLayers.Popup.FramedCloud(
-					              "popup", 
-					              e.feature.geometry.getBounds().getCenterLonLat(),
-					              null,
-					              html,
-					              null,
-					              true
-					);
-					e.feature.popup=app.popup;
-					app.map.addPopup(app.popup);
-				},
-				"refresh":function(){
-					obj.timeStart=new Date().getTime();
-				}
-			 });
-		break;
-	}
-	
-	
-	
-	//cluster
-	if(obj.cluster){
-		obj.oplayer=pathgeo.layer.createClusterVectorLayer(obj.oplayer, {clusterStrategy: new OpenLayers.Strategy.Cluster()});
-	}
-	
-	
-	//add layer to map
-	app.map.addLayer(obj.oplayer);	
-	
-	//active selectFeature Control
-	app.controls.selectFeature.setLayer([obj.oplayer])	
+	//change background-color in the default map
+	$("#div_gallery ul li:first").css("background-color", "#222222").siblings().css("background-color","");
 }
 
+
+//remove all layers on the map
+function removeLayers(){
+	if(app.showLayers.length>0){
+		$.each(app.showLayers, function(i,layer){
+			app.map.removeLayer(layer);
+		});
+		app.showLayers=[];
+	}
+}
+
+
+//show data detail
+function showDataDetail(layer_id){
+	if(app.searchResult.json.features[layer_id]){
+		var properties=app.searchResult.json.features[layer_id].properties;
+		
+		$("#dataDetail_title").html(properties["ZIP"]);
+		$("#dataDetail_content").html(pathgeo.util.objectToHtml(properties));
+		$("#dataDetail").show();
+		
+		$("#dataList").hide();
+	}
+	
+	
+}
+
+
+
+function showDialog(dom_id){
+	$("#"+dom_id).popup("open");
+}
 
 
 
