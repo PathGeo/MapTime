@@ -20,7 +20,36 @@ var app={
 			title: "Demo Data",
 			fieldName:{username:null, text:null},
 			keywords:[],
-			DomID_dataList: "datalist_container"
+			DomID_dataList: "datalist_container",
+			getColor:function(d) {
+				return d > 94913  ? '#800026' :
+					   d > 81354   ? '#BD0026' :
+					   d > 67795   ? '#E31A1C' :
+					   d > 54236   ? '#FC4E2A' :
+					   d > 40677    ? '#FD8D3C' :
+					   d > 27118    ? '#FEB24C' :
+					   d >  13559    ? '#FED976' : '#FFEDA0';
+			},
+			getLegend:function(){
+				var grades = [0, 13559    , 27118    , 40677    , 54236   , 67795   , 81354   , 94913 ],
+					label='<b>Household Income</b><p></p><ul>',
+					me=this;
+				$.each(grades, function(i,grade){
+					to = grades[i + 1];
+					label+='<li style="background:' + me.getColor(grade + 1) + '">$' + grade + (to ? '&ndash;$' + to : '+') + "</li>";
+				});
+				return label;
+			},
+			getStyle:function(feature){
+				return {
+					weight: 2,
+					opacity: 1,
+					color: 'white',
+					dashArray: '3',
+					fillOpacity: 0.6,
+					fillColor: feature.getColor(feature.properties.income)
+				}
+			}
 	},
 	controls:{
 		toc:{},
@@ -38,6 +67,14 @@ var app={
 					L.DomEvent.addListener(container, 'mouseout', function(){$("#mapGallery").hide();}, this);
 				}
 		        return container
+		    }
+		}),
+		legend: L.Control.extend({
+		    options: {position: 'bottomright',text: 'Legend',},
+			initialize: function (options) {L.Util.setOptions(this, options);},
+		    onAdd: function (map) {
+		        // create the control container with a particular class name
+		        return L.DomUtil.create('div', 'leaflet-control-legend');
 		    }
 		})
 	},
@@ -110,7 +147,7 @@ function init_map(){
 	app.controls.toc=L.control.layers(app.basemaps);
 
 	//map gallery control
-	app.map.addControl(new app.controls.mapGallery());
+	app.map.addControl(new app.controls.mapGallery()).addControl(new app.controls.legend());;
 	
 	//show all layers
 	$.each(app.layers, function(i, layer){ showLayer(layer,false); } );
@@ -126,6 +163,7 @@ function init_UI(){
 	
 	//init popup
 	$("div[data-role='popup']").popup();
+	
 }
 
 
@@ -157,8 +195,16 @@ function showLayer(obj, isShow){
 				function showGeojson(object){
 					parseGeojson(object);
 					addLayer(object);
+					
+					//show legend
+					if(obj.getLegend && obj.getLegend()!=""){
+						$(".leaflet-control-legend").html(obj.getLegend()).show();
+					}
+					
+
 					//show datalist
-					$("#dialog_dataPanel").panel("open")
+					$("#dialog_dataPanel").panel("open");
+					$("#dialog_dataPanel").trigger("updatelayout");
 					//hide loadData dialog
 					$("#dialog_uploadData").popup("close");
 				}
@@ -180,10 +226,38 @@ function showLayer(obj, isShow){
 									
 									//dataList
 									if(obj.DomID_dataList){
-										$("#"+obj.DomID_dataList+" ul").append("<li id='" + obj.featureCount + "' onclick=\"showDataDetail(this.id);\"><a href='#'>"+ feature.properties["ZIP"]+"</a></li>");
+										$("#"+obj.DomID_dataList+" ul").append("<li id='" + obj.featureCount + "' onclick=\"showDataDetail(this.id);\"><a href='#'>"+ feature.properties["ZIP"]+"<span class='ui-li-count'>" + obj.featureCount + "</span></a></li>");
 										obj.featureCount++;
 									}
-								}
+									
+									//event
+									layer.on({
+										mouseover: function(e){
+											e.target.setStyle({
+												weight: 3,
+												color: '#666',
+												dashArray: '',
+												fillOpacity: 0.7
+											});
+											if (!L.Browser.ie) {e.target.bringToFront();}
+										},
+										mouseout: function(e){
+											obj.geoJsonLayer.resetStyle(e.target);
+										}
+									})
+								},
+								
+								//style
+								style: (function(){
+									if(obj.getStyle){
+										return function(feature){
+											feature.getColor=obj.getColor;
+											return obj.getStyle(feature);
+										}
+									}else{
+										return {}
+									}
+								})()
 						});
 						app.controls.toc.addOverlay(obj.geoJsonLayer, "GeoJSON");
 						obj.layer=obj.geoJsonLayer;
@@ -367,13 +441,26 @@ function removeLayers(){
 
 
 //show data detail
-function showDataDetail(layer_id){	
-	if(app.searchResult.json.features[layer_id]){
-		var properties=app.searchResult.json.features[layer_id].properties,
+function showDataDetail(layer_id){
+	
+	if(!app.searchResult.geoJsonLayer.layers){
+		//convert object to array
+		app.searchResult.geoJsonLayer.layers=$.map(app.searchResult.geoJsonLayer._layers, function(v,k){return v});
+	}
+	
+	if(app.searchResult.geoJsonLayer.layers[layer_id]){
+		var layer=app.searchResult.geoJsonLayer.layers[layer_id],
+			properties=layer.feature.properties,
 			title=properties["ZIP"];
 			html=pathgeo.util.objectToHtml(properties);
 		
+		//highlight feature
+		layer.fire("mouseover")
+		
+		
+		
 		//show
+		$("#dataDetail").css({height: $("#div_map").height()-10})
 		$("#dataDetail_title").html(title);
 		$("#dataDetail_content").html(html);
 
@@ -423,6 +510,7 @@ function showDataDetail(layer_id){
 		//show datadetail and hide datalist
 		$("#dataDetail").show();
 		$("#dataList").hide();
+		
 	}
 	
 	

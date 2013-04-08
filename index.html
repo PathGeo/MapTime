@@ -131,16 +131,23 @@
 		<!--DATA LIST-->
 		<div id='dialog_dataPanel' data-role="panel" data-position="left"  data-display="overlay" data-dismissible="false" data-theme="a"  >
 			<div id='dataList'>
+				<!--header-->
+				<div data-role='header'>
+					<a href="#" data-icon="check">Print</a>
+					<h1>Data List</h1>
+					<a href="#" data-icon="forward">Export</a>
+				</div>
+				<p></p>
 				<!--datalist_container-->
 				<div id='datalist_container'><ul data-role="listview" data-filter="true" data-filter-placeholder="Search your data" data-filter-theme="a" data-theme="a" ></ul></div>
 			</div>
 			
-			<div id='dataDetail' data-role='panel' style='display:none; top:0px; position:absolute' data-theme="a" data-overlay-theme=a data-transition="slide">
+			<div id='dataDetail' data-role='panel' data-theme="a" data-overlay-theme=a data-transition="slide">
 				<!--header-->
 				<div data-role='header'>
 					<a href="#" data-icon="home" onclick='$("#dataDetail").hide();$("#dataList").show();'>Data List</a>
 					<h1 id='dataDetail_title'></h1>
-					<a href="#" data-icon="bars" ></a>
+					<a href="#" data-icon="forward" >Export</a>
 				</div>
 				
 				<!--content-->
