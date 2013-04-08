@@ -152,7 +152,8 @@ function enableSocialLayer() {
 	socialLayer = new L.GeoJSON(socialmedia, {
 		pointToLayer: callback,
 	    onEachFeature: function (feature, layer) {
-			 layer.bindPopup("<b>" + feature.properties.Source + "</b><br/><br/>" + feature.properties.Text + "<br/>" + feature.properties.Date);
+			 layer.bindPopup("<b>" + feature.properties.Source + "</b><br/><br/>" + feature.properties.Text 
+				+ "  <a href='" + feature.properties.Link + "' target='_blank'>[Link]</a><br/>" + feature.properties.Date);
 		 }
 	});
 	map.addLayer(socialLayer);
