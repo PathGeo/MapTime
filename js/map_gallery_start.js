@@ -137,7 +137,7 @@ function enableSocialLayer() {
 			var urlImage = "images/tweetIcon.png"
 		}
 		if(feature.properties.Source == "Instagram"){
-			var urlImage = "images/insta.png"
+			var urlImage = "images/photoIcon.png"
 		}
 		
 		var myIcon = L.icon({ 
