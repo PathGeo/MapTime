@@ -1,6 +1,7 @@
 var map;
 var curLayer;
 var zipLayer;
+var socialLayer;
 var legend;
 var curData = [];
 var baseLayers = {};
@@ -129,14 +130,14 @@ function enableSocialLayer() {
 		
 		var myIcon = L.icon({ 
 			iconUrl: urlImage,
-			popupAnchor: [15, 0]
+			popupAnchor: [16, 2]
 		});
 
 		marker = L.marker(latlng, {icon: myIcon});
 		return marker; 
 	}  
 
-	var socialLayer = new L.GeoJSON(socialmedia, {
+	socialLayer = new L.GeoJSON(socialmedia, {
 		pointToLayer: callback,
 	    onEachFeature: function (feature, layer) {
 			 layer.bindPopup("<b>" + feature.properties.Source + "</b><br/><br/>" + feature.properties.Text + "<br/>" + feature.properties.Date);
@@ -151,6 +152,8 @@ function switchLayers(newLayerName) {
 	if (curLayer && map.hasLayer(curLayer)) map.removeLayer(curLayer);
 
 	if (zipLayer && map.hasLayer(zipLayer)) map.removeLayer(zipLayer);
+	
+	if (socialLayer && map.hasLayer(socialLayer)) map.removeLayer(socialLayer);
 	$(".legend").hide();
 	
 	if (newLayerName == "heatmap") {
@@ -229,7 +232,7 @@ function getPointLayer(gjData) {
 		}, 	pointToLayer: function (feature, latlng) {
 			var icon = L.icon({ 
 				iconUrl: "images/customerIcon.png",
-				popupAnchor: [15, 0],
+				popupAnchor: [16, 2],
 			});
 
 			marker = L.marker(latlng, {icon: icon});
