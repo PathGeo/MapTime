@@ -66,6 +66,7 @@ $(document).ready(function() {
 
 function enableCensusLayer() {
 	// get color depending on population density value
+	/*
 	function getColor(d) {
 		return d > 94913  ? '#800026' :
 			   d > 81354   ? '#BD0026' :
@@ -76,7 +77,18 @@ function enableCensusLayer() {
 			   d >  13559    ? '#FED976' :
 						  '#FFEDA0';
 	}
-
+	*/
+	function getColor(d) {
+		return d > 94913  ? 'rgb(0, 88, 36)' :
+			   d > 81354   ? 'rgb(35, 139, 69)' :
+			   d > 67795   ? 'rgb(65, 174, 118)' :
+			   d > 54236   ? 'rgb(102, 194, 164)' :
+			   d > 40677    ? 'rgb(153, 216, 201)' :
+			   d > 27118    ? 'rgb(204, 236, 230)' :
+			   d >  13559    ? 'rgb(229, 245, 249)' :
+						  'rgb(247, 252, 253)';
+	}
+	
 	function style(feature) {
 		return {
 			weight: 2,
