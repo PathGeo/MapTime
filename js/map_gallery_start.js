@@ -121,7 +121,7 @@ function enableSocialLayer() {
 	function callback(feature, latlng){
 		
 		if(feature.properties.Source == "Twitter"){
-			var urlImage = "images/bird.png"
+			var urlImage = "images/tweetIcon.png"
 		}
 		if(feature.properties.Source == "Instagram"){
 			var urlImage = "images/insta.png"
@@ -129,9 +129,7 @@ function enableSocialLayer() {
 		
 		var myIcon = L.icon({ 
 			iconUrl: urlImage,
-			popupAnchor: [-3, -76],
-			shadowSize: [68, 95],
-			shadowAnchor: [22, 94]
+			popupAnchor: [15, 0]
 		});
 
 		marker = L.marker(latlng, {icon: myIcon});
@@ -228,7 +226,15 @@ function getPointLayer(gjData) {
 			var props = feature.properties;
 			var html = "<div class='popup'><ul><li><span class='clusterInfo'>" + props.name + "</span><br><div class='extras' style='display: block;'><b>Location:</b> " + props.location + "<br> <b>Sales:</b> $" + props.sales + "</li></ul></div>";
 			layer.bindPopup(html);
-		}
+		}, 	pointToLayer: function (feature, latlng) {
+			var icon = L.icon({ 
+				iconUrl: "images/customerIcon.png",
+				popupAnchor: [15, 0],
+			});
+
+			marker = L.marker(latlng, {icon: icon});
+			return marker; 
+		}  
 	});
 	
 	for (var indx in gjData) {
