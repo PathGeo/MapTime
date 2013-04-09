@@ -15,7 +15,7 @@ var app={
 	searchResult:{
 			name: "searchResult", 
 			type: "GEOJSON", 
-			json: zipCodes,
+			url: "db/demo-data300.json",
 			srs: "EPSG:4326",
 			title: "Demo Data",
 			fieldName:{username:null, text:null},
