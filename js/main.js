@@ -151,6 +151,15 @@ function init_map(){
 	
 	//show all layers
 	$.each(app.layers, function(i, layer){ showLayer(layer,false); } );
+	
+	
+	//tets
+	pathgeo.service.demographicData({
+		callback:function(geojsonLayer){
+			//geojsonLayer.redrawStyle("HC01_VC85")
+			geojsonLayer.addTo(app.map)
+		}
+	});
 }
 
 
@@ -165,6 +174,7 @@ function init_UI(){
 	$("div[data-role='popup']").popup();
 	
 }
+
 
 
 //load geojson
