@@ -88,13 +88,11 @@ var app={
 
 
 //init
-$(document).on("pageinit", function(){	  
-	init_UI();
-	
-	$("#pageMap").on("pageshow",function(event, ui) {
-        init_map();
-    });
+$(document).on("pageshow", function(){	  
+
+    init_map();
     
+	init_UI();
 		
 	
 	$("#submit_button").click(function (e) {
@@ -130,8 +128,10 @@ $(document).on("pageinit", function(){
 
 //init openlayers
 function init_map(){
-	var map_height=((($(document).height()-$("#header").height()) / $(document).height())*100*0.45)+"%";
-	$("#div_map").css({height:map_height});
+	//adjust map height
+	//var map_height=((($(document).height()-$("#header").height()) / $(document).height())*100*0.45)+"%";
+	//$("#div_map").css({height:300});
+
 	
 	app.map = L.map("div_map", {
         center: app.initCenterLatLng,
@@ -174,6 +174,11 @@ function init_UI(){
 	//init popup
 	$("div[data-role='popup']").popup();
 	
+	//adjust dataPanel
+	$("#dataPanel").css({"margin-top":$("#header").height()+$("#div_map").height()});
+	
+	
+	
 }
 
 
@@ -214,28 +219,14 @@ function showLayer(obj, isShow){
 					
 					//show table
 					//convert geojson properties to array
-					var o={
-						columns:[],
-						datas:[]
-					}	
-					$.each(object.json.features, function(i, feature){
-						var properties=[]
-						$.map(feature.properties, function(v,k){
-							//read column title
-							if(i==0){
-								o.columns.push({"sTitle":k})
-							}
-							
-							//read values
-							properties.push(v);
-						});
-						o.datas.push(properties);
-					})
-					showTable(o)
+					if(!obj.dataTable){
+						obj.dataTable=pathgeo.util.geojsonPropertiesToArray(obj.json);
+						showTable(obj.dataTable);
+					}
 					
 
 					//show datalist
-					$("#dialog_dataPanel").panel("open");
+					//$("#dialog_dataPanel").panel("open");
 					$("#dialog_dataPanel").trigger("updatelayout");
 					//hide loadData dialog
 					$("#dialog_uploadData").popup("close");
@@ -472,6 +463,7 @@ function removeLayers(){
 }
 
 
+
 //show data detail
 function showDataDetail(layer_id){
 	
@@ -582,63 +574,70 @@ function drawChart(chartType, data, domID, options){
 
 //show pivot table
 function showTable(obj){
-		$('#results').html( '<table cellpadding="0" cellspacing="0" border="0" class="display" id="example"></table>' );
-		$('#example').dataTable({
+		
+		$('#dataPanel').html( '<table cellpadding="0" cellspacing="0" border="0" class="display" id="dataTable"></table>' );
+		$('#dataTable').dataTable({
 			"aaData": obj.datas,
 			"aoColumns": obj.columns,
+			"bJQueryUI": false,
+			"sPaginationType": "full_numbers",
 			fnDrawCallback: function(){
-				//get filter data
-				console.log(this.$('tr', {"filter": "applied"}));
+				//backup orginal json to defaultJSON
+				if(!app.searchResult.defaultJSON){
+					app.searchResult.defaultJSON=app.searchResult.json;
+				}
+				
+				
+				//get filter data,
+				var	me=this,
+					features=app.searchResult.defaultJSON.features,
+					geojson={
+						type:"FeatureCollection",
+						features:[]
+					},
+					$selectedData=me.$('tr', {"filter": "applied"});
+				
+				//to avoid refresh too frequently to mark high CPU usage
+				setTimeout(function(){
+					if(me.$('tr', {"filter": "applied"}).length==$selectedData.length){
+					
+						//read selected layers
+						me.$('tr', {"filter": "applied"}).each(function(){
+							geojson.features.push(features[this._DT_RowIndex]);
+						});
+						
+						
+						//overwrite app.searchResult.json and showlayer again
+						//remove geojsonLayer
+						if(geojson.features.length>0 && app.searchResult.geoJsonLayer){
+							app.map.removeLayer(app.searchResult.geoJsonLayer);
+							app.searchResult.geoJsonLayer=null;
+							app.searchResult.markerClusterLayer=null;
+							app.searchResult.heatMapLayer=null;
+							
+							app.searchResult.json=geojson;
+							showLayer(app.searchResult, true);
+						}
+					}
+				},500)
+
 			}
 		});	
 		
-	
-	
-	
-	
-	
-	
-	
-	// if(!input){input={
-		// json:'[["last_name","first_name","zip_code","billed_amount","last_billed_date"],' +
-              // '["Jackson", "Robert", 34471, 100.00, "Tue, 24 Jan 2012 00:00:00 +0000"],' +
-              // '["Smith", "Jon", 34471, 173.20, "Mon, 13 Feb 2012 00:00:00 +0000"]]', 
-		// fields: [
-		    // // filterable fields
-		   	// {name: 'last_name',   type: 'string',   filterable: true},
-	        // {name: 'first_name',        type: 'string',   filterable: true},
-	        // {name: 'zip_code',          type: 'integer',  filterable: true},
-	        // {name: 'pseudo_zip',        type: 'integer',  filterable: true },
-	        // {name: 'billed_amount',     type: 'float',    labelable: false,},
-	        // {name: 'last_billed_date',  type: 'date',     filterable: true}
-		// ], 
-		// filters: {}, 
-		// rowLabels:["last_name", "first_name", "zip_code", "pseudo_zip", "billed_amount", "last_billed_date"], 
-		// summaries:[],
-		// callbacks: {afterUpdateResults: function(){
-// 			  
-		      // $('#results > table').dataTable({
-		        // "sDom": "<'row'<'span6'l><'span6'f>>t<'row'<'span6'i><'span6'p>>",
-		        // "iDisplayLength": 50,
-		        // "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
-		        // //"sPaginationType": "",
-		        // "oLanguage": {
-		          // "sLengthMenu": "_MENU_ records per page"
-		        // }
-		      // });
-// 
-// 
-    	// }}
-   	  // };
-  	// }
-//     
-    // var test=pivot.init(input)
-    // console.log(test)
-    // console.log(test.results().all());
-//     
-    // $('#dataFilter').pivot_display('setup', input);
-	
-	
+		
+		//click row
+		$("#dataTable tr").click(function(){
+			var id=$(this).context._DT_RowIndex,
+				feature;
+			
+			if(!app.searchResult.geoJsonLayer.layers){
+				app.searchResult.geoJsonLayer.layers=$.map(app.searchResult.geoJsonLayer._layers, function(v,k){return v});
+			}
+			
+			feature=app.searchResult.geoJsonLayer.layers[id]
+			feature.openPopup();
+		})
+		
 }
 
 

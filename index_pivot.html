@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="js/leaflet/MarkerCluster.css" />
 	<link rel="stylesheet" href="js/leaflet/MarkerCluster.Default.css" />
 	<link rel="stylesheet" href="css/jquery.dataTables.css" />
+	<!--<link rel="stylesheet" href="css/jqueryUI/jquery-ui-1.8.4.custom-smoothness.css" />-->
 	<!--[if lte IE 8]><link rel="stylesheet" href="js/leaflet/MarkerCluster.Default.ie.css" /><![endif]-->
 	<!--[if IE]><link type="text/css" href='css/main_ie.css' rel="stylesheet" /><![endif]-->
 	<!--[if !IE]><!--><link type="text/css" href='css/main_pivot.css' rel="stylesheet" /><!--<![endif]-->
@@ -53,7 +54,7 @@
   	<div data-role="page" id='pageMap'>
   		
 		<!--header-->
-		<div id='header' class='ui-bar ui-bar-b'>
+		<div id='header' class='ui-bar ui-bar-b'  >
 			<h1 style='padding:10px 10px 10px 5px'>MapTime : <label id='lbl_dataName'></label></h1>
 			
 			<a href="#dialog_usermenu" data-rel='popup' data-role='button' data-position-to="origin" data-inline="true" data-transition="slideup" data-icon="home" class="" data-mini="true" style='float:right'>User</a> 
@@ -67,15 +68,13 @@
 		<!-- map-->
 		<div id="div_map"></div>
 	
-	
 		<!-- data filter-->
 		<div id='dataFilter'></div>
-		
-		
-		<!-- data table -->
-		<div id='results'>
 			
-		</div>
+		<!-- data table -->
+		<div id='dataPanel'></div>
+	
+		
 	
 	
 		<!-- dialog -->

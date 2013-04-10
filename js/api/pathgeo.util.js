@@ -52,6 +52,67 @@ pathgeo.util={
 			});
 		}
 		return properties;
+	},
+	
+	
+	/**
+	 * parse geojsonProperties to Array
+	 * @param {GEOJSON} geojson can be featureColleciton or a feature
+	 * @return {Object} containing {columns: an array of titles, datas: an array of properties}
+	 */
+	geojsonPropertiesToArray: function(geojson){
+		if(!geojson){console.log("[ERROR] pathgeo.util.geoJsonPropertiesToArray: no geojson");return;}
+		
+		var obj={
+			columns:[],
+			datas:[]
+		}
+		
+		//geojson is featureCollection
+		if(geojson.type.toUpperCase()=='FEATURECOLLECTION'){
+			$.each(geojson.features, function(i, feature){
+				//get columns
+				if(i==0){
+					var temp=parseFeature(feature, true);
+					obj.columns=temp.columns;
+					obj.datas.push(temp.datas);
+				}else{
+					obj.datas.push(parseFeature(feature, false).datas)
+				}
+			});
+		}
+		
+		
+		//geojson is a feature
+		if(geojson.type.toUpperCase()=='FEATURE'){
+			var temp=parseFeature(geojson, true);
+			obj.columns=temp.columns;
+			obj.datas.push(temp.datas);
+		}
+		
+		return obj;
+		
+		
+		//parse Feature
+		function parseFeature(feature, needColumns){
+			var columns=[], datas=[];
+			$.each(feature.properties, function(k,v){
+				if(needColumns){columns.push({"sTitle": k})}
+				datas.push(v);
+			});
+			
+			//add coordinates
+			if(feature.geometry.type=="Point"){
+				if(needColumns)(columns.push({"sTitle": "Coordinates"}));
+				var lat=feature.geometry.coordinates[1].toFixed(3),
+					lng=feature.geometry.coordinates[0].toFixed(3)
+				
+				datas.push(lng+", "+lat);
+			}
+			
+			return {columns:columns, datas:datas}
+		}
 	}
+	
 		
 }
