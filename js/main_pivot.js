@@ -6,50 +6,18 @@ var app={
 	basemaps:{
 			"Cloudmade": L.tileLayer("http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png", {styleId: 22677}),
 			"OpenStreetMap": L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"),
-			"Google Streetmap":L.tileLayer("https://mts{s}.googleapis.com/vt?lyrs=m@207265067&src=apiv3&hl=zh-TW&x={x}&y={y}&z={z}&s=Ga&style=api%7Csmartmaps",{subdomains:"123", attribution:"Map Source from Google"}),
-			"Nokia Satellite":L.tileLayer("http://{s}.maps.nlp.nokia.com/maptile/2.1/maptile/b9e8949142/hybrid.day/{z}/{x}/{y}/256/png8?app_id=SqE1xcSngCd3m4a1zEGb&token=r0sR1DzqDkS6sDnh902FWQ&lg=ENG",{subdomains:"1234", attribution:"Map Source from Nokia"})
+			"Google Streetmap":L.tileLayer("https://mts{s}.googleapis.com/vt?lyrs=m@207265067&src=apiv3&hl=zh-TW&x={x}&y={y}&z={z}&s=Ga&style=api%7Csmartmaps",{subdomains:"123", attribution:"Map Source from Google"})
 	},
-	layers:[
-			{name:"[WMS]States", type: "WMS", url:"http://sgis.kisr.edu.kw/geoserver/topp/wms", srs:"EPSG:4326", param:{layers:"topp:states", attribution:""}}
-	],
+	layers: {
+			"demographicData":null
+	},
 	searchResult:{
 			name: "searchResult", 
 			type: "GEOJSON", 
 			url: "db/demo-data300.json",
 			srs: "EPSG:4326",
 			title: "Demo Data",
-			fieldName:{username:null, text:null},
-			keywords:[],
-			DomID_dataList: "datalist_container",
-			getColor:function(d) {
-				return d > 94913  ? '#800026' :
-					   d > 81354   ? '#BD0026' :
-					   d > 67795   ? '#E31A1C' :
-					   d > 54236   ? '#FC4E2A' :
-					   d > 40677    ? '#FD8D3C' :
-					   d > 27118    ? '#FEB24C' :
-					   d >  13559    ? '#FED976' : '#FFEDA0';
-			},
-			getLegend:function(){
-				var grades = [0, 13559    , 27118    , 40677    , 54236   , 67795   , 81354   , 94913 ],
-					label='<b>Household Income</b><p></p><ul>',
-					me=this;
-				$.each(grades, function(i,grade){
-					to = grades[i + 1];
-					label+='<li style="background:' + me.getColor(grade + 1) + '">$' + grade + (to ? '&ndash;$' + to : '+') + "</li>";
-				});
-				return label;
-			},
-			getStyle:function(feature){
-				return {
-					weight: 2,
-					opacity: 1,
-					color: 'white',
-					dashArray: '3',
-					fillOpacity: 0.6,
-					fillColor: feature.getColor(feature.properties.income)
-				}
-			}
+			keywords:[]
 	},
 	controls:{
 		toc:{},
@@ -70,7 +38,7 @@ var app={
 		    }
 		}),
 		legend: L.Control.extend({
-		    options: {position: 'bottomright',text: 'Legend',},
+		    options: {position: 'bottomleft',text: 'Legend',},
 			initialize: function (options) {L.Util.setOptions(this, options);},
 		    onAdd: function (map) {
 		        // create the control container with a particular class name
@@ -81,7 +49,8 @@ var app={
 	popup:null,
 	initCenterLatLng:[35,-100],
 	initCenterZoom:4,
-	showLayers:[] //layers are shown in the map
+	showLayers:[], //layers are shown in the map
+	dataTable:null
 }
 
 
@@ -94,6 +63,9 @@ $(document).on("pageshow", function(){
     
 	init_UI();
 		
+	//directly shoing demo data
+	showLayer(app.searchResult,true)
+	
 	
 	$("#submit_button").click(function (e) {
 		$("#img_loading").show();
@@ -150,15 +122,12 @@ function init_map(){
 	//map gallery control
 	app.map.addControl(new app.controls.mapGallery()).addControl(new app.controls.legend());;
 	
-	//show all layers
-	$.each(app.layers, function(i, layer){ showLayer(layer,false); } );
 	
-	
-	//tets
+	//read demographic
 	pathgeo.service.demographicData({
 		callback:function(geojsonLayer){
 			//geojsonLayer.redrawStyle("HC01_VC85")
-			geojsonLayer.addTo(app.map)
+			app.layers.demographicData=geojsonLayer;
 		}
 	});
 }
@@ -177,8 +146,7 @@ function init_UI(){
 	//adjust dataPanel
 	$("#dataPanel").css({"margin-top":$("#header").height()+$("#div_map").height()});
 	
-	
-	
+
 }
 
 
@@ -187,9 +155,6 @@ function init_UI(){
 function showLayer(obj, isShow){
 		//show title
 		if(obj.title){$("#lbl_dataName").html(obj.title);}
-		
-		//dataList
-		if(obj.DomID_dataList){$("#"+obj.DomID_dataList+" ul").html("")}
 		
 		//feature count
 		obj.featureCount=0;
@@ -212,11 +177,7 @@ function showLayer(obj, isShow){
 					parseGeojson(object);
 					addLayer(object);
 					
-					//show legend
-					if(obj.getLegend && obj.getLegend()!=""){
-						$(".leaflet-control-legend").html(obj.getLegend()).show();
-					}
-					
+				
 					//show table
 					//convert geojson properties to array
 					if(!obj.dataTable){
@@ -225,9 +186,6 @@ function showLayer(obj, isShow){
 					}
 					
 
-					//show datalist
-					//$("#dialog_dataPanel").panel("open");
-					$("#dialog_dataPanel").trigger("updatelayout");
 					//hide loadData dialog
 					$("#dialog_uploadData").popup("close");
 				}
@@ -237,32 +195,27 @@ function showLayer(obj, isShow){
 				function parseGeojson(obj){
 					//create layer
 					if(!obj.geoJsonLayer){
+						var layers=[];
 						obj.geoJsonLayer=L.geoJson(obj.json, {
 								onEachFeature:function(feature,layer){
-									var html="<div class='popup'><ul><li><img src='images/1359925009_twitter_02.png' width=20px />&nbsp; &nbsp; <b>"+ feature.properties[obj.fieldName.username]+"</b>: "+ feature.properties[obj.fieldName.text]+"</li></ul></div>";
-									html=html.replace(/undefined/g, "Tweet");
+									var html=pathgeo.util.objectToHtml(feature.properties);
 									
 									//highlight keyword
 									html=pathgeo.util.highlightKeyword(obj.keywords,html);
 									//info window
 									layer.bindPopup(html,{maxWidth:500, maxHeight:300});
 									
-									//dataList
-									if(obj.DomID_dataList){
-										$("#"+obj.DomID_dataList+" ul").append("<li id='" + obj.featureCount + "' onclick=\"showDataDetail(this.id);\"><a href='#'>"+ feature.properties["ZIP"]+"<span class='ui-li-count'>" + obj.featureCount + "</span></a></li>");
-										obj.featureCount++;
+								
+									//based on _DT_RowIndex to insert layer into layers
+									if(feature.properties._DT_RowIndex>=0){
+										layers[feature.properties._DT_RowIndex]=layer;
 									}
+									
 									
 									//event
 									layer.on({
 										mouseover: function(e){
-											e.target.setStyle({
-												weight: 3,
-												color: '#666',
-												dashArray: '',
-												fillOpacity: 0.7
-											});
-											if (!L.Browser.ie) {e.target.bringToFront();}
+											
 										},
 										mouseout: function(e){
 											obj.geoJsonLayer.resetStyle(e.target);
@@ -271,23 +224,14 @@ function showLayer(obj, isShow){
 								},
 								
 								//style
-								style: (function(){
-									if(obj.getStyle){
-										return function(feature){
-											feature.getColor=obj.getColor;
-											return obj.getStyle(feature);
-										}
-									}else{
-										return {}
-									}
-								})()
+								style: {}
 						});
+						obj.geoJsonLayer.layers=layers;
+						
 						app.controls.toc.addOverlay(obj.geoJsonLayer, "GeoJSON");
 						obj.layer=obj.geoJsonLayer;
-						
-						//refresh listview
-						if (obj.DomID_dataList) {$("#"+obj.DomID_dataList+" ul").listview("refresh");}
 					}
+					
 					
 					//marker cluster
 					if(!obj.markerClusterLayer){
@@ -330,6 +274,7 @@ function showLayer(obj, isShow){
 						);
 						app.controls.toc.addOverlay(obj.markerClusterLayer, "MarkerCluster");
 					}
+					
 					
 					//heat map				
 					if(!obj.heatMapLayer){
@@ -377,6 +322,7 @@ function showLayer(obj, isShow){
 
 
 
+
 //switch layer
 function switchVisualization(types){
 	//remove all shown layers on the map
@@ -402,56 +348,6 @@ function switchVisualization(types){
 
 
 
-function getTweets(data){
-	//show loading imag
-	$("#img_loading").show();
-	
-	//clear previous result
-	if(app.searchResult && app.searchResult.layer){
-		removeLayers();
-		app.controls.toc.removeLayer(app.searchResult.layer);
-		app.controls.toc.removeLayer(app.searchResult.markerClusterLayer);
-		app.controls.toc.removeLayer(app.searchResult.heatMapLayer);
-	}
-		
-	var key=$("#keyword").val(),
-		radius=$("#radius").val(),
-		keyword=$("#car").val();
-	
-	
-	if(data=='demo'){
-		$.getJSON("db/ford.json", function(geojson){
-			app.searchResult={
-				name: "searchResult", 
-				type: "GEOJSON", 
-				json: geojson,
-				srs: "EPSG:4326",
-				title: "Demo Data",
-				fieldName:{username:"user name", text:"text_"},
-				keywords:["FORD", "FUSION", "ESCAPE"]
-			};
-			showLayer(app.searchResult, true);
-		});
-	}else{
-		pathgeo.service.search(key, radius, keyword, function(geojson){
-			app.searchResult={
-				name: "searchResult", 
-				type: "GEOJSON", 
-				json: geojson,
-				srs: "EPSG:4326",
-				title: keyword + "around " + radius + " miles in " + key,
-				fieldName:{username:null, text:"text"},
-				keywords:[keyword]
-			};
-			showLayer(app.searchResult, true);
-		});
-	}
-	
-	//change background-color in the default map
-	$("#div_gallery ul li:first").css("background-color", "#222222").siblings().css("background-color","");
-}
-
-
 //remove all layers on the map
 function removeLayers(){
 	if(app.showLayers.length>0){
@@ -464,81 +360,15 @@ function removeLayers(){
 
 
 
-//show data detail
-function showDataDetail(layer_id){
-	
-	if(!app.searchResult.geoJsonLayer.layers){
-		//convert object to array
-		app.searchResult.geoJsonLayer.layers=$.map(app.searchResult.geoJsonLayer._layers, function(v,k){return v});
-	}
-	
-	if(app.searchResult.geoJsonLayer.layers[layer_id]){
-		var layer=app.searchResult.geoJsonLayer.layers[layer_id],
-			properties=layer.feature.properties,
-			title=properties["ZIP"];
-			html=pathgeo.util.objectToHtml(properties);
-		
-		//highlight feature
-		layer.fire("mouseover")
-		
-		
-		
-		//show
-		$("#dataDetail").css({height: $("#div_map").height()-10})
-		$("#dataDetail_title").html(title);
-		$("#dataDetail_content").html(html);
-
-		//draw google chart
-		html="<li><b>Demographic: Sex</b><br><div id='chart_demographic_sex'></div></li>"+
-			 "<li><b>SocialMedia:</b><br><div id='chart_socialmedia'></div></li>";
-		$("#dataDetail_content ul").append(html);
-		
-		//chart data
-		var sexData=[
-			['Sex', 'Population'],
-			['Male',  25678],
-			['Female',  28734]
-		];
-		
-		var socialmediaData=[
-			['Date', 'Reputation'],
-			['Feb 16',  -8],
-			['Feb 17',  0], 
-			['Feb 18',  16],
-			['Feb 19',  20],
-			['Feb 20',  26],
-			['Feb 21',  22],
-			['Feb 22',  20],
-			['Feb 23',  30],
-			['Feb 24',  45],
-			['Feb 25',  63],
-			['Feb 26',  70],
-			['Feb 27',  65],
-			['Feb 28',  77],
-			['Mar 1',  82]        
-		];
-		
-		drawChart("PieChart",sexData, "chart_demographic_sex", {
-			title:'Sex',
-			backgroundColor:{fill:"transparent"}
-		});
-		
-		drawChart("LineChart",socialmediaData, "chart_socialmedia", {
-			title:'SocialMedia',
-			backgroundColor:{fill:"transparent"}
-		});
-		
-		
-		
-		
-		//show datadetail and hide datalist
-		$("#dataDetail").show();
-		$("#dataList").hide();
-		
-	}
-	
-	
+//switch basemap
+function switchBaseLayer(layer){
+	if(app.map.hasLayer(layer)){
+		app.map.removeLayer(layer)
+	}else{
+		layer.addTo(app.map);}
 }
+
+
 
 
 //drawChart
@@ -576,11 +406,12 @@ function drawChart(chartType, data, domID, options){
 function showTable(obj){
 		
 		$('#dataPanel').html( '<table cellpadding="0" cellspacing="0" border="0" class="display" id="dataTable"></table>' );
-		$('#dataTable').dataTable({
+		app.dataTable=$('#dataTable').dataTable({
 			"aaData": obj.datas,
 			"aoColumns": obj.columns,
 			"bJQueryUI": false,
 			"sPaginationType": "full_numbers",
+			"sDom": 'C<"clear">lfrtip', //show colVis
 			fnDrawCallback: function(){
 				//backup orginal json to defaultJSON
 				if(!app.searchResult.defaultJSON){
@@ -595,6 +426,7 @@ function showTable(obj){
 						type:"FeatureCollection",
 						features:[]
 					},
+					feature,
 					$selectedData=me.$('tr', {"filter": "applied"});
 				
 				//to avoid refresh too frequently to mark high CPU usage
@@ -603,7 +435,9 @@ function showTable(obj){
 					
 						//read selected layers
 						me.$('tr', {"filter": "applied"}).each(function(){
-							geojson.features.push(features[this._DT_RowIndex]);
+							feature=features[this._DT_RowIndex];
+							feature.properties._DT_RowIndex=this._DT_RowIndex;
+							geojson.features.push(feature);
 						});
 						
 						
@@ -625,17 +459,13 @@ function showTable(obj){
 		});	
 		
 		
-		//click row
-		$("#dataTable tr").click(function(){
+
+		//click on rows
+		$("#dataTable").delegate("tr:not([role='row'])", "click", function(){
 			var id=$(this).context._DT_RowIndex,
-				feature;
-			
-			if(!app.searchResult.geoJsonLayer.layers){
-				app.searchResult.geoJsonLayer.layers=$.map(app.searchResult.geoJsonLayer._layers, function(v,k){return v});
-			}
-			
-			feature=app.searchResult.geoJsonLayer.layers[id]
-			feature.openPopup();
+				layer=app.searchResult.geoJsonLayer.layers[id];
+
+			layer.openPopup();
 		})
 		
 }

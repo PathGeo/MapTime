@@ -73,11 +73,11 @@ pathgeo.util={
 			$.each(geojson.features, function(i, feature){
 				//get columns
 				if(i==0){
-					var temp=parseFeature(feature, true);
+					var temp=parseFeature(i, feature, true);
 					obj.columns=temp.columns;
 					obj.datas.push(temp.datas);
 				}else{
-					obj.datas.push(parseFeature(feature, false).datas)
+					obj.datas.push(parseFeature(i, feature, false).datas)
 				}
 			});
 		}
@@ -85,7 +85,7 @@ pathgeo.util={
 		
 		//geojson is a feature
 		if(geojson.type.toUpperCase()=='FEATURE'){
-			var temp=parseFeature(geojson, true);
+			var temp=parseFeature(0, geojson, true);
 			obj.columns=temp.columns;
 			obj.datas.push(temp.datas);
 		}
@@ -94,8 +94,11 @@ pathgeo.util={
 		
 		
 		//parse Feature
-		function parseFeature(feature, needColumns){
+		function parseFeature(i, feature, needColumns){
 			var columns=[], datas=[];
+			datas[0]=i+1;
+			if(needColumns){columns[0]={"sTitle": "ID"}}
+			
 			$.each(feature.properties, function(k,v){
 				if(needColumns){columns.push({"sTitle": k})}
 				datas.push(v);

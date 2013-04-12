@@ -66,7 +66,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow-y:auto; fo
  * obj to html
  */
 .objToHtml {list-style:none; padding:0px; margin:0px;}
-.objToHtml li {padding:15px; border-bottom:1px solid #cccccc; font-size:120%;}
+.objToHtml li {padding:5px; border-bottom:1px solid #cccccc; font-size:100%;}
 
 
 
