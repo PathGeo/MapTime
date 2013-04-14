@@ -138,8 +138,11 @@ function init_map(){
 	
 	//read demographic
 	pathgeo.service.demographicData({
-		callback:function(geojsonLayer){
+		callback:function(geojsonLayer, legendHtml){
 			app.layers.demographicData=geojsonLayer;
+			
+			//show legend
+			$(".leaflet-control-legend").html(legendHtml);
 		}
 	});
 }
@@ -188,17 +191,8 @@ function showLayer(obj, isShow){
 		//show layer
 		switch(obj.type){
 			case "GEOJSON":
-				if(!obj.json){
-					$.getJSON(obj.url, function(json){
-						obj.json=json;
-						showGeojson(obj);
-					});
-				}else{
-					showGeojson(obj);
-				}
-				
-				
 				//show geojson
+				//need to be prior than the main part, otherwise this function will not be triggered in Firefox
 				function showGeojson(object){
 					parseGeojson(object);
 					addLayer(object);
@@ -309,6 +303,17 @@ function showLayer(obj, isShow){
 					}
 				}//end parseGeojson
 				
+				
+				
+				//main part
+				if(!obj.json){
+					$.getJSON(obj.url, function(json){
+						obj.json=json;
+						showGeojson(obj);
+					});
+				}else{
+					showGeojson(obj);
+				}
 			break;
 			case "WMS":
 				//default param
@@ -495,7 +500,8 @@ function showTable(obj){
 				 "<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/></li>"+
 				 "<li><img src='images/1365860337_cube.png' title='canned report'/></li>"+
 				 "<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
-				 "<li><img src='images/1365872733_sq_br_down.png' title='maximum map'/></li>"+
+				//"<li><img src='images/1365872733_sq_br_down.png' title='maximum map'/></li>"+
+				 "<li><img src='images/1365978110_gallery2.png' title='map gallery'/></li>"+
 				 "</ul>";
 		$(".dataTable_tools")
 			.append(html)
@@ -536,18 +542,14 @@ function showTable(obj){
 //show info box while user click on dataTable tools
 function showInfobox(type, css){
 
-	var html="";
+	var html=type+"<br><ul>";
 	switch(type){
 		case "show / hide columns":
-			html=type+"<br><ul>";
-				
 			//get all columns name from table
 			$.each(app.dataTable.columns, function(i,obj){
 				var columnName=obj.sTitle;
 				html+="<li><input type='checkbox' checked id="+i+" checked onclick='app.dataTable.fnSetColumnVis(this.id, this.checked); ColVis.fnRebuild(app.dataTable);' />&nbsp; &nbsp; "+columnName +"</li>";
 			});
-				
-			html+="</ul>";
 		break;
 		case "maximum map":
 			$("#div_map").animate({height:600, "min-height":600}, 500, function(){
@@ -560,20 +562,31 @@ function showInfobox(type, css){
 			return;
 		break;
 		case "demographic data":
-			html=type+"<br><ul>";
-			
 			//get all columns name from table
 			$.each(app.demographicData, function(k,v){
 				html+="<li><input type='radio' name='demographic' value="+k+" onclick='if(this.checked){app.layers.demographicData.redrawStyle(this.value); app.layers.demographicData.addTo(app.map);}' />&nbsp; &nbsp; "+ v +"</li>";
 			});
-			
-			html+="</ul>";
 		break;
-		default:
-			html=type
+		case "map gallery":
+			var mapGalleries=[
+				{label: "marker map", value: "GEOJSON", selected:"checked"}, 
+				{label: "cluster map", value:"MARKERCLUSTER"},
+				{label: "heat map", value:"HEATMAP"}
+			];
+				
+			$.each(mapGalleries, function(i,gallery){
+				html+="<li><input type='radio' name='mapGallery' value='" + gallery.value + "' " + ((gallery.selected)?"checked=checked":"") + " onclick='if(this.checked){switchVisualization([this.value]);}' />&nbsp; &nbsp; "+ gallery.label +"</li>";
+			});
 		break;
-	}
-	
+		case "canned report":
+			var reports=["demographic data report", "social media report"];
+			$.each(reports, function(i,report){
+				html+="<li><input type='radio' name='mapGallery' value='" + report + "' " + " onclick='' />&nbsp; &nbsp; "+ report +"</li>";
+			});
+		break;
+		
+	}	
+	html+="</ul>";
 	
 	$(".dataTable_menu .infobox").html(html);
 	$(".dataTable_menu").css(css).show();

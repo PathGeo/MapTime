@@ -117,6 +117,15 @@
 		<div id='div_gallery' style='bottom:0px;display:none;'>
 			<div style='float:left;display:none; padding:10px;' id='mapGallery'>
 				<ul data-role="listview" data-inset="true" data-divider-theme="b">
+					<li data-role="list-divider">Map Types</li>
+					<li>
+						<div>
+							<img src='images/gallery-defaultmap.png' title='Point Map' onclick='switchVisualization(["GEOJSON"])'/>
+							<img src='images/gallery-cluster.png' title='Cluster Map' onclick='switchVisualization(["MARKERCLUSTER"])'/>
+							<img src='images/gallery-heatmap.png' title='Heat Map' onclick='switchVisualization(["HEATMAP", "GEOJSON"])'/>
+						</div>
+					</li>
+					<li data-role="list-divider">Base Maps</li>
 					<li>
 						<div>
 							<img src='images/gallery-defaultmap.png' title='Demographic Map' onclick='switchBaseLayer(app.layers.demographicData)'/>
