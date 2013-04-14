@@ -50,7 +50,20 @@ var app={
 	initCenterLatLng:[35,-100],
 	initCenterZoom:4,
 	showLayers:[], //layers are shown in the map
-	dataTable:null
+	dataTable:null,
+	demographicData:{
+		"HC01_VC04":"Population 16 years and over",
+		"HC01_VC20":"Own children under 6 years",
+		"HC01_VC21":"All parents in family in labor force",
+		"HC01_VC23":"Own children 6 to 17 years",
+		"HC01_VC28":"Workers 16 years and over",
+		"HC01_VC74":"Total households",
+		"HC01_VC85":"Median household income",
+		"HC01_VC86":"Mean household income",
+		"HC01_VC112":"Median family income",
+		"HC01_VC113":"Mean family income",
+		"HC01_VC115":"Per capita income"
+	}
 }
 
 
@@ -126,7 +139,6 @@ function init_map(){
 	//read demographic
 	pathgeo.service.demographicData({
 		callback:function(geojsonLayer){
-			//geojsonLayer.redrawStyle("HC01_VC85")
 			app.layers.demographicData=geojsonLayer;
 		}
 	});
@@ -143,8 +155,22 @@ function init_UI(){
 	//init popup
 	$("div[data-role='popup']").popup();
 	
+	//dataFilter
+//	$("#dataFilter").css({"margin-top":$("#div_map").height()}).find(">ul li").click(function(){
+//		$(this).find("span").toggle();
+//	})
+	
 	//adjust dataPanel
-	$("#dataPanel").css({"margin-top":$("#header").height()+$("#div_map").height()});
+	$("#dataPanel").css({"margin-top":$("#div_map").height()+10, height: $(document).height()-$("#div_map").height()-$("#header").height()-30});
+	
+		
+	//when mouse click on otherplace, hide dataTable_menu
+	$(document).mouseup(function(e){
+		var $container=$(".dataTable_menu");
+		if(!$container.is(e.target) && $container.has(e.target).length===0){
+			$container.hide();
+		}
+	})
 	
 
 }
@@ -411,7 +437,7 @@ function showTable(obj){
 			"aoColumns": obj.columns,
 			"bJQueryUI": false,
 			"sPaginationType": "full_numbers",
-			"sDom": 'C<"clear">lfrtip', //show colVis
+			"sDom": 'l<"dataTable_tools"><"dataTable_menu"<"infobox_triangle"><"infobox">>frtip', //show colVis
 			fnDrawCallback: function(){
 				//backup orginal json to defaultJSON
 				if(!app.searchResult.defaultJSON){
@@ -458,17 +484,105 @@ function showTable(obj){
 			}
 		});	
 		
+		//set all columns in to app.dataTable. Should have another way to get columns
+		app.dataTable.columns=obj.columns;
+		
+		//add dataTable tools and click event
+		var html="<ul>"+
+				 "<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
+				 "<li><img src='images/1365858910_download.png' title='download'/></li>"+
+				 "<li><img src='images/1365858892_print.png' title='print'/></li>"+
+				 "<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/></li>"+
+				 "<li><img src='images/1365860337_cube.png' title='canned report'/></li>"+
+				 "<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
+				 "<li><img src='images/1365872733_sq_br_down.png' title='maximum map'/></li>"+
+				 "</ul>";
+		$(".dataTable_tools")
+			.append(html)
+			.find("ul li").click(function(){
+				//show content in the infobox
+				showInfobox($(this).find("img").attr('title'), {left: $(this).offset().left});	
+			});
+		
+		
+		
 		
 
 		//click on rows
 		$("#dataTable").delegate("tr:not([role='row'])", "click", function(){
 			var id=$(this).context._DT_RowIndex,
 				layer=app.searchResult.geoJsonLayer.layers[id];
-
-			layer.openPopup();
-		})
+			
+			//zoom to the layer
+			app.map.setView(layer._latlng, 16)
+			
+			//reset layer to default style and change the selected layer icon
+			layer.setIcon(new L.icon({
+				iconUrl: "images/1365900599_Map-Marker-Marker-Outside-Pink.png",
+				iconSize: [36, 36],
+    			iconAnchor: [18, 36]
+			}));
+			//layer.openPopup();
+		});
+		
+		
+		
+		
 		
 }
+
+
+
+//show info box while user click on dataTable tools
+function showInfobox(type, css){
+
+	var html="";
+	switch(type){
+		case "show / hide columns":
+			html=type+"<br><ul>";
+				
+			//get all columns name from table
+			$.each(app.dataTable.columns, function(i,obj){
+				var columnName=obj.sTitle;
+				html+="<li><input type='checkbox' checked id="+i+" checked onclick='app.dataTable.fnSetColumnVis(this.id, this.checked); ColVis.fnRebuild(app.dataTable);' />&nbsp; &nbsp; "+columnName +"</li>";
+			});
+				
+			html+="</ul>";
+		break;
+		case "maximum map":
+			$("#div_map").animate({height:600, "min-height":600}, 500, function(){
+				//resize map
+				app.map.invalidateSize(false);
+				
+				$("#dataPanel").css({"margin-top":600});
+				$("#dataTable").hide();
+			});
+			return;
+		break;
+		case "demographic data":
+			html=type+"<br><ul>";
+			
+			//get all columns name from table
+			$.each(app.demographicData, function(k,v){
+				html+="<li><input type='radio' name='demographic' value="+k+" onclick='if(this.checked){app.layers.demographicData.redrawStyle(this.value); app.layers.demographicData.addTo(app.map);}' />&nbsp; &nbsp; "+ v +"</li>";
+			});
+			
+			html+="</ul>";
+		break;
+		default:
+			html=type
+		break;
+	}
+	
+	
+	$(".dataTable_menu .infobox").html(html);
+	$(".dataTable_menu").css(css).show();
+
+}
+	
+	
+	
+	
 
 
 
