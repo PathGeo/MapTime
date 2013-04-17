@@ -6,18 +6,50 @@ var app={
 	basemaps:{
 			"Cloudmade": L.tileLayer("http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png", {styleId: 22677}),
 			"OpenStreetMap": L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"),
-			"Google Streetmap":L.tileLayer("https://mts{s}.googleapis.com/vt?lyrs=m@207265067&src=apiv3&hl=zh-TW&x={x}&y={y}&z={z}&s=Ga&style=api%7Csmartmaps",{subdomains:"123", attribution:"Map Source from Google"})
+			"Google Streetmap":L.tileLayer("https://mts{s}.googleapis.com/vt?lyrs=m@207265067&src=apiv3&hl=zh-TW&x={x}&y={y}&z={z}&s=Ga&style=api%7Csmartmaps",{subdomains:"123", attribution:"Map Source from Google"}),
+			"Nokia Satellite":L.tileLayer("http://{s}.maps.nlp.nokia.com/maptile/2.1/maptile/b9e8949142/hybrid.day/{z}/{x}/{y}/256/png8?app_id=SqE1xcSngCd3m4a1zEGb&token=r0sR1DzqDkS6sDnh902FWQ&lg=ENG",{subdomains:"1234", attribution:"Map Source from Nokia"})
 	},
-	layers: {
-			"demographicData":null
-	},
+	layers:[
+			{name:"[WMS]States", type: "WMS", url:"http://sgis.kisr.edu.kw/geoserver/topp/wms", srs:"EPSG:4326", param:{layers:"topp:states", attribution:""}}
+	],
 	searchResult:{
 			name: "searchResult", 
 			type: "GEOJSON", 
 			url: "db/demo-data300.json",
 			srs: "EPSG:4326",
 			title: "Demo Data",
-			keywords:[]
+			fieldName:{username:null, text:null},
+			keywords:[],
+			DomID_dataList: "datalist_container",
+			getColor:function(d) {
+				return d > 94913  ? '#800026' :
+					   d > 81354   ? '#BD0026' :
+					   d > 67795   ? '#E31A1C' :
+					   d > 54236   ? '#FC4E2A' :
+					   d > 40677    ? '#FD8D3C' :
+					   d > 27118    ? '#FEB24C' :
+					   d >  13559    ? '#FED976' : '#FFEDA0';
+			},
+			getLegend:function(){
+				var grades = [0, 13559    , 27118    , 40677    , 54236   , 67795   , 81354   , 94913 ],
+					label='<b>Household Income</b><p></p><ul>',
+					me=this;
+				$.each(grades, function(i,grade){
+					to = grades[i + 1];
+					label+='<li style="background:' + me.getColor(grade + 1) + '">$' + grade + (to ? '&ndash;$' + to : '+') + "</li>";
+				});
+				return label;
+			},
+			getStyle:function(feature){
+				return {
+					weight: 2,
+					opacity: 1,
+					color: 'white',
+					dashArray: '3',
+					fillOpacity: 0.6,
+					fillColor: feature.getColor(feature.properties.income)
+				}
+			}
 	},
 	controls:{
 		toc:{},
@@ -38,7 +70,7 @@ var app={
 		    }
 		}),
 		legend: L.Control.extend({
-		    options: {position: 'bottomleft',text: 'Legend',},
+		    options: {position: 'bottomright',text: 'Legend',},
 			initialize: function (options) {L.Util.setOptions(this, options);},
 		    onAdd: function (map) {
 		        // create the control container with a particular class name
@@ -49,36 +81,20 @@ var app={
 	popup:null,
 	initCenterLatLng:[35,-100],
 	initCenterZoom:4,
-	showLayers:[], //layers are shown in the map
-	dataTable:null,
-	demographicData:{
-		"HC01_VC04":"Population 16 years and over",
-		"HC01_VC20":"Own children under 6 years",
-		"HC01_VC21":"All parents in family in labor force",
-		"HC01_VC23":"Own children 6 to 17 years",
-		"HC01_VC28":"Workers 16 years and over",
-		"HC01_VC74":"Total households",
-		"HC01_VC85":"Median household income",
-		"HC01_VC86":"Mean household income",
-		"HC01_VC112":"Median family income",
-		"HC01_VC113":"Mean family income",
-		"HC01_VC115":"Per capita income"
-	}
+	showLayers:[] //layers are shown in the map
 }
 
 
 
 
 //init
-$(document).on("pageshow", function(){	  
-
-    init_map();
-    
+$(document).on("pageinit", function(){	  
 	init_UI();
-		
-	//directly shoing demo data
-	showLayer(app.searchResult,true)
 	
+	$("#pageMap").live("pageshow",function(event, ui) {
+        init_map();
+    });
+		
 	
 	$("#submit_button").click(function (e) {
 		$("#img_loading").show();
@@ -113,10 +129,8 @@ $(document).on("pageshow", function(){
 
 //init openlayers
 function init_map(){
-	//adjust map height
-	//var map_height=((($(document).height()-$("#header").height()) / $(document).height())*100*0.45)+"%";
-	//$("#div_map").css({height:300});
-
+	var map_height=((($(document).height()-$("#header").height()) / $(document).height())*100-2.2)+"%";
+	$("#div_map").css({height:map_height});
 	
 	app.map = L.map("div_map", {
         center: app.initCenterLatLng,
@@ -135,14 +149,15 @@ function init_map(){
 	//map gallery control
 	app.map.addControl(new app.controls.mapGallery()).addControl(new app.controls.legend());;
 	
+	//show all layers
+	$.each(app.layers, function(i, layer){ showLayer(layer,false); } );
 	
-	//read demographic
+	
+	//tets
 	pathgeo.service.demographicData({
-		callback:function(geojsonLayer, legendHtml){
-			app.layers.demographicData=geojsonLayer;
-			
-			//show legend
-			$(".leaflet-control-legend").html(legendHtml);
+		callback:function(geojsonLayer){
+			//geojsonLayer.redrawStyle("HC01_VC85")
+			geojsonLayer.addTo(app.map)
 		}
 	});
 }
@@ -158,24 +173,6 @@ function init_UI(){
 	//init popup
 	$("div[data-role='popup']").popup();
 	
-	//dataFilter
-//	$("#dataFilter").css({"margin-top":$("#div_map").height()}).find(">ul li").click(function(){
-//		$(this).find("span").toggle();
-//	})
-	
-	//adjust dataPanel
-	$("#dataPanel").css({"margin-top":$("#div_map").height()+10, height: $(document).height()-$("#div_map").height()-$("#header").height()-30});
-	
-		
-	//when mouse click on otherplace, hide dataTable_menu
-	$(document).mouseup(function(e){
-		var $container=$(".dataTable_menu");
-		if(!$container.is(e.target) && $container.has(e.target).length===0){
-			$container.hide();
-		}
-	})
-	
-
 }
 
 
@@ -185,27 +182,39 @@ function showLayer(obj, isShow){
 		//show title
 		if(obj.title){$("#lbl_dataName").html(obj.title);}
 		
+		//dataList
+		if(obj.DomID_dataList){$("#"+obj.DomID_dataList+" ul").html("")}
+		
 		//feature count
 		obj.featureCount=0;
 		
 		//show layer
 		switch(obj.type){
 			case "GEOJSON":
+				if(!obj.json){
+					$.getJSON(obj.url, function(json){
+						obj.json=json;
+						showGeojson(obj);
+					});
+				}else{
+					showGeojson(obj);
+				}
+				
+				
 				//show geojson
-				//need to be prior than the main part, otherwise this function will not be triggered in Firefox
 				function showGeojson(object){
 					parseGeojson(object);
 					addLayer(object);
 					
-				
-					//show table
-					//convert geojson properties to array
-					if(!obj.dataTable){
-						obj.dataTable=pathgeo.util.geojsonPropertiesToArray(obj.json);
-						showTable(obj.dataTable);
+					//show legend
+					if(obj.getLegend && obj.getLegend()!=""){
+						$(".leaflet-control-legend").html(obj.getLegend()).show();
 					}
 					
 
+					//show datalist
+					$("#dialog_dataPanel").panel("open");
+					$("#dialog_dataPanel").trigger("updatelayout");
 					//hide loadData dialog
 					$("#dialog_uploadData").popup("close");
 				}
@@ -215,27 +224,32 @@ function showLayer(obj, isShow){
 				function parseGeojson(obj){
 					//create layer
 					if(!obj.geoJsonLayer){
-						var layers=[];
 						obj.geoJsonLayer=L.geoJson(obj.json, {
 								onEachFeature:function(feature,layer){
-									var html=pathgeo.util.objectToHtml(feature.properties);
+									var html="<div class='popup'><ul><li><img src='images/1359925009_twitter_02.png' width=20px />&nbsp; &nbsp; <b>"+ feature.properties[obj.fieldName.username]+"</b>: "+ feature.properties[obj.fieldName.text]+"</li></ul></div>";
+									html=html.replace(/undefined/g, "Tweet");
 									
 									//highlight keyword
 									html=pathgeo.util.highlightKeyword(obj.keywords,html);
 									//info window
 									layer.bindPopup(html,{maxWidth:500, maxHeight:300});
 									
-								
-									//based on _DT_RowIndex to insert layer into layers
-									if(feature.properties._DT_RowIndex>=0){
-										layers[feature.properties._DT_RowIndex]=layer;
+									//dataList
+									if(obj.DomID_dataList){
+										$("#"+obj.DomID_dataList+" ul").append("<li id='" + obj.featureCount + "' onclick=\"showDataDetail(this.id);\"><a href='#'>"+ feature.properties["ZIP"]+"<span class='ui-li-count'>" + obj.featureCount + "</span></a></li>");
+										obj.featureCount++;
 									}
-									
 									
 									//event
 									layer.on({
 										mouseover: function(e){
-											
+											e.target.setStyle({
+												weight: 3,
+												color: '#666',
+												dashArray: '',
+												fillOpacity: 0.7
+											});
+											if (!L.Browser.ie) {e.target.bringToFront();}
 										},
 										mouseout: function(e){
 											obj.geoJsonLayer.resetStyle(e.target);
@@ -244,14 +258,23 @@ function showLayer(obj, isShow){
 								},
 								
 								//style
-								style: {}
+								style: (function(){
+									if(obj.getStyle){
+										return function(feature){
+											feature.getColor=obj.getColor;
+											return obj.getStyle(feature);
+										}
+									}else{
+										return {}
+									}
+								})()
 						});
-						obj.geoJsonLayer.layers=layers;
-						
 						app.controls.toc.addOverlay(obj.geoJsonLayer, "GeoJSON");
 						obj.layer=obj.geoJsonLayer;
+						
+						//refresh listview
+						if (obj.DomID_dataList) {$("#"+obj.DomID_dataList+" ul").listview("refresh");}
 					}
-					
 					
 					//marker cluster
 					if(!obj.markerClusterLayer){
@@ -295,7 +318,6 @@ function showLayer(obj, isShow){
 						app.controls.toc.addOverlay(obj.markerClusterLayer, "MarkerCluster");
 					}
 					
-					
 					//heat map				
 					if(!obj.heatMapLayer){
 						obj.heatMapLayer=pathgeo.layer.heatMap(obj.json);
@@ -303,17 +325,6 @@ function showLayer(obj, isShow){
 					}
 				}//end parseGeojson
 				
-				
-				
-				//main part
-				if(!obj.json){
-					$.getJSON(obj.url, function(json){
-						obj.json=json;
-						showGeojson(obj);
-					});
-				}else{
-					showGeojson(obj);
-				}
 			break;
 			case "WMS":
 				//default param
@@ -353,7 +364,6 @@ function showLayer(obj, isShow){
 
 
 
-
 //switch layer
 function switchVisualization(types){
 	//remove all shown layers on the map
@@ -379,6 +389,56 @@ function switchVisualization(types){
 
 
 
+function getTweets(data){
+	//show loading imag
+	$("#img_loading").show();
+	
+	//clear previous result
+	if(app.searchResult && app.searchResult.layer){
+		removeLayers();
+		app.controls.toc.removeLayer(app.searchResult.layer);
+		app.controls.toc.removeLayer(app.searchResult.markerClusterLayer);
+		app.controls.toc.removeLayer(app.searchResult.heatMapLayer);
+	}
+		
+	var key=$("#keyword").val(),
+		radius=$("#radius").val(),
+		keyword=$("#car").val();
+	
+	
+	if(data=='demo'){
+		$.getJSON("db/ford.json", function(geojson){
+			app.searchResult={
+				name: "searchResult", 
+				type: "GEOJSON", 
+				json: geojson,
+				srs: "EPSG:4326",
+				title: "Demo Data",
+				fieldName:{username:"user name", text:"text_"},
+				keywords:["FORD", "FUSION", "ESCAPE"]
+			};
+			showLayer(app.searchResult, true);
+		});
+	}else{
+		pathgeo.service.search(key, radius, keyword, function(geojson){
+			app.searchResult={
+				name: "searchResult", 
+				type: "GEOJSON", 
+				json: geojson,
+				srs: "EPSG:4326",
+				title: keyword + "around " + radius + " miles in " + key,
+				fieldName:{username:null, text:"text"},
+				keywords:[keyword]
+			};
+			showLayer(app.searchResult, true);
+		});
+	}
+	
+	//change background-color in the default map
+	$("#div_gallery ul li:first").css("background-color", "#222222").siblings().css("background-color","");
+}
+
+
 //remove all layers on the map
 function removeLayers(){
 	if(app.showLayers.length>0){
@@ -390,16 +450,81 @@ function removeLayers(){
 }
 
 
+//show data detail
+function showDataDetail(layer_id){
+	
+	if(!app.searchResult.geoJsonLayer.layers){
+		//convert object to array
+		app.searchResult.geoJsonLayer.layers=$.map(app.searchResult.geoJsonLayer._layers, function(v,k){return v});
+	}
+	
+	if(app.searchResult.geoJsonLayer.layers[layer_id]){
+		var layer=app.searchResult.geoJsonLayer.layers[layer_id],
+			properties=layer.feature.properties,
+			title=properties["ZIP"];
+			html=pathgeo.util.objectToHtml(properties);
+		
+		//highlight feature
+		layer.fire("mouseover")
+		
+		
+		
+		//show
+		$("#dataDetail").css({height: $("#div_map").height()-10})
+		$("#dataDetail_title").html(title);
+		$("#dataDetail_content").html(html);
 
-//switch basemap
-function switchBaseLayer(layer){
-	if(app.map.hasLayer(layer)){
-		app.map.removeLayer(layer)
-	}else{
-		layer.addTo(app.map);}
+		//draw google chart
+		html="<li><b>Demographic: Sex</b><br><div id='chart_demographic_sex'></div></li>"+
+			 "<li><b>SocialMedia:</b><br><div id='chart_socialmedia'></div></li>";
+		$("#dataDetail_content ul").append(html);
+		
+		//chart data
+		var sexData=[
+			['Sex', 'Population'],
+			['Male',  25678],
+			['Female',  28734]
+		];
+		
+		var socialmediaData=[
+			['Date', 'Reputation'],
+			['Feb 16',  -8],
+			['Feb 17',  0], 
+			['Feb 18',  16],
+			['Feb 19',  20],
+			['Feb 20',  26],
+			['Feb 21',  22],
+			['Feb 22',  20],
+			['Feb 23',  30],
+			['Feb 24',  45],
+			['Feb 25',  63],
+			['Feb 26',  70],
+			['Feb 27',  65],
+			['Feb 28',  77],
+			['Mar 1',  82]        
+		];
+		
+		drawChart("PieChart",sexData, "chart_demographic_sex", {
+			title:'Sex',
+			backgroundColor:{fill:"transparent"}
+		});
+		
+		drawChart("LineChart",socialmediaData, "chart_socialmedia", {
+			title:'SocialMedia',
+			backgroundColor:{fill:"transparent"}
+		});
+		
+		
+		
+		
+		//show datadetail and hide datalist
+		$("#dataDetail").show();
+		$("#dataList").hide();
+		
+	}
+	
+	
 }
-
-
 
 
 //drawChart
@@ -431,172 +556,6 @@ function drawChart(chartType, data, domID, options){
 	}
 	gChart.draw(data, options);
 }
-
-
-//show pivot table
-function showTable(obj){
-		
-		$('#dataPanel').html( '<table cellpadding="0" cellspacing="0" border="0" class="display" id="dataTable"></table>' );
-		app.dataTable=$('#dataTable').dataTable({
-			"aaData": obj.datas,
-			"aoColumns": obj.columns,
-			"bJQueryUI": false,
-			"sPaginationType": "full_numbers",
-			"sDom": 'l<"dataTable_tools"><"dataTable_menu"<"infobox_triangle"><"infobox">>frtip', //show colVis
-			fnDrawCallback: function(){
-				//backup orginal json to defaultJSON
-				if(!app.searchResult.defaultJSON){
-					app.searchResult.defaultJSON=app.searchResult.json;
-				}
-				
-				
-				//get filter data,
-				var	me=this,
-					features=app.searchResult.defaultJSON.features,
-					geojson={
-						type:"FeatureCollection",
-						features:[]
-					},
-					feature,
-					$selectedData=me.$('tr', {"filter": "applied"});
-				
-				//to avoid refresh too frequently to mark high CPU usage
-				setTimeout(function(){
-					if(me.$('tr', {"filter": "applied"}).length==$selectedData.length){
-					
-						//read selected layers
-						me.$('tr', {"filter": "applied"}).each(function(){
-							feature=features[this._DT_RowIndex];
-							feature.properties._DT_RowIndex=this._DT_RowIndex;
-							geojson.features.push(feature);
-						});
-						
-						
-						//overwrite app.searchResult.json and showlayer again
-						//remove geojsonLayer
-						if(geojson.features.length>0 && app.searchResult.geoJsonLayer){
-							app.map.removeLayer(app.searchResult.geoJsonLayer);
-							app.searchResult.geoJsonLayer=null;
-							app.searchResult.markerClusterLayer=null;
-							app.searchResult.heatMapLayer=null;
-							
-							app.searchResult.json=geojson;
-							showLayer(app.searchResult, true);
-						}
-					}
-				},500)
-
-			}
-		});	
-		
-		//set all columns in to app.dataTable. Should have another way to get columns
-		app.dataTable.columns=obj.columns;
-		
-		//add dataTable tools and click event
-		var html="<ul>"+
-				 "<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
-				 "<li><img src='images/1365858910_download.png' title='download'/></li>"+
-				 "<li><img src='images/1365858892_print.png' title='print'/></li>"+
-				 "<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/></li>"+
-				 "<li><img src='images/1365860337_cube.png' title='canned report'/></li>"+
-				 "<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
-				//"<li><img src='images/1365872733_sq_br_down.png' title='maximum map'/></li>"+
-				 "<li><img src='images/1365978110_gallery2.png' title='map gallery'/></li>"+
-				 "</ul>";
-		$(".dataTable_tools")
-			.append(html)
-			.find("ul li").click(function(){
-				//show content in the infobox
-				showInfobox($(this).find("img").attr('title'), {left: $(this).offset().left});	
-			});
-		
-		
-		
-		
-
-		//click on rows
-		$("#dataTable").delegate("tr:not([role='row'])", "click", function(){
-			var id=$(this).context._DT_RowIndex,
-				layer=app.searchResult.geoJsonLayer.layers[id];
-			
-			//zoom to the layer
-			app.map.setView(layer._latlng, 16)
-			
-			//reset layer to default style and change the selected layer icon
-			layer.setIcon(new L.icon({
-				iconUrl: "images/1365900599_Map-Marker-Marker-Outside-Pink.png",
-				iconSize: [36, 36],
-    			iconAnchor: [18, 36]
-			}));
-			//layer.openPopup();
-		});
-		
-		
-		
-		
-		
-}
-
-
-
-//show info box while user click on dataTable tools
-function showInfobox(type, css){
-
-	var html=type+"<br><ul>";
-	switch(type){
-		case "show / hide columns":
-			//get all columns name from table
-			$.each(app.dataTable.columns, function(i,obj){
-				var columnName=obj.sTitle;
-				html+="<li><input type='checkbox' checked id="+i+" checked onclick='app.dataTable.fnSetColumnVis(this.id, this.checked); ColVis.fnRebuild(app.dataTable);' />&nbsp; &nbsp; "+columnName +"</li>";
-			});
-		break;
-		case "maximum map":
-			$("#div_map").animate({height:600, "min-height":600}, 500, function(){
-				//resize map
-				app.map.invalidateSize(false);
-				
-				$("#dataPanel").css({"margin-top":600});
-				$("#dataTable").hide();
-			});
-			return;
-		break;
-		case "demographic data":
-			//get all columns name from table
-			$.each(app.demographicData, function(k,v){
-				html+="<li><input type='radio' name='demographic' value="+k+" onclick='if(this.checked){app.layers.demographicData.redrawStyle(this.value); app.layers.demographicData.addTo(app.map);}' />&nbsp; &nbsp; "+ v +"</li>";
-			});
-		break;
-		case "map gallery":
-			var mapGalleries=[
-				{label: "marker map", value: "GEOJSON", selected:"checked"}, 
-				{label: "cluster map", value:"MARKERCLUSTER"},
-				{label: "heat map", value:"HEATMAP"}
-			];
-				
-			$.each(mapGalleries, function(i,gallery){
-				html+="<li><input type='radio' name='mapGallery' value='" + gallery.value + "' " + ((gallery.selected)?"checked=checked":"") + " onclick='if(this.checked){switchVisualization([this.value]);}' />&nbsp; &nbsp; "+ gallery.label +"</li>";
-			});
-		break;
-		case "canned report":
-			var reports=["demographic data report", "social media report"];
-			$.each(reports, function(i,report){
-				html+="<li><input type='radio' name='mapGallery' value='" + report + "' " + " onclick='' />&nbsp; &nbsp; "+ report +"</li>";
-			});
-		break;
-		
-	}	
-	html+="</ul>";
-	
-	$(".dataTable_menu .infobox").html(html);
-	$(".dataTable_menu").css(css).show();
-
-}
-	
-	
-	
-	
-
 
 
 

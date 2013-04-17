@@ -1,20 +1,8 @@
-/**
- * general
- */
-html, body {width:100%; height:100%; padding:0px; margin:0px;overflow-y:auto; font-size:85%;font-family:Arial}
-input {padding:5px;}
-option {padding:5px;}
+html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; font-size:85%;font-family:Arial}
 
-
+#div_map {width:100%; height:90%; padding:0px; margin:0px; position:fixed}
 
 .ui-corner-all{-moz-border-radius:5px; -webkit-border-radius:5px;border-radius:5px;}
-
-
-/**
- * map
- */
-#div_map {width:100%; height:330px; padding:0px; margin:0px; position:fixed }
-
 
 /**
  * gallery
@@ -26,9 +14,9 @@ option {padding:5px;}
 /**
  * 	legend
  */
-.leaflet-control-legend {box-shadow: 0 1px 7px #999; background: rgba(230,230,230,0.7); -moz-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px; padding:15px; min-height:150px; min-width:150px; display:;}
+.leaflet-control-legend {box-shadow: 0 1px 7px #999; background: rgba(230,230,230,0.7); -moz-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px; padding:15px; min-height:150px; min-width:150px; display:none;}
 .leaflet-control-legend ul {list-style:none;padding:0px; margin:0px}
-.leaflet-control-legend ul li {padding:2px; text-align:right; font-weight:bold; }
+.leaflet-control-legend ul li {padding:2px; text-align:right; font-weight:bold;}
 
 
 
@@ -38,27 +26,6 @@ option {padding:5px;}
 #dialog_dataPanel {overflow-y:auto;}
 #datalist_container {height:100px;}
 #dataDetail {display:none; top:0px; position:absolute; width:100%; height:500px;}
-
-
-/**
- * dataTable
- */
-#dataPanel {margin:0 auto; margin-top:250px; width:99%; overflow-y:auto; height:280px; text-shadow: 0 0px 0 #fff;}
-#dataTable tr:hover{background-color:#5e87b0; color:#000000; cursor:pointer;}
-
-.dataTable_tools{float:left; margin:0px 5px 0px 5px; width:65%; height:30px; }
-.dataTable_tools > div {float:right;}
-.dataTable_tools ul {list-style:none; padding:0px; margin:0px;}
-.dataTable_tools ul li {padding:0px 15px 0px 15px; cursor:pointer; float:right; border-left:1px solid #cccccc;}
-.dataTable_tools ul li:hover {background-color:#dddddd;}
-.dataTable_tools img {width:22px}
-
-.dataTable_menu {display:none;height:150px; width:200px; top:15px; position:absolute; z-index:1000; }
-.dataTable_menu .infobox_triangle {border-color: transparent transparent #ffffff transparent; border-style:solid; border-width:13px; height:0; width:0; left: 10px; top:0px; z-index: 0;position:relative; left:10px; top:1px; box-shadow: 0 1px 20px -7px #999;}
-.dataTable_menu .infobox {height:150px; min-width:240px; overflow-y:auto; padding:15px; background-color:#ffffff; border:1px solid #cccccc; box-shadow: 0 1px 7px #999;}
-.dataTable_menu .infobox ul {list-style:none; padding:0px; margin:0px}
-.dataTable_menu .infobox ul li {padding:1px; font-weight:bold; }
-
 
 /**
  * jquery mobile 
@@ -91,7 +58,7 @@ option {padding:5px;}
  * obj to html
  */
 .objToHtml {list-style:none; padding:0px; margin:0px;}
-.objToHtml li {padding:5px; border-bottom:1px solid #cccccc; font-size:100%;}
+.objToHtml li {padding:15px; border-bottom:1px solid #cccccc; font-size:120%;}
 
 
 
