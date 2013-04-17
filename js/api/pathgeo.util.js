@@ -52,6 +52,70 @@ pathgeo.util={
 			});
 		}
 		return properties;
+	},
+	
+	
+	/**
+	 * parse geojsonProperties to Array
+	 * @param {GEOJSON} geojson can be featureColleciton or a feature
+	 * @return {Object} containing {columns: an array of titles, datas: an array of properties}
+	 */
+	geojsonPropertiesToArray: function(geojson){
+		if(!geojson){console.log("[ERROR] pathgeo.util.geoJsonPropertiesToArray: no geojson");return;}
+		
+		var obj={
+			columns:[],
+			datas:[]
+		}
+		
+		//geojson is featureCollection
+		if(geojson.type.toUpperCase()=='FEATURECOLLECTION'){
+			$.each(geojson.features, function(i, feature){
+				//get columns
+				if(i==0){
+					var temp=parseFeature(i, feature, true);
+					obj.columns=temp.columns;
+					obj.datas.push(temp.datas);
+				}else{
+					obj.datas.push(parseFeature(i, feature, false).datas)
+				}
+			});
+		}
+		
+		
+		//geojson is a feature
+		if(geojson.type.toUpperCase()=='FEATURE'){
+			var temp=parseFeature(0, geojson, true);
+			obj.columns=temp.columns;
+			obj.datas.push(temp.datas);
+		}
+		
+		return obj;
+		
+		
+		//parse Feature
+		function parseFeature(i, feature, needColumns){
+			var columns=[], datas=[];
+			datas[0]=i+1;
+			if(needColumns){columns[0]={"sTitle": "ID"}}
+			
+			$.each(feature.properties, function(k,v){
+				if(needColumns){columns.push({"sTitle": k})}
+				datas.push(v);
+			});
+			
+			//add coordinates
+			if(feature.geometry.type=="Point"){
+				if(needColumns)(columns.push({"sTitle": "Coordinates"}));
+				var lat=feature.geometry.coordinates[1].toFixed(3),
+					lng=feature.geometry.coordinates[0].toFixed(3)
+				
+				datas.push(lng+", "+lat);
+			}
+			
+			return {columns:columns, datas:datas}
+		}
 	}
+	
 		
 }

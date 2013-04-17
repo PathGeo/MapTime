@@ -1,7 +1,6 @@
 var map;
 var curLayer;
 var zipLayer;
-var socialLayer;
 var legend;
 var curData = [];
 var baseLayers = {};
@@ -66,7 +65,6 @@ $(document).ready(function() {
 
 function enableCensusLayer() {
 	// get color depending on population density value
-	/*
 	function getColor(d) {
 		return d > 94913  ? '#800026' :
 			   d > 81354   ? '#BD0026' :
@@ -77,18 +75,7 @@ function enableCensusLayer() {
 			   d >  13559    ? '#FED976' :
 						  '#FFEDA0';
 	}
-	*/
-	function getColor(d) {
-		return d > 94913  ? 'rgb(0, 88, 36)' :
-			   d > 81354   ? 'rgb(35, 139, 69)' :
-			   d > 67795   ? 'rgb(65, 174, 118)' :
-			   d > 54236   ? 'rgb(102, 194, 164)' :
-			   d > 40677    ? 'rgb(153, 216, 201)' :
-			   d > 27118    ? 'rgb(204, 236, 230)' :
-			   d >  13559    ? 'rgb(229, 245, 249)' :
-						  'rgb(247, 252, 253)';
-	}
-	
+
 	function style(feature) {
 		return {
 			weight: 2,
@@ -129,44 +116,12 @@ function enableCensusLayer() {
 	}
 }
 
-function enableSocialLayer() {	
-
-	function callback(feature, latlng){
-		
-		if(feature.properties.Source == "Twitter"){
-			var urlImage = "images/tweetIcon.png"
-		}
-		if(feature.properties.Source == "Instagram"){
-			var urlImage = "images/photoIcon.png"
-		}
-		
-		var myIcon = L.icon({ 
-			iconUrl: urlImage,
-			popupAnchor: [16, 2]
-		});
-
-		marker = L.marker(latlng, {icon: myIcon});
-		return marker; 
-	}  
-
-	socialLayer = new L.GeoJSON(socialmedia, {
-		pointToLayer: callback,
-	    onEachFeature: function (feature, layer) {
-			 layer.bindPopup("<b>" + feature.properties.Source + "</b><br/><br/>" + feature.properties.Text 
-				+ "  <a href='" + feature.properties.Link + "' target='_blank'>[Link]</a><br/>" + feature.properties.Date);
-		 }
-	});
-	map.addLayer(socialLayer);
-	
-}
 
 function switchLayers(newLayerName) { 
 
 	if (curLayer && map.hasLayer(curLayer)) map.removeLayer(curLayer);
 
 	if (zipLayer && map.hasLayer(zipLayer)) map.removeLayer(zipLayer);
-	
-	if (socialLayer && map.hasLayer(socialLayer)) map.removeLayer(socialLayer);
 	$(".legend").hide();
 	
 	if (newLayerName == "heatmap") {
@@ -181,10 +136,6 @@ function switchLayers(newLayerName) {
 	} else if (newLayerName == "census") {
 		enableCensusLayer();
 		$(".legend").show();
-		curLayer = getPointLayer(curData);
-		map.addLayer(curLayer);
-	} else if (newLayerName == "social") {
-		enableSocialLayer();
 		curLayer = getPointLayer(curData);
 		map.addLayer(curLayer);
 	}
@@ -242,15 +193,7 @@ function getPointLayer(gjData) {
 			var props = feature.properties;
 			var html = "<div class='popup'><ul><li><span class='clusterInfo'>" + props.name + "</span><br><div class='extras' style='display: block;'><b>Location:</b> " + props.location + "<br> <b>Sales:</b> $" + props.sales + "</li></ul></div>";
 			layer.bindPopup(html);
-		}, 	pointToLayer: function (feature, latlng) {
-			var icon = L.icon({ 
-				iconUrl: "images/customerIcon.png",
-				popupAnchor: [16, 2],
-			});
-
-			marker = L.marker(latlng, {icon: icon});
-			return marker; 
-		}  
+		}
 	});
 	
 	for (var indx in gjData) {

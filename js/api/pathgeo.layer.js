@@ -90,6 +90,14 @@ pathgeo.layer={
 		heatmapLayer.addData(hitMapData.data);
 		return heatmapLayer;
 	}
-		
+	
+	
+	
+	
+	
 	
 }
+
+
+
+
