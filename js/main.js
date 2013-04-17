@@ -38,7 +38,7 @@ var app={
 		    }
 		}),
 		legend: L.Control.extend({
-		    options: {position: 'bottomleft',text: 'Legend',},
+		    options: {position: 'bottomright',text: 'Legend',},
 			initialize: function (options) {L.Util.setOptions(this, options);},
 		    onAdd: function (map) {
 		        // create the control container with a particular class name
@@ -63,7 +63,8 @@ var app={
 		"HC01_VC112":"Median family income",
 		"HC01_VC113":"Mean family income",
 		"HC01_VC115":"Per capita income"
-	}
+	},
+	geojsonReader: new jsts.io.GeoJSONReader()
 }
 
 
@@ -133,7 +134,13 @@ function init_map(){
 	app.controls.toc=L.control.layers(app.basemaps);
 
 	//map gallery control
-	app.map.addControl(new app.controls.mapGallery()).addControl(new app.controls.legend());;
+	$.each(app.controls, function(k,v){
+		//toc is hidden in the map
+		if(k!="toc"){
+			app.map.addControl(new v());
+		}
+	});
+	
 	
 	
 	//read demographic
@@ -166,7 +173,11 @@ function init_UI(){
 	//adjust dataPanel
 	$("#dataPanel").css({"margin-top":$("#div_map").height()+10, height: $(document).height()-$("#div_map").height()-$("#header").height()-30});
 	
-		
+	//adjust localInfo
+	$("#localInfo").css({height:$("#div_map").height()-30, width:$(document).width()*0.3});
+	
+	
+	
 	//when mouse click on otherplace, hide dataTable_menu
 	$(document).mouseup(function(e){
 		var $container=$(".dataTable_menu");
@@ -222,8 +233,9 @@ function showLayer(obj, isShow){
 									
 									//highlight keyword
 									html=pathgeo.util.highlightKeyword(obj.keywords,html);
+									
 									//info window
-									layer.bindPopup(html,{maxWidth:500, maxHeight:300});
+									//layer.bindPopup(html,{maxWidth:500, maxHeight:300});
 									
 								
 									//based on _DT_RowIndex to insert layer into layers
@@ -239,6 +251,10 @@ function showLayer(obj, isShow){
 										},
 										mouseout: function(e){
 											obj.geoJsonLayer.resetStyle(e.target);
+										},
+										click:function(e){
+											showLocalInfo(e.target);
+											
 										}
 									})
 								},
@@ -519,8 +535,9 @@ function showTable(obj){
 			var id=$(this).context._DT_RowIndex,
 				layer=app.searchResult.geoJsonLayer.layers[id];
 			
-			//zoom to the layer
-			app.map.setView(layer._latlng, 16)
+			//zoom to the layer, shift lng a little bit
+			var latlng=layer._latlng;
+			app.map.setView(new L.LatLng(latlng.lat, latlng.lng-0.0025), 16)
 			
 			//reset layer to default style and change the selected layer icon
 			layer.setIcon(new L.icon({
@@ -528,7 +545,11 @@ function showTable(obj){
 				iconSize: [36, 36],
     			iconAnchor: [18, 36]
 			}));
+			
 			//layer.openPopup();
+			
+			//show localInfo
+			showLocalInfo(layer);
 		});
 		
 		
@@ -541,7 +562,6 @@ function showTable(obj){
 
 //show info box while user click on dataTable tools
 function showInfobox(type, css){
-
 	var html=type+"<br><ul>";
 	switch(type){
 		case "show / hide columns":
@@ -592,7 +612,54 @@ function showInfobox(type, css){
 	$(".dataTable_menu").css(css).show();
 
 }
+
+
+
+
+//show local info
+function showLocalInfo(layer){
+	//select options for demographic Data
+	var $select=$("#localInfo_demographicData select");
+	$.each(app.demographicData, function(k,v){
+		$select.append("<option value='"+ k + "'>"+ v +"</option>");
+	})
 	
+	
+	//chart
+	var sexData=[
+			['Sex', 'Population'],
+			['Male',  25678],
+			['Female',  28734]
+	];
+	drawChart("PieChart", sexData, "localInfo_chart", {
+		title:'Sex',
+		backgroundColor:{fill:"transparent"}
+	});
+	
+	//show localInfo
+	$("#localInfo").show();
+	
+	
+	//using jsts jts topology suite to find out the polygon the point is within
+	var point=app.geojsonReader.read(layer.feature.geometry);
+	var polygon, withinLayer;
+
+	$.each(app.layers.demographicData._layers, function(k,layer){
+		polygon=app.geojsonReader.read(layer.feature.geometry);
+		if(point.within(polygon)){
+			withinLayer=layer;
+			return false; //break the loop
+		}
+	});
+	
+	if(withinLayer){
+		$select.change(function(){
+			console.log(withinLayer.feature.properties[this.value]);
+		});
+	}
+	
+	
+}
 	
 	
 	

@@ -139,8 +139,17 @@ pathgeo.service={
 			}
 			
 			
+			//legend
+			var values=[0, 13559    , 27118    , 40677    , 54236   , 67795   , 81354   , 94913 ]
+			var legendHtml="<ul>";
+			$.each(values, function(i,value){
+				var to = values[i + 1];
+				legendHtml+="<li style='background-color:"+ options.color[options.type](value+1) + "'>"+ value + (to ? '&ndash;$' + to : '+') + "</li>";
+			});
+			legendHtml+="</ul>";
+			
 			//callback
-			if(options.callback){options.callback(me.geojsonLayer)}
+			if(options.callback){options.callback(me.geojsonLayer, legendHtml)}
 			
 			
 		});
