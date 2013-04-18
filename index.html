@@ -70,14 +70,32 @@
 		</div>
 		
 		
-		<!-- map-->
-		<div id="div_map"></div>
-	
-		<!-- data filter-->
-		<div id='dataFilter' class='ui-corner-all'></div>
-			
-		<!-- data table -->
-		<div id='dataPanel'></div>
+		<!-- content-->
+		<div id='content'>
+			<!-- map-->
+			<div id="div_map"></div>
+				
+			<!-- data table -->
+			<div id='dataPanel'>
+				<div id='dataTable_control'></div><br>
+				<table cellpadding="0" cellspacing="0" border="0" class="display" id="dataTable"></table>
+				
+				<!-- dataTable chart-->
+				<div id='dataTable_chart' style='display:none'>
+					<div id='dataTable_chartControl' >
+						<div data-role="controlgroup" data-type="horizontal" style="margin:0px;">
+						    <a href="#" data-role="button">Line Chart</a>
+						    <a href="#" data-role="button">Pie Chart</a>
+						    <a href="#" data-role="button">Area Chart</a>
+						</div>
+						<select id='select_y' data-mini="true"><option selected="selected">Y axis</option></select>
+						<select id='select_x' data-mini="true"><option selected="selected">X axis</option></select>
+					</div>
+					<div id='dataTable_chartContent'></div>
+				</div>
+			</div>
+		</div>
+		
 	
 		
 	
@@ -182,6 +200,17 @@
 			
 			<div id='localInfo_socialMedia' style='display:none;'>
 				SocialMedia
+			</div>
+		</div>
+		
+		
+		<!-- dataTable_nav-->
+		<div id='dataTable_nav' style="display:none">
+			<div data-role="navbar">
+			    <ul>
+			        <li><a href="#" class="ui-btn-active" onclick='$("#dataTable_wrapper").show();$("#dataTable_chart").hide();'>Table</a></li>
+			        <li><a href="#" onclick='$("#dataTable_wrapper").hide();$("#dataTable_chart").show();'>Chart</a></li>
+			    </ul>
 			</div>
 		</div>
 		

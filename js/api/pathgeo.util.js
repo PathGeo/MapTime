@@ -64,8 +64,10 @@ pathgeo.util={
 		if(!geojson){console.log("[ERROR] pathgeo.util.geoJsonPropertiesToArray: no geojson");return;}
 		
 		var obj={
+			columns_dataTable:[],
 			columns:[],
-			datas:[]
+			datas:[],
+			googleChartData:[]
 		}
 		
 		//geojson is featureCollection
@@ -74,6 +76,7 @@ pathgeo.util={
 				//get columns
 				if(i==0){
 					var temp=parseFeature(i, feature, true);
+					obj.columns_dataTable=temp.columns_dataTable;
 					obj.columns=temp.columns;
 					obj.datas.push(temp.datas);
 				}else{
@@ -87,33 +90,49 @@ pathgeo.util={
 		if(geojson.type.toUpperCase()=='FEATURE'){
 			var temp=parseFeature(0, geojson, true);
 			obj.columns=temp.columns;
+			obj.columns_dataTable=temp.columns_dataTable;
 			obj.datas.push(temp.datas);
 		}
+		
+		
+		//googleChartData
+		obj.googleChartData=obj.datas.slice(0);
+		obj.googleChartData.splice(0,0,obj.columns);
+
 		
 		return obj;
 		
 		
 		//parse Feature
 		function parseFeature(i, feature, needColumns){
-			var columns=[], datas=[];
-			datas[0]=i+1;
-			if(needColumns){columns[0]={"sTitle": "ID"}}
+			var columns_dataTable=[], columns=[], datas=[];
+			datas[0]=i+1; //for ID
+			if(needColumns){
+				columns_dataTable[0]={"sTitle": "ID"}
+				columns[0]="ID";
+			}
 			
 			$.each(feature.properties, function(k,v){
-				if(needColumns){columns.push({"sTitle": k})}
+				if(needColumns){
+					columns_dataTable.push({"sTitle": k})
+					columns.push(k);
+				}
 				datas.push(v);
 			});
 			
 			//add coordinates
 			if(feature.geometry.type=="Point"){
-				if(needColumns)(columns.push({"sTitle": "Coordinates"}));
+				if(needColumns){
+					columns_dataTable.push({"sTitle": "Coordinates"});
+					columns.push("Coordinates");
+				};
 				var lat=feature.geometry.coordinates[1].toFixed(3),
 					lng=feature.geometry.coordinates[0].toFixed(3)
 				
 				datas.push(lng+", "+lat);
 			}
 			
-			return {columns:columns, datas:datas}
+			return {columns:columns, columns_dataTable:columns_dataTable, datas:datas}
 		}
 	}
 	

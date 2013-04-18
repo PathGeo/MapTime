@@ -72,11 +72,11 @@ var app={
 
 //init
 $(document).on("pageshow", function(){	  
-
+	init_UI();
+    
     init_map();
     
-	init_UI();
-		
+	
 	//directly shoing demo data
 	showLayer(app.searchResult,true)
 	
@@ -158,6 +158,9 @@ function init_map(){
 
 //init UI
 function init_UI(){
+	//content height
+	$("#content").height($(window).height()-$("#header").height());
+	
 	$("#div_gallery ul li").click(function(){
 		$(this).css("background-color", "#222222").siblings().css("background-color","");
 	});
@@ -171,11 +174,18 @@ function init_UI(){
 //	})
 	
 	//adjust dataPanel
-	$("#dataPanel").css({"margin-top":$("#div_map").height()+10, height: $(document).height()-$("#div_map").height()-$("#header").height()-30});
+	//$("#dataPanel").css({"margin-top":$("#div_map").height()+10, height: $(document).height()-$("#div_map").height()-$("#header").height()-30});
 	
 	//adjust localInfo
-	$("#localInfo").css({height:$("#div_map").height()-30, width:$(document).width()*0.3});
+	$("#localInfo").css({height:$("#content").height()-30});
 	
+	
+	
+	//when window resize
+	$(window).resize(function(){
+		$("#content").height($(window).height()-$("#header").height());
+		$("#localInfo").css({height:$("#content").height()-30});
+	})
 	
 	
 	//when mouse click on otherplace, hide dataTable_menu
@@ -419,46 +429,52 @@ function switchBaseLayer(layer){
 
 
 //drawChart
-function drawChart(chartType, data, domID, options){
-	if(!chartType || !data ||!domID){console.log("[ERROR] drawChart: no chartType, data, or domID"); return;}
+function drawChart(geojsonLayer, chartOptions){
+	//add values to the select X and Y
+	var html=""
+	$.each(app.dataTable.columns, function(i,columnName){
+		html+="<option>"+columnName+"</option>";
+	});
+	$("#dataTable_chartControl #select_x").append(html);
+	$("#dataTable_chartControl #select_y").append(html);
 	
-	if(!options){options={}}
-	options.title=options.title || "";
-    options.width=options.width || "";
-    options.height=options.height || "";
-    options.backgroundColor=options.backgroundColor || {};
-    options.is3D=options.is3D || true;
+
+
+	var chartOptions={
+		googleChartWrapperOptions: {
+			chartType: "AreaChart",
+			containerId: "dataTable_chartContent",
+			view:{columns:[0,1]},
+			options: {
+				width: $("#dataTable_chart").width()-40,
+				height: 300,
+				title: "",
+				titleX: "Customer",
+				titleY: "Sales",
+				legend: ""
+			}
+		},
+		callback:null,
+		callback_mouseover:null,
+		callback_mouseout:null,
+		callback_select:function(obj){
+			console.log(obj)
+		}
+	};
 	
-	
-	data = google.visualization.arrayToDataTable(data);
-	
-	var gChart, containerID=document.getElementById(domID);
-	switch (chartType) {
-		case "ColumnChart":gChart = new google.visualization.ColumnChart(containerID);break;
-		case "AreaChart":gChart = new google.visualization.AreaChart(containerID);break;
-		case "LineChart":gChart = new google.visualization.LineChart(containerID);break;
-		case "PieChart":gChart = new google.visualization.PieChart(containerID);break;
-		case "BarChart":gChart = new google.visualization.BarChart(containerID);break;
-		case "BubbleChart":gChart = new google.visualization.BubbleChart(containerID);break;
-		case "CandlestickChart":gChart = new google.visualization.CandlestickChart(containerID);break;
-		case "ComboChart":gChart = new google.visualization.ComboChart(containerID);break;
-		case "MotionChart":gChart = new google.visualization.MotionChart(containerID);break; //must include  google.load('visualization', '1', {packages: ['motionchart']});
-		case "Table":gChart = new google.visualization.Table(containerID);break; //must include google.load('visualization', '1', {packages: ['table']});
-	}
-	gChart.draw(data, options);
+	pathgeo.service.drawGoogleChart(geojsonLayer, [chartOptions], ["name", "sales"], null, {sort:[{column: 1}]});
 }
 
 
 //show pivot table
 function showTable(obj){
-		
-		$('#dataPanel').html( '<table cellpadding="0" cellspacing="0" border="0" class="display" id="dataTable"></table>' );
+
 		app.dataTable=$('#dataTable').dataTable({
 			"aaData": obj.datas,
-			"aoColumns": obj.columns,
+			"aoColumns": obj.columns_dataTable,
 			"bJQueryUI": false,
 			"sPaginationType": "full_numbers",
-			"sDom": 'l<"dataTable_tools"><"dataTable_menu"<"infobox_triangle"><"infobox">>frtip', //show colVis
+			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"fl><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rtip>', //show colVis
 			fnDrawCallback: function(){
 				//backup orginal json to defaultJSON
 				if(!app.searchResult.defaultJSON){
@@ -508,6 +524,7 @@ function showTable(obj){
 		//set all columns in to app.dataTable. Should have another way to get columns
 		app.dataTable.columns=obj.columns;
 		
+		
 		//add dataTable tools and click event
 		var html="<ul>"+
 				 "<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
@@ -528,6 +545,13 @@ function showTable(obj){
 		
 		
 		
+		
+		//dataTable nav bar
+		$(".dataTable_nav").html($("#dataTable_nav").html())
+		
+		
+		//copy dataTable toolbar html to dataTable_control
+		$("#dataTable_control").html($(".dataTable_toolbar"));
 		
 
 		//click on rows
@@ -553,6 +577,10 @@ function showTable(obj){
 		});
 		
 		
+		//draw Chart
+		drawChart(app.searchResult.geoJsonLayer);
+		
+		
 		
 		
 		
@@ -566,8 +594,7 @@ function showInfobox(type, css){
 	switch(type){
 		case "show / hide columns":
 			//get all columns name from table
-			$.each(app.dataTable.columns, function(i,obj){
-				var columnName=obj.sTitle;
+			$.each(app.dataTable.columns, function(i,columnName){
 				html+="<li><input type='checkbox' checked id="+i+" checked onclick='app.dataTable.fnSetColumnVis(this.id, this.checked); ColVis.fnRebuild(app.dataTable);' />&nbsp; &nbsp; "+columnName +"</li>";
 			});
 		break;
@@ -631,10 +658,10 @@ function showLocalInfo(layer){
 			['Male',  25678],
 			['Female',  28734]
 	];
-	drawChart("PieChart", sexData, "localInfo_chart", {
-		title:'Sex',
-		backgroundColor:{fill:"transparent"}
-	});
+	// drawChart("PieChart", sexData, "localInfo_chart", {
+		// title:'Sex',
+		// backgroundColor:{fill:"transparent"}
+	// });
 	
 	//show localInfo
 	$("#localInfo").show();
