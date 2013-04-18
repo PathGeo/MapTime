@@ -429,28 +429,19 @@ function switchBaseLayer(layer){
 
 
 //drawChart
-function drawChart(geojsonLayer, chartOptions){
-	//add values to the select X and Y
-	var html=""
-	$.each(app.dataTable.columns, function(i,columnName){
-		html+="<option>"+columnName+"</option>";
-	});
-	$("#dataTable_chartControl #select_x").append(html);
-	$("#dataTable_chartControl #select_y").append(html);
+function drawChart(geojsonLayer, chartType, X, Y){
 	
-
-
 	var chartOptions={
 		googleChartWrapperOptions: {
-			chartType: "AreaChart",
+			chartType: chartType,
 			containerId: "dataTable_chartContent",
 			view:{columns:[0,1]},
 			options: {
 				width: $("#dataTable_chart").width()-40,
 				height: 300,
 				title: "",
-				titleX: "Customer",
-				titleY: "Sales",
+				titleX: X,
+				titleY: Y,
 				legend: ""
 			}
 		},
@@ -462,7 +453,7 @@ function drawChart(geojsonLayer, chartOptions){
 		}
 	};
 	
-	pathgeo.service.drawGoogleChart(geojsonLayer, [chartOptions], ["name", "sales"], null, {sort:[{column: 1}]});
+	pathgeo.service.drawGoogleChart(geojsonLayer, [chartOptions], [X, Y], null, {sort:[{column: 1}]});
 }
 
 
@@ -540,7 +531,7 @@ function showTable(obj){
 			.append(html)
 			.find("ul li").click(function(){
 				//show content in the infobox
-				showInfobox($(this).find("img").attr('title'), {left: $(this).offset().left});	
+				showInfobox($(this).find("img").attr('title'), {left: $(this).offset().left, top: $(this).offset().top+15});	
 			});
 		
 		
@@ -577,12 +568,31 @@ function showTable(obj){
 		});
 		
 		
+		
 		//draw Chart
-		drawChart(app.searchResult.geoJsonLayer);
+		//add values to the select X and Y
+		var html=""
+		$.each(obj.columns, function(i,columnName){
+			html+="<option>"+columnName+"</option>";
+		});
 		
+		//add events
+		var onchange=function(){
+			var x=$("#dataTable_chartControl #select_x").val(),
+				y=$("#dataTable_chartControl #select_y").val(),
+				type=$(".dataTable_chartType:checked").val();
+	
+			if(!x || !y){
+				alert("Please select the x and y axis first");
+				return;
+			}
+			
+			drawChart(app.searchResult.geoJsonLayer, type, x, y);
+		}
 		
-		
-		
+		$("#dataTable_chartControl #select_x").append(html).change(onchange);
+		$("#dataTable_chartControl #select_y").append(html).change(onchange);
+		$(".dataTable_chartType").click(onchange);
 		
 }
 
@@ -652,16 +662,20 @@ function showLocalInfo(layer){
 	})
 	
 	
+	//test===========================================================================
 	//chart
 	var sexData=[
 			['Sex', 'Population'],
 			['Male',  25678],
 			['Female',  28734]
 	];
-	// drawChart("PieChart", sexData, "localInfo_chart", {
-		// title:'Sex',
-		// backgroundColor:{fill:"transparent"}
-	// });
+	var gChart = new google.visualization.PieChart(document.getElementById("localInfo_chart"));
+	var data = new google.visualization.arrayToDataTable(sexData);
+	gChart.draw(data, {
+		backgroundColor: {fill:'transparent'},
+		width:300
+	});
+		//test===========================================================================
 	
 	//show localInfo
 	$("#localInfo").show();
