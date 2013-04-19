@@ -64,7 +64,8 @@ var app={
 		"HC01_VC113":"Mean family income",
 		"HC01_VC115":"Per capita income"
 	},
-	geojsonReader: new jsts.io.GeoJSONReader()
+	geojsonReader: new jsts.io.GeoJSONReader(),
+	mapGalleryHtml:""
 }
 
 
@@ -152,6 +153,35 @@ function init_map(){
 			$(".leaflet-control-legend").html(legendHtml);
 		}
 	});
+	
+	//create maxminMap DIV
+	$("#div_map").append("<div id='maxminMap' title='Maximum Map'>Maximum Map</div>");
+	
+	//maximum or mimimum map
+	$("#maxminMap").click(function(){
+		var $this=$(this);
+		
+		//maximum map
+		if($this.html()=='Maximum Map'){
+			$("#div_map").animate({height:"80%"}, 500, function(){
+				//resize map
+				app.map.invalidateSize(false);
+				
+				$("#dataPanel").css({height:"17%"});
+	
+				$this.html("Minimum Map").attr("title", "Mimimum Map");
+			});
+		}else{
+			$("#div_map").animate({height:"45%"}, 500, function(){
+				//resize map
+				app.map.invalidateSize(false);
+				
+				$("#dataPanel").css({height:"53%"});
+	
+				$this.html("Maximum Map").attr("title", "Maximum Map");
+			});
+		}
+	});
 }
 
 
@@ -194,9 +224,8 @@ function init_UI(){
 		if(!$container.is(e.target) && $container.has(e.target).length===0){
 			$container.hide();
 		}
-	})
+	});
 	
-
 }
 
 
@@ -400,6 +429,7 @@ function switchVisualization(types){
 		}
 		app.showLayers.push(layer);
 	});
+	
 }
 
 
@@ -459,13 +489,21 @@ function drawChart(geojsonLayer, chartType, X, Y){
 
 //show pivot table
 function showTable(obj){
+		//hide columns
+		var hiddenColumns=["Coordinates"];
+		$.each(obj.columns_dataTable, function(i,column){
+			$.each(hiddenColumns, function(j, columnName){
+				if(columnName==column.sTitle){column.bVisible=false; column.bSearchable=false}
+			});
+		});
+	
 
 		app.dataTable=$('#dataTable').dataTable({
-			"aaData": obj.datas,
-			"aoColumns": obj.columns_dataTable,
+			"aaData": obj.datas,	//data
+			"aoColumns": obj.columns_dataTable, //column
 			"bJQueryUI": false,
-			"sPaginationType": "full_numbers",
-			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"fl><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rtip>', //show colVis
+			"sPaginationType": "full_numbers", //page number
+			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"fl><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rtip>', //DOM
 			fnDrawCallback: function(){
 				//backup orginal json to defaultJSON
 				if(!app.searchResult.defaultJSON){
@@ -486,6 +524,8 @@ function showTable(obj){
 				//to avoid refresh too frequently to mark high CPU usage
 				setTimeout(function(){
 					if(me.$('tr', {"filter": "applied"}).length==$selectedData.length){
+						//remove layers
+						removeLayers();
 					
 						//read selected layers
 						me.$('tr', {"filter": "applied"}).each(function(){
@@ -518,20 +558,20 @@ function showTable(obj){
 		
 		//add dataTable tools and click event
 		var html="<ul>"+
-				 "<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
+				 //"<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
 				 "<li><img src='images/1365858910_download.png' title='download'/></li>"+
 				 "<li><img src='images/1365858892_print.png' title='print'/></li>"+
 				 "<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/></li>"+
-				 "<li><img src='images/1365860337_cube.png' title='canned report'/></li>"+
+				 //"<li><img src='images/1365860337_cube.png' title='canned report'/></li>"+
 				 "<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
-				//"<li><img src='images/1365872733_sq_br_down.png' title='maximum map'/></li>"+
 				 "<li><img src='images/1365978110_gallery2.png' title='map gallery'/></li>"+
+				 //"<li><img src='images/1365872733_sq_br_down.png' title='maximum map'/></li>"+
 				 "</ul>";
 		$(".dataTable_tools")
 			.append(html)
 			.find("ul li").click(function(){
 				//show content in the infobox
-				showInfobox($(this).find("img").attr('title'), {left: $(this).offset().left, top: $(this).offset().top+15});	
+				showInfobox($(this).find("img").attr('title'), {left: $(this).offset().left, top: $(this).offset().top+15}, this);	
 			});
 		
 		
@@ -590,33 +630,28 @@ function showTable(obj){
 			drawChart(app.searchResult.geoJsonLayer, type, x, y);
 		}
 		
-		$("#dataTable_chartControl #select_x").append(html).change(onchange);
-		$("#dataTable_chartControl #select_y").append(html).change(onchange);
+		//give the html and onchange event to the selects and trigger change event
+		$("#dataTable_chartControl #select_x").append(html).change(onchange).val("name").change();
+		$("#dataTable_chartControl #select_y").append(html).change(onchange).val("sales").change();
 		$(".dataTable_chartType").click(onchange);
+			
 		
 }
 
 
 
 //show info box while user click on dataTable tools
-function showInfobox(type, css){
+function showInfobox(type, css, dom){
+	var $dom=$(dom);
 	var html=type+"<br><ul>";
 	switch(type){
-		case "show / hide columns":
+		case "show / hide columns":	
 			//get all columns name from table
 			$.each(app.dataTable.columns, function(i,columnName){
-				html+="<li><input type='checkbox' checked id="+i+" checked onclick='app.dataTable.fnSetColumnVis(this.id, this.checked); ColVis.fnRebuild(app.dataTable);' />&nbsp; &nbsp; "+columnName +"</li>";
+				//check if the columnName is visible in the dataTable
+				var isShow=($("#dataTable th:contains('"+ columnName + "')").length > 0) ? 'checked' : '';
+				html+="<li><input type='checkbox' id="+i+" " + isShow + " onclick='app.dataTable.fnSetColumnVis(this.id, this.checked); ColVis.fnRebuild(app.dataTable);' />&nbsp; &nbsp; "+columnName +"</li>";
 			});
-		break;
-		case "maximum map":
-			$("#div_map").animate({height:600, "min-height":600}, 500, function(){
-				//resize map
-				app.map.invalidateSize(false);
-				
-				$("#dataPanel").css({"margin-top":600});
-				$("#dataTable").hide();
-			});
-			return;
 		break;
 		case "demographic data":
 			//get all columns name from table
@@ -626,13 +661,13 @@ function showInfobox(type, css){
 		break;
 		case "map gallery":
 			var mapGalleries=[
-				{label: "marker map", value: "GEOJSON", selected:"checked"}, 
-				{label: "cluster map", value:"MARKERCLUSTER"},
-				{label: "heat map", value:"HEATMAP"}
+				{label: "marker map", value: "GEOJSON", layerName:"geoJsonLayer"}, 
+				{label: "cluster map", value:"MARKERCLUSTER", layerName:"markerClusterLayer"},
+				{label: "heat map", value:"HEATMAP", layerName:"heatMapLayer"}
 			];
-				
+						
 			$.each(mapGalleries, function(i,gallery){
-				html+="<li><input type='radio' name='mapGallery' value='" + gallery.value + "' " + ((gallery.selected)?"checked=checked":"") + " onclick='if(this.checked){switchVisualization([this.value]);}' />&nbsp; &nbsp; "+ gallery.label +"</li>";
+				html+="<li><input type='radio' name='mapGallery' value='" + gallery.value + "' " + ((app.searchResult[gallery.layerName]._map)?"checked=checked":"") + " onclick='if(this.checked){switchVisualization([this.value]);}' />&nbsp; &nbsp; "+ gallery.label +"</li>";
 			});
 		break;
 		case "canned report":
@@ -656,7 +691,7 @@ function showInfobox(type, css){
 //show local info
 function showLocalInfo(layer){
 	//select options for demographic Data
-	var $select=$("#localInfo_demographicData select");
+	var $select=$("#localInfo_demographicData select").html("");
 	$.each(app.demographicData, function(k,v){
 		$select.append("<option value='"+ k + "'>"+ v +"</option>");
 	})

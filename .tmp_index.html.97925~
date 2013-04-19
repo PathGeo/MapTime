@@ -83,13 +83,16 @@
 				<!-- dataTable chart-->
 				<div id='dataTable_chart' style='display:none'>
 					<div id='dataTable_chartControl' >
-						<div data-role="controlgroup" data-type="horizontal" style="margin:0px;">
-						    <a href="#" data-role="button">Line Chart</a>
-						    <a href="#" data-role="button">Pie Chart</a>
-						    <a href="#" data-role="button">Area Chart</a>
-						</div>
-						<select id='select_y' data-mini="true"><option selected="selected">Y axis</option></select>
-						<select id='select_x' data-mini="true"><option selected="selected">X axis</option></select>
+						<fieldset data-role="controlgroup" data-mini="true" data-type="horizontal">
+						    <input type="radio" name="dataTable_chartType" class='dataTable_chartType' id="dataTable_chartType_area" value="AreaChart" checked="checked">
+						    <label for="dataTable_chartType_area">Area Chart</label>
+						    <input type="radio" name="dataTable_chartType" class='dataTable_chartType' id="dataTable_chartType_line" value="LineChart">
+						    <label for="dataTable_chartType_line">Line Chart</label>
+						    <input type="radio" name="dataTable_chartType" class='dataTable_chartType' id="dataTable_chartType_bar" value="BarChart">
+						    <label for="dataTable_chartType_bar">Bar Chart</label>
+					    </fieldset>
+						<select id='select_y' data-mini="true"><option selected="selected">Please select Y axis</option></select>
+						<select id='select_x' data-mini="true"><option selected="selected">Please select X axis</option></select>
 					</div>
 					<div id='dataTable_chartContent'></div>
 				</div>
@@ -193,7 +196,7 @@
 			</div>
 			
 			<div id='localInfo_demographicData'>
-				<select></select>
+				<select data-mini="true" ></select>
 				<P></P>
 				<div id='localInfo_chart' style='overflow-y:auto; overflow-x:hidden'></div>
 			</div>
