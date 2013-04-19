@@ -24,28 +24,27 @@ function callPython(){
 				xhr.overrideMimeType("application/json");
 			}
 		}
-	}).success(function( msg ) {
-		var contact = JSON.parse(msg);
-		var count = contact.photos.photo.length;
+	}).success(function( contact ) {
+		//var contact = JSON.parse(msg);
+		//console.log(contact);
 		
-		console.log(contact)
+		//var count = contact.photos.photo.length;
 		
-		
-		var social_media = {
+		//var social_media = {
 			//type: "FeatureCollection",
-			features: []
-		};
+			//features: []
+		//};
 		
-		for(i=0; i<count; i++){
-			social_media.features.push({
+		//for(i=0; i<count; i++){
+			//social_media.features.push({
 			//social_media({
-				"type": "Feature",
-				"properties": {"Title": contact.photos.photo[i].title, "Lat": contact.photos.photo[i].latitude, "Lng": contact.photos.photo[i].longitude, "Img": "<div style='height: 200px'><img src='http://farm" + (contact.photos.photo[i].farm)  + ".staticflickr.com/" + (contact.photos.photo[i].server) + "/" + (contact.photos.photo[i].id) + "_" + (contact.photos.photo[i].secret) + "_s.jpg' alt='image here...'>", "Description": contact.photos.photo[i].description._content},
-				"geometry": {"type": "Point", "coordinates": [contact.photos.photo[i].longitude, contact.photos.photo[i].latitude]}
-			});
-		}
+				//"type": "Feature",
+				//"properties": {"Title": contact.photos.photo[i].title, "Lat": contact.photos.photo[i].latitude, "Lng": contact.photos.photo[i].longitude, "Img": "<div style='height: 200px'><img src='http://farm" + (contact.photos.photo[i].farm)  + ".staticflickr.com/" + (contact.photos.photo[i].server) + "/" + (contact.photos.photo[i].id) + "_" + (contact.photos.photo[i].secret) + "_s.jpg' alt='image here...'>", "Description": contact.photos.photo[i].description._content},
+				//"geometry": {"type": "Point", "coordinates": [contact.photos.photo[i].longitude, contact.photos.photo[i].latitude]}
+			//});
+		//}
 		
-		setDataMedia(social_media);
+		setDataMedia(contact);
 		app.map.fitBounds(curLayer.getBounds());
 
 	});
