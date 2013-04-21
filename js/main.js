@@ -20,23 +20,23 @@ var app={
 			keywords:[]
 	},
 	controls:{
-		toc:{},
-		mapGallery: L.Control.extend({
-		    options: {collapsed: true,position: 'topright',text: 'Map Gallery',},
-			initialize: function (options) {L.Util.setOptions(this, options);},
-		    onAdd: function (map) {
-		        // create the control container with a particular class name
-		        var container = L.DomUtil.create('div', 'leaflet-control-mapGallery');
-				$(container).html($("#div_gallery").html())
-				
-				//mouseevent
-				if(this.options){
-					L.DomEvent.addListener(container, 'mouseover', function(){$("#mapGallery").show();}, this);
-					L.DomEvent.addListener(container, 'mouseout', function(){$("#mapGallery").hide();}, this);
-				}
-		        return container
-		    }
-		}),
+		toc:null,
+//		mapGallery: L.Control.extend({
+//		    options: {collapsed: true,position: 'topright',text: 'Map Gallery',},
+//			initialize: function (options) {L.Util.setOptions(this, options);},
+//		    onAdd: function (map) {
+//		        // create the control container with a particular class name
+//		        var container = L.DomUtil.create('div', 'leaflet-control-mapGallery');
+//				$(container).html($("#div_gallery").html())
+//				
+//				//mouseevent
+//				if(this.options){
+//					L.DomEvent.addListener(container, 'mouseover', function(){$("#mapGallery").show();}, this);
+//					L.DomEvent.addListener(container, 'mouseout', function(){$("#mapGallery").hide();}, this);
+//				}
+//		        return container
+//		    }
+//		}),
 		legend: L.Control.extend({
 		    options: {position: 'bottomright',text: 'Legend',},
 			initialize: function (options) {L.Util.setOptions(this, options);},
@@ -140,7 +140,9 @@ function init_map(){
 	//map gallery control
 	$.each(app.controls, function(k,v){
 		//toc is hidden in the map
-		if(k!="toc"){
+		if(k=="toc"){
+			app.map.addControl(v);
+		}else{
 			app.map.addControl(new v());
 		}
 	});
@@ -175,11 +177,11 @@ function init_map(){
 				$this.html("Minimum Map").attr("title", "Mimimum Map");
 			});
 		}else{
-			$("#div_map").animate({height:"45%"}, 500, function(){
+			$("#div_map").animate({height:"53%"}, 500, function(){
 				//resize map
 				app.map.invalidateSize(false);
 				
-				$("#dataPanel").css({height:"53%"});
+				$("#dataPanel").css({height:"45%"});
 	
 				$this.html("Maximum Map").attr("title", "Maximum Map");
 			});
