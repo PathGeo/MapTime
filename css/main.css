@@ -12,7 +12,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /**
  * map
  */
-#div_map {width:100%; height:45%; padding:0px; margin:0px; position:relative; box-shadow:0 4px 10px #777777; -moz-box-shadow:0 4px 10px #777777; -webkit-box-shadow:0 4px 10px #777777;}
+#div_map {width:100%; height:53%; padding:0px; margin:0px; position:relative; box-shadow:0 4px 10px #777777; -moz-box-shadow:0 4px 10px #777777; -webkit-box-shadow:0 4px 10px #777777;}
 #maxminMap {position:absolute; bottom:0px;left:43%; color:#cccccc; font-weight:bold; text-align:center; text-shadow:0 0px 0 #fff; margin:0 auto; z-index:500; background:rgba(0,0,0,0.3); width:150px; height:18px; -moz-border-radius:2px; -webkit-border-radius:2px;border-radius:2px;}
 #maxminMap:hover {background:rgba(0,0,0,0.7);cursor:pointer;color:#ffffff;}
 
@@ -58,7 +58,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /**
  * dataTable
  */
-#dataPanel {margin:0 auto;  width:99%; overflow:hidden; height:53%; text-shadow: 0 0px 0 #fff; margin-top:7px}
+#dataPanel {margin:0 auto;  width:99%; overflow:hidden; height:45%; text-shadow: 0 0px 0 #fff; margin-top:7px}
 #dataTable tr:hover{background-color:#5e87b0; color:#000000; cursor:pointer;}
 
 #dataTable_control {height:30px; border-bottom:1px solid #cccccc; margin-bottom:0px;}

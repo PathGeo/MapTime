@@ -266,7 +266,7 @@ function showLayer(obj, isShow){
 					//create layer
 					if(!obj.geoJsonLayer){
 						var layers=[];
-						obj.geoJsonLayer=L.geoJson(obj.json, {
+						obj.geoJsonLayer=new L.geoJson(obj.json, {
 								onEachFeature:function(feature,layer){
 									var html=pathgeo.util.objectToHtml(feature.properties);
 									
@@ -292,8 +292,7 @@ function showLayer(obj, isShow){
 											obj.geoJsonLayer.resetStyle(e.target);
 										},
 										click:function(e){
-											showLocalInfo(e.target);
-											
+											showLocalInfo(e.target.feature.properties._DT_RowIndex);
 										}
 									})
 								},
@@ -458,34 +457,6 @@ function switchBaseLayer(layer){
 
 
 
-//drawChart
-function drawChart(geojsonLayer, chartType, X, Y){
-	
-	var chartOptions={
-		googleChartWrapperOptions: {
-			chartType: chartType,
-			containerId: "dataTable_chartContent",
-			view:{columns:[0,1]},
-			options: {
-				width: $("#dataTable_chart").width()-40,
-				height: 300,
-				title: "",
-				titleX: X,
-				titleY: Y,
-				legend: ""
-			}
-		},
-		callback:null,
-		callback_mouseover:null,
-		callback_mouseout:null,
-		callback_select:function(obj){
-			console.log(obj)
-		}
-	};
-	
-	pathgeo.service.drawGoogleChart(geojsonLayer, [chartOptions], [X, Y], null, {sort:[{column: 1}]});
-}
-
 
 //show pivot table
 function showTable(obj){
@@ -505,12 +476,12 @@ function showTable(obj){
 			"sPaginationType": "full_numbers", //page number
 			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"fl><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rtip>', //DOM
 			fnDrawCallback: function(){
+				
 				//backup orginal json to defaultJSON
 				if(!app.searchResult.defaultJSON){
 					app.searchResult.defaultJSON=app.searchResult.json;
 				}
-				
-				
+
 				//get filter data,
 				var	me=this,
 					features=app.searchResult.defaultJSON.features,
@@ -545,6 +516,9 @@ function showTable(obj){
 							
 							app.searchResult.json=geojson;
 							showLayer(app.searchResult, true);
+							
+							//re-draw Chart
+							showDataTableChart(app.searchResult.json);
 						}
 					}
 				},500)
@@ -587,24 +561,7 @@ function showTable(obj){
 
 		//click on rows
 		$("#dataTable").delegate("tr:not([role='row'])", "click", function(){
-			var id=$(this).context._DT_RowIndex,
-				layer=app.searchResult.geoJsonLayer.layers[id];
-			
-			//zoom to the layer, shift lng a little bit
-			var latlng=layer._latlng;
-			app.map.setView(new L.LatLng(latlng.lat, latlng.lng-0.0025), 16)
-			
-			//reset layer to default style and change the selected layer icon
-			layer.setIcon(new L.icon({
-				iconUrl: "images/1365900599_Map-Marker-Marker-Outside-Pink.png",
-				iconSize: [36, 36],
-    			iconAnchor: [18, 36]
-			}));
-			
-			//layer.openPopup();
-			
-			//show localInfo
-			showLocalInfo(layer);
+			showLocalInfo($(this).context._DT_RowIndex);
 		});
 		
 		
@@ -618,17 +575,10 @@ function showTable(obj){
 		
 		//add events
 		var onchange=function(){
-			var x=$("#dataTable_chartControl #select_x").val(),
-				y=$("#dataTable_chartControl #select_y").val(),
-				type=$(".dataTable_chartType:checked").val();
-	
-			if(!x || !y){
-				alert("Please select the x and y axis first");
-				return;
-			}
+			//show chart
+			showDataTableChart(app.searchResult.json);
+		}//end onchange event
 			
-			drawChart(app.searchResult.geoJsonLayer, type, x, y);
-		}
 		
 		//give the html and onchange event to the selects and trigger change event
 		$("#dataTable_chartControl #select_x").append(html).change(onchange).val("name").change();
@@ -689,7 +639,24 @@ function showInfobox(type, css, dom){
 
 
 //show local info
-function showLocalInfo(layer){
+function showLocalInfo(id){
+	var layer=app.searchResult.geoJsonLayer.layers[id],
+		feature=layer.feature;
+			
+	//zoom to the layer, shift lng a little bit to east
+	var latlng=layer._latlng;
+	app.map.setView(new L.LatLng(latlng.lat, latlng.lng-0.0025), 16)
+			
+	//reset layer to default style and change the selected layer icon
+	layer.setIcon(new L.icon({
+		iconUrl: "images/1365900599_Map-Marker-Marker-Outside-Pink.png",
+		iconSize: [36, 36],
+    	iconAnchor: [18, 36]
+	}));
+			
+	//layer.openPopup();
+			
+			
 	//select options for demographic Data
 	var $select=$("#localInfo_demographicData select").html("");
 	$.each(app.demographicData, function(k,v){
@@ -699,38 +666,34 @@ function showLocalInfo(layer){
 	
 	//select options for social media
 	//$select_media
-	var location=app.geojsonReader.read(layer.feature.geometry);
+	var location=app.geojsonReader.read(feature.geometry);
 	var locationX = location.coordinate.x;
 	var locationY = location.coordinate.y;
 	var $select_media=$("#localInfo_socialMedia");
 	$select_media.html("<br/>Lat: <input type='text' id=lat value=" + locationX + "> <br/>Long: <input type='text' id=lng value=" + locationY + "> <br/>Keyword: <input type='text' id='keyword' value='shoes'><br><button type='button' onclick='callPython()'>Search</button>");
 	
 	
-	//test===========================================================================
+
 	//chart
 	var sexData=[
 			['Sex', 'Population'],
 			['Male',  25678],
 			['Female',  28734]
 	];
-	var gChart = new google.visualization.PieChart(document.getElementById("localInfo_chart"));
-	var data = new google.visualization.arrayToDataTable(sexData);
-	gChart.draw(data, {
-		backgroundColor: {fill:'transparent'},
-		width:300
-	});
-		//test===========================================================================
+	//draw chart
+	showLocalInfoChart(sexData);
+	
 	
 	//show localInfo
 	$("#localInfo").show();
 	
 	
 	//using jsts jts topology suite to find out the polygon the point is within
-	var point=app.geojsonReader.read(layer.feature.geometry);
+	var point=app.geojsonReader.read(feature.geometry);
 	var polygon, withinLayer;
 
 	$.each(app.layers.demographicData._layers, function(k,layer){
-		polygon=app.geojsonReader.read(layer.feature.geometry);
+		polygon=app.geojsonReader.read(feature.geometry);
 		if(point.within(polygon)){
 			withinLayer=layer;
 			return false; //break the loop
@@ -747,9 +710,74 @@ function showLocalInfo(layer){
 }
 	
 	
+
+//show chart in the dataTable
+function showDataTableChart(geojson){
+	var x=$("#dataTable_chartControl #select_x").val(),
+		y=$("#dataTable_chartControl #select_y").val(),
+		type=$(".dataTable_chartType:checked").val();
 	
+	if(!x || !y){
+		alert("Please select the x and y axis first");
+		return;
+	}
+			
+	
+	//draw chart
+	var chartOptions={
+		googleChartWrapperOptions: {
+			chartType: type,
+			containerId: "dataTable_chartContent",
+			view:{columns:[0,1]},
+			options: {
+				width: $("#dataTable_chart").width()-40,
+				height: 300,
+				title: "",
+				titleX: x,
+				titleY: y,
+				legend: ""
+			}
+		},
+		callback:null,
+		callback_mouseover:null,
+		callback_mouseout:null,
+		callback_select:function(obj){
+			showLocalInfo(obj.value.properties._DT_RowIndex)
+		}
+	};
+	//pathgeo.service.drawGoogleChart(geojson, [chartOptions], [x, y], null, {sort:[{column: 1}]}); //sort, but the sequence of the chart data will be different with the geojson
+	pathgeo.service.drawGoogleChart(geojson, [chartOptions], [x, y], null);
+}
 
 
+
+
+//show chart in the localInfo
+function showLocalInfoChart(data){
+	var chartOptions={
+		googleChartWrapperOptions: {
+			chartType: "PieChart",
+			containerId: "localInfo_chart",
+			view:{columns:[0,1]},
+			options: {
+				width: 300,
+				height: 200,
+				title: "",
+				titleX: "",
+				titleY: "",
+				legend: "",
+				backgroundColor: {fill:'transparent'}
+			}
+		},
+		callback:null,
+		callback_mouseover:null,
+		callback_mouseout:null,
+		callback_select:function(obj){
+			console.log(obj)
+		}
+	};
+	pathgeo.service.drawGoogleChart(data, [chartOptions], null, null);
+}
 
 
 

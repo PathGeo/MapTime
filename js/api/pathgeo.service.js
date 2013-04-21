@@ -162,7 +162,7 @@ pathgeo.service={
 	/**
 	 * @class
 	 * drawGoogleChart use Google Chart API to draw openlayer.features 
-	 * @param {L.GeoJSON} geoJsonLayer		L.GeoJSON
+	 * @param {Array or geojson} chartData	the data sould be the google Data array or a geojson object (must a featureCollection)
 	 * @param {Array} charts			Array of Object, {googleChartWrapperOptions: please refer to Google Chart API, callback: callback function, callback_mouseover: callback while mouse moving over the chart, callback_mouseout: callback while mouse moving out the chart
 	 * 									For example:  	
 	 * 									{googleChartWrapperOptions: {
@@ -202,8 +202,8 @@ pathgeo.service={
 											]
 										}
 	 */
-	drawGoogleChart:function(geoJsonLayer, charts, limited_columns, controlsOptions, options){
-		if(!geoJsonLayer || !charts){
+	drawGoogleChart:function(chartData, charts, limited_columns, controlsOptions, options){
+		if(!chartData || !charts){
 			console.log("[ERROR]pathgeo.service.drawGoogleChart: data_array, charts are not set!");
 			return;
 		}
@@ -216,30 +216,39 @@ pathgeo.service={
 		//data for drawing
 		var values=[],
 			columns=[],
-			rows=[],
-			num=0;
+			rows=[];
 		if(limited_columns){values[0]=limited_columns};
 		
-		$.each(geoJsonLayer._layers, function(k,layer){
-			rows=[];
-			
-			//read column and rows
-			if(limited_columns){
-				$.each(limited_columns, function(j,obj){
-					rows.push(layer.feature.properties[obj]);	
-				});	
+		
+		//detenmine which data is 
+		if(chartData.type && chartData.type.toUpperCase()=="FEATURECOLLECTION"){
+			$.each(chartData.features, function(i,feature){
+				rows=[];
+				
+				//read column and rows
+				if(limited_columns){
+					$.each(limited_columns, function(j,obj){
+						rows.push(feature.properties[obj]);	
+					});	
+				}else{
+					$.each(feature.properties, function(k,v){
+						if(i==0){columns.push(k);}
+						rows.push(v);
+					});
+				}
+				
+				if(!values[0]){values.push(columns);}
+				values.push(rows);
+			});	
+		}else{
+			if(chartData instanceof Array){
+				values=chartData;
 			}else{
-				$.each(layer.feature.properties, function(k,v){
-					if(num==0){columns.push(k);}
-					rows.push(v);
-				});
+				console.log("pathgeo.service.drawGoogleChart: the data is not geojson object (must be a FeatureCollection) or a google chart array");
+				return;
 			}
-			
-			if(!values[0]){values.push(columns);}
-			values.push(rows);
-			
-			num++;
-		});	
+		}
+		
 		
 		var data = new google.visualization.arrayToDataTable(values);
 		
@@ -332,7 +341,7 @@ pathgeo.service={
 									gChart:gChart,
 									row: selection.row,
 									column: selection.column,
-									value: geoJsonLayer.layers[selection.row],
+									value: chartData.features[selection.row],
 									param:param
 								});
 							}
@@ -344,7 +353,7 @@ pathgeo.service={
 					if (chart.callback_mouseover) {
 						google.visualization.events.addListener(gChart, 'onmouseover', function(e){
 							e.gChart=gChart;
-							e.value = geoJsonLayer.layers[e.row];
+							e.value = chartData.features[e.row];
 							chart.callback_mouseover(e);
 						});
 					}
@@ -353,7 +362,7 @@ pathgeo.service={
 					if (chart.callback_mouseout) {
 						google.visualization.events.addListener(gChart, 'onmouseout', function(e){
 							e.gChart=gChart;
-							e.value = geoJsonLayer.layers[e.row];
+							e.value = chartData.features[e.row];
 							chart.callback_mouseout(e);
 						});
 					}
@@ -374,7 +383,7 @@ pathgeo.service={
 					      google.visualization.events.addListener(gChart, 'ready', function(){
 					      	  google.visualization.events.addListener(gChart.getChart(), 'onmouseover', function(e){
 								  e.gChart=gChart.getChart();
-								  e.value=geoJsonLayer.layers[e.row];
+								  e.value=chartData.features[e.row];
 					          	  chart.callback_mouseover(e);
 					      	  });
 					      });
@@ -385,7 +394,7 @@ pathgeo.service={
 					       google.visualization.events.addListener(gChart, 'ready', function(){
 					       	  google.visualization.events.addListener(gChart.getChart(), 'onmouseout', function(e){
 					              e.gChart=gChart.getChart();
-					              e.value=geoJsonLayer.layers[e.row];
+					              e.value=chartData.features[e.row];
 					              chart.callback_mouseout(e);
 					       	  });
 					       });
