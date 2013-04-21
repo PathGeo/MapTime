@@ -65,7 +65,10 @@ var app={
 		"HC01_VC115":"Per capita income"
 	},
 	geojsonReader: new jsts.io.GeoJSONReader(),
-	mapGalleryHtml:""
+	mapGalleryHtml:"",
+	css:{
+		"dataTable_highlightRow":{"background-color":"#ED3D86", "color":"#ffffff"}
+	}
 }
 
 
@@ -500,6 +503,8 @@ function showTable(obj){
 					
 						//read selected layers
 						me.$('tr', {"filter": "applied"}).each(function(){
+							$(this).attr("_dt_rowindex", this._DT_RowIndex);
+
 							feature=features[this._DT_RowIndex];
 							feature.properties._DT_RowIndex=this._DT_RowIndex;
 							geojson.features.push(feature);
@@ -642,7 +647,13 @@ function showInfobox(type, css, dom){
 function showLocalInfo(id){
 	var layer=app.searchResult.geoJsonLayer.layers[id],
 		feature=layer.feature;
-			
+	
+	//highlight the tr in the dataTable
+	var $tr=$("#dataTable tr");
+	$.each(app.css["dataTable_highlightRow"], function(k,v){$tr.css(k,"");});
+	$tr.closest("[_dt_rowindex=" + id +"]").css(app.css["dataTable_highlightRow"]);
+	
+	
 	//zoom to the layer, shift lng a little bit to east
 	var latlng=layer._latlng;
 	app.map.setView(new L.LatLng(latlng.lat, latlng.lng-0.0025), 16)

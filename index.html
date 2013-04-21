@@ -211,8 +211,8 @@
 		<div id='dataTable_nav' style="display:none">
 			<div data-role="navbar">
 			    <ul>
-			        <li><a href="#" class="ui-btn-active" onclick='$("#dataTable_wrapper").show();$("#dataTable_chart").hide();'>Table</a></li>
-			        <li><a href="#" onclick='$("#dataTable_wrapper").hide();$("#dataTable_chart").show();'>Chart</a></li>
+			        <li><a href="#" class="ui-btn-active" onclick='$("#dataTable_wrapper").show();$("#dataTable_chart").hide();$("#dataTable_control .dataTable_nav ul li a").removeClass("ui-btn-active");$(this).addClass("ui-btn-active")'>Table</a></li>
+			        <li><a href="#" onclick='$("#dataTable_wrapper").hide();$("#dataTable_chart").show();$("#dataTable_control .dataTable_nav ul li a").removeClass("ui-btn-active");$(this).addClass("ui-btn-active")'>Chart</a></li>
 			    </ul>
 			</div>
 		</div>
