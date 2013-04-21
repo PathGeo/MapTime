@@ -45,7 +45,10 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 	background-image:linear-gradient( rgba(60,60,60,0.9),rgba(17,16,0,0.9) )
 }
 
-
+/** social meadia */
+#localInfo_socialMedia {height:90%;}
+#socialMedia_result {height: 83%; overflow-y:auto;}
+#socialMedia_result li img {}
 
 /**
  * data list
