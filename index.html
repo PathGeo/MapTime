@@ -197,9 +197,21 @@
 			</div>
 			
 			<div id='localInfo_demographicData'>
-				<select data-mini="true" ></select>
+				<!-- demographic spatial-->
+				<select id='demographic_spatial' data-mini="true">
+					<option value='address'>5/10/15 miles of the address</option>
+					<option value='zipcode'>zipcode level</option>
+					<option value='city'>city level</option>
+					<option value='county'>county level</option>
+					<option value='state'>state level</option>
+				</select>
+				
+				<!-- demographic dataType-->
+				<div id='demographic_type' data-role="collapsible-set" data-theme="c" data-content-theme="d" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-d"> </div>
+				
+				
 				<P></P>
-				<div id='localInfo_chart' style='overflow-y:auto; overflow-x:hidden'></div>
+				<!--<div id='localInfo_chart' style='overflow-y:auto; overflow-x:hidden'></div>-->
 			</div>
 			
 			<div id='localInfo_socialMedia' style='display:none;'>

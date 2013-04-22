@@ -653,6 +653,10 @@ function showLocalInfo(id){
 	var layer=app.searchResult.geoJsonLayer.layers[id],
 		feature=layer.feature;
 	
+	//jump to the page in the dataTable
+	//app.dataTable.fnPageChange(Math.floor(parseFloat(id)/10));
+	
+	
 	//highlight the tr in the dataTable
 	var $tr=$("#dataTable tr");
 	$.each(app.css["dataTable_highlightRow"], function(k,v){$tr.css(k,"");});
@@ -678,11 +682,12 @@ function showLocalInfo(id){
 	//layer.openPopup();
 			
 			
-	//select options for demographic Data
-	var $select=$("#localInfo_demographicData select").html("");
+	//demographic Data
+	var $obj=$("#demographic_type").html("");
 	$.each(app.demographicData, function(k,v){
-		$select.append("<option value='"+ k + "'>"+ v +"</option>");
-	})
+		$obj.append("<div data-role='collapsible'><h3>"+v+"</h3><p><div id='localInfo_chart' style='overflow-y:auto; overflow-x:hidden'></div></p></div>");
+	});
+	$obj.collapsibleset( "refresh" );
 	
 	
 	//select options for social media
