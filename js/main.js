@@ -685,9 +685,15 @@ function showLocalInfo(id){
 	//demographic Data
 	var $obj=$("#demographic_type").html("");
 	$.each(app.demographicData, function(k,v){
-		$obj.append("<div data-role='collapsible'><h3>"+v+"</h3><p><div id='localInfo_chart' style='overflow-y:auto; overflow-x:hidden'></div></p></div>");
+		$obj.append("<div data-role='collapsible'><h3 value='" + k + "'>"+v+"</h3><p><div id='localInfo_chart' style='overflow-y:auto; overflow-x:hidden'></div></p></div>");
 	});
-	$obj.collapsibleset( "refresh" );
+	$obj.collapsibleset("refresh")
+		.find("div[data-role='collapsible'] h3").click(function(){
+			var value=$(this).attr("value");
+			app.layers.demographicData.redrawStyle(value); 
+			app.layers.demographicData.addTo(app.map);
+		});
+	
 	
 	
 	//select options for social media
@@ -727,9 +733,9 @@ function showLocalInfo(id){
 	});
 	
 	if(withinLayer){
-		$select.change(function(){
-			console.log(withinLayer.feature.properties[this.value]);
-		});
+		// $select.change(function(){
+			// console.log(withinLayer.feature.properties[this.value]);
+		// });
 	}
 	
 	
