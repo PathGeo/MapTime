@@ -288,6 +288,9 @@ function showLayer(obj, isShow){
 									}
 									
 									
+									//default icon
+									layer.defaultIcon=layer.options.icon;
+									
 									//event
 									layer.on({
 										mouseover: function(e){
@@ -661,11 +664,16 @@ function showLocalInfo(id){
 	app.map.setView(new L.LatLng(latlng.lat, latlng.lng-0.0025), 16)
 			
 	//reset layer to default style and change the selected layer icon
+	app.searchResult.geoJsonLayer.eachLayer(function(layer){
+		layer.setIcon(layer.defaultIcon).setOpacity(0.5);
+	});
+
+
 	layer.setIcon(new L.icon({
 		iconUrl: "images/1365900599_Map-Marker-Marker-Outside-Pink.png",
 		iconSize: [36, 36],
     	iconAnchor: [18, 36]
-	}));
+	})).setOpacity(1);
 			
 	//layer.openPopup();
 			
