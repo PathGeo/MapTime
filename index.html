@@ -188,7 +188,7 @@
 	
 		<!-- localInfo-->
 		<div id='localInfo'>
-			<a href="#" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext"  style='position:absolute; right:-10px; top:-6px;' onclick='$("#localInfo").hide();'>Close</a>
+			<a href="#" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext"  style='position:absolute; right:-10px; top:-6px;' onclick='$("#localInfo").hide();app.map.removeLayer(app.layers.demographicData);'>Close</a>
 			<div data-role="navbar">
 			    <ul>
 			        <li><a href="#" class="ui-btn-active" onclick='$("#localInfo_demographicData").show();$("#localInfo_socialMedia").hide();'>Demographic Data</a></li>
