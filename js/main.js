@@ -547,7 +547,7 @@ function showTable(obj){
 				 "<li><img src='images/1365858892_print.png' title='print'/></li>"+
 				 "<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/></li>"+
 				 //"<li><img src='images/1365860337_cube.png' title='canned report'/></li>"+
-				 "<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
+				 //"<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
 				 "<li><img src='images/1365978110_gallery2.png' title='map gallery'/></li>"+
 				 //"<li><img src='images/1365872733_sq_br_down.png' title='maximum map'/></li>"+
 				 "</ul>";
@@ -591,8 +591,8 @@ function showTable(obj){
 			
 		
 		//give the html and onchange event to the selects and trigger change event
-		$("#dataTable_chartControl #select_x").append(html).change(onchange).val("name").change();
-		$("#dataTable_chartControl #select_y").append(html).change(onchange).val("sales").change();
+		$("#dataTable_chart #select_x").append(html).change(onchange).val("name").change();
+		$("#dataTable_chart #select_y").append(html).change(onchange).val("sales").change();
 		$(".dataTable_chartType").click(onchange);
 			
 		
@@ -745,8 +745,8 @@ function showLocalInfo(id){
 
 //show chart in the dataTable
 function showDataTableChart(geojson){
-	var x=$("#dataTable_chartControl #select_x").val(),
-		y=$("#dataTable_chartControl #select_y").val(),
+	var x=$("#dataTable_chart #select_x").val(),
+		y=$("#dataTable_chart #select_y").val(),
 		type=$(".dataTable_chartType:checked").val();
 	
 	if(!x || !y){
@@ -763,10 +763,10 @@ function showDataTableChart(geojson){
 			view:{columns:[0,1]},
 			options: {
 				width: $("#dataTable_chart").width()-40,
-				height: 300,
+				height: 250,
 				title: "",
-				titleX: x,
-				titleY: y,
+				titleX: "",
+				titleY: "",
 				legend: ""
 			}
 		},
@@ -779,6 +779,8 @@ function showDataTableChart(geojson){
 	};
 	//pathgeo.service.drawGoogleChart(geojson, [chartOptions], [x, y], null, {sort:[{column: 1}]}); //sort, but the sequence of the chart data will be different with the geojson
 	pathgeo.service.drawGoogleChart(geojson, [chartOptions], [x, y], null);
+	
+	
 }
 
 

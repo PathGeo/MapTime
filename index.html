@@ -83,18 +83,18 @@
 				
 				<!-- dataTable chart-->
 				<div id='dataTable_chart' style='display:none'>
-					<div id='dataTable_chartControl' >
-						<fieldset data-role="controlgroup" data-mini="true" data-type="horizontal">
-						    <input type="radio" name="dataTable_chartType" class='dataTable_chartType' id="dataTable_chartType_area" value="AreaChart" checked="checked">
-						    <label for="dataTable_chartType_area">Area Chart</label>
-						    <input type="radio" name="dataTable_chartType" class='dataTable_chartType' id="dataTable_chartType_line" value="LineChart">
-						    <label for="dataTable_chartType_line">Line Chart</label>
-						    <input type="radio" name="dataTable_chartType" class='dataTable_chartType' id="dataTable_chartType_bar" value="BarChart">
-						    <label for="dataTable_chartType_bar">Bar Chart</label>
-					    </fieldset>
-						<select id='select_y' data-mini="true"><option selected="selected">Please select Y axis</option></select>
-						<select id='select_x' data-mini="true"><option selected="selected">Please select X axis</option></select>
-					</div>
+					<fieldset data-role="controlgroup" data-mini="true" data-type="horizontal">
+					 	<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_area" value="AreaChart" checked="checked">
+					 	<label for="dataTable_chartType_area">Area Chart</label>
+						<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_line" value="LineChart">
+						<label for="dataTable_chartType_line">Line Chart</label>
+						<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_bar" value="BarChart">
+						<label for="dataTable_chartType_bar">Bar Chart</label>
+					</fieldset>
+					<select id="select_y" data-mini="true"><option selected="selected">Please select Y axis</option></select>
+					<select id="select_x" data-mini="true"><option selected="selected">Please select X axis</option></select>
+				
+					
 					<div id='dataTable_chartContent'></div>
 				</div>
 			</div>
@@ -216,12 +216,21 @@
 			
 			<div id='localInfo_socialMedia' style='display:none;'>
 				<input id='socialMedia_keyword' type='text' value='input your keyword' data-mini="true"/>
+				<!-- social media spatial filter -->
 				<select id='socialMedia_spatial' data-mini="true">
 					<option value='address'>5/10/15 miles of the address</option>
 					<option value='zipcode'>zipcode level</option>
 					<option value='city'>city level</option>
 					<option value='county'>county level</option>
 					<option value='state'>state level</option>
+				</select>
+				<!-- social media temporal filter -->
+				<select id='socialMedia_temporal' data-mini="true">
+					<option value='recent 10mins'>recent 10mins</option>
+					<option value='recent 30mins'>recent 30mins</option>
+					<option value='recent 1hr'>recent 1hr</option>
+					<option value='recent 1day'>recent 1day</option>
+					<option value='recent 1month'>recent 1month</option>
 				</select>
 				<p></p>
 				<div id='socialMedia_result'>
