@@ -78,23 +78,37 @@
 				
 			<!-- data table -->
 			<div id='dataPanel'>
-				<div id='dataTable_control'></div><br>
+				<div id='dataTable_control'></div>
 				<table cellpadding="0" cellspacing="0" border="0" class="display" id="dataTable"></table>
 				
 				<!-- dataTable chart-->
 				<div id='dataTable_chart' style='display:none'>
-					<fieldset data-role="controlgroup" data-mini="true" data-type="horizontal">
-					 	<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_area" value="AreaChart" checked="checked">
-					 	<label for="dataTable_chartType_area">Area Chart</label>
-						<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_line" value="LineChart">
-						<label for="dataTable_chartType_line">Line Chart</label>
-						<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_bar" value="BarChart">
-						<label for="dataTable_chartType_bar">Bar Chart</label>
-					</fieldset>
-					<select id="select_y" data-mini="true"><option selected="selected">Please select Y axis</option></select>
-					<select id="select_x" data-mini="true"><option selected="selected">Please select X axis</option></select>
-				
+					<!--chart control-->
+					<div id='dataTable_chartControl' title='Chart settings'  onclick='$("#dataTable_chartControlMenu").css({left:-($("#dataTable_chartControlMenu").width()-10)}).show();'>
+						<img src='images/1365859519_cog.png' width=25px height=25px />
+						<div id='dataTable_chartControlMenu'>
+							Change Chart Type:<br>
+							<fieldset data-role="controlgroup" data-mini="true" data-type="horizontal">
+							 	<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_area" value="AreaChart" checked="checked">
+							 	<label for="dataTable_chartType_area">Area Chart</label>
+								<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_pie" value="PieChart">
+								<label for="dataTable_chartType_pie">Pie Chart</label>
+								<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_line" value="LineChart">
+								<label for="dataTable_chartType_line">Line Chart</label>
+							</fieldset>
+							<hr>
+							Change X and Y axis: 
+							<fieldset data-role="controlgroup" data-type="horizontal">
+								<label for="select_x">X:</label>
+								<select id="select_x" name='select_x' data-mini="true"><option value='none'>Select X Axis</option></select>
+								
+								<label for="select_y">Y:</label>
+								<select id="select_y" name='select_y' data-mini="true"><option value='none'>Select Y Axis</option></select>
+							</fieldset>
+						</div>
+					</div>
 					
+					<!--chart content-->
 					<div id='dataTable_chartContent'></div>
 				</div>
 			</div>

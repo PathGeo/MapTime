@@ -69,7 +69,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #dataPanel {margin:0 auto;  width:99%; overflow:hidden; height:45%; text-shadow: 0 0px 0 #fff; margin-top:7px}
 #dataTable tr:hover{background-color:#5e87b0; color:#000000; cursor:pointer;}
 
-#dataTable_control {height:30px; border-bottom:1px solid #cccccc; margin-bottom:0px;}
+#dataTable_control {height:30px; border-bottom:1px solid #cccccc; margin-bottom:10px;}
 #dataTable_wrapper {height:88%; overflow:auto;}
 
 .dataTable_tools{float:right; margin:2px 5px 2px 5px; width:75%; height:30px; }
@@ -93,10 +93,11 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /**
  * 	dataTable chart
  */
-#dataTable_chart {height:88%; overflow:hidden; width:100%;}
-#dataTable_chart fieldset {position:absolute; right:40px;}
-#dataTable_chart .ui-select {width:150px; position:absolute; z-index:500; top:150px}
-#dataTable_chartContent {height:80%; overflow:auto; width:100%;}
+#dataTable_chart {height:88%; overflow:hidden; width:100%; position:relative;}
+#dataTable_chartControl {position:absolute; right:45px; top:60px; z-index:1;width:25px; height:25px; padding:5px; border-color:1px solid #cccccc; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px; box-shadow: 0 1px 7px #999;}
+#dataTable_chartControl:hover {cursor:pointer; background-color:#cccccc}
+#dataTable_chartControlMenu {display:none; width:270px; background-color:#ffffff; border-color:#cccccc; color:#000000;z-index:1; min-width:180px; position:relative; left:-140px; top:-35px; padding:10px; box-shadow: 0 1px 7px #999; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
+#dataTable_chartContent {height:100%; overflow-x:auto; width:100%; margin-top:0px;}
 
 /**
  * jquery mobile 

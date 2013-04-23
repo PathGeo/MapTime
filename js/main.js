@@ -225,7 +225,7 @@ function init_UI(){
 	
 	//when mouse click on otherplace, hide dataTable_menu
 	$(document).mouseup(function(e){
-		var $container=$(".dataTable_menu");
+		var $container=$(".dataTable_menu, #dataTable_chartControlMenu");
 		if(!$container.is(e.target) && $container.has(e.target).length===0){
 			$container.hide();
 		}
@@ -753,6 +753,8 @@ function showDataTableChart(geojson){
 		alert("Please select the x and y axis first");
 		return;
 	}
+	
+	if(x=='none' || y=='none'){return;}
 			
 	
 	//draw chart
@@ -762,12 +764,17 @@ function showDataTableChart(geojson){
 			containerId: "dataTable_chartContent",
 			view:{columns:[0,1]},
 			options: {
-				width: $("#dataTable_chart").width()-40,
-				height: 250,
+				width: $("#dataTable_chart").width()-20,
+				height: 225,
 				title: "",
-				titleX: "",
-				titleY: "",
-				legend: ""
+				titleX: x,
+				titleY: y,
+				legend: {position: 'right'},
+				chartArea: {width: '85%', height: '84%', top:20},
+				fontSize: 12,
+				vAxes:{},
+				hAxes:{},
+				backgroundColor: {fill:'transparent'}
 			}
 		},
 		callback:null,
