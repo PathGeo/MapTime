@@ -65,9 +65,9 @@
 			
 			<a href="#dialog_usermenu" data-rel='popup' data-role='button' data-position-to="origin" data-inline="true" data-transition="slideup" data-icon="home" class="" data-mini="true" style='float:right'>User</a> 
 	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>
-			<a href="#dialog_sharemap" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="star" class="" data-mini="true" style='float:right'>Share</a>
+			<!--<a href="#dialog_sharemap" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="star" class="" data-mini="true" style='float:right'>Share</a>-->
 			<!--<a href="#dialog_dataPanel" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="bars" class="" data-mini="true" style='float:right'>Data List</a>-->
-			<a href="#dialog_uploadData" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="grid" class="" data-mini="true" style='float:right'>Upload Data</a>
+			<a href="#dialog_uploadData" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right' onclick='$("#uploadData_confirm").hide(); $("#uploadData_description").show();'>Upload Data</a>
 		</div>
 		
 		
@@ -120,18 +120,53 @@
 	
 		<!-- dialog -->
 		<!-- upload data -->
-		<div id='dialog_uploadData' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true" style='width:600px'>
+		<div id='dialog_uploadData' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false" style=''>
 			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
 			
-			<form action="uploadSpreadsheet.py" method="post" id="upload_excel" enctype="multipart/form-data" style="width: 80%; margin: 0 auto;">
+			<form action="uploadSpreadsheet.py" method="post" id="uploadData_form" enctype="multipart/form-data" style="width: 80%; margin: 0 auto; ">
 				<fieldset>
-					<input type="file" name="photo" id="photo" style="">
-					<input id="submit_button" type="submit" value="Upload">
-					<img id='img_loading' src="images/loading.gif" width=15px style='display:none;' />
+					<input type="file" name="photo" id="uploadData_input" style="">
 				</fieldset>
 			</form>
 			
-			<input type='button' value='DEMO Data' onclick='showLayer(app.searchResult, true)'/>
+			<!-- upload content-->
+			<div id='uploadData_content'>
+				<div id='uploadData_description' >
+					<h3>Upload and Map Your Data:</h3><br>
+					MapTime only support XLS format for this beta version. <P></P>
+					We will support more data formats in the near future.	
+				</div>
+				
+				<div id='uploadData_confirm' style='display:none'>
+					<img id='img_loading' src="images/loading.gif" width=15px  />
+					
+					<div data-role="fieldcontain">
+						<label for="uploadData_geocodingField">Select geocoding column: </label>
+						<select id='uploadData_geocodingField' name='uploadData_geocodingField' data-mini='true'>
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+							<option>4</option>
+							<option>5</option>
+							<option>6</option>
+						</select>
+					</div>
+					
+					<div id='uploadData_agreement'>
+						this is a agreement
+					</div>
+					
+					
+					<label for='uploadData_agreementCheck'>I agree the agreement</label>
+					<input type='checkbox' id='uploadData_agreementCheck' name='uploadData_agreementCheck' />
+					
+					<div style='float:right; width:50%;'>
+						<input id="submit_button" type="submit" value="Map Your Data" data-theme="b">
+					</div>
+				</div>
+				
+			</div>
+			<!--<input type='button' value='DEMO Data' onclick='showLayer(app.searchResult, true)'/>-->
 		</div>
 		
 		

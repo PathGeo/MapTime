@@ -85,32 +85,7 @@ $(document).on("pageshow", function(){
 	showLayer(app.searchResult,true)
 	
 	
-	$("#submit_button").click(function (e) {
-		$("#img_loading").show();
-	});
 	
-	$('#upload_excel').ajaxForm({
-		dataType:  'json',
-		timeout: 20000,  
-		success: function(data) { 
-			
-			if (data.length <= 0) return;
-			
-			 app.searchResult={
-				 name: "searchResult", 
-				 type: "GEOJSON",
-				 json: data,
-				 srs: "EPSG:4326",
-				 title: "keyword",
-				 fieldName:{username:null, text:"text"},
-				 keywords: "testing"
-			 };
-
-			showLayer(app.searchResult, true);
-			
-			app.map.fitBounds(app.searchResult.geoJsonLayer.getBounds());
-		}
-	});
 });
 
 
@@ -228,6 +203,49 @@ function init_UI(){
 		var $container=$(".dataTable_menu, #dataTable_chartControlMenu");
 		if(!$container.is(e.target) && $container.has(e.target).length===0){
 			$container.hide();
+		}
+	});
+	
+	
+	//event when users select a file to upload
+	$("#uploadData_input").change(function(){
+		var value=$(this).val();
+		//if user select a file
+		if(value){
+			$("#uploadData_description").hide();
+			$("#uploadData_confirm").show();
+			//$(this).closest("form").submit();
+		}
+	});
+	
+	
+	//form
+	$('#uploadData_form').ajaxForm({
+		dataType:  'json',
+		timeout: 20000,
+		uploadProgress: function(e, position, total, percentComplete){
+			console.log(percentComplete)
+		},
+		success: function(data) { 
+			if (!data || data.length <= 0) return;
+			
+			 app.searchResult={
+				 name: "searchResult", 
+				 type: "GEOJSON",
+				 json: data,
+				 srs: "EPSG:4326",
+				 title: "keyword",
+				 fieldName:{username:null, text:"text"},
+				 keywords: "testing"
+			 };
+
+			showLayer(app.searchResult, true);
+			
+			app.map.fitBounds(app.searchResult.geoJsonLayer.getBounds());
+		},
+		error: function(e){
+			console.log("error upload file")
+			console.log(e)
 		}
 	});
 	
