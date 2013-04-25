@@ -1,18 +1,18 @@
 var curLayer;
 //Work in Progrss... social media viewing
 function callPython(){
-
-	//var location=app.geojsonReader.read(layer.feature.geometry);
-	//console.log(location.coordinates.x);
 	
-	var keywordTemp = document.getElementById("keyword").value;
+	var keywordTemp = document.getElementById("socialMedia_keyword").value;
 	var keywordArray = keywordTemp.split(" ");
 	keyword = keywordArray[0];
 	for(i=1; i<keywordArray.length; i++){
 		keyword =  keyword + "+" + keywordArray[i];
 	}
+	
 	var lat = document.getElementById("lat").value;
 	var lng = document.getElementById("lng").value;
+	
+	console.log(lng);
 	
 	//Search Flickr
 	$.ajax({
@@ -58,19 +58,16 @@ function getClusterLayerMedia(gjData) {
 		iconCreateFunction: function(cluster) {
 			//return new L.DivIcon({ html: cluster.getChildCount(), className: 'mycluster', iconSize: new L.Point() });
 			var amount = cluster.getChildCount();
-			//if (amount >=10){
-				//var icon = "<img border='0' src='images/photoIcon3.png'>";
-			//}
-			//else if (amount >=5){
-				//var icon = "<img border='0' src='images/photoIcon2.png'>";
-			//}
-			//else{
-				//var icon = "<img border='0' src='images/photoIcon1.png'>";
-			//}
-			var icon = L.icon({ 
-				iconUrl: "images/photoIcon.png",
-				popupAnchor: [16, 2],
-			});
+			if (amount >=10){
+				var icon = "<img border='0' src='images/photoIcon_large.png'>";
+			}
+			else if (amount >=5){
+				var icon = "<img border='0' src='images/photoIcon_medium.png'>";
+			}
+			else{
+				var icon = "<img border='0' src='images/photoIcon_small.png'>";
+			}
+	
 			return new L.DivIcon({ html: icon, className: 'mycluster' });
 		}
 	});
@@ -186,6 +183,6 @@ function switchLayersMedia(newLayerName) {
 function setDataMedia(data) {
 	curData = data;
 	$(".features").removeClass("selected").addClass("selectable");
-	switchLayersMedia("point");
+	switchLayersMedia("cluster");
 	$("#point").toggleClass("selected selectable");
 }

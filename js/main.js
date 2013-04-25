@@ -1,6 +1,9 @@
 //Load Google Charts and set callback
 google.load("visualization", "1", {packages:["corechart", "table"]});
 
+//var locationY;
+//var locationX;
+
 var app={
 	map:null,
 	basemaps:{
@@ -719,6 +722,10 @@ function showLocalInfo(id){
 	var location=app.geojsonReader.read(feature.geometry);
 	var locationX = location.coordinate.x;
 	var locationY = location.coordinate.y;
+	//document.getElementById("lng").value = locationY;
+	//document.getElementById("lat").value = locationX;
+	$("#lng").val(locationY);
+	$("#lat").val(locationX);
 	var $select_media=$("#localInfo_socialMedia");
 	//$select_media.html("<br/>Lat: <input type='text' id=lat value=" + locationX + "> <br/>Long: <input type='text' id=lng value=" + locationY + "> <br/>Keyword: <input type='text' id='keyword' value='shoes'><br><button type='button' onclick='callPython()'>Search</button>");
 	

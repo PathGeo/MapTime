@@ -265,6 +265,8 @@
 			
 			<div id='localInfo_socialMedia' style='display:none;'>
 				<input id='socialMedia_keyword' type='text' value='input your keyword' data-mini="true"/>
+				<input type="hidden" id="lat" value="test">
+				<input type="hidden" id="lng" value="test">
 				<!-- social media spatial filter -->
 				<select id='socialMedia_spatial' data-mini="true">
 					<option value='address'>5/10/15 miles of the address</option>
@@ -281,6 +283,7 @@
 					<option value='recent 1day'>recent 1day</option>
 					<option value='recent 1month'>recent 1month</option>
 				</select>
+				<button type='button' onclick='callPython()'>Search</button>
 				<p></p>
 				<div id='socialMedia_result'>
 					<ul data-role="listview" data-inset="true">
