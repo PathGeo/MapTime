@@ -46,13 +46,41 @@ pathgeo.service={
 	
 	/**
 	 * create demographic layer 
-	 * @param {Object} type      
+	 * @param {Object} filter, {type:"zipcode" || "city" || "county" || "state", "value": }     
 	 * @param {Object} options
 	 * @return {Object} 
 	 */
-	demographicData:function(options){
+	demographicData:function(filter, options){
 		var me=this;
+		
+		//jsons to store all json in different scale, including zipcode, city, county, state
+		if(!me.jsons){me.jsons={}}
+		
+		
+		//filter
+		if(!filter){filter={}}
+		filter.type=filter.type || "zipcode";
+		filter.value=filter.value || "";
+		
+		
+		//url
+		switch (filter.type){
+			case "zipcode":
+				me.url="db/CA_ACS11.json";
+				filter.column="ZIP"
+			break;
+			case "city":
 				
+			break;
+			case "county":
+				
+			break;
+			default:
+				me.url="db/CA_ACS11.json";
+			break;
+		}		
+		
+		
 		//options
 		if(!options){options={}}
 		options.type=options.type || "HC01_VC04";  //if no type, default is the first one
@@ -90,15 +118,8 @@ pathgeo.service={
 		}
 		
 		
-		//url
-		this.url="db/CA_ACS11.json"
-		
-		
-		
-		//load data
-		$.getJSON(this.url, function(json){
-			me.json=json;
-			
+		//function to parseJson
+		function parseJson(json){
 			//create leaflet geojson layer
 			me.geojsonLayer=new L.GeoJSON(json, {
 				onEachFeature: function(jsonFeature, layer){
@@ -114,6 +135,15 @@ pathgeo.service={
 						mouseout: function(e){options.onFeatureMouseout(e);	},
 						click:function(e){options.onFeatureClick(e);}
 					});
+				},
+				
+				//filter
+				filter: function(jsonFeature, layer){
+					if(filter.type && filter.value && filter.column){
+						if(jsonFeature.properties[filter.column]==filter.value){
+							return true;
+						}
+					}
 				},
 				
 				//style
@@ -148,12 +178,23 @@ pathgeo.service={
 			});
 			legendHtml+="</ul>";
 			
+			
 			//callback
 			if(options.callback){options.callback(me.geojsonLayer, legendHtml)}
 			
-			
-		});
-				
+		}//end parseJson
+		
+		
+		//load data
+		if(!me.jsons[filter.type]){
+			$.getJSON(me.url, function(json){
+				me.jsons[filter.type]=json;
+				parseJson(json);
+			});
+		}else{
+			parseJson(me.jsons[filter.type]);
+		}
+		
 	},
 	
 	

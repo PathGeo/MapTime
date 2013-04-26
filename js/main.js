@@ -87,8 +87,7 @@ $(document).on("pageshow", function(){
 	//directly shoing demo data
 	showLayer(app.searchResult,true)
 	
-	
-	
+
 });
 
 
@@ -109,11 +108,11 @@ function init_map(){
 		trackResize:true
     }); 
 	
-	//move the location of zoomcontrol to the top right
-	app.map.zoomControl.setPosition("topright")
+	//move the location of zoomcontrol to the bottom right
+	app.map.zoomControl.setPosition("bottomright");
 	
 	//layers control
-	app.controls.toc=L.control.layers(app.basemaps);
+	app.controls.toc=L.control.layers(app.basemaps).setPosition("bottomright");
 
 	//map gallery control
 	$.each(app.controls, function(k,v){
@@ -125,17 +124,6 @@ function init_map(){
 		}
 	});
 	
-	
-	
-	//read demographic
-	pathgeo.service.demographicData({
-		callback:function(geojsonLayer, legendHtml){
-			app.layers.demographicData=geojsonLayer;
-			
-			//show legend
-			$(".leaflet-control-legend").html(legendHtml);
-		}
-	});
 	
 	//create maxminMap DIV
 	$("#div_map").append("<div id='maxminMap' title='Maximum Map'>Maximum Map</div>");
@@ -503,7 +491,7 @@ function showTable(obj){
 			"aoColumns": obj.columns_dataTable, //column
 			"bJQueryUI": false,
 			"sPaginationType": "full_numbers", //page number
-			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"fl><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rtip>', //DOM
+			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"f><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rti<pl>>', //DOM
 			fnDrawCallback: function(){
 				
 				//backup orginal json to defaultJSON
@@ -688,11 +676,11 @@ function showLocalInfo(id){
 	var latlng=layer._latlng;
 	app.map.setView(new L.LatLng(latlng.lat, latlng.lng-0.0025), 16)
 			
+			
 	//reset layer to default style and change the selected layer icon
 	app.searchResult.geoJsonLayer.eachLayer(function(layer){
 		layer.setIcon(layer.defaultIcon).setOpacity(0.5);
 	});
-
 
 	layer.setIcon(new L.icon({
 		iconUrl: "images/1365900599_Map-Marker-Marker-Outside-Pink.png",
@@ -700,20 +688,48 @@ function showLocalInfo(id){
     	iconAnchor: [18, 36]
 	})).setOpacity(1);
 			
+	
 	//layer.openPopup();
-			
+	
 			
 	//demographic Data
 	var $obj=$("#demographic_type").html("");
 	$.each(app.demographicData, function(k,v){
 		$obj.append("<div data-role='collapsible'><h3 value='" + k + "'>"+v+"</h3><p><div id='localInfo_chart' style='overflow-y:auto; overflow-x:hidden'></div></p></div>");
 	});
-	$obj.collapsibleset("refresh")
-		.find("div[data-role='collapsible'] h3").click(function(){
-			var value=$(this).attr("value");
+	$obj.collapsibleset("refresh").find("div[data-role='collapsible'] h3").click(function(){ //while clicking on the colllapse, redraw the demographic data and show on the map
+		var value=$(this).attr("value");
+		
+		if(app.layers.demographicData){
 			app.layers.demographicData.redrawStyle(value); 
+		}
+	});
+	
+	//read demographic
+	pathgeo.service.demographicData({type:"zipcode", value:feature.properties["zip"]}, {
+		callback:function(geojsonLayer, legendHtml){
+			//remove previous
+			if(app.layers.demographicData){
+				app.map.removeLayer(app.layers.demographicData);
+			}
+			
+			app.layers.demographicData=geojsonLayer;
 			app.layers.demographicData.addTo(app.map);
-		});
+			//app.map.fitBounds(app.layers.demographicData.getBounds());
+
+			//chart
+			var sexData=[
+					['Sex', 'Population'],
+					['Male',  25678],
+					['Female',  28734]
+			];
+			//draw chart
+			showLocalInfoChart(sexData);
+			
+			//show legend
+			$(".leaflet-control-legend").html(legendHtml);
+		}
+	});
 	
 	
 	
@@ -729,16 +745,7 @@ function showLocalInfo(id){
 	var $select_media=$("#localInfo_socialMedia");
 	//$select_media.html("<br/>Lat: <input type='text' id=lat value=" + locationX + "> <br/>Long: <input type='text' id=lng value=" + locationY + "> <br/>Keyword: <input type='text' id='keyword' value='shoes'><br><button type='button' onclick='callPython()'>Search</button>");
 	
-	
 
-	//chart
-	var sexData=[
-			['Sex', 'Population'],
-			['Male',  25678],
-			['Female',  28734]
-	];
-	//draw chart
-	showLocalInfoChart(sexData);
 	
 	
 	//show localInfo
@@ -749,19 +756,22 @@ function showLocalInfo(id){
 	var point=app.geojsonReader.read(feature.geometry);
 	var polygon, withinLayer;
 
-	$.each(app.layers.demographicData._layers, function(k,layer){
-		polygon=app.geojsonReader.read(feature.geometry);
-		if(point.within(polygon)){
-			withinLayer=layer;
-			return false; //break the loop
+	if(app.layers.demographicData){
+		$.each(app.layers.demographicData._layers, function(k,layer){
+			polygon=app.geojsonReader.read(layer.feature.geometry);
+			if(point.within(polygon)){
+				withinLayer=layer;
+				return false; //break the loop
+			}
+		});
+		
+		if(withinLayer){
+			// $select.change(function(){
+				// console.log(withinLayer.feature.properties[this.value]);
+			// });
 		}
-	});
-	
-	if(withinLayer){
-		// $select.change(function(){
-			// console.log(withinLayer.feature.properties[this.value]);
-		// });
 	}
+	
 	
 	
 }
