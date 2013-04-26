@@ -61,10 +61,7 @@
   		
 		<!--header-->
 		<div id='header' class='ui-bar ui-bar-b'  >
-			<h1>
-				<img src='images/PathGeo-color.png' height=35px onclick='window.open("http://www.pathgeo.com")'/>
-				<div>MapTime : <label id='lbl_dataName'></label></div>
-			</h1>
+			<h1 style='padding:10px 10px 10px 5px'>MapTime : <label id='lbl_dataName'></label></h1>
 			
 			<a href="#dialog_usermenu" data-rel='popup' data-role='button' data-position-to="origin" data-inline="true" data-transition="slideup" data-icon="home" class="" data-mini="true" style='float:right'>User</a> 
 	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>
