@@ -12,35 +12,44 @@ function callPython(){
 	var lat = document.getElementById("lat").value;
 	var lng = document.getElementById("lng").value;
 	var rad = document.getElementById("socialMedia_spatial").value;
+	var ts = (Math.floor(Date.now()/1000)) - (document.getElementById("socialMedia_temporal").value);
 	
 	//Search Flickr
 	$.ajax({
 		type: "POST",
 		url: "photo_search.py",
-		data: {kwd:keyword, lat:lng, lng:lat, rad:rad},
+		data: {kwd:keyword, lat:lng, lng:lat, rad:rad, ts:ts},
 		beforeSend: function(xhr){
 			if (xhr.overrideMimeType){
 				xhr.overrideMimeType("application/json");
 			}
 		}
 	}).success(function( contact ) {
-		
-		var count = contact.length;
-		
-		for(i=0; i<count; i++){
-		
-			var title = contact[i].properties.Title;
-			var description = contact[i].properties.Description;
-		
-			var results = "<li><h2>" + title + "</h2><p>" + description + "</p></li>";
-			$("#test").append(results);
+	
+		if (contact == 0){
+			alert("No results were found");
 		}
 		
-		$('#test').trigger('create');
-		$('#test').listview('refresh');
+		else{
+			var count = contact.length;
+			$("#test").html('');
 		
-		setDataMedia(contact);
-		app.map.fitBounds(curLayer.getBounds());
+			for(i=0; i<count; i++){
+			
+				var title = contact[i].properties.Title;
+				var description = contact[i].properties.Description;
+				var date = contact[i].properties.Date;
+			
+				var results = "<li><h2>" + title + "</h2><p>" + date + "</p><p>" + description + "</p></li>";
+				$("#test").append(results);
+			}
+			
+			$('#test').trigger('create');
+			$('#test').listview('refresh');
+			
+			setDataMedia(contact);
+			app.map.fitBounds(curLayer.getBounds());
+		}
 
 	});
 }
