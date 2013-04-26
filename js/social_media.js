@@ -38,9 +38,10 @@ function callPython(){
 			
 				var title = contact[i].properties.Title;
 				var description = contact[i].properties.Description;
+				var image = contact[i].properties.Img;
 				var date = contact[i].properties.Date;
 			
-				var results = "<li><h2>" + title + "</h2><p>" + date + "</p><p>" + description + "</p></li>";
+				var results = "<li><h2>" + title + "</h2>" + image + "<br/><br/><p>" + date + "</p><p>" + description + "</p></li>";
 				$("#test").append(results);
 			}
 			

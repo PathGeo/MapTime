@@ -32,7 +32,7 @@ count = 0
 
 for i in output['photos']['photo']:
 	count += 1
-	image = "<div style='height: 200px'><img src='http://farm" + str(i['farm']) + ".staticflickr.com/" + str(i['server']) + "/" + str(i['id']) + "_" + str(i['secret']) + "_s.jpg' alt='image here...'>"
+	image = "<div><img src='http://farm" + str(i['farm']) + ".staticflickr.com/" + str(i['server']) + "/" + str(i['id']) + "_" + str(i['secret']) + "_s.jpg' alt='image here...'>"
 	doc = {}
 	doc['type'] = "Feature"
 	doc['geometry'] = { "type": "Point"}

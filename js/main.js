@@ -697,6 +697,7 @@ function showLocalInfo(id){
 	$.each(app.demographicData, function(k,v){
 		$obj.append("<div data-role='collapsible'><h3 value='" + k + "'>"+v+"</h3><p><div id='localInfo_chart' style='overflow-y:auto; overflow-x:hidden'></div></p></div>");
 	});
+	
 	$obj.collapsibleset("refresh").find("div[data-role='collapsible'] h3").click(function(){ //while clicking on the colllapse, redraw the demographic data and show on the map
 		var value=$(this).attr("value");
 		
