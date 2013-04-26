@@ -27,6 +27,7 @@ function callPython(){
 	}).success(function( contact ) {
 	
 		if (contact == 0){
+			$("#test").html('');
 			alert("No results were found");
 		}
 		
