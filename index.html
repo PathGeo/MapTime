@@ -271,11 +271,13 @@
 				<input type="hidden" id="lng" value="test">
 				<!-- social media spatial filter -->
 				<select id='socialMedia_spatial' data-mini="true">
-					<option value='address'>5/10/15 miles of the address</option>
-					<option value='zipcode'>zipcode level</option>
+					<option value='5'>5 miles of the address</option>
+					<option value='10'>10 miles of the address</option>
+					<option value='15'>15 miles of the address</option>
+					<!--<option value='zipcode'>zipcode level</option>
 					<option value='city'>city level</option>
 					<option value='county'>county level</option>
-					<option value='state'>state level</option>
+					<option value='state'>state level</option>-->
 				</select>
 				<!-- social media temporal filter -->
 				<select id='socialMedia_temporal' data-mini="true">
@@ -288,8 +290,8 @@
 				<button type='button' onclick='callPython()'>Search</button>
 				<p></p>
 				<div id='socialMedia_result'>
-					<ul data-role="listview" data-inset="true">
-						<li data-role="list-divider">5 miles<span class="ui-li-count">2</span></li>
+					<ul data-role="listview" data-inset="true" id="test">
+						<!--<li data-role="list-divider">5 miles<span class="ui-li-count">2</span></li>
 					    <li>
 					    	<a href="#">
 						        <img src="images/1365860337_cube.png" class="ui-li-icon">
@@ -347,7 +349,7 @@
 						        <h2>Calvin</h2>
 						        <p>...................</p>
 							</a>
-						</li>
+						</li>-->
 					</ul>
 				</div>
 			</div>

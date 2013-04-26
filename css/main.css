@@ -36,7 +36,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /**
  * localInfo
  */
-#localInfo {display:none; color:#ffffff; text-shadow:0 0px 0 #fff; top:42px; left:0px; min-width:300px; min-height:300px; position:absolute; z-index:500;  padding:15px; 
+#localInfo {display:none; color:#ffffff; text-shadow:0 0px 0 #fff; top:42px; left:0px; min-width:300px; max-width:300px; min-height:300px; position:absolute; z-index:500;  padding:15px; 
 	background-image:-webkit-gradient(linear,left top,left bottom,from( rgba(60,60,60,0.9) ),to( rgba(17,16,0,0.9) ));
 	background-image:-webkit-linear-gradient( rgba(60,60,60,0.9),rgba(17,16,0,0.9) );
 	background-image:-moz-linear-gradient( rgba(60,60,60,0.9),rgba(17,16,0,0.9) );

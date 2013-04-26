@@ -10,6 +10,7 @@ data = cgi.FieldStorage()
 keyword = data['kwd'].value
 lat = data['lat'].value
 lng = data['lng'].value
+rad = data['rad'].value
 
 #geoResults = geocoder.geocode(location, exactly_one=False)
 
@@ -20,7 +21,7 @@ lng = data['lng'].value
 #place, (lat, lng) = geoResults[0]
 
 
-r = requests.get("http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=7262b19617c5a5f568a9b3f25c946c5b&tags=" + keyword + "&lat=" + str(lat) + "&lon=" + str(lng) + "&radius=32&per_page=100&extras=description,date_upload,date_taken,owner_name,geo,views&has_geo=1&format=json&nojsoncallback=1")
+r = requests.get("http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=7262b19617c5a5f568a9b3f25c946c5b&tags=" + keyword + "&lat=" + str(lat) + "&lon=" + str(lng) + "&radius=" + str(rad) + "mi&per_page=100&extras=description,date_upload,date_taken,owner_name,geo,views&has_geo=1&format=json&nojsoncallback=1")
 
 output=r.json
 

@@ -11,38 +11,33 @@ function callPython(){
 	
 	var lat = document.getElementById("lat").value;
 	var lng = document.getElementById("lng").value;
-	
-	console.log(lng);
+	var rad = document.getElementById("socialMedia_spatial").value;
 	
 	//Search Flickr
 	$.ajax({
 		type: "POST",
 		url: "photo_search.py",
-		data: {kwd:keyword, lat:lng, lng:lat},
+		data: {kwd:keyword, lat:lng, lng:lat, rad:rad},
 		beforeSend: function(xhr){
 			if (xhr.overrideMimeType){
 				xhr.overrideMimeType("application/json");
 			}
 		}
 	}).success(function( contact ) {
-		//var contact = JSON.parse(msg);
-		//console.log(contact);
 		
-		//var count = contact.photos.photo.length;
+		var count = contact.length;
 		
-		//var social_media = {
-			//type: "FeatureCollection",
-			//features: []
-		//};
+		for(i=0; i<count; i++){
 		
-		//for(i=0; i<count; i++){
-			//social_media.features.push({
-			//social_media({
-				//"type": "Feature",
-				//"properties": {"Title": contact.photos.photo[i].title, "Lat": contact.photos.photo[i].latitude, "Lng": contact.photos.photo[i].longitude, "Img": "<div style='height: 200px'><img src='http://farm" + (contact.photos.photo[i].farm)  + ".staticflickr.com/" + (contact.photos.photo[i].server) + "/" + (contact.photos.photo[i].id) + "_" + (contact.photos.photo[i].secret) + "_s.jpg' alt='image here...'>", "Description": contact.photos.photo[i].description._content},
-				//"geometry": {"type": "Point", "coordinates": [contact.photos.photo[i].longitude, contact.photos.photo[i].latitude]}
-			//});
-		//}
+			var title = contact[i].properties.Title;
+			var description = contact[i].properties.Description;
+		
+			var results = "<li><h2>" + title + "</h2><p>" + description + "</p></li>";
+			$("#test").append(results);
+		}
+		
+		$('#test').trigger('create');
+		$('#test').listview('refresh');
 		
 		setDataMedia(contact);
 		app.map.fitBounds(curLayer.getBounds());
