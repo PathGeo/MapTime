@@ -241,7 +241,7 @@
 		<!-- localInfo-->
 		<div id='localInfo'>
 			<a href="#" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext"  style='position:absolute; right:-10px; top:-6px;' onclick='$("#localInfo").hide();app.map.removeLayer(app.layers.demographicData);'>Close</a>
-			<div data-role="navbar">
+			<div data-role="navbar" style='margin-bottom:15px;'>
 			    <ul>
 			        <li><a href="#" class="ui-btn-active" onclick='$("#localInfo_demographicData").show();$("#localInfo_socialMedia").hide();'>Demographic Data</a></li>
 			        <li><a href="#" onclick='$("#localInfo_demographicData").hide();$("#localInfo_socialMedia").show();'>Social Media</a></li>
@@ -266,26 +266,35 @@
 			</div>
 			
 			<div id='localInfo_socialMedia' style='display:none;'>
-				<input id='socialMedia_keyword' type='text' value='input your keyword' data-mini="true"/>
+				<div data-role="fieldcontain" style='margin:3px;'>
+					<label for='socialMedia_keyword' style='font-size:12px; font-weight:bold;'>Keyword: </label>
+					<input id='socialMedia_keyword' name='socialMedia_keyword' type='text' value='input your keyword' data-mini="true" onclick='this.value=""'/>
+				</div>
 				<input type="hidden" id="lat" value="test">
 				<input type="hidden" id="lng" value="test">
 				<!-- social media spatial filter -->
-				<select id='socialMedia_spatial' data-mini="true">
-					<option value='address'>5/10/15 miles of the address</option>
-					<option value='zipcode'>zipcode level</option>
-					<option value='city'>city level</option>
-					<option value='county'>county level</option>
-					<option value='state'>state level</option>
-				</select>
+				<div data-role="fieldcontain" style='margin:3px;'>
+					<label for='socialMedia_spatial' style='font-size:12px; font-weight:bold;'>Spatial Filter: </label>
+					<select id='socialMedia_spatial' name='socialMedia_spatial' data-mini="true">
+						<option value='address'>5/10/15 miles of the address</option>
+						<option value='zipcode'>zipcode level</option>
+						<option value='city'>city level</option>
+						<option value='county'>county level</option>
+						<option value='state'>state level</option>
+					</select>
+				</div>
 				<!-- social media temporal filter -->
-				<select id='socialMedia_temporal' data-mini="true">
-					<option value='recent 10mins'>recent 10mins</option>
-					<option value='recent 30mins'>recent 30mins</option>
-					<option value='recent 1hr'>recent 1hr</option>
-					<option value='recent 1day'>recent 1day</option>
-					<option value='recent 1month'>recent 1month</option>
-				</select>
-				<button type='button' onclick='callPython()'>Search</button>
+				<div data-role="fieldcontain" style='margin:3px;'>
+					<label for='socialMedia_temporal' style='font-size:12px; font-weight:bold;'>Temporal Filter: </label>
+					<select id='socialMedia_temporal' name='socialMedia_temporal' data-mini="true">
+						<option value='recent 10mins'>recent 10mins</option>
+						<option value='recent 30mins'>recent 30mins</option>
+						<option value='recent 1hr'>recent 1hr</option>
+						<option value='recent 1day'>recent 1day</option>
+						<option value='recent 1month'>recent 1month</option>
+					</select>
+				</div>
+				<button type='button' onclick='callPython()' data-mini="true">Search</button>
 				<p></p>
 				<div id='socialMedia_result'>
 					<ul data-role="listview" data-inset="true">

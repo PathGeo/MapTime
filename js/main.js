@@ -309,7 +309,8 @@ function showLayer(obj, isShow){
 											obj.geoJsonLayer.resetStyle(e.target);
 										},
 										click:function(e){
-											showLocalInfo(e.target.feature.properties._DT_RowIndex);
+											//show local info
+											showLocalInfo(e.target.feature.properties._DT_RowIndex, true);
 										}
 									})
 								},
@@ -498,49 +499,62 @@ function showTable(obj){
 				if(!app.searchResult.defaultJSON){
 					app.searchResult.defaultJSON=app.searchResult.json;
 				}
-
-				//get filter data,
-				var	me=this,
-					features=app.searchResult.defaultJSON.features,
-					geojson={
-						type:"FeatureCollection",
-						features:[]
-					},
-					feature,
-					$selectedData=me.$('tr', {"filter": "applied"});
 				
-				//to avoid refresh too frequently to mark high CPU usage
-				setTimeout(function(){
-					if(me.$('tr', {"filter": "applied"}).length==$selectedData.length){
-						//remove layers
-						removeLayers();
+				//if jumpPage==true, The datatable only jumps to the page. Don't need to re-read the geojson and redraw the table
+				if(!app.jumpPage){
+					//get filter data,
+					var	me=this,
+						features=app.searchResult.defaultJSON.features,
+						geojson={
+							type:"FeatureCollection",
+							features:[]
+						},
+						feature,
+						$selectedData=me.$('tr', {"filter": "applied"});
 					
-						//read selected layers
-						me.$('tr', {"filter": "applied"}).each(function(){
-							$(this).attr("_dt_rowindex", this._DT_RowIndex);
-
-							feature=features[this._DT_RowIndex];
-							feature.properties._DT_RowIndex=this._DT_RowIndex;
-							geojson.features.push(feature);
-						});
-						
-						
-						//overwrite app.searchResult.json and showlayer again
-						//remove geojsonLayer
-						if(geojson.features.length>0 && app.searchResult.geoJsonLayer){
-							app.map.removeLayer(app.searchResult.geoJsonLayer);
-							app.searchResult.geoJsonLayer=null;
-							app.searchResult.markerClusterLayer=null;
-							app.searchResult.heatMapLayer=null;
-							
-							app.searchResult.json=geojson;
-							showLayer(app.searchResult, true);
-							
-							//re-draw Chart
-							showDataTableChart(app.searchResult.json);
-						}
+					//remove demographic data
+					if(app.layers.demographicData){
+						app.map.removeLayer(app.layers.demographicData);
 					}
-				},500)
+					
+					//reset table style
+					var $tr=$("#dataTable tr");
+					$.each(app.css["dataTable_highlightRow"], function(k,v){$tr.css(k,"");});
+					
+					//to avoid refresh too frequently to mark high CPU usage
+					setTimeout(function(){
+						if(me.$('tr', {"filter": "applied"}).length==$selectedData.length){
+							//remove layers
+							removeLayers();
+						
+							//read selected layers
+							me.$('tr', {"filter": "applied"}).each(function(){
+								$(this).attr("_dt_rowindex", this._DT_RowIndex);
+	
+								feature=features[this._DT_RowIndex];
+								feature.properties._DT_RowIndex=this._DT_RowIndex;
+								geojson.features.push(feature);
+							});
+							
+							
+							//overwrite app.searchResult.json and showlayer again
+							//remove geojsonLayer
+							if(geojson.features.length>0 && app.searchResult.geoJsonLayer){
+								app.map.removeLayer(app.searchResult.geoJsonLayer);
+								app.searchResult.geoJsonLayer=null;
+								app.searchResult.markerClusterLayer=null;
+								app.searchResult.heatMapLayer=null;
+								
+								app.searchResult.json=geojson;
+								showLayer(app.searchResult, true);
+								
+								//re-draw Chart
+								showDataTableChart(app.searchResult.json);
+							}
+						}
+					},500)
+				}
+				
 
 			}
 		});	
@@ -658,13 +672,17 @@ function showInfobox(type, css, dom){
 
 
 //show local info
-function showLocalInfo(id){
+function showLocalInfo(id, jumpToDataTablePage){
 	var layer=app.searchResult.geoJsonLayer.layers[id],
 		feature=layer.feature;
 	
-	//jump to the page in the dataTable
-	//app.dataTable.fnPageChange(Math.floor(parseFloat(id)/10));
 	
+	//jump to the page in the dataTable
+	if(jumpToDataTablePage){
+		app.jumpPage=true;
+		app.dataTable.fnPageChange(Math.floor(parseFloat(id)/10), true);
+		app.jumpPage=false;
+	}
 	
 	//highlight the tr in the dataTable
 	var $tr=$("#dataTable tr");
@@ -816,13 +834,12 @@ function showDataTableChart(geojson){
 		callback_mouseover:null,
 		callback_mouseout:null,
 		callback_select:function(obj){
-			showLocalInfo(obj.value.properties._DT_RowIndex)
+			showLocalInfo(obj.value.properties._DT_RowIndex, true)
 		}
 	};
 	//pathgeo.service.drawGoogleChart(geojson, [chartOptions], [x, y], null, {sort:[{column: 1}]}); //sort, but the sequence of the chart data will be different with the geojson
 	pathgeo.service.drawGoogleChart(geojson, [chartOptions], [x, y], null);
-	
-	
+
 }
 
 
