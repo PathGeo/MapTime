@@ -274,23 +274,27 @@
 				<input type="hidden" id="lat" value="test">
 				<input type="hidden" id="lng" value="test">
 				<!-- social media spatial filter -->
-				<select id='socialMedia_spatial' data-mini="true">
-					<option value='5'>5 miles of the address</option>
-					<option value='10'>10 miles of the address</option>
-					<option value='15'>15 miles of the address</option>
-					<!--<option value='zipcode'>zipcode level</option>
-					<option value='city'>city level</option>
-					<option value='county'>county level</option>
-					<option value='state'>state level</option>-->
-				</select>
+				<div data-role="fieldcontain" style='margin:3px;'>
+					<label for='socialMedia_spatial' style='font-size:12px; font-weight:bold;'>Spatial Filter: </label>
+					<select id='socialMedia_spatial' name='socialMedia_spatial' data-mini="true">
+						<option value='5'>5 miles of the address</option>
+						<option value='10'>10 miles of the address</option>
+						<option value='15'>15 miles of the address</option>
+						<!--<option value='zipcode'>zipcode level</option>
+						<option value='city'>city level</option>
+						<option value='county'>county level</option>
+						<option value='state'>state level</option>-->
+					</select>
 				<!-- social media temporal filter -->
-				<select id='socialMedia_temporal' data-mini="true">
-					<option value='604800'>last week</option>
-					<option value='2592000'>last month</option>
-					<option value='31536000'>last year</option>
-					<option value='63072000'>last 2 years</option>
-				</select>
-				<button type='button' onclick='callPython()'>Search</button>
+				<div data-role="fieldcontain" style='margin:3px;'>
+					<label for='socialMedia_temporal' style='font-size:12px; font-weight:bold;'>Temporal Filter: </label>
+					<select id='socialMedia_temporal' name='socialMedia_temporal' data-mini="true">
+						<option value='604800'>last week</option>
+						<option value='2592000'>last month</option>
+						<option value='31536000'>last year</option>
+						<option value='63072000'>last 2 years</option>
+					</select>
+				<button type='button' onclick='callPython()' data-mini="true">Search</button>
 
 				<p></p>
 				<div id='socialMedia_result'>
