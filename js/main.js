@@ -659,6 +659,10 @@ function showInfobox(type, css, dom){
 				html+="<li><input type='radio' name='mapGallery' value='" + report + "' " + " onclick='' />&nbsp; &nbsp; "+ report +"</li>";
 			});
 		break;
+		case "print":
+			window.print();
+			return; 
+		break;
 		
 	}	
 	html+="</ul>";
