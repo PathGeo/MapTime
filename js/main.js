@@ -41,7 +41,7 @@ var app={
 //		    }
 //		}),
 		legend: L.Control.extend({
-		    options: {position: 'bottomright',text: 'Legend',},
+		    options: {position: 'topright',text: 'Legend',},
 			initialize: function (options) {L.Util.setOptions(this, options);},
 		    onAdd: function (map) {
 		        // create the control container with a particular class name
@@ -724,12 +724,13 @@ function showLocalInfo(id, jumpToDataTablePage){
 		var value=$(this).attr("value");
 		
 		if(app.layers.demographicData){
-			app.layers.demographicData.redrawStyle(value); 
+			app.layers.demographicData.redrawStyle(value, null, function(legendHtml){$(".leaflet-control-legend").html(legendHtml);}); 
 		}
 	});
 	
 	//read demographic
 	pathgeo.service.demographicData({type:"zipcode", value:feature.properties["zip"]}, {
+	//pathgeo.service.demographicData(null, {
 		callback:function(geojsonLayer, legendHtml){
 			//remove previous
 			if(app.layers.demographicData){
@@ -740,6 +741,10 @@ function showLocalInfo(id, jumpToDataTablePage){
 			app.layers.demographicData.addTo(app.map);
 			//app.map.fitBounds(app.layers.demographicData.getBounds());
 
+			//show legend
+			$(".leaflet-control-legend").html(legendHtml).show();
+			
+			
 			//chart
 			var sexData=[
 					['Sex', 'Population'],
@@ -748,9 +753,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 			];
 			//draw chart
 			showLocalInfoChart(sexData);
-			
-			//show legend
-			$(".leaflet-control-legend").html(legendHtml);
+
 		}
 	});
 	

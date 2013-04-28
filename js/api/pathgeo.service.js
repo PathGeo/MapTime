@@ -60,7 +60,7 @@ pathgeo.service={
 		//filter
 		if(!filter){filter={}}
 		filter.type=filter.type || "zipcode";
-		filter.value=filter.value || "";
+		filter.value=filter.value || null;
 		
 		
 		//url
@@ -92,19 +92,54 @@ pathgeo.service={
 		options.onFeatureMouseover=options.onFeatureMouseover || function(e){e.target.setStyle({weight: 3, color: '#666',dashArray: '',fillOpacity: 0.7});};
 		options.onFeatureMouseout=options.onFeatureMouseout || function(e){me.geojsonLayer.resetStyle(e.target);};
 		options.onFeatureClick=options.onFeatureClick || function(e){};
-		options.color=options.color || {
-				"HC01_VC04":function(d) {return d > 94913  ? '#800026' : d > 81354   ? '#BD0026' : d > 67795   ? '#E31A1C' : d > 54236   ? '#FC4E2A' : d > 40677    ? '#FD8D3C' : d > 27118    ? '#FEB24C' : d >  13559    ? '#FED976' : '#FFEDA0';},
-				"HC01_VC20":function(d) {return d > 94913  ? '#800026' : d > 81354   ? '#BD0026' : d > 67795   ? '#E31A1C' : d > 54236   ? '#FC4E2A' : d > 40677    ? '#FD8D3C' : d > 27118    ? '#FEB24C' : d >  13559    ? '#FED976' : '#FFEDA0';},
-				"HC01_VC21":function(d) {return d > 94913  ? '#800026' : d > 81354   ? '#BD0026' : d > 67795   ? '#E31A1C' : d > 54236   ? '#FC4E2A' : d > 40677    ? '#FD8D3C' : d > 27118    ? '#FEB24C' : d >  13559    ? '#FED976' : '#FFEDA0';},
-				"HC01_VC23":function(d) {return d > 94913  ? '#800026' : d > 81354   ? '#BD0026' : d > 67795   ? '#E31A1C' : d > 54236   ? '#FC4E2A' : d > 40677    ? '#FD8D3C' : d > 27118    ? '#FEB24C' : d >  13559    ? '#FED976' : '#FFEDA0';},
-				"HC01_VC28":function(d) {return d > 94913  ? '#800026' : d > 81354   ? '#BD0026' : d > 67795   ? '#E31A1C' : d > 54236   ? '#FC4E2A' : d > 40677    ? '#FD8D3C' : d > 27118    ? '#FEB24C' : d >  13559    ? '#FED976' : '#FFEDA0';},
-				"HC01_VC74":function(d) {return d > 94913  ? '#800026' : d > 81354   ? '#BD0026' : d > 67795   ? '#E31A1C' : d > 54236   ? '#FC4E2A' : d > 40677    ? '#FD8D3C' : d > 27118    ? '#FEB24C' : d >  13559    ? '#FED976' : '#FFEDA0';},
-				"HC01_VC85":function(d) {return d > 94913  ? '#800026' : d > 81354   ? '#BD0026' : d > 67795   ? '#E31A1C' : d > 54236   ? '#FC4E2A' : d > 40677    ? '#FD8D3C' : d > 27118    ? '#FEB24C' : d >  13559    ? '#FED976' : '#FFEDA0';},
-				"HC01_VC86":function(d) {return d > 94913  ? '#800026' : d > 81354   ? '#BD0026' : d > 67795   ? '#E31A1C' : d > 54236   ? '#FC4E2A' : d > 40677    ? '#FD8D3C' : d > 27118    ? '#FEB24C' : d >  13559    ? '#FED976' : '#FFEDA0';},
-				"HC01_VC112":function(d){return d > 94913  ? '#800026' : d > 81354   ? '#BD0026' : d > 67795   ? '#E31A1C' : d > 54236   ? '#FC4E2A' : d > 40677    ? '#FD8D3C' : d > 27118    ? '#FEB24C' : d >  13559    ? '#FED976' : '#FFEDA0';},
-				"HC01_VC113":function(d){return d > 94913  ? '#800026' : d > 81354   ? '#BD0026' : d > 67795   ? '#E31A1C' : d > 54236   ? '#FC4E2A' : d > 40677    ? '#FD8D3C' : d > 27118    ? '#FEB24C' : d >  13559    ? '#FED976' : '#FFEDA0';},
-				"HC01_VC115":function(d){return d > 94913  ? '#800026' : d > 81354   ? '#BD0026' : d > 67795   ? '#E31A1C' : d > 54236   ? '#FC4E2A' : d > 40677    ? '#FD8D3C' : d > 27118    ? '#FEB24C' : d >  13559    ? '#FED976' : '#FFEDA0';}
+		options.colorSchema=options.colorSchema || {
+				"HC01_VC04":[{value: 94913, color: "#800026"},{value: 67795, color: "#E31A1C"},{value: 40677, color: "#FD8D3C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}], 
+				"HC01_VC20":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
+				"HC01_VC21":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
+				"HC01_VC23":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
+				"HC01_VC28":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
+				"HC01_VC74":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
+				"HC01_VC85":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
+				"HC01_VC86":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
+				"HC01_VC112":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
+				"HC01_VC113":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
+				"HC01_VC115":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
 		};
+		options.labels=options.labels || {
+			"HC01_VC04":"Population 16 years and over",
+			"HC01_VC20":"Own children under 6 years",
+			"HC01_VC21":"All parents in family in labor force",
+			"HC01_VC23":"Own children 6 to 17 years",
+			"HC01_VC28":"Workers 16 years and over",
+			"HC01_VC74":"Total households",
+			"HC01_VC85":"Median household income",
+			"HC01_VC86":"Mean household income",
+			"HC01_VC112":"Median family income",
+			"HC01_VC113":"Mean family income",
+			"HC01_VC115":"Per capita income"
+		};		
+		//getColor
+		me.getColor=function(type, d){
+			var colorSchema=options.colorSchema[type];
+			if(colorSchema){
+				var color;
+				$.each(colorSchema, function(i, obj){
+					if(i==0 && d > obj.value){
+						color=obj.color;
+						return false;
+					}else{
+						if(d>obj.value && d<=colorSchema[i-1].value){
+							color=obj.color;
+							return false;
+						}
+					}
+				});
+				return color;
+			}
+		}
+		
+		
+		//styles
 		options.styles=options.styles || function(feature, type){
 			if(!type){type=options.type}
 			return {
@@ -113,18 +148,49 @@ pathgeo.service={
 				color: 'white',
 				dashArray: '3',
 				fillOpacity: 0.6,
-				fillColor: options.color[type](feature.properties[type])
+				fillColor: me.getColor(type, feature.properties[type])
 			}
 		}
 		
 		
+		//getLegend
+		me.getLegend=function(type){
+			var colorSchema=options.colorSchema[type],
+				legendHtml="No Legend";
+		
+			if(colorSchema){
+				legendHtml="<div id='legend_title'>"+ options.labels[type] + "<ul>";
+				$.each(colorSchema, function(i, obj){
+					var to = colorSchema[i - 1] ? colorSchema[i - 1].value : null;
+					legendHtml+="<li><span id='legend_image' style='background-color:"+ me.getColor(type, obj.value+1) + "'>&nbsp; &nbsp; &nbsp; &nbsp; </span>&nbsp; <span id='legend_label'>"+ obj.value + (to ? '&ndash;' + to : '+') + "</span></li>";
+				});
+				legendHtml+="</ul>";
+			}
+			
+			return legendHtml;
+		}
+		
+
+		
+		
 		//function to parseJson
 		function parseJson(json){
+			var zipcodes={}, zipcode;
+			
+			
 			//create leaflet geojson layer
 			me.geojsonLayer=new L.GeoJSON(json, {
 				onEachFeature: function(jsonFeature, layer){
 					//popup html
-					layer.bindPopup(options.popupHTML(jsonFeature),{maxWidth:options.popupMaxWidth, maxHeight:options.popupMaxHeight});
+					//layer.bindPopup(options.popupHTML(jsonFeature),{maxWidth:options.popupMaxWidth, maxHeight:options.popupMaxHeight});
+					
+					
+					//test: insert each layer in to zipcodes array
+					//*****************************************************************************************************************************
+					zipcode=jsonFeature.properties["ZIP"];
+					zipcodes[zipcode]=layer;
+					//*****************************************************************************************************************************
+					
 					
 					//event
 					layer.on({
@@ -139,10 +205,13 @@ pathgeo.service={
 				
 				//filter
 				filter: function(jsonFeature, layer){
+					//match only one value
 					if(filter.type && filter.value && filter.column){
 						if(jsonFeature.properties[filter.column]==filter.value){
 							return true;
 						}
+					}else{
+						return true;
 					}
 				},
 				
@@ -154,33 +223,32 @@ pathgeo.service={
 			});
 			
 			
+			//test: insert each layer in to zipcodes array
+			//*****************************************************************************************************************************
+			me.geojsonLayer.zipcodes=zipcodes;
+			//*****************************************************************************************************************************
+			console.log(me.geojsonLayer)
 			
 			//add customize function to redraw layers' style
-			me.geojsonLayer.redrawStyle=function(type, style){
-				var me=this;
+			me.geojsonLayer.redrawStyle=function(type, style, legend_callback){
+				var that=this;
 				
 				if(!style){
 					style=function(feature){
-						return me.options.styles(feature, type)
+						return that.options.styles(feature, type)
 					}
 				}
 				this.options.style=style;
 				this.setStyle(style);
+				
+				if(legend_callback){
+					legend_callback(me.getLegend(type))
+				}
 			}
 			
-			
-			//legend
-			var values=[0, 13559    , 27118    , 40677    , 54236   , 67795   , 81354   , 94913 ]
-			var legendHtml="<ul>";
-			$.each(values, function(i,value){
-				var to = values[i + 1];
-				legendHtml+="<li style='background-color:"+ options.color[options.type](value+1) + "'>"+ value + (to ? '&ndash;$' + to : '+') + "</li>";
-			});
-			legendHtml+="</ul>";
-			
-			
+
 			//callback
-			if(options.callback){options.callback(me.geojsonLayer, legendHtml)}
+			if(options.callback){options.callback(me.geojsonLayer, me.getLegend(options.type))}
 			
 		}//end parseJson
 		
