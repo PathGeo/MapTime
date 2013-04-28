@@ -227,7 +227,7 @@ pathgeo.service={
 			//*****************************************************************************************************************************
 			me.geojsonLayer.zipcodes=zipcodes;
 			//*****************************************************************************************************************************
-			console.log(me.geojsonLayer)
+			//console.log(me.geojsonLayer)
 			
 			//add customize function to redraw layers' style
 			me.geojsonLayer.redrawStyle=function(type, style, legend_callback){
