@@ -729,8 +729,8 @@ function showLocalInfo(id, jumpToDataTablePage){
 	});
 	
 	//read demographic
-	pathgeo.service.demographicData({type:"zipcode", value:feature.properties["zip"]}, {
-	//pathgeo.service.demographicData(null, {
+	//pathgeo.service.demographicData({type:"zipcode", value:feature.properties["zip"]}, {
+	pathgeo.service.demographicData(null, {
 		callback:function(geojsonLayer, legendHtml){
 			//remove previous
 			if(app.layers.demographicData){
@@ -739,6 +739,9 @@ function showLocalInfo(id, jumpToDataTablePage){
 			
 			app.layers.demographicData=geojsonLayer;
 			app.layers.demographicData.addTo(app.map);
+			
+			//console.log(app.layers.demographicData.zipcodes[94121]);
+			//app.map.addLayer(app.layers.demographicData.zipcodes[94121])
 			//app.map.fitBounds(app.layers.demographicData.getBounds());
 
 			//show legend

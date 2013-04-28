@@ -84,7 +84,6 @@ pathgeo.service={
 		//options
 		if(!options){options={}}
 		options.type=options.type || "HC01_VC04";  //if no type, default is the first one
-		options.DomID_legend=options.DomID_legend || "";
 		options.featureStyle=options.featureStyle || function(feature){return options.styles(feature, options.type)};
 		options.popupHTML=options.popupHTML || function(feature){return pathgeo.util.objectToHtml(feature.properties)}
 		options.popupMaxWidth=options.popupMaxWidth || 500;
