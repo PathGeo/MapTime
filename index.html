@@ -137,46 +137,48 @@
 			<form action="uploadSpreadsheet.py" method="post" id="uploadData_form" enctype="multipart/form-data" style="width: 80%; margin: 0 auto; ">
 				<fieldset>
 					<input type="file" name="photo" id="uploadData_input" style="">
+								
+					<!-- upload content-->
+					<div id='uploadData_content'>
+						<div id='uploadData_description' >
+							<h3>Upload and Map Your Data:</h3><br>
+							MapTime only support XLS format for this beta version. <P></P>
+							We will support more data formats in the near future.	
+						</div>
+						
+						<div id='uploadData_confirm' style='display:none'>
+							<img id='img_loading' src="images/loading.gif" width=15px  />
+							
+							<div data-role="fieldcontain">
+								<label for="uploadData_geocodingField">Select geocoding column: </label>
+								<select id='uploadData_geocodingField' name='uploadData_geocodingField' data-mini='true'>
+									<option>1</option>
+									<option>2</option>
+									<option>3</option>
+									<option>4</option>
+									<option>5</option>
+									<option>6</option>
+								</select>
+							</div>
+							
+							<div id='uploadData_agreement'>
+								this is a agreement
+							</div>
+							
+							
+							<label for='uploadData_agreementCheck'>I agree the agreement</label>
+							<input type='checkbox' id='uploadData_agreementCheck' name='uploadData_agreementCheck' />
+							
+							<div style='float:right; width:50%;'>
+								<input id="submit_button" type="submit" value="Map Your Data" data-theme="b">
+							</div>
+						</div>
+						
+					</div>
 				</fieldset>
 			</form>
 			
-			<!-- upload content-->
-			<div id='uploadData_content'>
-				<div id='uploadData_description' >
-					<h3>Upload and Map Your Data:</h3><br>
-					MapTime only support XLS format for this beta version. <P></P>
-					We will support more data formats in the near future.	
-				</div>
-				
-				<div id='uploadData_confirm' style='display:none'>
-					<img id='img_loading' src="images/loading.gif" width=15px  />
-					
-					<div data-role="fieldcontain">
-						<label for="uploadData_geocodingField">Select geocoding column: </label>
-						<select id='uploadData_geocodingField' name='uploadData_geocodingField' data-mini='true'>
-							<option>1</option>
-							<option>2</option>
-							<option>3</option>
-							<option>4</option>
-							<option>5</option>
-							<option>6</option>
-						</select>
-					</div>
-					
-					<div id='uploadData_agreement'>
-						this is a agreement
-					</div>
-					
-					
-					<label for='uploadData_agreementCheck'>I agree the agreement</label>
-					<input type='checkbox' id='uploadData_agreementCheck' name='uploadData_agreementCheck' />
-					
-					<div style='float:right; width:50%;'>
-						<input id="submit_button" type="submit" value="Map Your Data" data-theme="b">
-					</div>
-				</div>
-				
-			</div>
+			
 			<!--<input type='button' value='DEMO Data' onclick='showLayer(app.searchResult, true)'/>-->
 		</div>
 		

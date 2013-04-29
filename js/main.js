@@ -202,6 +202,12 @@ function init_UI(){
 	$("#uploadData_input").change(function(){
 		var value=$(this).val();
 		//if user select a file
+		
+/*
+console.log($(this));
+console.log("UPLOADING DATA: ");
+console.log(value);
+*/
 		if(value){
 			$("#uploadData_description").hide();
 			$("#uploadData_confirm").show();
@@ -252,6 +258,9 @@ function showLayer(obj, isShow){
 		//feature count
 		obj.featureCount=0;
 		
+console.log("SHOWINGLAYER");
+
+
 		//show layer
 		switch(obj.type){
 			case "GEOJSON":
