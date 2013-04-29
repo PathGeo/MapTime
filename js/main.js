@@ -153,6 +153,18 @@ function init_map(){
 			});
 		}
 	});
+	
+	
+	//read demographic data
+	pathgeo.service.demographicData({
+		// filter:{
+			// type:"zipcode",
+			// value:"94131"
+		// },
+		callback:function(geojsonLayer){
+			app.layers.demographicData=geojsonLayer;
+		}
+	});
 }
 
 
@@ -733,41 +745,57 @@ function showLocalInfo(id, jumpToDataTablePage){
 		var value=$(this).attr("value");
 		
 		if(app.layers.demographicData){
-			app.layers.demographicData.redrawStyle(value, null, function(legendHtml){$(".leaflet-control-legend").html(legendHtml);}); 
+			var demographic=app.layers.demographicData;
+			//highlight the zipcode boundary
+			demographic.redrawStyle(value, function(f){
+				var defaultStyle=demographic.options.styles(f,value);
+		
+				if(f.properties["ZIP"]==feature.properties["zip"]){
+					defaultStyle.width=4;
+					defaultStyle.color="#666";
+					defaultStyle.dashArray='';
+				}
+				
+				return defaultStyle;
+			}); 
+			
+			//change legend
+			$(".leaflet-control-legend").html(demographic.getLegend(value));
 		}
 	});
 	
-	//read demographic
-	//pathgeo.service.demographicData({type:"zipcode", value:feature.properties["zip"]}, {
-	pathgeo.service.demographicData(null, {
-		callback:function(geojsonLayer, legendHtml){
-			//remove previous
-			if(app.layers.demographicData){
-				app.map.removeLayer(app.layers.demographicData);
-			}
-			
-			app.layers.demographicData=geojsonLayer;
-			app.layers.demographicData.addTo(app.map);
-			
-			//console.log(app.layers.demographicData.zipcodes[94121]);
-			//app.map.addLayer(app.layers.demographicData.zipcodes[94121])
-			//app.map.fitBounds(app.layers.demographicData.getBounds());
-
-			//show legend
-			$(".leaflet-control-legend").html(legendHtml).show();
-			
-			
-			//chart
-			var sexData=[
-					['Sex', 'Population'],
-					['Male',  25678],
-					['Female',  28734]
-			];
-			//draw chart
-			showLocalInfoChart(sexData);
-
+	
+	//highlight the zipcode boundary and show demographic data
+	app.layers.demographicData.redrawStyle("HC01_VC04", function(f){
+		var defaultStyle=app.layers.demographicData.options.styles(f,"HC01_VC04");
+		
+		if(f.properties["ZIP"]==feature.properties["zip"]){
+			defaultStyle.width=4;
+			defaultStyle.color="#666";
+			defaultStyle.dashArray='';
 		}
+		
+		return defaultStyle;
 	});
+	app.layers.demographicData.addTo(app.map);//.bringToBack();
+	//app.map.fitBounds(app.layers.demographicData.getBounds());
+
+
+	//show legend
+	var defaultType=$("#demographic_type div[data-role='collapsible'] h3").attr("value");
+	$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
+			
+			
+	//chart
+	var sexData=[
+			['Sex', 'Population'],
+			['Male',  25678],
+			['Female',  28734]
+	];
+	//draw chart
+	showLocalInfoChart(sexData);
+
+
 	
 	
 	

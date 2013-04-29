@@ -50,95 +50,43 @@ pathgeo.service={
 	 * @param {Object} options
 	 * @return {Object} 
 	 */
-	demographicData:function(filter, options){
+	demographicData:function(options){
 		var me=this;
 		
 		//jsons to store all json in different scale, including zipcode, city, county, state
 		if(!me.jsons){me.jsons={}}
 		
 		
-		//filter
-		if(!filter){filter={}}
-		filter.type=filter.type || "zipcode";
-		filter.value=filter.value || null;
-		
-		
-		//url
-		switch (filter.type){
-			case "zipcode":
-				me.url="db/CA_ACS11.json";
-				filter.column="ZIP"
-			break;
-			case "city":
-				
-			break;
-			case "county":
-				
-			break;
-			default:
-				me.url="db/CA_ACS11.json";
-			break;
-		}		
-		
-		
 		//options
 		if(!options){options={}}
 		options.type=options.type || "HC01_VC04";  //if no type, default is the first one
 		options.featureStyle=options.featureStyle || function(feature){return options.styles(feature, options.type)};
-		options.popupHTML=options.popupHTML || function(feature){return pathgeo.util.objectToHtml(feature.properties)}
+		options.popupHTML=options.popupHTML || function(feature){
+			return options.filter.type + ": " + feature.properties[options.filter.column] ;
+		}
 		options.popupMaxWidth=options.popupMaxWidth || 500;
 		options.popupMaxHeight=options.poupMaxHeight || 300;
-		options.onFeatureMouseover=options.onFeatureMouseover || function(e){e.target.setStyle({weight: 3, color: '#666',dashArray: '',fillOpacity: 0.7});};
-		options.onFeatureMouseout=options.onFeatureMouseout || function(e){me.geojsonLayer.resetStyle(e.target);};
-		options.onFeatureClick=options.onFeatureClick || function(e){};
-		options.colorSchema=options.colorSchema || {
-				"HC01_VC04":[{value: 94913, color: "#800026"},{value: 67795, color: "#E31A1C"},{value: 40677, color: "#FD8D3C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}], 
-				"HC01_VC20":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
-				"HC01_VC21":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
-				"HC01_VC23":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
-				"HC01_VC28":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
-				"HC01_VC74":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
-				"HC01_VC85":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
-				"HC01_VC86":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
-				"HC01_VC112":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
-				"HC01_VC113":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
-				"HC01_VC115":[{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}],
+		options.onFeatureMouseover=options.onFeatureMouseover || function(e){
+			e.target.setStyle({weight: 3, dashArray: '',fillOpacity: 0.6});
 		};
-		options.labels=options.labels || {
-			"HC01_VC04":"Population 16 years and over",
-			"HC01_VC20":"Own children under 6 years",
-			"HC01_VC21":"All parents in family in labor force",
-			"HC01_VC23":"Own children 6 to 17 years",
-			"HC01_VC28":"Workers 16 years and over",
-			"HC01_VC74":"Total households",
-			"HC01_VC85":"Median household income",
-			"HC01_VC86":"Mean household income",
-			"HC01_VC112":"Median family income",
-			"HC01_VC113":"Mean family income",
-			"HC01_VC115":"Per capita income"
-		};		
-		//getColor
-		me.getColor=function(type, d){
-			var colorSchema=options.colorSchema[type];
-			if(colorSchema){
-				var color;
-				$.each(colorSchema, function(i, obj){
-					if(i==0 && d > obj.value){
-						color=obj.color;
-						return false;
-					}else{
-						if(d>obj.value && d<=colorSchema[i-1].value){
-							color=obj.color;
-							return false;
-						}
-					}
-				});
-				return color;
-			}
-		}
-		
-		
-		//styles
+		options.onFeatureMouseout=options.onFeatureMouseout || function(e){
+			me.geojsonLayer.resetStyle(e.target);
+		};
+		options.onFeatureClick=options.onFeatureClick || function(e){};
+		options.attributes=options.attributes || {
+				"HC01_VC04":{label: "Population 16 years and over", colorSchemas: [{value: 94913, color: "#800026"},{value: 67795, color: "#E31A1C"},{value: 40677, color: "#FD8D3C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]}, 
+				"HC01_VC20":{label: "Own children under 6 years", colorSchemas: [{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]},
+				"HC01_VC21":{label: "All parents in family in labor force", colorSchemas: [{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]},
+				"HC01_VC23":{label: "Own children 6 to 17 years", colorSchemas: [{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]},
+				"HC01_VC28":{label: "Workers 16 years and over", colorSchemas: [{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]},
+				"HC01_VC74":{label: "Total households", colorSchemas: [{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]},
+				"HC01_VC85":{label: "Median household income", colorSchemas: [{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]},
+				"HC01_VC86":{label: "Mean household income", colorSchemas: [{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]},
+				"HC01_VC112":{label: "Median family income", colorSchemas: [{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]},
+				"HC01_VC113":{label: "Mean family income", colorSchemas: [{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]},
+				"HC01_VC115":{label: "Per capita income", colorSchemas: [{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]}
+		};
+		options.filter=options.filter || {type: "zipcode", value:null}
 		options.styles=options.styles || function(feature, type){
 			if(!type){type=options.type}
 			return {
@@ -152,24 +100,46 @@ pathgeo.service={
 		}
 		
 		
-		//getLegend
-		me.getLegend=function(type){
-			var colorSchema=options.colorSchema[type],
-				legendHtml="No Legend";
-		
-			if(colorSchema){
-				legendHtml="<div id='legend_title'>"+ options.labels[type] + "<ul>";
-				$.each(colorSchema, function(i, obj){
-					var to = colorSchema[i - 1] ? colorSchema[i - 1].value : null;
-					legendHtml+="<li><span id='legend_image' style='background-color:"+ me.getColor(type, obj.value+1) + "'>&nbsp; &nbsp; &nbsp; &nbsp; </span>&nbsp; <span id='legend_label'>"+ obj.value + (to ? '&ndash;' + to : '+') + "</span></li>";
+		//getColor
+		me.getColor=function(type, d){
+			var colorSchemas=options.attributes[type].colorSchemas;
+			if(colorSchemas){
+				var color;
+				$.each(colorSchemas, function(i, obj){
+					if(i==0 && d > obj.value){
+						color=obj.color;
+						return false;
+					}else{
+						if(d>obj.value && d<=colorSchemas[i-1].value){
+							color=obj.color;
+							return false;
+						}
+					}
 				});
-				legendHtml+="</ul>";
+				return color;
 			}
-			
-			return legendHtml;
 		}
-		
 
+
+		//determine url
+		switch (options.filter.type){
+			case "zipcode":
+				me.url="db/CA_ACS11.json";
+				options.filter.column="ZIP"
+			break;
+			case "city":
+				
+			break;
+			case "county":
+				
+			break;
+			default:
+				me.url="db/CA_ACS11.json";
+			break;
+		}		
+		
+		
+		
 		
 		
 		//function to parseJson
@@ -181,12 +151,12 @@ pathgeo.service={
 			me.geojsonLayer=new L.GeoJSON(json, {
 				onEachFeature: function(jsonFeature, layer){
 					//popup html
-					//layer.bindPopup(options.popupHTML(jsonFeature),{maxWidth:options.popupMaxWidth, maxHeight:options.popupMaxHeight});
+					layer.bindPopup(options.popupHTML(jsonFeature),{maxWidth:options.popupMaxWidth, maxHeight:options.popupMaxHeight});
 					
 					
 					//test: insert each layer in to zipcodes array
 					//*****************************************************************************************************************************
-					zipcode=jsonFeature.properties["ZIP"];
+					zipcode=jsonFeature.properties[options.filter.column];
 					zipcodes[zipcode]=layer;
 					//*****************************************************************************************************************************
 					
@@ -205,8 +175,8 @@ pathgeo.service={
 				//filter
 				filter: function(jsonFeature, layer){
 					//match only one value
-					if(filter.type && filter.value && filter.column){
-						if(jsonFeature.properties[filter.column]==filter.value){
+					if(options.filter.type && options.filter.value && options.filter.column){
+						if(jsonFeature.properties[options.filter.column]==options.filter.value){
 							return true;
 						}
 					}else{
@@ -218,7 +188,7 @@ pathgeo.service={
 				style: options.featureStyle,
 				
 				//customize styles
-				styles: options.styles
+				styles: options.styles,
 			});
 			
 			
@@ -226,10 +196,10 @@ pathgeo.service={
 			//*****************************************************************************************************************************
 			me.geojsonLayer.zipcodes=zipcodes;
 			//*****************************************************************************************************************************
-			//console.log(me.geojsonLayer)
+			
 			
 			//add customize function to redraw layers' style
-			me.geojsonLayer.redrawStyle=function(type, style, legend_callback){
+			me.geojsonLayer.redrawStyle=function(type, style){
 				var that=this;
 				
 				if(!style){
@@ -239,27 +209,42 @@ pathgeo.service={
 				}
 				this.options.style=style;
 				this.setStyle(style);
-				
-				if(legend_callback){
-					legend_callback(me.getLegend(type))
+			}
+			
+			
+			//getLegend
+			me.geojsonLayer.getLegend=function(type){
+				var colorSchemas=options.attributes[type].colorSchemas,
+					label=options.attributes[type].label,
+					legendHtml="No Legend";
+			
+				if(colorSchemas && colorSchemas.length>0){
+					legendHtml="<div id='legend_title'>"+ label + "<ul>";
+					$.each(colorSchemas, function(i, obj){
+						var to = colorSchemas[i - 1] ? colorSchemas[i - 1].value : null;
+						legendHtml+="<li><span id='legend_image' style='background-color:"+ me.getColor(type, obj.value+1) + "'>&nbsp; &nbsp; &nbsp; &nbsp; </span>&nbsp; <span id='legend_label'>"+ obj.value + (to ? '&ndash;' + to : '+') + "</span></li>";
+					});
+					legendHtml+="</ul>";
 				}
+				
+				return legendHtml;
 			}
 			
 
 			//callback
-			if(options.callback){options.callback(me.geojsonLayer, me.getLegend(options.type))}
+			if(options.callback){options.callback(me.geojsonLayer)}
 			
 		}//end parseJson
 		
 		
 		//load data
-		if(!me.jsons[filter.type]){
+		if(!me.jsons[options.filter.type]){
 			$.getJSON(me.url, function(json){
-				me.jsons[filter.type]=json;
+				me.jsons[options.filter.type]=json;
 				parseJson(json);
 			});
 		}else{
-			parseJson(me.jsons[filter.type]);
+			parseJson(me.jsons[options.filter.type]);
 		}
 		
 	},
