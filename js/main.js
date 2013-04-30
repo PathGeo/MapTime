@@ -300,7 +300,8 @@ console.log("SHOWINGLAYER");
 				function parseGeojson(obj){
 					//create layer
 					if(!obj.geoJsonLayer){
-						var layers=[];
+						var layers=[], 
+							zipcodes={};
 						obj.geoJsonLayer=new L.geoJson(obj.json, {
 								onEachFeature:function(feature,layer){
 									var html=pathgeo.util.objectToHtml(feature.properties);
@@ -314,7 +315,25 @@ console.log("SHOWINGLAYER");
 								
 									//based on _DT_RowIndex to insert layer into layers
 									if(feature.properties._DT_RowIndex>=0){
-										layers[feature.properties._DT_RowIndex]=layer;
+										var id=feature.properties["_DT_RowIndex"];
+										layers[id]=layer;
+										
+										//if feature contains zipcode field, then calculate information in the feature attribute, e.g. how many users in the zip code, the sum of sales
+										if(feature.properties["zip"]){
+											var code=feature.properties["zip"],
+												sales=feature.properties["sales"];
+											
+											if(zipcodes[code]){
+												zipcodes[code].ids.push(id);
+												zipcodes[code].sales_sum=zipcodes[code].sales_sum + sales;
+											}else{
+												zipcodes[code]={
+													ids:[id],
+													count:0,
+													sales_sum:sales
+												}
+											}
+										}
 									}
 									
 									
@@ -340,6 +359,10 @@ console.log("SHOWINGLAYER");
 								style: {}
 						});
 						obj.geoJsonLayer.layers=layers;
+						
+						//zipcodes
+						obj.zipcodes=zipcodes;
+						console.log(obj)
 						
 						app.controls.toc.addOverlay(obj.geoJsonLayer, "GeoJSON");
 						obj.layer=obj.geoJsonLayer;

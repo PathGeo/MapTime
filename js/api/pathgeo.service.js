@@ -93,7 +93,7 @@ pathgeo.service={
 				weight: 2,
 				opacity: 1,
 				color: 'white',
-				dashArray: '3',
+				dashArray: '',//'3'
 				fillOpacity: 0.6,
 				fillColor: me.getColor(type, feature.properties[type])
 			}
