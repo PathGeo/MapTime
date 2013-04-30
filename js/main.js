@@ -214,31 +214,26 @@ function init_UI(){
 	$("#uploadData_input").change(function(){
 		var value=$(this).val();
 		//if user select a file
-		
-/*
-console.log($(this));
-console.log("UPLOADING DATA: ");
-console.log(value);
-*/
 		if(value){
 			$("#uploadData_description").hide();
 			$("#uploadData_confirm").show();
 			//$(this).closest("form").submit();
 		}
+
 	});
-	
-	
+
 	//form
 	$('#uploadData_form').ajaxForm({
 		dataType:  'json',
 		timeout: 20000,
-		uploadProgress: function(e, position, total, percentComplete){
-			console.log(percentComplete)
-		},
 		success: function(data) { 
 			if (!data || data.length <= 0) return;
-			
-			 app.searchResult={
+
+console.log("Got Data:");
+console.log(data);
+
+		/*
+			app.searchResult={
 				 name: "searchResult", 
 				 type: "GEOJSON",
 				 json: data,
@@ -251,13 +246,13 @@ console.log(value);
 			showLayer(app.searchResult, true);
 			
 			app.map.fitBounds(app.searchResult.geoJsonLayer.getBounds());
+		*/
 		},
 		error: function(e){
 			console.log("error upload file")
 			console.log(e)
 		}
 	});
-	
 }
 
 
@@ -270,8 +265,6 @@ function showLayer(obj, isShow){
 		//feature count
 		obj.featureCount=0;
 		
-console.log("SHOWINGLAYER");
-
 
 		//show layer
 		switch(obj.type){
@@ -302,7 +295,7 @@ console.log("SHOWINGLAYER");
 					if(!obj.geoJsonLayer){
 						var layers=[], 
 							zipcodes={};
-						obj.geoJsonLayer=new L.geoJson(obj.json, {
+						obj.geoJsonLayer = new L.geoJson(obj.json, {
 								onEachFeature:function(feature,layer){
 									var html=pathgeo.util.objectToHtml(feature.properties);
 									
