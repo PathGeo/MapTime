@@ -41,7 +41,7 @@ var app={
 //		    }
 //		}),
 		legend: L.Control.extend({
-		    options: {position: 'topright',text: 'Legend',},
+		    options: {position: 'bottomright',text: 'Legend',},
 			initialize: function (options) {L.Util.setOptions(this, options);},
 		    onAdd: function (map) {
 		        // create the control container with a particular class name
@@ -153,18 +153,6 @@ function init_map(){
 			});
 		}
 	});
-	
-	
-	//read demographic data
-	pathgeo.service.demographicData({
-		// filter:{
-			// type:"zipcode",
-			// value:"94131"
-		// },
-		callback:function(geojsonLayer){
-			app.layers.demographicData=geojsonLayer;
-		}
-	});
 }
 
 
@@ -214,12 +202,6 @@ function init_UI(){
 	$("#uploadData_input").change(function(){
 		var value=$(this).val();
 		//if user select a file
-		
-/*
-console.log($(this));
-console.log("UPLOADING DATA: ");
-console.log(value);
-*/
 		if(value){
 			$("#uploadData_description").hide();
 			$("#uploadData_confirm").show();
@@ -270,9 +252,6 @@ function showLayer(obj, isShow){
 		//feature count
 		obj.featureCount=0;
 		
-console.log("SHOWINGLAYER");
-
-
 		//show layer
 		switch(obj.type){
 			case "GEOJSON":
@@ -745,57 +724,35 @@ function showLocalInfo(id, jumpToDataTablePage){
 		var value=$(this).attr("value");
 		
 		if(app.layers.demographicData){
-			var demographic=app.layers.demographicData;
-			//highlight the zipcode boundary
-			demographic.redrawStyle(value, function(f){
-				var defaultStyle=demographic.options.styles(f,value);
-		
-				if(f.properties["ZIP"]==feature.properties["zip"]){
-					defaultStyle.width=4;
-					defaultStyle.color="#666";
-					defaultStyle.dashArray='';
-				}
-				
-				return defaultStyle;
-			}); 
-			
-			//change legend
-			$(".leaflet-control-legend").html(demographic.getLegend(value));
+			app.layers.demographicData.redrawStyle(value); 
 		}
 	});
 	
-	
-	//highlight the zipcode boundary and show demographic data
-	app.layers.demographicData.redrawStyle("HC01_VC04", function(f){
-		var defaultStyle=app.layers.demographicData.options.styles(f,"HC01_VC04");
-		
-		if(f.properties["ZIP"]==feature.properties["zip"]){
-			defaultStyle.width=4;
-			defaultStyle.color="#666";
-			defaultStyle.dashArray='';
+	//read demographic
+	pathgeo.service.demographicData({type:"zipcode", value:feature.properties["zip"]}, {
+		callback:function(geojsonLayer, legendHtml){
+			//remove previous
+			if(app.layers.demographicData){
+				app.map.removeLayer(app.layers.demographicData);
+			}
+			
+			app.layers.demographicData=geojsonLayer;
+			app.layers.demographicData.addTo(app.map);
+			//app.map.fitBounds(app.layers.demographicData.getBounds());
+
+			//chart
+			var sexData=[
+					['Sex', 'Population'],
+					['Male',  25678],
+					['Female',  28734]
+			];
+			//draw chart
+			showLocalInfoChart(sexData);
+			
+			//show legend
+			$(".leaflet-control-legend").html(legendHtml);
 		}
-		
-		return defaultStyle;
 	});
-	app.layers.demographicData.addTo(app.map);//.bringToBack();
-	//app.map.fitBounds(app.layers.demographicData.getBounds());
-
-
-	//show legend
-	var defaultType=$("#demographic_type div[data-role='collapsible'] h3").attr("value");
-	$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
-			
-			
-	//chart
-	var sexData=[
-			['Sex', 'Population'],
-			['Male',  25678],
-			['Female',  28734]
-	];
-	//draw chart
-	showLocalInfoChart(sexData);
-
-
 	
 	
 	
