@@ -366,7 +366,7 @@ function showLayer(obj, isShow){
 						
 						//zipcodes
 						obj.zipcodes=zipcodes;
-						console.log(obj)
+						//console.log(obj)
 						
 						app.controls.toc.addOverlay(obj.geoJsonLayer, "GeoJSON");
 						obj.layer=obj.geoJsonLayer;

@@ -14,46 +14,100 @@ function callPython(){
 	var rad = document.getElementById("socialMedia_spatial").value;
 	var ts = (Math.floor(Date.now()/1000)) - (document.getElementById("socialMedia_temporal").value);
 	
-	//Search Flickr
-	$.ajax({
-		type: "POST",
-		url: "photo_search.py",
-		data: {kwd:keyword, lat:lng, lng:lat, rad:rad, ts:ts},
-		beforeSend: function(xhr){
-			if (xhr.overrideMimeType){
-				xhr.overrideMimeType("application/json");
-			}
-		}
-	}).success(function( contact ) {
+	var source = document.getElementById("socialMedia_source").value;
 	
-		if (contact == 0){
-			$("#test").html('');
-			alert("No results were found");
-		}
+	
+	if(source == "flickr"){
+		//Search Flickr
+		$.ajax({
+			type: "POST",
+			url: "photo_search.py",
+			data: {kwd:keyword, lat:lng, lng:lat, rad:rad, ts:ts},
+			beforeSend: function(xhr){
+				if (xhr.overrideMimeType){
+					xhr.overrideMimeType("application/json");
+				}
+			}
+		}).success(function( contact ) {
 		
-		else{
-			var count = contact.length;
-			$("#test").html('');
-		
-			for(i=0; i<count; i++){
-			
-				var title = contact[i].properties.Title;
-				var description = contact[i].properties.Description;
-				var image = contact[i].properties.Img;
-				var date = contact[i].properties.Date;
-			
-				var results = "<li><h2>" + title + "</h2>" + image + "<br/><br/><p>" + date + "</p><p>" + description + "</p></li>";
-				$("#test").append(results);
+			if (contact == 0){
+				$("#search_results").html('');
+				alert("No results were found");
 			}
 			
-			$('#test').trigger('create');
-			$('#test').listview('refresh');
+			else{
+				var count = contact.length;
+				$("#search_results").html('');
 			
-			setDataMedia(contact);
-			app.map.fitBounds(curLayer.getBounds());
-		}
+				for(i=0; i<count; i++){
+				
+					var title = contact[i].properties.Title;
+					var description = contact[i].properties.Description;
+					var image = contact[i].properties.Img;
+					var date = contact[i].properties.Date;
+				
+					var results = "<li><h2>" + title + "</h2>" + image + "<br/><br/><p>" + date + "</p><p>" + description + "</p></li>";
+					$("#search_results").append(results);
+				}
+				
+				$('#search_results').trigger('create');
+				$('#search_results').listview('refresh');
+				
+				setDataMedia(contact);
+				app.map.fitBounds(curLayer.getBounds());
+			}
 
-	});
+		});
+	}
+	
+	
+	if(source == "twitter"){
+		//Search Twitter
+		$.ajax({
+			type: "POST",
+			url: "twitter_search.py",
+			data: {kwd:keyword, lat:lng, lng:lat, rad:rad, ts:ts},
+			beforeSend: function(xhr){
+				if (xhr.overrideMimeType){
+					xhr.overrideMimeType("application/json");
+				}
+			}
+		}).success(function( contact ) {
+		
+			if (contact == 0){
+				$("#search_results").html('');
+				alert("No results were found");
+			}
+			
+			else{
+				var count = contact.length;
+				$("#search_results").html('');
+			
+				for(i=0; i<count; i++){
+				
+					var title = contact[i].properties.Title;
+					//var description = contact[i].properties.Description;
+					//var image = contact[i].properties.Img;
+					//var date = contact[i].properties.Date;
+					var lat = contact[i].geometry.coordinates[0];
+				
+					var results = "<li><h2>" + title + "</p></li>";
+					$("#search_results").append(results);
+				}
+				
+				$('#search_results').trigger('create');
+				$('#search_results').listview('refresh');
+				
+				setDataMedia(contact);
+				app.map.fitBounds(curLayer.getBounds());
+			}
+
+		});
+	
+	}
+	
+	
+	
 }
 
 function getClusterLayerMedia(gjData) {
@@ -120,13 +174,23 @@ function getClusterLayerMedia(gjData) {
 function getPointLayerMedia(gjData) { 
 	var pointLayer = new L.geoJson([], {
 		onEachFeature: function (feature, layer) {
-			var props = feature.properties;
+			var props = feature.properties;		
 			var html = "<div class='popup'><ul><li><span class='clusterInfo'>" + props.Title + "</span><br><div class='extras' style='display: block;'> " + props.Img + "<br><br>" + props.Description + "</li></ul></div>";
 			layer.bindPopup(html);
 		}, 	pointToLayer: function (feature, latlng) {
+		
+			var props = feature.properties;
+			var url;
+			if(props.Source == "flickr"){
+				url = "images/photoIcon.png";
+			}
+			else{
+				url = "images/tweetIcon.png";
+			}
+		
 			var icon = L.icon({ 
-				iconUrl: "images/photoIcon.png",
-				popupAnchor: [16, 2],
+				iconUrl: url,
+				popupAnchor: [0, 0],
 			});
 
 			marker = L.marker(latlng, {icon: icon});
@@ -189,6 +253,6 @@ function switchLayersMedia(newLayerName) {
 function setDataMedia(data) {
 	curData = data;
 	$(".features").removeClass("selected").addClass("selectable");
-	switchLayersMedia("cluster");
+	switchLayersMedia("point");
 	$("#point").toggleClass("selected selectable");
 }

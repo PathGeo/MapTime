@@ -323,19 +323,15 @@
 				<input type="hidden" id="lat" value="test">
 				<input type="hidden" id="lng" value="test">
 				<!-- social media spatial filter -->
-				<div data-role="fieldcontain" style='margin:3px;'>
+				<div data-role="fieldcontain" style='margin:3px;'/>
 					<label for='socialMedia_spatial' style='font-size:12px; font-weight:bold;'>Spatial Filter: </label>
 					<select id='socialMedia_spatial' name='socialMedia_spatial' data-mini="true">
 						<option value='5'>5 miles of the address</option>
 						<option value='10'>10 miles of the address</option>
 						<option value='15'>15 miles of the address</option>
-						<!--<option value='zipcode'>zipcode level</option>
-						<option value='city'>city level</option>
-						<option value='county'>county level</option>
-						<option value='state'>state level</option>-->
 					</select>
 				<!-- social media temporal filter -->
-				<div data-role="fieldcontain" style='margin:3px;'>
+				<div data-role="fieldcontain" style='margin:3px;'/>
 					<label for='socialMedia_temporal' style='font-size:12px; font-weight:bold;'>Temporal Filter: </label>
 					<select id='socialMedia_temporal' name='socialMedia_temporal' data-mini="true">
 						<option value='604800'>last week</option>
@@ -343,70 +339,17 @@
 						<option value='31536000'>last year</option>
 						<option value='63072000'>last 2 years</option>
 					</select>
+					<div data-role="fieldcontain" style='margin:3px;'/>
+					<label for='socialMedia_source' style='font-size:12px; font-weight:bold;'>Temporal Filter: </label>
+					<select id='socialMedia_source' name='socialMedia_source' data-mini="true">
+						<option value='flickr'>Flickr</option>
+						<option value='twitter'>Twitter</option>
+					</select>
 				<button type='button' onclick='callPython()' data-mini="true">Search</button>
 
 				<p></p>
 				<div id='socialMedia_result'>
-					<ul data-role="listview" data-inset="true" id="test">
-						<!--<li data-role="list-divider">5 miles<span class="ui-li-count">2</span></li>
-					    <li>
-					    	<a href="#">
-						        <img src="images/1365860337_cube.png" class="ui-li-icon">
-						        <h2>Ming</h2>
-						        <p>I want to buy shoes......</p>
-							</a>
-						</li>
-					    <li>
-					    	<a href="#">
-						        <img src="images/1365860337_cube.png" class="ui-li-icon">
-						        <h2>Jay</h2>
-						        <p>where is my sneaker?</p>
-							</a>
-						</li>
-						<li data-role="list-divider">10 miles<span class="ui-li-count">5</span></li>
-					    <li>
-					    	<a href="#">
-						        <img src="images/1365860337_cube.png" class="ui-li-icon">
-						        <h2>Joe</h2>
-						        <p>Wow....I never know you wear shoes. lol</p>
-							</a>
-						</li>
-						<li>
-					    	<a href="#">
-						        <img src="images/1365860337_cube.png" class="ui-li-icon">
-						        <h2>Chris</h2>
-						        <p>Jay, I saw your sneaker are in the Zahn center.</p>
-							</a>
-						</li>
-						<li>
-					    	<a href="#">
-						        <img src="images/1365860337_cube.png" class="ui-li-icon">
-						        <h2>Su</h2>
-						        <p>Why you put your sneaker in the Zahn center?</p>
-							</a>
-						</li>
-						<li>
-					    	<a href="#">
-						        <img src="images/1365860337_cube.png" class="ui-li-icon">
-						        <h2>Nathan</h2>
-						        <p>no comment........</p>
-							</a>
-						</li>
-						<li>
-					    	<a href="#">
-						        <img src="images/1365860337_cube.png" class="ui-li-icon">
-						        <h2>Ryan</h2>
-						        <p>..............</p>
-							</a>
-						</li>
-						<li data-role="list-divider">15 miles<span class="ui-li-count">1</span></li>
-						<li>
-					    	<a href="#">
-						        <img src="images/1365860337_cube.png" class="ui-li-icon">
-						        <h2>Calvin</h2>
-						        <p>...................</p>
-							</a>
-						</li>-->
+					<ul data-role="listview" data-inset="true" id="search_results" style="height:300px">
 					</ul>
 				</div>
 			</div>

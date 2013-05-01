@@ -42,6 +42,7 @@ for i in output['photos']['photo']:
 	doc['properties']["Img"] = image
 	doc['properties']["Description"] = i['description']['_content']
 	doc['properties']["Date"] = i['datetaken']
+	doc['properties']["Source"] = "flickr"
 	
 	results.append(doc)
 	
