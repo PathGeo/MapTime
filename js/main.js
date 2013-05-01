@@ -222,6 +222,7 @@ function init_UI(){
 
 	});
 
+	/*
 	//form
 	$('#uploadData_form').ajaxForm({
 		dataType:  'json',
@@ -232,7 +233,7 @@ function init_UI(){
 console.log("Got Data:");
 console.log(data);
 
-		/*
+		
 			app.searchResult={
 				 name: "searchResult", 
 				 type: "GEOJSON",
@@ -246,13 +247,14 @@ console.log(data);
 			showLayer(app.searchResult, true);
 			
 			app.map.fitBounds(app.searchResult.geoJsonLayer.getBounds());
-		*/
+		
 		},
 		error: function(e){
 			console.log("error upload file")
 			console.log(e)
 		}
 	});
+*/
 }
 
 
