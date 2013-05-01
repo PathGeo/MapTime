@@ -54,10 +54,13 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #socialMedia_result .ui-li-heading {font-size:13px;}
 #socialMedia_result .ui-li-desc {font-size:10px;}
 
-/** demographic data */
-#localInfo_demographicData {height:92%;}
-#demographic_type {height:80%; overflow-y:auto;}
 
+/** demographic data */
+#localInfo_demographicData {height:92%; position:relative;}
+#localInfo_demographicData label.ui-select{font-size:110%; font-weight:bold;}
+#demographic_type {height:80%; overflow-y:auto;}
+#demographic_result {height:85%;}
+#demographic_downloadReport {position:absolute; top:-5px; right:0px; cursor:pointer; width:25px;}
 
 /**
  * data list

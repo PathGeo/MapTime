@@ -281,18 +281,36 @@
 			
 			<div id='localInfo_demographicData'>
 				<!-- demographic spatial-->
-				<select id='demographic_spatial' data-mini="true">
-					<!--<option value='address'>5/10/15 miles of the address</option>-->
+				<!--<label for='demographic_spatial'></label>
+				<select id='demographic_spatial' name='demographic_spatial' data-mini="true">
+					<option value='address'>5/10/15 miles of the address</option>
 					<option value='zipcode'>zipcode level</option>
 					<option value='city'>city level</option>
 					<option value='county'>county level</option>
+				</select>-->
+				
+				<!-- business intelligent -->
+				<label for='demographic_bi'>Business Actions</label>
+				<select id='demographic_bi' name='demographic_bi' data-mini="true">
+					<option value='top_users'>Top Users</option>
+					<option value='top_sales'>Top Sales</option>
+					<option value='avg_income_from_users'>Average Income from Users</option>
+					<option value='most_language_from_users'>Most Language from Users</option>
+					<option value='potential_market'>Potential Market</option>
 				</select>
 				
-				<!-- demographic dataType-->
-				<div id='demographic_type' data-role="collapsible-set" data-theme="c" data-content-theme="d" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-d"> </div>
 				
-				<a href='images/pathgeo_report.pdf' data-role='button' target='_blank'>Download Report</a>
-				<P></P>
+				<!-- demographic result-->
+				<div id='demographic_result'></div>
+				
+				<!-- demographic dataType (seleect differnt types of demographic data)--> 
+				<!--<div id='demographic_type' data-role="collapsible-set" data-theme="c" data-content-theme="d" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-d"> </div>
+				-->
+				
+				<!-- download report -->
+				<img id='demographic_downloadReport' src='images/1367454585_Cloud Download Off.png'  onclick='window.open("images/pathgeo_report.pdf")' title='Download Report' />
+				<!--<a href='images/pathgeo_report.pdf' data-role='button' target='_blank'>Download Report</a>
+				<P></P>-->
 				
 				<!--<div id='localInfo_chart' style='overflow-y:auto; overflow-x:hidden'></div>-->
 			</div>

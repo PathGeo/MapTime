@@ -53,6 +53,15 @@
     <!-- main -->
  	<script src="js/main.js" type="text/javascript"></script>
 	<script src="js/social_media.js" type="text/javascript"></script>
+	
+     
+        <!-- fake function for login -->
+        <script type="text/javascript">
+            function fakeLogin(){
+                $("#usermenu_list").show();
+                $("#user_login").hide();                
+            }
+        </script>
   </head>
   
   
@@ -61,13 +70,16 @@
   		
 		<!--header-->
 		<div id='header' class='ui-bar ui-bar-b'  >
-			<h1 style='padding:10px 10px 10px 5px'>MapTime : <label id='lbl_dataName'></label></h1>
+			<h1>
+				<img src='images/PathGeo-color.png' height=35px onclick='window.open("http://www.pathgeo.com")'/>
+				<div>MapTime : <label id='lbl_dataName'></label></div>
+			</h1>
 			
 			<a href="#dialog_usermenu" data-rel='popup' data-role='button' data-position-to="origin" data-inline="true" data-transition="slideup" data-icon="home" class="" data-mini="true" style='float:right'>User</a> 
 	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>
-			<a href="#dialog_sharemap" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="star" class="" data-mini="true" style='float:right'>Share</a>
+			<!--<a href="#dialog_sharemap" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="star" class="" data-mini="true" style='float:right'>Share</a>-->
 			<!--<a href="#dialog_dataPanel" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="bars" class="" data-mini="true" style='float:right'>Data List</a>-->
-			<a href="#dialog_uploadData" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="grid" class="" data-mini="true" style='float:right'>Upload Data</a>
+			<a href="#dialog_uploadData" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right' onclick='$("#uploadData_confirm").hide(); $("#uploadData_description").show();'>Upload Data</a>
 		</div>
 		
 		
@@ -78,23 +90,37 @@
 				
 			<!-- data table -->
 			<div id='dataPanel'>
-				<div id='dataTable_control'></div><br>
+				<div id='dataTable_control'></div>
 				<table cellpadding="0" cellspacing="0" border="0" class="display" id="dataTable"></table>
 				
 				<!-- dataTable chart-->
 				<div id='dataTable_chart' style='display:none'>
-					<fieldset data-role="controlgroup" data-mini="true" data-type="horizontal">
-					 	<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_area" value="AreaChart" checked="checked">
-					 	<label for="dataTable_chartType_area">Area Chart</label>
-						<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_line" value="LineChart">
-						<label for="dataTable_chartType_line">Line Chart</label>
-						<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_bar" value="BarChart">
-						<label for="dataTable_chartType_bar">Bar Chart</label>
-					</fieldset>
-					<select id="select_y" data-mini="true"><option selected="selected">Please select Y axis</option></select>
-					<select id="select_x" data-mini="true"><option selected="selected">Please select X axis</option></select>
-				
+					<!--chart control-->
+					<div id='dataTable_chartControl' title='Chart settings'  onclick='$("#dataTable_chartControlMenu").css({left:-($("#dataTable_chartControlMenu").width()-10)}).show();'>
+						<img src='images/1365859519_cog.png' width=25px height=25px />
+						<div id='dataTable_chartControlMenu'>
+							Change Chart Type:<br>
+							<fieldset data-role="controlgroup" data-mini="true" data-type="horizontal">
+							 	<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_area" value="AreaChart" checked="checked">
+							 	<label for="dataTable_chartType_area">Area Chart</label>
+								<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_pie" value="PieChart">
+								<label for="dataTable_chartType_pie">Pie Chart</label>
+								<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_column" value="ColumnChart">
+								<label for="dataTable_chartType_column">Column Chart</label>
+							</fieldset>
+							<hr>
+							Change X and Y axis: 
+							<fieldset data-role="controlgroup" data-type="horizontal">
+								<label for="select_x">X:</label>
+								<select id="select_x" name='select_x' data-mini="true"><option value='none'>Select X Axis</option></select>
+								
+								<label for="select_y">Y:</label>
+								<select id="select_y" name='select_y' data-mini="true"><option value='none'>Select Y Axis</option></select>
+							</fieldset>
+						</div>
+					</div>
 					
+					<!--chart content-->
 					<div id='dataTable_chartContent'></div>
 				</div>
 			</div>
@@ -106,29 +132,86 @@
 	
 		<!-- dialog -->
 		<!-- upload data -->
-		<div id='dialog_uploadData' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true" style='width:600px'>
+		<div id='dialog_uploadData' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false" style=''>
 			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
 			
-			<form action="uploadSpreadsheet.py" method="post" id="upload_excel" enctype="multipart/form-data" style="width: 80%; margin: 0 auto;">
+			<form action="geocodeTable.py" method="post" id="uploadData_form" enctype="multipart/form-data" style="width: 80%; margin: 0 auto;">
 				<fieldset>
-					<input type="file" name="photo" id="photo" style="">
-					<input id="submit_button" type="submit" value="Upload">
-					<img id='img_loading' src="images/loading.gif" width=15px style='display:none;' />
+					
+					<input type="file" name="photo" id="uploadData_input" style="">
+					<input id="submit_button" type="submit" value="Map Your Data" data-theme="b">			
+					<!-- upload content-->
+					<!--
+					<div id='uploadData_content'>
+						<div id='uploadData_description' >
+							<h3>Upload and Map Your Data:</h3><br>
+							MapTime only support XLS format for this beta version. <P></P>
+							We will support more data formats in the near future.	
+						</div>
+						
+						<div id='uploadData_confirm' style='display:none'>
+							<img id='img_loading' src="images/loading.gif" width=15px  />
+							
+							<div data-role="fieldcontain">
+								<label for="uploadData_geocodingField">Select geocoding column: </label>
+								<select id='uploadData_geocodingField' name='uploadData_geocodingField' data-mini='true'>
+									<option>1</option>
+									<option>2</option>
+									<option>3</option>
+									<option>4</option>
+									<option>5</option>
+									<option>6</option>
+								</select>
+							</div>
+							
+							<div id='uploadData_agreement'>
+								this is a agreement
+							</div>
+							
+							
+							<label for='uploadData_agreementCheck'>I agree the agreement</label>
+							<input type='checkbox' id='uploadData_agreementCheck' name='uploadData_agreementCheck' />
+							
+							<div style='float:right; width:50%;'>
+								<input id="submit_button" type="submit" value="Map Your Data" data-theme="b">
+							</div>
+						</div>
+					</div>
+					-->
+					
 				</fieldset>
 			</form>
 			
-			<input type='button' value='DEMO Data' onclick='showLayer(app.searchResult, true)'/>
+			
+			<!--<input type='button' value='DEMO Data' onclick='showLayer(app.searchResult, true)'/>-->
 		</div>
 		
 		
 		<!--user menu-->
 		<div id='dialog_usermenu' data-role="panel" data-position="right"  data-display="overlay" data-theme="a"  >
-				<ul data-role="listview" data-inset="true" style="min-width:210px;" data-theme="d">
-		            <li><a href="#">Upgrade Account</a></li>
-		            <li><a href="#">History</a></li>
-		            <li><a href="#">Settings</a></li>
-		            <li><a href="#">Log out</a></li>
-		        </ul>
+                            <fieldset id='user_login'>
+            
+                               <!-- <asp:Literal runat="server" ID="litMessage"></asp:Literal>-->
+
+                                <label for="email">Email:</label>
+                                <input type="email" name="email" id="email" value=""  />
+
+                                <label for="password">Password:</label>
+                                <input type="password" name="password" id="password" value="" />
+
+                                    <input id="Submit1" type="submit" value="Login" data-role="button" data-inline="true" data-theme="b" onclick="fakeLogin()" />
+
+                                <hr />Don't have a login? <a href="#">Sign Up</a>
+                                <br />Forgot password? <a href="#">Click here</a>
+                            </fieldset>
+                            <div id='usermenu_list' style='display:none'>
+                                <ul data-role="listview" data-inset="true" style="min-width:210px;" data-theme="d">
+                                    <li><a href="#">Upgrade Account</a></li>
+                                    <li><a href="#">History</a></li>
+                                    <li><a href="#">Settings</a></li>
+                                    <li><a href="#">Log out</a></li>
+                                </ul>
+                           </div>
 		</div>
 		
 		
@@ -188,8 +271,8 @@
 	
 		<!-- localInfo-->
 		<div id='localInfo'>
-			<a href="#" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext"  style='position:absolute; right:-10px; top:-6px;' onclick='$("#localInfo").hide();app.map.removeLayer(app.layers.demographicData);'>Close</a>
-			<div data-role="navbar">
+			<a href="#" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext"  style='position:absolute; right:-10px; top:-6px;' onclick='$("#localInfo").hide();app.map.removeLayer(app.layers.demographicData);$(".leaflet-control-legend").hide();'>Close</a>
+			<div data-role="navbar" style='margin-bottom:15px;'>
 			    <ul>
 			        <li><a href="#" class="ui-btn-active" onclick='$("#localInfo_demographicData").show();$("#localInfo_socialMedia").hide();'>Demographic Data</a></li>
 			        <li><a href="#" onclick='$("#localInfo_demographicData").hide();$("#localInfo_socialMedia").show();'>Social Media</a></li>
@@ -199,43 +282,55 @@
 			<div id='localInfo_demographicData'>
 				<!-- demographic spatial-->
 				<select id='demographic_spatial' data-mini="true">
-					<option value='address'>5/10/15 miles of the address</option>
+					<!--<option value='address'>5/10/15 miles of the address</option>-->
 					<option value='zipcode'>zipcode level</option>
 					<option value='city'>city level</option>
 					<option value='county'>county level</option>
-					<option value='state'>state level</option>
 				</select>
 				
 				<!-- demographic dataType-->
 				<div id='demographic_type' data-role="collapsible-set" data-theme="c" data-content-theme="d" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-d"> </div>
 				
-				
+				<a href='images/pathgeo_report.pdf' data-role='button' target='_blank'>Download Report</a>
 				<P></P>
+				
 				<!--<div id='localInfo_chart' style='overflow-y:auto; overflow-x:hidden'></div>-->
 			</div>
 			
 			<div id='localInfo_socialMedia' style='display:none;'>
-				<input id='socialMedia_keyword' type='text' value='input your keyword' data-mini="true"/>
+				<div data-role="fieldcontain" style='margin:3px;'>
+					<label for='socialMedia_keyword' style='font-size:12px; font-weight:bold;'>Keyword: </label>
+					<input id='socialMedia_keyword' name='socialMedia_keyword' type='text' value='input your keyword' data-mini="true" onclick='this.value=""'/>
+				</div>
+				<input type="hidden" id="lat" value="test">
+				<input type="hidden" id="lng" value="test">
 				<!-- social media spatial filter -->
-				<select id='socialMedia_spatial' data-mini="true">
-					<option value='address'>5/10/15 miles of the address</option>
-					<option value='zipcode'>zipcode level</option>
-					<option value='city'>city level</option>
-					<option value='county'>county level</option>
-					<option value='state'>state level</option>
-				</select>
+				<div data-role="fieldcontain" style='margin:3px;'>
+					<label for='socialMedia_spatial' style='font-size:12px; font-weight:bold;'>Spatial Filter: </label>
+					<select id='socialMedia_spatial' name='socialMedia_spatial' data-mini="true">
+						<option value='5'>5 miles of the address</option>
+						<option value='10'>10 miles of the address</option>
+						<option value='15'>15 miles of the address</option>
+						<!--<option value='zipcode'>zipcode level</option>
+						<option value='city'>city level</option>
+						<option value='county'>county level</option>
+						<option value='state'>state level</option>-->
+					</select>
 				<!-- social media temporal filter -->
-				<select id='socialMedia_temporal' data-mini="true">
-					<option value='recent 10mins'>recent 10mins</option>
-					<option value='recent 30mins'>recent 30mins</option>
-					<option value='recent 1hr'>recent 1hr</option>
-					<option value='recent 1day'>recent 1day</option>
-					<option value='recent 1month'>recent 1month</option>
-				</select>
+				<div data-role="fieldcontain" style='margin:3px;'>
+					<label for='socialMedia_temporal' style='font-size:12px; font-weight:bold;'>Temporal Filter: </label>
+					<select id='socialMedia_temporal' name='socialMedia_temporal' data-mini="true">
+						<option value='604800'>last week</option>
+						<option value='2592000'>last month</option>
+						<option value='31536000'>last year</option>
+						<option value='63072000'>last 2 years</option>
+					</select>
+				<button type='button' onclick='callPython()' data-mini="true">Search</button>
+
 				<p></p>
 				<div id='socialMedia_result'>
-					<ul data-role="listview" data-inset="true">
-						<li data-role="list-divider">5 miles<span class="ui-li-count">2</span></li>
+					<ul data-role="listview" data-inset="true" id="test">
+						<!--<li data-role="list-divider">5 miles<span class="ui-li-count">2</span></li>
 					    <li>
 					    	<a href="#">
 						        <img src="images/1365860337_cube.png" class="ui-li-icon">
@@ -293,7 +388,7 @@
 						        <h2>Calvin</h2>
 						        <p>...................</p>
 							</a>
-						</li>
+						</li>-->
 					</ul>
 				</div>
 			</div>

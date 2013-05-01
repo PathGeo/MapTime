@@ -221,6 +221,14 @@ function init_UI(){
 		}
 
 	});
+	
+	
+	//business intelligent click event
+	$("#demographic_bi").change(function(){
+		showBusinessAction(this.value);
+	});
+	
+	
 
 	/*
 	//form
@@ -320,6 +328,7 @@ function showLayer(obj, isShow){
 											
 											if(zipcodes[code]){
 												zipcodes[code].ids.push(id);
+												zipcodes[code].count=zipcodes[code].ids.length;
 												zipcodes[code].sales_sum=zipcodes[code].sales_sum + sales;
 											}else{
 												zipcodes[code]={
@@ -754,6 +763,9 @@ function showLocalInfo(id, jumpToDataTablePage){
 	
 			
 	//demographic Data
+	$("#demographic_bi").change();
+	
+	
 	var $obj=$("#demographic_type").html("");
 	$.each(app.demographicData, function(k,v){
 		$obj.append("<div data-role='collapsible'><h3 value='" + k + "'>"+v+"</h3><p><div id='localInfo_chart' style='overflow-y:auto; overflow-x:hidden'></div></p></div>");
@@ -801,7 +813,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 
 	//show legend
 	var defaultType=$("#demographic_type div[data-role='collapsible'] h3").attr("value");
-	$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
+	//$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
 			
 			
 	//chart
@@ -811,7 +823,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 			['Female',  28734]
 	];
 	//draw chart
-	showLocalInfoChart(sexData);
+	//showLocalInfoChart(sexData);
 
 
 	
@@ -860,7 +872,72 @@ function showLocalInfo(id, jumpToDataTablePage){
 	
 }
 	
+
+
+//business action
+function showBusinessAction(type){
+	var zipcodes=app.searchResult.zipcodes,
+		dataArray=[],
+		//draw chart
+		chartOptions={
+			googleChartWrapperOptions: {
+				chartType: "BarChart",
+				containerId: "demographic_result",
+				view:{columns:[0,1]},
+				options: {
+					width: 300,
+					height:500,
+					title: "",
+					titleX: "",
+					titleY: "",
+					legend: "none",//{position: 'top'},
+					chartArea: {width: '', height: '85%', top:10},
+					fontSize: 11,
+					vAxis:{titleTextStyle:{color:"black"}, textStyle:{color:"#ffffff"}},
+					hAxis:{titleTextStyle:{color:"#ffffff"}, textStyle:{color:"#ffffff"}},
+					backgroundColor: {fill:'transparent'}
+				}
+			},
+			callback:null,
+			callback_mouseover:null,
+			callback_mouseout:null,
+			callback_select:function(obj){
+				
+			}
+		};
 	
+	switch(type){
+		case "top_users":
+			dataArray=[["zipcodes", "users"]];
+			$.each(zipcodes, function(k,v){dataArray.push([k, v.count]);});
+			chartOptions.googleChartWrapperOptions.options.titleX="The number of users";
+			chartOptions.googleChartWrapperOptions.options.titleY="Zip Codes"
+		break;
+		case "top_sales":
+			dataArray=[["zipcodes", "sum_sales"]];
+			$.each(zipcodes, function(k,v){dataArray.push([k, v.sales_sum]);});
+			chartOptions.googleChartWrapperOptions.options.titleX="The sum of sales";
+			chartOptions.googleChartWrapperOptions.options.titleY="Zip Codes"
+		break;
+		case "avg_income_from_users":
+			
+		break;
+		case "most_language_from_users":
+			
+		break;
+		case "potential_market":
+			
+		break;
+	}
+	
+	
+	pathgeo.service.drawGoogleChart(dataArray, [chartOptions], null, null, {sort:[{column: 1, desc:true}]}); //sort, but the sequence of the chart data will be different with the geojson
+	
+	
+}
+
+
+
 
 //show chart in the dataTable
 function showDataTableChart(geojson){
