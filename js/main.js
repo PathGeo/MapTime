@@ -545,6 +545,10 @@ function showTable(obj){
 			});
 		});
 	
+		//if app.dataTable already exists, clear html in the .dataTable_na nad #dataTableControl to avoid duplicate nav and control toolboxes
+		if(app.dataTable){
+			$(".dataTable_nav, #dataTable_control").html("");
+		}
 
 		app.dataTable=$('#dataTable').dataTable({
 			"aaData": obj.datas,	//data
