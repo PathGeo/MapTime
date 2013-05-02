@@ -230,18 +230,19 @@ function init_UI(){
 	
 	
 
-	/*
 	//form
 	$('#uploadData_form').ajaxForm({
 		dataType:  'json',
-		timeout: 20000,
+		timeout: 200000,
+		
+		beforeSubmit: function () { alert("SUBMITTING!"); },
 		success: function(data) { 
 			if (!data || data.length <= 0) return;
 
-console.log("Got Data:");
-console.log(data);
+alert("Got Data:");
+alert(data);
 
-		
+		/*
 			app.searchResult={
 				 name: "searchResult", 
 				 type: "GEOJSON",
@@ -255,14 +256,14 @@ console.log(data);
 			showLayer(app.searchResult, true);
 			
 			app.map.fitBounds(app.searchResult.geoJsonLayer.getBounds());
-		
+		*/
 		},
 		error: function(e){
 			console.log("error upload file")
 			console.log(e)
 		}
 	});
-*/
+
 }
 
 
