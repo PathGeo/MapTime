@@ -259,7 +259,7 @@ function init_UI(){
 
 				app.map.fitBounds(app.searchResult.geoJsonLayer.getBounds());
 				
-				$("#dialog_uploadData").trigger("dialogclose");
+				$('.ui-dialog').dialog('close');
 				
 				
 			},
