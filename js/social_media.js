@@ -182,10 +182,10 @@ function getPointLayerMedia(gjData) {
 			var props = feature.properties;
 			var url;
 			if(props.Source == "flickr"){
-				url = "images/photoIcon.png";
+				url = "images/newPhoto.png";
 			}
 			else{
-				url = "images/tweetIcon.png";
+				url = "images/newTweet.png";
 			}
 		
 			var icon = L.icon({ 
