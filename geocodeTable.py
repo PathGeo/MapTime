@@ -28,5 +28,15 @@ for row in jsonRows:
 		doc = dict(type='Feature', geometry=dict(type="Point", coordinates=[lng, lat]), properties=row)
 		geoRows.append(doc)
 
+		
+
+
+#import pickle
+#pickle.dump(jsonRows, open(os.path.realpath(__file__) + "temp.p", "w"))
+		
+#print ''
+#print json.dumps(geoRows)
+
+
 print ''
-print json.dumps(geoRows);
+print json.dumps({'names': table.getColumnNames()})

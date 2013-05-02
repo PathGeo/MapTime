@@ -233,7 +233,26 @@ function init_UI(){
 		if (e.preventDefault) e.preventDefault();
 		return false;
 	});
-		
+
+	$("#uploadData_input").change(function() { 
+		$("#uploadData_form").ajaxSubmit({
+			dataType: 'json',
+			success: function (columns) {
+				for (var indx in columns.names) {
+					var column = columns.names[indx];
+					if (indx == 0)		
+						$("#uploadData_geocodingField").append($('<option selected></option>').val(column).html(column))
+					else
+						$("#uploadData_geocodingField").append($('<option></option>').val(column).html(column))
+				}	
+			}, error: function (error) {
+				console.log(error.responseText);
+			}
+		});
+	});
+	
+	
+	//Submits upload file form and captures the response
 	$('#uploadData_form').submit( function() {
 	
 		$(this).ajaxSubmit({
@@ -241,8 +260,6 @@ function init_UI(){
 			success: function(data) { 
 				if (!data || data.length <= 0) return;
 
-				//$("#dialog_uploadData").hide(); 
-				
 				app.map.removeLayer(app.geocodingResult.geoJsonLayer);
 
 				app.geocodingResult  = {
