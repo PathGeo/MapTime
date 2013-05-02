@@ -14,8 +14,8 @@ var app={
 	layers: {
 			"demographicData":null
 	},
-	searchResult:{
-			name: "searchResult", 
+	geocodingResult:{
+			name: "geocodingResult", 
 			type: "GEOJSON", 
 			url: "db/demo-data300.json",
 			srs: "EPSG:4326",
@@ -85,7 +85,7 @@ $(document).on("pageshow", function(){
     
 	
 	//directly shoing demo data
-	showLayer(app.searchResult,true)
+	showLayer(app.geocodingResult,true)
 	
 
 });
@@ -243,21 +243,20 @@ function init_UI(){
 
 				//$("#dialog_uploadData").hide(); 
 				
-				app.map.removeLayer(app.searchResult.geoJsonLayer);
+				app.map.removeLayer(app.geocodingResult.geoJsonLayer);
 
-				app.searchResult  = {
-					 name: "searchResult", 
+				app.geocodingResult  = {
+					 name: "geocodingResult", 
 					 type: "GEOJSON",
 					 json: data,
 					 srs: "EPSG:4326",
-					 title: "keyword",
-					 fieldName:{username:null, text:"text"},
-					 keywords: "testing"
+					 title: "Your Data",
+					 keywords: ["testing"]
 				 };
 				 
-				showLayer(app.searchResult, true);
+				showLayer(app.geocodingResult, true);
 
-				app.map.fitBounds(app.searchResult.geoJsonLayer.getBounds());
+				app.map.fitBounds(app.geocodingResult.geoJsonLayer.getBounds());
 				
 				$('.ui-dialog').dialog('close');
 				
@@ -434,10 +433,16 @@ function showLayer(obj, isShow){
 				//main part
 				if(!obj.json){
 					$.getJSON(obj.url, function(json){
+						//if json is an array of features
+						json=(json instanceof Array)?{type:"FeatureCollection", features:json} : json;
+						
 						obj.json=json;
 						showGeojson(obj);
 					});
 				}else{
+					//if json is an array of features
+					obj.json=(obj.json instanceof Array)?{type:"FeatureCollection", features:obj.json} : obj.json;
+						
 					showGeojson(obj);
 				}
 			break;
@@ -468,7 +473,7 @@ function showLayer(obj, isShow){
 				obj.layer.addTo(app.map);
 				app.showLayers.push(obj.layer);
 				
-				app.map.fitBounds(app.searchResult.geoJsonLayer.getBounds());
+				app.map.fitBounds(app.geocodingResult.geoJsonLayer.getBounds());
 			}
 
 			//close dialog
@@ -489,13 +494,13 @@ function switchVisualization(types){
 	$.each(types, function(i,type){
 		switch(type){
 			case "MARKERCLUSTER":
-				layer=app.searchResult.markerClusterLayer.addTo(app.map);
+				layer=app.geocodingResult.markerClusterLayer.addTo(app.map);
 			break;
 			case "HEATMAP":
-				layer=app.searchResult.heatMapLayer.addTo(app.map);
+				layer=app.geocodingResult.heatMapLayer.addTo(app.map);
 			break;
 			case "GEOJSON":
-				layer=app.searchResult.geoJsonLayer.addTo(app.map);
+				layer=app.geocodingResult.geoJsonLayer.addTo(app.map);
 			break;
 		}
 		app.showLayers.push(layer);
@@ -550,15 +555,15 @@ function showTable(obj){
 			fnDrawCallback: function(){
 				
 				//backup orginal json to defaultJSON
-				if(!app.searchResult.defaultJSON){
-					app.searchResult.defaultJSON=app.searchResult.json;
+				if(!app.geocodingResult.defaultJSON){
+					app.geocodingResult.defaultJSON=app.geocodingResult.json;
 				}
 				
 				//if jumpPage==true, The datatable only jumps to the page. Don't need to re-read the geojson and redraw the table
 				if(!app.jumpPage){
 					//get filter data,
 					var	me=this,
-						features=app.searchResult.defaultJSON.features,
+						features=app.geocodingResult.defaultJSON.features,
 						geojson={
 							type:"FeatureCollection",
 							features:[]
@@ -591,19 +596,19 @@ function showTable(obj){
 							});
 							
 							
-							//overwrite app.searchResult.json and showlayer again
+							//overwrite app.geocodingResult.json and showlayer again
 							//remove geojsonLayer
-							if(geojson.features.length>0 && app.searchResult.geoJsonLayer){
-								app.map.removeLayer(app.searchResult.geoJsonLayer);
-								app.searchResult.geoJsonLayer=null;
-								app.searchResult.markerClusterLayer=null;
-								app.searchResult.heatMapLayer=null;
+							if(geojson.features.length>0 && app.geocodingResult.geoJsonLayer){
+								app.map.removeLayer(app.geocodingResult.geoJsonLayer);
+								app.geocodingResult.geoJsonLayer=null;
+								app.geocodingResult.markerClusterLayer=null;
+								app.geocodingResult.heatMapLayer=null;
 								
-								app.searchResult.json=geojson;
-								showLayer(app.searchResult, true);
+								app.geocodingResult.json=geojson;
+								showLayer(app.geocodingResult, true);
 								
 								//re-draw Chart
-								showDataTableChart(app.searchResult.json);
+								showDataTableChart(app.geocodingResult.json);
 							}
 						}
 					},500)
@@ -663,7 +668,7 @@ function showTable(obj){
 		//add events
 		var onchange=function(){
 			//show chart
-			showDataTableChart(app.searchResult.json);
+			showDataTableChart(app.geocodingResult.json);
 		}//end onchange event
 			
 		
@@ -704,7 +709,7 @@ function showInfobox(type, css, dom){
 			];
 						
 			$.each(mapGalleries, function(i,gallery){
-				html+="<li><input type='radio' name='mapGallery' value='" + gallery.value + "' " + ((app.searchResult[gallery.layerName]._map)?"checked=checked":"") + " onclick='if(this.checked){switchVisualization([this.value]);}' />&nbsp; &nbsp; "+ gallery.label +"</li>";
+				html+="<li><input type='radio' name='mapGallery' value='" + gallery.value + "' " + ((app.geocodingResult[gallery.layerName]._map)?"checked=checked":"") + " onclick='if(this.checked){switchVisualization([this.value]);}' />&nbsp; &nbsp; "+ gallery.label +"</li>";
 			});
 		break;
 		case "canned report":
@@ -731,7 +736,7 @@ function showInfobox(type, css, dom){
 
 //show local info
 function showLocalInfo(id, jumpToDataTablePage){
-	var layer=app.searchResult.geoJsonLayer.layers[id],
+	var layer=app.geocodingResult.geoJsonLayer.layers[id],
 		feature=layer.feature;
 	
 	
@@ -754,7 +759,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 			
 			
 	//reset layer to default style and change the selected layer icon
-	app.searchResult.geoJsonLayer.eachLayer(function(layer){
+	app.geocodingResult.geoJsonLayer.eachLayer(function(layer){
 		layer.setIcon(layer.defaultIcon).setOpacity(0.5);
 	});
 
@@ -882,7 +887,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 
 //business action
 function showBusinessAction(type){
-	var zipcodes=app.searchResult.zipcodes,
+	var zipcodes=app.geocodingResult.zipcodes,
 		dataArray=[],
 		//draw chart
 		chartOptions={

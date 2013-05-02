@@ -179,7 +179,7 @@
 			</form>
 			
 			
-			<!--<input type='button' value='DEMO Data' onclick='showLayer(app.geocodingResult, true)'/>-->
+			<!--<input type='button' value='DEMO Data' onclick='showLayer(app.searchResult, true)'/>-->
 		</div>
 		
 		
