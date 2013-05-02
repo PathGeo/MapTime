@@ -133,15 +133,14 @@
 		<!-- dialog -->
 		<!-- upload data -->
 		<div id='dialog_uploadData' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false" style=''>
-			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+			<a href="#" id="dialog_uploadData_close" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
 			
 			<form action="geocodeTable.py" method="post" id="uploadData_form" enctype="multipart/form-data" style="width: 80%; margin: 0 auto;">
 				<fieldset>
 					
 					<input type="file" name="photo" id="uploadData_input" style="">
-					<input id="submit_button" type="submit" value="Map Your Data" data-theme="b">			
+					<!--<input id="submit_button" type="submit" value="Map Your Data" data-theme="b">-->		
 					<!-- upload content-->
-					<!--
 					<div id='uploadData_content'>
 						<div id='uploadData_description' >
 							<h3>Upload and Map Your Data:</h3><br>
@@ -177,8 +176,6 @@
 							</div>
 						</div>
 					</div>
-					-->
-					
 				</fieldset>
 			</form>
 			

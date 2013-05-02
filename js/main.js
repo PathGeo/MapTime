@@ -228,42 +228,47 @@ function init_UI(){
 		showBusinessAction(this.value);
 	});
 	
-	
-
-	//form
-	$('#uploadData_form').ajaxForm({
-		dataType:  'json',
-		timeout: 200000,
-		
-		beforeSubmit: function () { alert("SUBMITTING!"); },
-		success: function(data) { 
-			if (!data || data.length <= 0) return;
-
-alert("Got Data:");
-alert(data);
-
-		/*
-			app.searchResult={
-				 name: "searchResult", 
-				 type: "GEOJSON",
-				 json: data,
-				 srs: "EPSG:4326",
-				 title: "keyword",
-				 fieldName:{username:null, text:"text"},
-				 keywords: "testing"
-			 };
-
-			showLayer(app.searchResult, true);
-			
-			app.map.fitBounds(app.searchResult.geoJsonLayer.getBounds());
-		*/
-		},
-		error: function(e){
-			console.log("error upload file")
-			console.log(e)
-		}
+	//This is necessary to prevent being redirected...
+	$('#uploadData_form').on('submit', function (e) {
+		if (e.preventDefault) e.preventDefault();
+		return false;
 	});
+		
+	$('#uploadData_form').submit( function() {
+	
+		$(this).ajaxSubmit({
+			dataType: 'json',
+			success: function(data) { 
+				if (!data || data.length <= 0) return;
 
+				//$("#dialog_uploadData").hide(); 
+				
+				app.map.removeLayer(app.searchResult.geoJsonLayer);
+
+				app.searchResult  = {
+					 name: "searchResult", 
+					 type: "GEOJSON",
+					 json: data,
+					 srs: "EPSG:4326",
+					 title: "keyword",
+					 fieldName:{username:null, text:"text"},
+					 keywords: "testing"
+				 };
+				 
+				showLayer(app.searchResult, true);
+
+				app.map.fitBounds(app.searchResult.geoJsonLayer.getBounds());
+				
+				$("#dialog_uploadData").trigger("dialogclose");
+				
+				
+			},
+			error: function(e){
+				console.log("error upload file")
+				console.log(e)
+			}
+		});
+	});
 }
 
 
