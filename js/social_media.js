@@ -73,8 +73,7 @@ function callPython(){
 				}
 			}
 		}).success(function( contact ) {
-		
-			if (contact == 0){
+			if (!contact){
 				$("#search_results").html('');
 				alert("No results were found");
 			}
@@ -82,7 +81,7 @@ function callPython(){
 			else{
 				var count = contact.length;
 				$("#search_results").html('');
-			
+
 				for(i=0; i<count; i++){
 				
 					var title = contact[i].properties.Title;
@@ -102,9 +101,10 @@ function callPython(){
 				app.map.fitBounds(curLayer.getBounds());
 			}
 
+		}).error(function(error) {
+			console.log(error);
 		});
-	
-	}
+		}
 	
 	
 	
@@ -190,7 +190,7 @@ function getPointLayerMedia(gjData) {
 		
 			var icon = L.icon({ 
 				iconUrl: url,
-				popupAnchor: [0, 0],
+				popupAnchor: [15, 2]
 			});
 
 			marker = L.marker(latlng, {icon: icon});
