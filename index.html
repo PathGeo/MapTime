@@ -284,12 +284,14 @@
 			<a href="#" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext"  style='position:absolute; right:-10px; top:-6px;' onclick='$("#localInfo").hide();app.map.removeLayer(app.layers.demographicData);$(".leaflet-control-legend").hide();'>Close</a>
 			<div data-role="navbar" style='margin-bottom:15px;'>
 			    <ul>
-			        <li><a href="#" class="ui-btn-active" onclick='$("#localInfo_demographicData").show();$("#localInfo_socialMedia").hide();'>Demographic Data</a></li>
-			        <li><a href="#" onclick='$("#localInfo_demographicData").hide();$("#localInfo_socialMedia").show();'>Social Media</a></li>
+			        <li><a href="#" class="ui-btn-active" onclick='$(".localInfo_tabs").hide();$("#localInfo_demographicData").show();'>Demographic Data</a></li>
+			        <li><a href="#" onclick='$(".localInfo_tabs").hide();$("#localInfo_businessActions").show();'>Business Actions</a></li>
+			        <li><a href="#" onclick='$(".localInfo_tabs").hide();$("#localInfo_socialMedia").show();'>Social Media</a></li>
 			    </ul>
 			</div>
 			
-			<div id='localInfo_demographicData'>
+			<!-- demographic data-->
+			<div id='localInfo_demographicData' class='localInfo_tabs'>
 				<!-- demographic spatial-->
 				<!--<label for='demographic_spatial'></label>
 				<select id='demographic_spatial' name='demographic_spatial' data-mini="true">
@@ -299,9 +301,25 @@
 					<option value='county'>county level</option>
 				</select>-->
 				
-				<!-- business intelligent -->
-				<label for='demographic_bi'>Business Actions</label>
-				<select id='demographic_bi' name='demographic_bi' data-mini="true">
+				<!-- demographic dataType (seleect differnt types of demographic data)--> 
+				<div id='demographic_type' data-role="collapsible-set" data-theme="c" data-content-theme="d" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-d"> </div>
+				
+				
+				
+				<!--<a href='images/pathgeo_report.pdf' data-role='button' target='_blank'>Download Report</a>
+				<P></P>-->
+				
+				<!--<div id='localInfo_chart' style='overflow-y:auto; overflow-x:hidden'></div>-->
+			</div>
+			
+			<!-- business intelligent -->
+			<div id='localInfo_businessActions' style='display:none;' class='localInfo_tabs'>
+				<!-- download report -->
+				<img id='businessActions_downloadReport' src='images/1367454585_Cloud Download Off.png'  onclick='window.open("images/pathgeo_report.pdf")' title='Download Report' />
+				
+				
+				<label for='businessActions_type'>Business Actions</label>
+				<select id='businessActions_type' name='businessActions_type' data-mini="true">
 					<option value='top_users'>Top Users</option>
 					<option value='top_sales'>Top Sales</option>
 					<option value='avg_income_from_users'>Average Income from Users</option>
@@ -310,22 +328,14 @@
 				</select>
 				
 				
-				<!-- demographic result-->
-				<div id='demographic_result'></div>
-				
-				<!-- demographic dataType (seleect differnt types of demographic data)--> 
-				<!--<div id='demographic_type' data-role="collapsible-set" data-theme="c" data-content-theme="d" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-d"> </div>
-				-->
-				
-				<!-- download report -->
-				<img id='demographic_downloadReport' src='images/1367454585_Cloud Download Off.png'  onclick='window.open("images/pathgeo_report.pdf")' title='Download Report' />
-				<!--<a href='images/pathgeo_report.pdf' data-role='button' target='_blank'>Download Report</a>
-				<P></P>-->
-				
-				<!--<div id='localInfo_chart' style='overflow-y:auto; overflow-x:hidden'></div>-->
+				<!-- business actions result-->
+				<div id='businessActions_result'></div>
 			</div>
+				
+		
 			
-			<div id='localInfo_socialMedia' style='display:none;'>
+			<!-- social media-->
+			<div id='localInfo_socialMedia' style='display:none;'  class='localInfo_tabs'>
 				<div data-role="fieldcontain" style='margin:3px;'>
 					<label for='socialMedia_keyword' style='font-size:12px; font-weight:bold;'>Keyword: </label>
 					<input id='socialMedia_keyword' name='socialMedia_keyword' type='text' value='input your keyword' data-mini="true" onclick='this.value=""'/>
@@ -350,7 +360,7 @@
 						<option value='63072000'>last 2 years</option>
 					</select>
 					<div data-role="fieldcontain" style='margin:3px;'/>
-					<label for='socialMedia_source' style='font-size:12px; font-weight:bold;'>Temporal Filter: </label>
+					<label for='socialMedia_source' style='font-size:12px; font-weight:bold;'>Social Media Filter: </label>
 					<select id='socialMedia_source' name='socialMedia_source' data-mini="true">
 						<option value='flickr'>Flickr</option>
 						<option value='twitter'>Twitter</option>

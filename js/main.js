@@ -224,7 +224,7 @@ function init_UI(){
 	
 	
 	//business intelligent click event
-	$("#demographic_bi").change(function(){
+	$("#businessActions_type").change(function(){
 		showBusinessAction(this.value);
 	});
 	
@@ -769,7 +769,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 	
 			
 	//demographic Data
-	$("#demographic_bi").change();
+	$("#businessActions_type").change();
 	
 	
 	var $obj=$("#demographic_type").html("");
@@ -819,7 +819,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 
 	//show legend
 	var defaultType=$("#demographic_type div[data-role='collapsible'] h3").attr("value");
-	//$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
+	$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
 			
 			
 	//chart
@@ -829,7 +829,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 			['Female',  28734]
 	];
 	//draw chart
-	//showLocalInfoChart(sexData);
+	showLocalInfoChart(sexData);
 
 
 	
@@ -888,7 +888,7 @@ function showBusinessAction(type){
 		chartOptions={
 			googleChartWrapperOptions: {
 				chartType: "BarChart",
-				containerId: "demographic_result",
+				containerId: "businessActions_result",
 				view:{columns:[0,1]},
 				options: {
 					width: 300,
