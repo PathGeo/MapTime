@@ -5,7 +5,7 @@ from GeocodingEngine.Geocoder import AddressGeocoder
 
 #Standard Libraries
 import cgi, json
-import cgitb
+import cgitb, os
 
 
 cgitb.enable()
@@ -31,12 +31,11 @@ for row in jsonRows:
 		
 
 
-#import pickle
-#pickle.dump(jsonRows, open(os.path.realpath(__file__) + "temp.p", "w"))
+import pickle
+pickle.dump(geoRows, open(os.path.abspath(__file__).replace(__file__, "temp.p"), "w"))
 		
 #print ''
 #print json.dumps(geoRows)
-
 
 print ''
 print json.dumps({'names': table.getColumnNames()})

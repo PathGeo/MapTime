@@ -233,18 +233,24 @@ function init_UI(){
 		if (e.preventDefault) e.preventDefault();
 		return false;
 	});
-
+		
+	//Submits form when user selects a file to upload
+	//The reponse is a list of column names, which are used to populate the drop-down menu
 	$("#uploadData_input").change(function() { 
 		$("#uploadData_form").ajaxSubmit({
 			dataType: 'json',
 			success: function (columns) {
+				//remove current options in the drop-down
+				$("#uploadData_geocodingField option").remove();
+				
+				//set new options according to the returned value names
 				for (var indx in columns.names) {
 					var column = columns.names[indx];
-					if (indx == 0)		
-						$("#uploadData_geocodingField").append($('<option selected></option>').val(column).html(column))
-					else
-						$("#uploadData_geocodingField").append($('<option></option>').val(column).html(column))
+					$("#uploadData_geocodingField").append($('<option></option>').val(column).html(column))
 				}	
+				
+				//make sure that the first option is selected
+				$("#uploadData_geocodingField").val(columns.names[0]).change();
 			}, error: function (error) {
 				console.log(error.responseText);
 			}
@@ -255,8 +261,10 @@ function init_UI(){
 	//Submits upload file form and captures the response
 	$('#uploadData_form').submit( function() {
 	
-		$(this).ajaxSubmit({
+		$.ajax({
 			dataType: 'json',
+			url: "retrieveGeocodedTable.py", 
+			data: { fileName: 'temp' }, //JUST FOR TESTING
 			success: function(data) { 
 				if (!data || data.length <= 0) return;
 
@@ -277,11 +285,9 @@ function init_UI(){
 				
 				$('.ui-dialog').dialog('close');
 				
-				
-			},
-			error: function(e){
-				console.log("error upload file")
-				console.log(e)
+			}, error: function (error) {
+				console.log("Error:");
+				console.log(error.responseText);
 			}
 		});
 	});
