@@ -135,10 +135,11 @@
 		<div id='dialog_uploadData' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false" style=''>
 			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
 			
-			<form action="geocodeTable.py" method="post" id="uploadData_form" enctype="multipart/form-data" style="width: 80%; margin: 0 auto;">
+			<form action="geocodeTable.py" method="post" id="uploadData_form" enctype="multipart/form-data" style="width: 90%; margin: 0 auto;">
 				<fieldset>
-					
-					<input type="file" name="photo" id="uploadData_input" style="">	
+					<div>
+						<input type="file" name="photo" id="uploadData_input" style="width: 95.8%;">
+					</div>
 					<!-- upload content-->
 					<div id='uploadData_content'>
 						<div id='uploadData_description' >
@@ -153,22 +154,17 @@
 							<div data-role="fieldcontain">
 								<label for="uploadData_geocodingField">Select geocoding column: </label>
 								<select id='uploadData_geocodingField' name='uploadData_geocodingField' data-mini='true'>
-									<option>1</option>
-									<option>2</option>
-									<option>3</option>
-									<option>4</option>
-									<option>5</option>
-									<option>6</option>
 								</select>
 							</div>
 							
 							<div id='uploadData_agreement'>
-								this is a agreement
+								This is the PathGeo agreement.  
 							</div>
-							
-							
+						</div>
+						<div id="uploadData_controls" style="width: 95.8%; padding-top: 100px;">
+							<!--NOTE:  NEED TO MOVE THIS OUTSIDE OF THIS DIV TO GET POSITION RIGHT -->
 							<label for='uploadData_agreementCheck'>I agree the agreement</label>
-							<input type='checkbox' id='uploadData_agreementCheck' name='uploadData_agreementCheck' />
+							<input type='checkbox' id='uploadData_agreementCheck' name='uploadData_agreementCheck' style="float: left; width: 150px;" />
 							
 							<div style='float:right; width:50%;'>
 								<input id="submit_button" type="submit" value="Map Your Data" data-theme="b">
@@ -179,7 +175,7 @@
 			</form>
 			
 			
-			<!--<input type='button' value='DEMO Data' onclick='showLayer(app.searchResult, true)'/>-->
+			<!--<input type='button' value='DEMO Data' onclick='showLayer(app.geocodingResult, true)'/>-->
 		</div>
 		
 		

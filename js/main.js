@@ -85,7 +85,7 @@ $(document).on("pageshow", function(){
     
 	
 	//directly shoing demo data
-	showLayer(app.geocodingResult,true)
+	showTable(app.geocodingResult)
 	
 
 });
@@ -312,6 +312,7 @@ function init_UI(){
 
 
 
+
 //load geojson
 function showLayer(obj, isShow){
 		//show title
@@ -320,37 +321,50 @@ function showLayer(obj, isShow){
 		//feature count
 		obj.featureCount=0;
 		
+		//layers
+		obj.layers=[];
+		
 
 		//show layer
 		switch(obj.type){
 			case "GEOJSON":
+				
 				//show geojson
 				//need to be prior than the main part, otherwise this function will not be triggered in Firefox
 				function showGeojson(object){
 					parseGeojson(object);
 					addLayer(object);
 					
-				
-					//show table
-					//convert geojson properties to array
-					if(!obj.dataTable){
-						obj.dataTable=pathgeo.util.geojsonPropertiesToArray(obj.json);
-						showTable(obj.dataTable);
-					}
-					
-
 					//hide loadData dialog
 					$("#dialog_uploadData").popup("close");
 				}
 				
 				
+				
 				//parse geojson
 				function parseGeojson(obj){
-					//create layer
-					if(!obj.geoJsonLayer){
-						var layers=[], 
-							zipcodes={};
-						obj.geoJsonLayer = new L.geoJson(obj.json, {
+					//remove layers
+					var layerNames=["geoJsonLayer", "markerClusterLayer", "heatMapLayer"],
+						showLayerNames=[];
+					$.each(layerNames, function(i,layerName){
+						var layer=obj[layerName];
+						if(layer){
+							//if layer._map has map object, that means the layer is shown in the map
+							if(layer._map){
+								showLayerNames.push(layerName);
+								app.map.removeLayer(layer);
+							}
+							app.controls.toc.removeLayer(layer);
+						}
+					});
+					
+				
+					var layers=[], 
+						zipcodes={};
+					
+					
+					//marker layer
+					obj.geoJsonLayer = new L.geoJson(obj.json, {
 								onEachFeature:function(feature,layer){
 									var html=pathgeo.util.objectToHtml(feature.properties);
 									
@@ -388,6 +402,7 @@ function showLayer(obj, isShow){
 									
 									//default icon
 									layer.defaultIcon=layer.options.icon;
+								
 									
 									//event
 									layer.on({
@@ -405,35 +420,55 @@ function showLayer(obj, isShow){
 								},
 								
 								//style
-								style: {}
-						});
-						obj.geoJsonLayer.layers=layers;
-						
-						//zipcodes
-						obj.zipcodes=zipcodes;
-						//console.log(obj)
-						
-						app.controls.toc.addOverlay(obj.geoJsonLayer, "GeoJSON");
-						obj.layer=obj.geoJsonLayer;
-					}
+								style:{},
+								
+								//pointToLayer to change layers' icon
+								pointToLayer: function(feature, latlng){
+									var icon=new L.icon({
+											iconUrl: "images/1367688053_pinterest-icon-circle-black.png",
+											iconSize: [20, 20],
+											iconAnchor: [10, 10]
+									});
+									return new L.marker(latlng, {icon: icon})
+								}
+					});
+					obj.geoJsonLayer.layers=layers;
+
 					
+					//zipcodes
+					obj.zipcodes=zipcodes;
+					app.controls.toc.addOverlay(obj.geoJsonLayer, "Marker Map");
 					
-					//marker cluster
-					if(!obj.markerClusterLayer){
-						obj.markerClusterLayer = pathgeo.layer.markerCluster(obj.json, {
+
+					//markercluster layer
+					obj.markerClusterLayer = pathgeo.layer.markerCluster(obj.json, {
 								onEachFeature: function (feature, layer) {
 									var props = feature.properties;
-									var popupText = '';
+//									var popupText = '';
+//									
+//									for (var prop in props) { 
+//										var fieldName = prop.charAt(0).toUpperCase() + prop.slice(1);
+//										
+//										if (fieldName.toLowerCase() != "loc") {
+//											popupText += "<b>" + fieldName + "</b>: " + feature.properties[prop] + "<br>";
+//										}
+//									}
+//									
+//									layer.bindPopup(popupText, { maxWidth: 500, maxHeight: 300 } );
 									
-									for (var prop in props) { 
-										var fieldName = prop.charAt(0).toUpperCase() + prop.slice(1);
-										
-										if (fieldName.toLowerCase() != "loc") {
-											popupText += "<b>" + fieldName + "</b>: " + feature.properties[prop] + "<br>";
+									
+									
+									//event
+									layer.on({
+										mouseover: function(e){
+											
+										},
+										click: function(e){
+											//show local info
+											showLocalInfo(e.target.feature.properties._DT_RowIndex, true);
 										}
-									}
+									});
 									
-									layer.bindPopup(popupText, { maxWidth: 500, maxHeight: 300 } );
 								}
 							},{
 								//clusterclick event
@@ -456,16 +491,25 @@ function showLayer(obj, isShow){
 									}
 								}
 							}
-						);
-						app.controls.toc.addOverlay(obj.markerClusterLayer, "MarkerCluster");
-					}
+					);
+					app.controls.toc.addOverlay(obj.markerClusterLayer, "Cluster Map");
 					
 					
-					//heat map				
-					if(!obj.heatMapLayer){
-						obj.heatMapLayer=pathgeo.layer.heatMap(obj.json);
-						app.controls.toc.addOverlay(obj.heatMapLayer, "Heatmap");
-					}
+					
+					//heatmap
+					obj.heatMapLayer=pathgeo.layer.heatMap(obj.json);
+					app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
+					
+					
+					
+					//showLayerNames
+					//if this is the first time to load layers, the showLayerNames will be emplty.
+					//so the default layer is geoJsonLayer
+					if(showLayerNames.length==0){showLayerNames.push("geoJsonLayer");};
+					$.each(showLayerNames, function(i, name){
+						obj.layers.push(obj[name]);
+					})
+					
 				}//end parseGeojson
 				
 				
@@ -474,17 +518,13 @@ function showLayer(obj, isShow){
 				if(!obj.json){
 					$.getJSON(obj.url, function(json){
 						//if json is an array of features
-						json=(json instanceof Array)?{type:"FeatureCollection", features:json} : json;
-						
-						obj.json=json;
+						obj.json=(json instanceof Array)?{type:"FeatureCollection", features:json} : json;
 						showGeojson(obj);
 					});
 				}else{
-					//if json is an array of features
-					obj.json=(obj.json instanceof Array)?{type:"FeatureCollection", features:obj.json} : obj.json;
-						
 					showGeojson(obj);
 				}
+				
 			break;
 			case "WMS":
 				//default param
@@ -492,28 +532,30 @@ function showLayer(obj, isShow){
 					obj.param.format= obj.param.format || 'image/png';
 					obj.param.transparent=obj.param.transparent || true
 					
-					obj.layer = L.tileLayer.wms(obj.url, obj.param);
+					obj.layers.push(L.tileLayer.wms(obj.url, obj.param));
 					
 					//events
-					obj.layer.on("load", function(e){
+					obj.layers[0].on("load", function(e){
 						console.log("loaded");
 					});
 					
 					//obj.layer.setOpacity(0.75).addTo(app.map).bringToFront();
 					addLayer(obj);
-					app.controls.toc.addOverlay(obj.layer, obj.name);
+					app.controls.toc.addOverlay(obj.layers[0], obj.name);
 				}
 			break;
 		}
 		
 		
-		
+		//add layer
 		function addLayer(obj){
 			if(isShow){
-				obj.layer.addTo(app.map);
-				app.showLayers.push(obj.layer);
+				$.each(obj.layers, function(i,layer){
+					layer.addTo(app.map);
+					app.showLayers.push(layer);
+				})
 				
-				app.map.fitBounds(app.geocodingResult.geoJsonLayer.getBounds());
+				app.map.fitBounds(obj.geoJsonLayer.getBounds());
 			}
 
 			//close dialog
@@ -553,8 +595,14 @@ function switchVisualization(types){
 
 //remove all layers on the map
 function removeLayers(){
+
 	if(app.showLayers.length>0){
 		$.each(app.showLayers, function(i,layer){
+			//if toc contains the layer
+			if(app.controls.toc._layers[layer._leaflet_id]){
+				app.controls.toc.removeLayer(layer);
+			}
+			//remove layer from the map
 			app.map.removeLayer(layer);
 		});
 		app.showLayers=[];
@@ -577,116 +625,135 @@ function switchBaseLayer(layer){
 
 //show pivot table
 function showTable(obj){
+	if(!obj.json){
+		$.getJSON(obj.url, function(json){
+			//if json is an array of features
+			obj.json=(json instanceof Array)?{type:"FeatureCollection", features:json} : json;
+			createTable(obj);
+		});
+	}else{
+		createTable(obj);
+	}
+	
+	
+	//create table and chart
+	function createTable(obj){
+		//convert geojson properties to array
+		if(!obj.dataTable){
+			obj.dataTable=pathgeo.util.geojsonPropertiesToArray(obj.json);
+		}
+		
+		var dataTable=obj.dataTable;
+		
 		//hide columns
-		var hiddenColumns=["Coordinates"];
-		$.each(obj.columns_dataTable, function(i,column){
+		var hiddenColumns = ["Coordinates"];
+		$.each(dataTable.columns_dataTable, function(i, column){
 			$.each(hiddenColumns, function(j, columnName){
-				if(columnName==column.sTitle){column.bVisible=false; column.bSearchable=false}
+				if (columnName == column.sTitle) {
+					column.bVisible = false;
+					column.bSearchable = false
+				}
 			});
 		});
-	
+		
+		
 		//if app.dataTable already exists, clear html in the .dataTable_na nad #dataTableControl to avoid duplicate nav and control toolboxes
-		if(app.dataTable){
+		if (app.dataTable) {
 			$(".dataTable_nav, #dataTable_control").html("");
 		}
 		
-		app.dataTable=$('#dataTable').dataTable({
+		
+		//init app.dataTable
+		app.dataTable = $('#dataTable').dataTable({
 			"bDestroy": !!app.dataTable, //destroy current object if one exists
-			"aaData": obj.datas,	//data
-			"aoColumns": obj.columns_dataTable, //column
+			"aaData": dataTable.datas, //data
+			"aoColumns": dataTable.columns_dataTable, //column
 			"bJQueryUI": false,
 			"sPaginationType": "full_numbers", //page number
 			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"f><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rti<pl>>', //DOM
 			fnDrawCallback: function(){
-				
+			
 				//backup orginal json to defaultJSON
-				if(!app.geocodingResult.defaultJSON){
-					app.geocodingResult.defaultJSON=app.geocodingResult.json;
-				}
+				if (!obj.defaultJSON) {obj.defaultJSON = obj.json;}
 				
 				//if jumpPage==true, The datatable only jumps to the page. Don't need to re-read the geojson and redraw the table
-				if(!app.jumpPage){
+				if (!app.jumpPage) {
 					//get filter data,
-					var	me=this,
-						features=app.geocodingResult.defaultJSON.features,
-						geojson={
-							type:"FeatureCollection",
-							features:[]
-						},
-						feature,
-						$selectedData=me.$('tr', {"filter": "applied"});
+					var me = this, 
+						features = obj.defaultJSON.features, 
+						geojson = {
+							type: "FeatureCollection",
+							features: []
+						}, 
+						feature, 
+						$selectedData = me.$('tr', {"filter": "applied"});
+					
 					
 					//remove demographic data
-					if(app.layers.demographicData){
+					if (app.layers.demographicData) {
 						app.map.removeLayer(app.layers.demographicData);
 					}
 					
+					
 					//reset table style
-					var $tr=$("#dataTable tr");
-					$.each(app.css["dataTable_highlightRow"], function(k,v){$tr.css(k,"");});
+					var $tr = $("#dataTable tr");
+					$.each(app.css["dataTable_highlightRow"], function(k, v){ $tr.css(k, "");});
+					
 					
 					//to avoid refresh too frequently to mark high CPU usage
 					setTimeout(function(){
-						if(me.$('tr', {"filter": "applied"}).length==$selectedData.length){
-							//remove layers
-							removeLayers();
-						
+						if (me.$('tr', {"filter": "applied"}).length == $selectedData.length) {
+		
 							//read selected layers
 							me.$('tr', {"filter": "applied"}).each(function(){
 								$(this).attr("_dt_rowindex", this._DT_RowIndex);
-	
-								feature=features[this._DT_RowIndex];
-								feature.properties._DT_RowIndex=this._DT_RowIndex;
+								
+								feature = features[this._DT_RowIndex];
+								feature.properties._DT_RowIndex = this._DT_RowIndex;
 								geojson.features.push(feature);
 							});
 							
 							
-							//overwrite app.geocodingResult.json and showlayer again
-							//remove geojsonLayer
-							if(geojson.features.length>0 && app.geocodingResult.geoJsonLayer){
-								app.map.removeLayer(app.geocodingResult.geoJsonLayer);
-								app.geocodingResult.geoJsonLayer=null;
-								app.geocodingResult.markerClusterLayer=null;
-								app.geocodingResult.heatMapLayer=null;
-								
-								app.geocodingResult.json=geojson;
-								showLayer(app.geocodingResult, true);
+							//overwrite app.geocodingResult.json and showlayer 
+							if (geojson.features.length > 0){
+							
+								obj.json = geojson;
+								showLayer(obj, true);
 								
 								//re-draw Chart
-								showDataTableChart(app.geocodingResult.json);
+								showDataTableChart(obj.json);
 							}
 						}
-					},500)
-				}
+					}, 500)
+				}//end if app.jumpPage
 				
-
-			}
-		});	
+			}//end drawCallback
+		});// end init dataTable
 		
 		//set all columns in to app.dataTable. Should have another way to get columns
-		app.dataTable.columns=obj.columns;
+		app.dataTable.columns = dataTable.columns;
 		
 		
 		//add dataTable tools and click event
-		var html="<ul>"+
-				 //"<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
-				 "<li><img src='images/1365858910_download.png' title='download'/></li>"+
-				 "<li><img src='images/1365858892_print.png' title='print'/></li>"+
-				 "<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/></li>"+
-				 //"<li><img src='images/1365860337_cube.png' title='canned report'/></li>"+
-				 //"<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
-				 "<li><img src='images/1365978110_gallery2.png' title='map gallery'/></li>"+
-				 //"<li><img src='images/1365872733_sq_br_down.png' title='maximum map'/></li>"+
-				 "</ul>";
-		$(".dataTable_tools")
-			.append(html)
-			.find("ul li").click(function(){
-				//show content in the infobox
-				showInfobox($(this).find("img").attr('title'), {left: $(this).offset().left, top: $(this).offset().top+15}, this);	
-			});
+		var html = "<ul>" +
+					//"<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
+					"<li><img src='images/1365858910_download.png' title='download'/></li>" +
+					"<li><img src='images/1365858892_print.png' title='print'/></li>" +
+					"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/></li>" +
+					//"<li><img src='images/1365860337_cube.png' title='canned report'/></li>"+
+					//"<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
+					//"<li><img src='images/1365978110_gallery2.png' title='map gallery'/></li>" +
+					//"<li><img src='images/1365872733_sq_br_down.png' title='maximum map'/></li>"+
+					"</ul>";
+		$(".dataTable_tools").append(html).find("ul li").click(function(){
+			//show content in the infobox
+			showInfobox($(this).find("img").attr('title'), {
+				left: $(this).offset().left,
+				top: $(this).offset().top + 15
+			}, this);
+		});
 		
-		
-		
+	
 		
 		//dataTable nav bar
 		$(".dataTable_nav").html($("#dataTable_nav").html())
@@ -695,7 +762,7 @@ function showTable(obj){
 		//copy dataTable toolbar html to dataTable_control
 		$("#dataTable_control").html($(".dataTable_toolbar"));
 		
-
+		
 		//click on rows
 		$("#dataTable").delegate("tr:not([role='row'])", "click", function(){
 			showLocalInfo($(this).context._DT_RowIndex);
@@ -705,24 +772,23 @@ function showTable(obj){
 		
 		//draw Chart
 		//add values to the select X and Y
-		var html=""
-		$.each(obj.columns, function(i,columnName){
-			html+="<option>"+columnName+"</option>";
+		var html = ""
+		$.each(dataTable.columns, function(i, columnName){
+			html += "<option>" + columnName + "</option>";
 		});
 		
 		//add events
-		var onchange=function(){
+		var onchange = function(){
 			//show chart
-			showDataTableChart(app.geocodingResult.json);
+			showDataTableChart(obj.json);
 		}//end onchange event
-			
-		
 		//give the html and onchange event to the selects and trigger change event
 		$("#dataTable_chart #select_x").append(html).change(onchange).val("name").change();
 		$("#dataTable_chart #select_y").append(html).change(onchange).val("sales").change();
 		$(".dataTable_chartType").click(onchange);
-			
 		
+	}//end createTable	
+	
 }
 
 
@@ -805,13 +871,13 @@ function showLocalInfo(id, jumpToDataTablePage){
 			
 	//reset layer to default style and change the selected layer icon
 	app.geocodingResult.geoJsonLayer.eachLayer(function(layer){
-		layer.setIcon(layer.defaultIcon).setOpacity(0.5);
+		layer.setIcon(layer.defaultIcon);//.setOpacity(0.5);
 	});
 
 	layer.setIcon(new L.icon({
-		iconUrl: "images/1365900599_Map-Marker-Marker-Outside-Pink.png",
-		iconSize: [36, 36],
-    	iconAnchor: [18, 36]
+		iconUrl: "images/1367688133_pinterest-icon-circle-red.png",
+		iconSize: [26, 26],
+    	iconAnchor: [13, 13]
 	})).setOpacity(1);
 			
 	
