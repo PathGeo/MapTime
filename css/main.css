@@ -101,6 +101,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 
 #dataTable_length {float:right; padding-right:30px;}
 #dataTable_filter input {width:200px;}
+#dataTable { width: 100%; }
 /**
  * 	dataTable chart
  */

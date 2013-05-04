@@ -588,18 +588,10 @@ function showTable(obj){
 		//if app.dataTable already exists, clear html in the .dataTable_na nad #dataTableControl to avoid duplicate nav and control toolboxes
 		if(app.dataTable){
 			$(".dataTable_nav, #dataTable_control").html("");
-			  // Some time later....
-		} else {
-			//trying to destroy datatable if already initialized...
-			/*
-			$('#dataTable').dataTable( {
-				"bDestroy": true
-			});
-			*/
-			
 		}
 		
 		app.dataTable=$('#dataTable').dataTable({
+			"bDestroy": !!app.dataTable, //destroy current object if one exists
 			"aaData": obj.datas,	//data
 			"aoColumns": obj.columns_dataTable, //column
 			"bJQueryUI": false,
