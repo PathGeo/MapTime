@@ -98,7 +98,6 @@ function init_map(){
 	//adjust map height
 	//var map_height=((($(document).height()-$("#header").height()) / $(document).height())*100*0.45)+"%";
 	//$("#div_map").css({height:300});
-
 	
 	app.map = L.map("div_map", {
         center: app.initCenterLatLng,
@@ -270,7 +269,7 @@ function init_UI(){
 		var checked = $("#uploadData_agreementCheck").attr("checked");
 		
 		if (!checked) {
-			alert("Error: Must agree to the agreement.");
+			alert("You must agree to the PathGeo agreement before your data is geocoded.");
 			return;
 		}
 		
@@ -282,7 +281,7 @@ function init_UI(){
 				geoColumn: geoColumn
 			}, success: function(data) { 
 				if (!data || data.length <= 0) {
-					alert("No rows were geocoded.  Please make sure you have selected the correct location column.");
+					alert("No rows could be geocoded.  Please make sure you have selected the correct location column.");
 					return;
 				}
 					
@@ -589,8 +588,17 @@ function showTable(obj){
 		//if app.dataTable already exists, clear html in the .dataTable_na nad #dataTableControl to avoid duplicate nav and control toolboxes
 		if(app.dataTable){
 			$(".dataTable_nav, #dataTable_control").html("");
+			  // Some time later....
+		} else {
+			//trying to destroy datatable if already initialized...
+			/*
+			$('#dataTable').dataTable( {
+				"bDestroy": true
+			});
+			*/
+			
 		}
-
+		
 		app.dataTable=$('#dataTable').dataTable({
 			"aaData": obj.datas,	//data
 			"aoColumns": obj.columns_dataTable, //column
