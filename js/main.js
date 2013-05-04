@@ -234,40 +234,58 @@ function init_UI(){
 		return false;
 	});
 		
+	var currentFileName = '';
+		
+		
 	//Submits form when user selects a file to upload
 	//The reponse is a list of column names, which are used to populate the drop-down menu
 	$("#uploadData_input").change(function() { 
 		$("#uploadData_form").ajaxSubmit({
 			dataType: 'json',
-			success: function (columns) {
+			success: function (tableInfo) {
 				//remove current options in the drop-down
 				$("#uploadData_geocodingField option").remove();
 				
+				var columns = tableInfo.columns;
+				currentFileName = tableInfo.fileName;
+				
 				//set new options according to the returned value names
-				for (var indx in columns.names) {
-					var column = columns.names[indx];
+				for (var indx in columns) {
+					var column = columns[indx];
 					$("#uploadData_geocodingField").append($('<option></option>').val(column).html(column))
 				}	
 				
 				//make sure that the first option is selected
-				$("#uploadData_geocodingField").val(columns.names[0]).change();
+				$("#uploadData_geocodingField").val(columns[0]).change();
+				
 			}, error: function (error) {
 				console.log(error.responseText);
 			}
 		});
 	});
 	
-	
 	//Submits upload file form and captures the response
 	$('#uploadData_form').submit( function() {
-	
+		var geoColumn = $("#uploadData_geocodingField").val();
+		var checked = $("#uploadData_agreementCheck").attr("checked");
+		
+		if (!checked) {
+			alert("Error: Must agree to the agreement.");
+			return;
+		}
+		
 		$.ajax({
 			dataType: 'json',
 			url: "retrieveGeocodedTable.py", 
-			data: { fileName: 'temp' }, //JUST FOR TESTING
-			success: function(data) { 
-				if (!data || data.length <= 0) return;
-
+			data: { 
+				fileName: currentFileName,
+				geoColumn: geoColumn
+			}, success: function(data) { 
+				if (!data || data.length <= 0) {
+					alert("No rows were geocoded.  Please make sure you have selected the correct location column.");
+					return;
+				}
+					
 				app.map.removeLayer(app.geocodingResult.geoJsonLayer);
 
 				app.geocodingResult  = {
