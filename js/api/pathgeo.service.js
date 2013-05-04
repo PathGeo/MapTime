@@ -428,13 +428,13 @@ pathgeo.service={
 					if (chart.callback_select) {
 						google.visualization.events.addListener(gChart, 'select', function(param){
 							var selection=gChart.getSelection()[0];
-								
 							if(selection){
 								chart.callback_select({
 									gChart:gChart,
+									data:data,
 									row: selection.row,
 									column: selection.column,
-									value: chartData.features[selection.row],
+									value: (chartData.features)? chartData.features[selection.row] : data.getValue(selection.row, 1),
 									param:param
 								});
 							}
@@ -446,7 +446,8 @@ pathgeo.service={
 					if (chart.callback_mouseover) {
 						google.visualization.events.addListener(gChart, 'onmouseover', function(e){
 							e.gChart=gChart;
-							e.value = chartData.features[e.row];
+							e.value = (chartData.features)? chartData.features[e.row] : data.getValue(e.row, 1);
+							e.data=data;
 							chart.callback_mouseover(e);
 						});
 					}
@@ -455,7 +456,8 @@ pathgeo.service={
 					if (chart.callback_mouseout) {
 						google.visualization.events.addListener(gChart, 'onmouseout', function(e){
 							e.gChart=gChart;
-							e.value = chartData.features[e.row];
+							e.value = (chartData.features)? chartData.features[e.row] : data.getValue(e.row, 1);
+							e.data=data;
 							chart.callback_mouseout(e);
 						});
 					}

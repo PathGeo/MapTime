@@ -196,27 +196,48 @@
                                 <hr />Don't have a login? <a href="#">Sign Up</a>
                                 <br />Forgot password? <a href="#">Click here</a>
                             </fieldset>
+							
                             <div id='usermenu_list' style='display:none'>
-                                <ul data-role="listview" data-inset="true" style="min-width:210px;" data-theme="d">
+                                <div data-role="collapsible" data-theme="d" data-content-theme="d" data-inset="true" data-mini="true"  data-iconpos="right">
+								    <h3>Upgrade Account</h3>
+								   	<p>
+								   		<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+		                                    <input type="hidden" name="cmd" value="_s-xclick">
+		                                    <input type="hidden" name="hosted_button_id" value="PKE48ETLQT3RA">
+		                                    <table>
+		                                    <tr><td><input type="hidden" name="on0" value="services">services</td></tr><tr><td><select name="os0">
+		                                            <option value="basic">basic $99.00 USD</option>
+		                                            <option value="standard">standard $459.00 USD</option>
+		                                            <option value="premium">premium $499.00 USD</option>
+		                                    </select> </td></tr>
+		                                    </table>
+		                                    <input type="hidden" name="currency_code" value="USD">
+		                                    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+		                                    <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+		                                </form>
+								   	</p>
+								</div>
+								
+								<div data-role="collapsible" data-theme="d" data-content-theme="d" data-inset="true"  data-mini="true"  data-iconpos="right">
+								    <h3>History</h3>
+								</div>
+								
+								<div data-role="collapsible" data-theme="d" data-content-theme="d" data-inset="true"  data-mini="true"  data-iconpos="right">
+								    <h3>Settings</h3>
+								</div>
+								
+								<div data-role="collapsible" data-theme="d" data-content-theme="d" data-inset="true"  data-mini="true"  data-iconpos="right">
+								    <h3>Log out</h3>
+								</div>
+								
+								<!--
+								<ul data-role="listview" data-inset="true" style="min-width:210px;" data-theme="d">
                                     <li><a href="#">Upgrade Account</a></li>
                                     <li><a href="#">History</a></li>
                                     <li><a href="#">Settings</a></li>
                                     <li><a href="#">Log out</a></li>
-                                </ul>
-                                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-                                    <input type="hidden" name="cmd" value="_s-xclick">
-                                    <input type="hidden" name="hosted_button_id" value="PKE48ETLQT3RA">
-                                    <table>
-                                    <tr><td><input type="hidden" name="on0" value="services">services</td></tr><tr><td><select name="os0">
-                                            <option value="basic">basic $99.00 USD</option>
-                                            <option value="standard">standard $459.00 USD</option>
-                                            <option value="premium">premium $499.00 USD</option>
-                                    </select> </td></tr>
-                                    </table>
-                                    <input type="hidden" name="currency_code" value="USD">
-                                    <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-                                    <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-                                </form>
+                                </ul>-->
+                                
                            </div>
 		</div>
 		
@@ -280,14 +301,14 @@
 			<a href="#" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext"  style='position:absolute; right:-10px; top:-6px;' onclick='$("#localInfo").hide();app.map.removeLayer(app.layers.demographicData);$(".leaflet-control-legend").hide();'>Close</a>
 			<div data-role="navbar" style='margin-bottom:15px;'>
 			    <ul>
-			        <li><a href="#" class="ui-btn-active" onclick='$(".localInfo_tabs").hide();$("#localInfo_demographicData").show();'>Demographic Data</a></li>
-			        <li><a href="#" onclick='$(".localInfo_tabs").hide();$("#localInfo_businessActions").show();'>Business Actions</a></li>
+			        <!--<li><a href="#" class="ui-btn-active" onclick='$(".localInfo_tabs").hide();$("#localInfo_demographicData").show();'>Demographic Data</a></li>-->
+			        <li><a href="#" class="ui-btn-active" onclick='$(".localInfo_tabs").hide();$("#localInfo_businessActions").show();'>Business Actions</a></li>
 			        <li><a href="#" onclick='$(".localInfo_tabs").hide();$("#localInfo_socialMedia").show();'>Social Media</a></li>
 			    </ul>
 			</div>
 			
 			<!-- demographic data-->
-			<div id='localInfo_demographicData' class='localInfo_tabs'>
+			<div id='localInfo_demographicData' class='localInfo_tabs' style='display:none'>
 				<!-- demographic spatial-->
 				<!--<label for='demographic_spatial'></label>
 				<select id='demographic_spatial' name='demographic_spatial' data-mini="true">
@@ -309,23 +330,39 @@
 			</div>
 			
 			<!-- business intelligent -->
-			<div id='localInfo_businessActions' style='display:none;' class='localInfo_tabs'>
-				<!-- download report -->
-				<img id='businessActions_downloadReport' src='images/1367454585_Cloud Download Off.png'  onclick='window.open("images/pathgeo_report.pdf")' title='Download Report' />
+			<div id='localInfo_businessActions' style='' class='localInfo_tabs'>
+				<!-- select business actions-->
+				<div id='businessActions_select' class='businessActions_tabs'>
+					<!-- download report -->
+					<label for='businessActions_type'>Business Actions</label>
+					<img id='businessActions_downloadReport' src='images/1367454585_Cloud Download Off.png'  onclick='window.open("images/pathgeo_report.pdf")' title='Download Report' />
+					
+					<select id='businessActions_type' name='businessActions_type' data-mini="true">
+						<option value='top_users'>Which zipcode has the highest number of customers</option>
+						<option value='top_sales'>Which zipcode has the highest value of sales</option>
+						<option value='avg_income_from_users'>What’s the average incomes for my customers</option>
+						<option value='most_language_from_users'>Which languages do users use most</option>
+						<option value='potential_market'>Where are potential Markets</option>
+					</select>
+					
+					<!-- business actions result-->
+					<div id='businessActions_result'></div>
+				</div>
 				
+				<!-- show the details of business actions, including demographic data-->
+				<div id='businessActions_detail' style='display:none;' class='businessActions_tabs'>
+					<!--header-->
+					<div data-role='header' data-mini-"true">
+						<a href="#" data-icon="back" onclick='$(".businessActions_tabs").hide(); $("#businessActions_select").show();'>Back</a>
+						<h1 id='businessActions_detailTitle'></h1>
+						<!--<a href="#" data-icon="forward">Export</a>-->
+					</div>
+					<!--content-->
+					<div id='businessActions_detailContent'>
+						<ul data-role='listview' data-inset='true'></ul>
+					</div>
+				</div>
 				
-				<label for='businessActions_type'>Business Actions</label>
-				<select id='businessActions_type' name='businessActions_type' data-mini="true">
-					<option value='top_users'>Top Users</option>
-					<option value='top_sales'>Top Sales</option>
-					<option value='avg_income_from_users'>Average Income from Users</option>
-					<option value='most_language_from_users'>Most Language from Users</option>
-					<option value='potential_market'>Potential Market</option>
-				</select>
-				
-				
-				<!-- business actions result-->
-				<div id='businessActions_result'></div>
 			</div>
 				
 		

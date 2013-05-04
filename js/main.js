@@ -296,7 +296,7 @@ function init_UI(){
 					 keywords: ["testing"]
 				 };
 				 
-				showLayer(app.geocodingResult, true);
+				showTable(app.geocodingResult);
 
 				app.map.fitBounds(app.geocodingResult.geoJsonLayer.getBounds());
 				
@@ -468,7 +468,16 @@ function showLayer(obj, isShow){
 											showLocalInfo(e.target.feature.properties._DT_RowIndex, true);
 										}
 									});
-									
+								},
+								
+								//pointToLayer
+								pointToLayer: function(feature, latlng){
+									var icon=new L.icon({
+											iconUrl: "images/1367688053_pinterest-icon-circle-black.png",
+											iconSize: [20, 20],
+											iconAnchor: [10, 10]
+									});
+									return new L.marker(latlng, {icon: icon})
 								}
 							},{
 								//clusterclick event
@@ -929,13 +938,13 @@ function showLocalInfo(id, jumpToDataTablePage){
 		
 		return defaultStyle;
 	});
-	app.layers.demographicData.addTo(app.map);//.bringToBack();
+	//app.layers.demographicData.addTo(app.map);//.bringToBack();
 	//app.map.fitBounds(app.layers.demographicData.getBounds());
 
 
 	//show legend
 	var defaultType=$("#demographic_type div[data-role='collapsible'] h3").attr("value");
-	$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
+	//$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
 			
 			
 	//chart
@@ -999,6 +1008,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 //business action
 function showBusinessAction(type){
 	var zipcodes=app.geocodingResult.zipcodes,
+		dataLength=app.geocodingResult.json.features.length;
 		dataArray=[],
 		//draw chart
 		chartOptions={
@@ -1023,16 +1033,30 @@ function showBusinessAction(type){
 			callback:null,
 			callback_mouseover:null,
 			callback_mouseout:null,
-			callback_select:function(obj){
+			callback_select:function(e){
+				var zipcode=e.data.getValue(e.row, 0),
+					value=e.value,
+					html="";
 				
+				//header
+				$("#businessActions_detailTitle").text(zipcode);
+				
+				
+				
+				
+				//show the detail of business actions
+				$(".businessActions_tabs").hide();
+				$("#businessActions_detail").show();
+
 			}
 		};
 	
+	
 	switch(type){
 		case "top_users":
-			dataArray=[["zipcodes", "users"]];
-			$.each(zipcodes, function(k,v){dataArray.push([k, v.count]);});
-			chartOptions.googleChartWrapperOptions.options.titleX="The number of users";
+			dataArray=[["zipcodes", "customers"]];
+			$.each(zipcodes, function(k,v){dataArray.push([k, v.count])});
+			chartOptions.googleChartWrapperOptions.options.titleX="The number of customers";
 			chartOptions.googleChartWrapperOptions.options.titleY="Zip Codes"
 		break;
 		case "top_sales":
