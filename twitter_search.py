@@ -28,8 +28,8 @@ for tweet in tweets:
 	#If the tweet is geotagged, use that lat/lon
 	if tweet.geo and tweet.geo['coordinates'] and tweet.geo['coordinates'][0] and tweet.geo['coordinates'][1]:
 		lat, lon = tweet.geo['coordinates']
-		results.append(dict(type="Feature", geometry=dict(type="Point", coordinates=[lon, lat]), properties=dict(Title=tweet.text, Date="Date Here", Account="Account Name/Link Here", Source="twitter")))
-		
+		results.append(dict(type="Feature", geometry=dict(type="Point", coordinates=[lon, lat]), properties=dict(Title=tweet.text, Date=str(tweet.created_at), Account="Account Name/Link Here", Source="twitter")))
+
 	#Or else, if the tweet has a location, try to geocode it
 	elif hasattr(tweet, "location"):
 		city, (glat, glon) = geocoder.lookup(tweet.location.encode("ascii", "ignore"))
@@ -37,7 +37,7 @@ for tweet in tweets:
 		#make sure that geocoded lat and lons are within search radius
 		
 		if glat and glon and distance.distance((lat, lng), (glat, glon)).miles <= float(rad):
-			results.append(dict(type="Feature", geometry=dict(type="Point", coordinates=[glon, glat]), properties=dict(Title=tweet.text, Date="Date Here", Account="Account Name/Link Here", Source="twitter")))
+			results.append(dict(type="Feature", geometry=dict(type="Point", coordinates=[glon, glat]), properties=dict(Title=tweet.text, Date=str(tweet.created_at), Account="Account Name/Link Here", Source="twitter")))
 	
 	#doc['properties'] = {}
 	#doc['properties']["Title"] = "testing"

@@ -97,7 +97,7 @@ function callPython(){
 					//var lat = contact[i].geometry.coordinates[0];
 					var account = contact[i].properties.Account;
 				
-					var results = "<li><h2>" + title + "</p><br/><p>" + account + "</p><p>" + date + "</p></li>";
+					var results = "<li><h2>" + title + "</p><br/><p>" + account + "</p><br/><p>" + date + "</p></li>";
 					$("#search_results").append(results);
 				}
 				
