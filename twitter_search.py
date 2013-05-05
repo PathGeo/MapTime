@@ -17,7 +17,7 @@ ts = data['ts'].value
 
 
 api = tweepy.API()
-tweets = api.search(q=keyword, geocode=lat + "," + lng + "," + rad + "mi", rpp=100)
+tweets = api.search(q=keyword, geocode=lat + "," + lng + "," + rad + "mi", rpp=100, show_user=True)
 
 geocoder = CityGeocoder()
 
@@ -28,7 +28,7 @@ for tweet in tweets:
 	#If the tweet is geotagged, use that lat/lon
 	if tweet.geo and tweet.geo['coordinates'] and tweet.geo['coordinates'][0] and tweet.geo['coordinates'][1]:
 		lat, lon = tweet.geo['coordinates']
-		results.append(dict(type="Feature", geometry=dict(type="Point", coordinates=[lon, lat]), properties=dict(Title=tweet.text, Date=str(tweet.created_at), Account="Account Name/Link Here", Source="twitter")))
+		results.append(dict(type="Feature", geometry=dict(type="Point", coordinates=[lon, lat]), properties=dict(Title=tweet.text, Date=str(tweet.created_at), Account=str(tweet.from_user), Source="twitter")))
 
 	#Or else, if the tweet has a location, try to geocode it
 	elif hasattr(tweet, "location"):
@@ -37,7 +37,7 @@ for tweet in tweets:
 		#make sure that geocoded lat and lons are within search radius
 		
 		if glat and glon and distance.distance((lat, lng), (glat, glon)).miles <= float(rad):
-			results.append(dict(type="Feature", geometry=dict(type="Point", coordinates=[glon, glat]), properties=dict(Title=tweet.text, Date=str(tweet.created_at), Account="Account Name/Link Here", Source="twitter")))
+			results.append(dict(type="Feature", geometry=dict(type="Point", coordinates=[glon, glat]), properties=dict(Title=tweet.text, Date=str(tweet.created_at), Account=str(tweet.from_user), Source="twitter")))
 	
 	#doc['properties'] = {}
 	#doc['properties']["Title"] = "testing"
