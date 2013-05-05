@@ -247,6 +247,40 @@ pathgeo.service={
 			parseJson(me.jsons[options.filter.type]);
 		}
 		
+		// Load data for chart by Su
+		$.getJSON(me.url, function(json){
+			//alert(json.toSource());
+			//alert(json.features[0].toSource());
+					
+			// Clear before summing attributes 
+			app.properties_total = [];
+			$.each(app.demographicData, function(k,v){
+				app.properties_total[k] = 0;
+				//alert(app.properties_total[k]);
+			});
+			
+			// Save property in array by zip code
+			app.properties = [];
+			$.each(json.features, function(i, feature){
+				var property = feature.properties;
+				//alert(property.toSource());
+				app.properties[property.ZIP] = property;
+				//sum all data item in each column
+				$.each(app.demographicData, function(k,v){
+					app.properties_total[k] += property[k];
+					//alert(app.properties_total[k]);
+				});			
+			});
+			
+			// Calculate average of each attribute
+			app.properties_average = [];
+			$.each(app.demographicData, function(k,v){
+				var average = app.properties_total[k] / json.features.length;
+				app.properties_average[k] = average.toFixed(2) * 1.0; 
+				//alert(k + " " + app.properties_total[k] + " " + app.properties_average[k]);
+			});
+		});
+		
 	},
 	
 	

@@ -66,6 +66,17 @@ var app={
 		"HC01_VC112":"Median family income",
 		"HC01_VC113":"Mean family income",
 		"HC01_VC115":"Per capita income"
+		/*"HC01_VC04":"Total Population",
+		"HC01_VC20":"Total population with children at home ",
+		"HC01_VC21":"Median household income (dollars)",
+		"HC01_VC23":"Employed Population 16 years and over",
+		"HC01_VC28":"Average household size",
+		"HC01_VC74":"Age",
+		"HC01_VC85":"Sex",
+		"HC01_VC86":"Public Health"*/
+		//"HC01_VC112":"Median family income",
+		//"HC01_VC113":"Mean family income",
+		//"HC01_VC115":"Per capita income"		
 	},
 	geojsonReader: new jsts.io.GeoJSONReader(),
 	mapGalleryHtml:"",
@@ -164,6 +175,8 @@ function init_map(){
 			app.layers.demographicData=geojsonLayer;
 		}
 	});
+	//alert(app.layers.demographicData.toSource());
+	//alert(pathgeo.service.demographicData.toSource());
 }
 
 
@@ -896,10 +909,12 @@ function showLocalInfo(id, jumpToDataTablePage){
 	//demographic Data
 	$("#businessActions_type").change();
 	
-	
+	//alert(app.layers.demographicData.toSource());
 	var $obj=$("#demographic_type").html("");
 	$.each(app.demographicData, function(k,v){
-		$obj.append("<div data-role='collapsible'><h3 value='" + k + "'>"+v+"</h3><p><div id='localInfo_chart' style='overflow-y:auto; overflow-x:hidden'></div></p></div>");
+		// alert(k);  k is HC01_VC04, HC01_VC20, hc01_VC23 .....
+		// alert(v);  v is "Total Population", "Total pouplation with childern at home". "Median household income",  .....
+		$obj.append("<div data-role='collapsible'><h3 value='" + k + "'>"+v+"</h3><p><div id='localInfo_chart_" + k + "' style='overflow-y:auto; overflow-x:hidden'></div></p></div>");
 	});
 	
 	$obj.collapsibleset("refresh").find("div[data-role='collapsible'] h3").click(function(){ //while clicking on the colllapse, redraw the demographic data and show on the map
@@ -946,19 +961,29 @@ function showLocalInfo(id, jumpToDataTablePage){
 	var defaultType=$("#demographic_type div[data-role='collapsible'] h3").attr("value");
 	//$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
 			
-			
+	// alert(id);	 id is row number in table from 0
 	//chart
-	var sexData=[
-			['Sex', 'Population'],
-			['Male',  25678],
-			['Female',  28734]
+	var totalPop=[
+			['pop', 'Population'],
+			['standard',  25678],
+			['local',  28734]
 	];
 	//draw chart
-	showLocalInfoChart(sexData);
-
-
+	var containerId = "localInfo_chart_" + "HC01_VC20";
+	showLocalInfoChart(totalPop, containerId);
 	
-	
+	$.each(app.demographicData, function(k,v){
+		var containerId = "localInfo_chart_" + k;
+		var property = app.properties[feature.properties["zip"]];
+		var chartData = [
+			[k, v],
+			['standard',  app.properties_average[k]],
+			['local',  property[k]]
+		];
+		showLocalInfoChart(chartData, containerId);
+	});
+
+				
 	
 	//select options for social media
 	//$select_media
@@ -1135,11 +1160,12 @@ function showDataTableChart(geojson){
 
 
 //show chart in the localInfo
-function showLocalInfoChart(data){
+function showLocalInfoChart(data, containerId){
 	var chartOptions={
 		googleChartWrapperOptions: {
-			chartType: "PieChart",
-			containerId: "localInfo_chart",
+			chartType: "ColumnChart",
+			//containerId: "localInfo_chart",
+			containerId: containerId,
 			view:{columns:[0,1]},
 			options: {
 				width: 300,
