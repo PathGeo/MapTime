@@ -1,4 +1,5 @@
 var curLayer;
+var curData = [];
 //Work in Progrss... social media viewing
 function callPython(){
 	
@@ -38,6 +39,7 @@ function callPython(){
 			else{
 				var count = contact.length;
 				$("#search_results").html('');
+				$("#layer_selector").hide();
 			
 				for(i=0; i<count; i++){
 				
@@ -53,6 +55,9 @@ function callPython(){
 				
 				$('#search_results').trigger('create');
 				$('#search_results').listview('refresh');
+				$("#layer_selector").show();
+				$("#point_media").addClass( "ui-btn-active" );
+				$("#heat_media").removeClass( "ui-btn-active" );
 				
 				setDataMedia(contact);
 				app.map.fitBounds(curLayer.getBounds());
@@ -82,6 +87,7 @@ function callPython(){
 			if (!contact){
 				$("#search_results").html('');
 				alert("No results were found");
+				$("#layer_selector").hide();
 			}
 			
 			else{
@@ -103,6 +109,9 @@ function callPython(){
 				
 				$('#search_results').trigger('create');
 				$('#search_results').listview('refresh');
+				$("#layer_selector").show();
+				$("#point_media").addClass( "ui-btn-active" );
+				$("#heat_media").removeClass( "ui-btn-active" );
 				
 				setDataMedia(contact);
 				app.map.fitBounds(curLayer.getBounds());
@@ -219,7 +228,7 @@ function getPointLayerMedia(gjData) {
 }
 
 function getHeatmapLayerMedia(gjData) {
-	var heatmapLayer = new L.TileLayer.heatMap({ 
+	var heatmapLayerMedia = new L.TileLayer.heatMap({ 
 		radius: 40,
 		opacity: 0.75,
 		gradient: {
@@ -231,14 +240,13 @@ function getHeatmapLayerMedia(gjData) {
 		}
 	});
 	
-	var heatmapData = [];
+	var heatmapDataMedia = [];
 	
-	for (var indx in gjData.features) {
-		heatmapData.push( { lat: gjData.features[indx].geometry.coordinates[1], lon: gjData.features[indx].geometry.coordinates[0], value: 1 } );
+	for (var indx in gjData) {
+		heatmapDataMedia.push( { lat: gjData[indx].geometry.coordinates[1], lon: gjData[indx].geometry.coordinates[0], value: 1 } );
 	}
-	
-	heatmapLayer.addData(heatmapData);
-	return heatmapLayer;
+	heatmapLayerMedia.addData(heatmapDataMedia);
+	return heatmapLayerMedia;
 }
 
 function switchLayersMedia(newLayerName) { 
@@ -257,7 +265,7 @@ function switchLayersMedia(newLayerName) {
 	}
 	else if (newLayerName == "census") {
 		enableCensusLayer();
-		$(".legend").show();
+		//$(".legend").show();
 		curLayer = getPointLayerMedia(curData);
 		app.map.addLayer(curLayer);
 	}
@@ -265,7 +273,8 @@ function switchLayersMedia(newLayerName) {
 
 function setDataMedia(data) {
 	curData = data;
-	$(".features").removeClass("selected").addClass("selectable");
+	//alert(curData);
+	//$(".features").removeClass("selected").addClass("selectable");
 	switchLayersMedia("point");
-	$("#point").toggleClass("selected selectable");
+	//$("#point").toggleClass("selected selectable");
 }

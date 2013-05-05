@@ -399,6 +399,17 @@
 						<option value='twitter'>Twitter</option>
 					</select>
 				<button type='button' onclick='callPython()' data-mini="true">Search</button>
+				
+				
+				<div data-role="navbar" style='margin-bottom:15px; margin-top:15px' id="layer_selector">
+					<ul>
+						<li><a href="#" id="point_media" class="ui-btn-active" onclick='switchLayersMedia("point")'>Point Map</a></li>
+						<li><a href="#" id="heat_media" onclick='switchLayersMedia("heatmap")'>Heat Map</a></li>
+					</ul>
+				</div>
+				
+				
+				
 
 				<p></p>
 				<div id='socialMedia_result'>

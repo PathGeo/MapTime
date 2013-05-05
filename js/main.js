@@ -321,6 +321,8 @@ function init_UI(){
 			}
 		});
 	});
+	
+	$("#layer_selector").hide();
 }
 
 
