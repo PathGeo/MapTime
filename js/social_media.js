@@ -29,7 +29,7 @@ function callPython(){
 				}
 			}
 		}).success(function( contact ) {
-		
+			if (curLayer && app.map.hasLayer(curLayer)) app.map.removeLayer(curLayer);
 			if (contact == 0){
 				$("#search_results").html('');
 				alert("No results were found");
@@ -45,8 +45,9 @@ function callPython(){
 					var description = contact[i].properties.Description;
 					var image = contact[i].properties.Img;
 					var date = contact[i].properties.Date;
+					var account = contact[i].properties.Account;
 				
-					var results = "<li><h2>" + title + "</h2>" + image + "<br/><br/><p>" + date + "</p><p>" + description + "</p></li>";
+					var results = "<li><h2>" + account + "</h2>" + image + "<br/><br/><p>" + date + "</p><br/><p>" + description + "</p></li>";
 					$("#search_results").append(results);
 				}
 				
@@ -57,6 +58,9 @@ function callPython(){
 				app.map.fitBounds(curLayer.getBounds());
 			}
 
+		}).error(function(error) {
+			console.log(error);
+			alert("There was an error in your search. Please try again");
 		});
 	}
 	
@@ -73,6 +77,8 @@ function callPython(){
 				}
 			}
 		}).success(function( contact ) {
+		//console.log(contact);
+			if (curLayer && app.map.hasLayer(curLayer)) app.map.removeLayer(curLayer);
 			if (!contact){
 				$("#search_results").html('');
 				alert("No results were found");
@@ -87,10 +93,11 @@ function callPython(){
 					var title = contact[i].properties.Title;
 					//var description = contact[i].properties.Description;
 					//var image = contact[i].properties.Img;
-					//var date = contact[i].properties.Date;
-					var lat = contact[i].geometry.coordinates[0];
+					var date = contact[i].properties.Date;
+					//var lat = contact[i].geometry.coordinates[0];
+					var account = contact[i].properties.Account;
 				
-					var results = "<li><h2>" + title + "</p></li>";
+					var results = "<li><h2>" + title + "</p><br/><p>" + account + "</p><p>" + date + "</p></li>";
 					$("#search_results").append(results);
 				}
 				
@@ -103,6 +110,7 @@ function callPython(){
 
 		}).error(function(error) {
 			console.log(error);
+			alert("There was an error in your search. Please try again");
 		});
 		}
 	
@@ -174,8 +182,13 @@ function getClusterLayerMedia(gjData) {
 function getPointLayerMedia(gjData) { 
 	var pointLayer = new L.geoJson([], {
 		onEachFeature: function (feature, layer) {
-			var props = feature.properties;		
-			var html = "<div class='popup'><ul><li><span class='clusterInfo'>" + props.Title + "</span><br><div class='extras' style='display: block;'> " + props.Img + "<br><br>" + props.Description + "</li></ul></div>";
+			var props = feature.properties;
+			if(props.Source == "flickr"){
+				var html = "<div class='popup'><ul><li><span class='clusterInfo'>" + props.Account + "</span><br><br><div class='extras' style='display: block;'> " + props.Img + "<br><br>" + props.Date + "</li></ul></div>";
+			}
+			else{
+				var html = "<div class='popup'><ul><li><span class='clusterInfo'>" + props.Title + "</span><br><br><div class='extras' style='display: block;'> " + props.Account + "<br><br>" + props.Date + "</li></ul></div>";
+			}
 			layer.bindPopup(html);
 		}, 	pointToLayer: function (feature, latlng) {
 		
