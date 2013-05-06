@@ -29,7 +29,7 @@ var app={
 		    onAdd: function (map) {
 	        	// create the control container with a particular class name
 		        var container=L.DomUtil.create('div', 'leaflet-control-mapGallery');
-		        var html="<ul><li title='Marker map' layer='geoJsonLayer' style='background-color:##ED3D86'><img src='images/marker-icon.png' /></li><li title='Cluster map' layer='markerClusterLayer'><img src='images/gallery-cluster.png' /></li><li title='Heat map' layer='heatMapLayer'><img src='images/gallery-heatmap.png' /></li></ul>";
+		        var html="<ul><li title='Marker map' layer='geoJsonLayer' style='background-color:#ED3D86'><img src='images/marker-icon.png' /></li><li title='Cluster map' layer='markerClusterLayer'><img src='images/gallery-cluster.png' /></li><li title='Heat map' layer='heatMapLayer'><img src='images/gallery-heatmap.png' /></li></ul>";
 		        
 		         //click map gallery event
 		        $(container).html(html)
@@ -44,7 +44,7 @@ var app={
 					        		$this.css({"background-color": ''});
 					        	}else{
 					        		layer.addTo(app.map);
-					        		$this.css({"background-color": '##ED3D86'});
+					        		$this.css({"background-color": '#ED3D86'});
 					        	}
 					        });
 		        
