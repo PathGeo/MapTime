@@ -29,7 +29,7 @@ var app={
 		    onAdd: function (map) {
 	        	// create the control container with a particular class name
 		        var container=L.DomUtil.create('div', 'leaflet-control-mapGallery');
-		        var html="<ul><li title='Marker map' layer='geoJsonLayer' style='background-color:#bbbbbb'><img src='images/marker-icon.png' /></li><li title='Cluster map' layer='markerClusterLayer'><img src='images/gallery-cluster.png' /></li><li title='Heat map' layer='heatMapLayer'><img src='images/gallery-heatmap.png' /></li></ul>";
+		        var html="<ul><li title='Marker map' layer='geoJsonLayer' style='background-color:##ED3D86'><img src='images/marker-icon.png' /></li><li title='Cluster map' layer='markerClusterLayer'><img src='images/gallery-cluster.png' /></li><li title='Heat map' layer='heatMapLayer'><img src='images/gallery-heatmap.png' /></li></ul>";
 		        
 		         //click map gallery event
 		        $(container).html(html)
@@ -44,7 +44,7 @@ var app={
 					        		$this.css({"background-color": ''});
 					        	}else{
 					        		layer.addTo(app.map);
-					        		$this.css({"background-color": '#bbbbbb'});
+					        		$this.css({"background-color": '##ED3D86'});
 					        	}
 					        });
 		        
@@ -101,16 +101,16 @@ var app={
 
 
 //init
-$(document).on("pageinit", function(){	  
+$(document).on("pageshow", function(){	  
 	init_UI();
    
+    init_map();
+	
 	//directly shoing demo data
 	showTable(app.geocodingResult)
 });
 
-$(document).on("pageshow", function(){
-	init_map();
-})
+
 
 
 
@@ -146,21 +146,21 @@ function init_map(){
 	
 	
 	//create maxminMap DIV
-	$("#div_map").append("<div id='maxminMap' title='Maximum Map'>Maximum Map</div>");
+	$("#div_map").append("<div id='showhideTable' title='Hide Table'>Hide Table</div>");
 	
 	//maximum or mimimum map
-	$("#maxminMap").click(function(){
+	$("#showhideTable").click(function(){
 		var $this=$(this);
 		
 		//maximum map
-		if($this.html()=='Maximum Map'){
+		if($this.html()=='Hide Table'){
 			$("#div_map").animate({height:"80%"}, 500, function(){
 				//resize map
 				app.map.invalidateSize(false);
 				
 				$("#dataPanel").css({height:"17%"});
 	
-				$this.html("Minimum Map").attr("title", "Mimimum Map");
+				$this.html("Show Table").attr("title", "Show Table");
 			});
 		}else{
 			$("#div_map").animate({height:"53%"}, 500, function(){
@@ -169,10 +169,10 @@ function init_map(){
 				
 				$("#dataPanel").css({height:"45%"});
 	
-				$this.html("Maximum Map").attr("title", "Maximum Map");
+				$this.html("Hide Table").attr("title", "Hide Table");
 			});
 		}
-	});
+	}).trigger('click');
 	
 	
 	//read demographic data
@@ -195,7 +195,6 @@ function init_map(){
 //init UI
 function init_UI(){
 	
-	
 	//content height
 	$("#content").height($(window).height()-$("#header").height());
 	
@@ -203,13 +202,14 @@ function init_UI(){
 		$(this).css("background-color", "#222222").siblings().css("background-color","");
 	});
 	
+	
 	//init popup
 	//$("div[data-role='popup']").popup();
 	
 
 	//show main menu
 	setTimeout(function(){
-		$("#dialog_menu").popup("open");
+		//$("#dialog_menu").popup("open");
 	},100);
 	
 	//dataFilter
