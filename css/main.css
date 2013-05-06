@@ -152,7 +152,10 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #dialog_menu .menu_description {color:#777777; font-size:100%; margin-top:50px;}
 #dialog_menu-screen {height:100%;position:fixed}
 
-
+/**
+ * 	help menu
+ */
+#dialog_help {width:200%; padding:5%}
 
 /**
  * jquery mobile 
