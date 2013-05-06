@@ -240,15 +240,16 @@ function init_UI(){
 		showBusinessAction(this.value);
 	});
 	
-	//This is necessary to prevent being redirected...
+	
+	//Keep track of currently uploaded file 
+	var currentFileName = '';
+
+	//This is necessary to prevent being redirected when uploading data...
 	$('#uploadData_form').on('submit', function (e) {
 		if (e.preventDefault) e.preventDefault();
 		return false;
 	});
-		
-	var currentFileName = '';
-		
-		
+			
 	//Submits form when user selects a file to upload
 	//The reponse is a list of column names, which are used to populate the drop-down menu
 	$("#uploadData_input").change(function() { 
@@ -297,13 +298,13 @@ function init_UI(){
 					alert("No rows could be geocoded.  Please make sure you have selected the correct location column.");
 					return;
 				}
-					
+										
 				app.map.removeLayer(app.geocodingResult.geoJsonLayer);
 
 				app.geocodingResult  = {
 					 name: "geocodingResult", 
 					 type: "GEOJSON",
-					 json: data,
+					 json: { type: "FeatureCollection", features: data }, //showTable now expecting a FeatureCollection
 					 srs: "EPSG:4326",
 					 title: "Your Data",
 					 keywords: ["testing"]
@@ -648,6 +649,7 @@ function switchBaseLayer(layer){
 
 
 //show pivot table
+//This first populates the table, then draws the geojson features
 function showTable(obj){
 	if(!obj.json){
 		$.getJSON(obj.url, function(json){
@@ -659,14 +661,14 @@ function showTable(obj){
 		createTable(obj);
 	}
 	
-	
 	//create table and chart
 	function createTable(obj){
 		//convert geojson properties to array
-		if(!obj.dataTable){
-			obj.dataTable=pathgeo.util.geojsonPropertiesToArray(obj.json);
-		}
 		
+		if(!obj.dataTable){
+			obj.dataTable = pathgeo.util.geojsonPropertiesToArray(obj.json);
+		}
+	
 		var dataTable=obj.dataTable;
 		
 		//hide columns
@@ -680,12 +682,10 @@ function showTable(obj){
 			});
 		});
 		
-		
 		//if app.dataTable already exists, clear html in the .dataTable_na nad #dataTableControl to avoid duplicate nav and control toolboxes
 		if (app.dataTable) {
 			$(".dataTable_nav, #dataTable_control").html("");
 		}
-		
 		
 		//init app.dataTable
 		app.dataTable = $('#dataTable').dataTable({
@@ -699,7 +699,7 @@ function showTable(obj){
 			
 				//backup orginal json to defaultJSON
 				if (!obj.defaultJSON) {obj.defaultJSON = obj.json;}
-				
+
 				//if jumpPage==true, The datatable only jumps to the page. Don't need to re-read the geojson and redraw the table
 				if (!app.jumpPage) {
 					//get filter data,
@@ -711,14 +711,12 @@ function showTable(obj){
 						}, 
 						feature, 
 						$selectedData = me.$('tr', {"filter": "applied"});
-					
-					
+				
 					//remove demographic data
 					if (app.layers.demographicData) {
 						app.map.removeLayer(app.layers.demographicData);
 					}
-					
-					
+							
 					//reset table style
 					var $tr = $("#dataTable tr");
 					$.each(app.css["dataTable_highlightRow"], function(k, v){ $tr.css(k, "");});
