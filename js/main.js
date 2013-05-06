@@ -253,12 +253,11 @@ function init_UI(){
 		}
 
 	});
-	
-	
-	//business intelligent click event
+
+	//businessActions selection change
 	$("#businessActions_type").change(function(){
 		showBusinessAction(this.value);
-	});
+	})
 	
 	
 	//Keep track of currently uploaded file 
@@ -1051,7 +1050,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 
 
 //business action
-function showBusinessAction(type){
+function showBusinessAction(type, zipcode){
 	var zipcodes=app.geocodingResult.zipcodes,
 		dataLength=app.geocodingResult.json.features.length;
 		dataArray=[],
@@ -1070,9 +1069,12 @@ function showBusinessAction(type){
 					legend: "none",//{position: 'top'},
 					chartArea: {width: '', height: '85%', top:10},
 					fontSize: 11,
+					isStacked:true, 
+					series:{0:{color: '#5B92C0', visibleInLegend: true}, 1:{color: '#ED3D86', visibleInLegend: false}},
 					vAxis:{titleTextStyle:{color:"black"}, textStyle:{color:"#ffffff"}},
 					hAxis:{titleTextStyle:{color:"#ffffff"}, textStyle:{color:"#ffffff"}},
-					backgroundColor: {fill:'transparent'}
+					backgroundColor: {fill:'transparent'},
+					is3D:true
 				}
 			},
 			callback:null,
@@ -1086,6 +1088,16 @@ function showBusinessAction(type){
 				//header
 				$("#businessActions_detailTitle").text(zipcode);
 				
+				//detailContent
+				var properties=app.layers.demographicData.zipcodes[zipcode].feature.properties;
+				$.each(properties, function(k,prop){
+					html+="<li>" + k + ": " + prop + "</li>";
+				});
+				$("#businessActions_detailContent ul").html(html).listview("refresh");
+								
+								
+				//trigger dataTable to filter the zipcode
+				app.dataTable.fnFilter(zipcode);
 				
 				
 				
@@ -1096,11 +1108,11 @@ function showBusinessAction(type){
 			}
 		};
 	
-	
+	console.log(zipcode)
 	switch(type){
 		case "top_users":
-			dataArray=[["zipcodes", "customers"]];
-			$.each(zipcodes, function(k,v){dataArray.push([k, v.count])});
+			dataArray=[["zipcodes", "customers", "percentage"]];
+			$.each(zipcodes, function(k,v){dataArray.push([k, v.count, ((v.count/dataLength).toFixed(4))*100])});
 			chartOptions.googleChartWrapperOptions.options.titleX="The number of customers";
 			chartOptions.googleChartWrapperOptions.options.titleY="Zip Codes"
 		break;
