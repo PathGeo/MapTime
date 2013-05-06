@@ -101,17 +101,16 @@ var app={
 
 
 //init
-$(document).on("pageshow", function(){	  
+$(document).on("pageinit", function(){	  
 	init_UI();
-    
-    init_map();
-    
-	
+   
 	//directly shoing demo data
 	showTable(app.geocodingResult)
-
 });
 
+$(document).on("pageshow", function(){
+	init_map();
+})
 
 
 
