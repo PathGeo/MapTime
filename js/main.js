@@ -23,23 +23,35 @@ var app={
 			keywords:[]
 	},
 	controls:{
+		mapGallery: L.Control.extend({
+		    options: {collapsed: true,position: 'bottomright',text: 'Map Gallery',},
+			initialize: function (options) {L.Util.setOptions(this, options);},
+		    onAdd: function (map) {
+	        	// create the control container with a particular class name
+		        var container=L.DomUtil.create('div', 'leaflet-control-mapGallery');
+		        var html="<ul><li title='Marker map' layer='geoJsonLayer' style='background-color:#bbbbbb'><img src='images/marker-icon.png' /></li><li title='Cluster map' layer='markerClusterLayer'><img src='images/gallery-cluster.png' /></li><li title='Heat map' layer='heatMapLayer'><img src='images/gallery-heatmap.png' /></li></ul>";
+		        
+		         //click map gallery event
+		        $(container).html(html)
+		        			.find("ul li").click(function(){
+					        	var $this=$(this),
+					        		value=$this.attr("layer"),
+					        		layer=app.geocodingResult[value];
+					        	
+					        	//if this layer is already shown on the map, hide the layer and change the color
+					        	if(layer._map){
+					        		app.map.removeLayer(layer);
+					        		$this.css({"background-color": ''});
+					        	}else{
+					        		layer.addTo(app.map);
+					        		$this.css({"background-color": '#bbbbbb'});
+					        	}
+					        });
+		        
+		        return container
+		    }
+		}),
 		toc:null,
-//		mapGallery: L.Control.extend({
-//		    options: {collapsed: true,position: 'topright',text: 'Map Gallery',},
-//			initialize: function (options) {L.Util.setOptions(this, options);},
-//		    onAdd: function (map) {
-//		        // create the control container with a particular class name
-//		        var container = L.DomUtil.create('div', 'leaflet-control-mapGallery');
-//				$(container).html($("#div_gallery").html())
-//				
-//				//mouseevent
-//				if(this.options){
-//					L.DomEvent.addListener(container, 'mouseover', function(){$("#mapGallery").show();}, this);
-//					L.DomEvent.addListener(container, 'mouseout', function(){$("#mapGallery").hide();}, this);
-//				}
-//		        return container
-//		    }
-//		}),
 		legend: L.Control.extend({
 		    options: {position: 'topright',text: 'Legend',},
 			initialize: function (options) {L.Util.setOptions(this, options);},
@@ -97,7 +109,6 @@ $(document).on("pageshow", function(){
 	
 	//directly shoing demo data
 	showTable(app.geocodingResult)
-	
 
 });
 
@@ -177,12 +188,15 @@ function init_map(){
 	});
 	//alert(app.layers.demographicData.toSource());
 	//alert(pathgeo.service.demographicData.toSource());
+
 }
 
 
 
 //init UI
 function init_UI(){
+	
+	
 	//content height
 	$("#content").height($(window).height()-$("#header").height());
 	
@@ -191,7 +205,13 @@ function init_UI(){
 	});
 	
 	//init popup
-	$("div[data-role='popup']").popup();
+	//$("div[data-role='popup']").popup();
+	
+
+	//show main menu
+	setTimeout(function(){
+		$("#dialog_menu").popup("open");
+	},100);
 	
 	//dataFilter
 //	$("#dataFilter").css({"margin-top":$("#div_map").height()}).find(">ul li").click(function(){
@@ -442,9 +462,9 @@ function showLayer(obj, isShow){
 								//pointToLayer to change layers' icon
 								pointToLayer: function(feature, latlng){
 									var icon=new L.icon({
-											iconUrl: "images/1367688053_pinterest-icon-circle-black.png",
-											iconSize: [20, 20],
-											iconAnchor: [10, 10]
+											iconUrl: "images/marker-icon.png",
+											iconSize: [12.5, 21],
+											iconAnchor: [6.25, 10.5]
 									});
 									return new L.marker(latlng, {icon: icon})
 								}
@@ -490,9 +510,9 @@ function showLayer(obj, isShow){
 								//pointToLayer
 								pointToLayer: function(feature, latlng){
 									var icon=new L.icon({
-											iconUrl: "images/1367688053_pinterest-icon-circle-black.png",
-											iconSize: [20, 20],
-											iconAnchor: [10, 10]
+											iconUrl: "images/marker-icon.png",
+											iconSize: [12.5, 21],
+											iconAnchor: [6.25, 10.5]
 									});
 									return new L.marker(latlng, {icon: icon})
 								}
@@ -889,7 +909,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 	
 	//zoom to the layer, shift lng a little bit to east
 	var latlng=layer._latlng;
-	app.map.setView(new L.LatLng(latlng.lat, latlng.lng-0.0025), 16)
+	app.map.setView(new L.LatLng(latlng.lat, latlng.lng-0.0025), 14)
 			
 			
 	//reset layer to default style and change the selected layer icon
@@ -898,7 +918,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 	});
 
 	layer.setIcon(new L.icon({
-		iconUrl: "images/1367688133_pinterest-icon-circle-red.png",
+		iconUrl: "images/1365900599_Map-Marker-Marker-Outside-Pink.png",
 		iconSize: [26, 26],
     	iconAnchor: [13, 13]
 	})).setOpacity(1);
