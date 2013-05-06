@@ -229,6 +229,7 @@ function init_UI(){
 		if(value){
 			$("#uploadData_description").hide();
 			$("#uploadData_confirm").show();
+			$("#uploadData_controls").show();
 			//$(this).closest("form").submit();
 		}
 

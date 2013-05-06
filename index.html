@@ -79,7 +79,7 @@
 	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>
 			<!--<a href="#dialog_sharemap" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="star" class="" data-mini="true" style='float:right'>Share</a>-->
 			<!--<a href="#dialog_dataPanel" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="bars" class="" data-mini="true" style='float:right'>Data List</a>-->
-			<a href="#dialog_uploadData" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right' onclick='$("#uploadData_confirm").hide(); $("#uploadData_description").show();'>Upload Data</a>
+			<a href="#dialog_uploadData" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right' onclick='$("#uploadData_confirm").hide(); $("#uploadData_description").show(); $("#uploadData_controls").hide();'>Upload Data</a>
 		</div>
 		
 		
@@ -137,9 +137,9 @@
 			
 			<form action="geocodeTable.py" method="post" id="uploadData_form" enctype="multipart/form-data" style="width: 90%; margin: 0 auto;">
 				<fieldset>
-					<div>
-						<input type="file" name="photo" id="uploadData_input" style="width: 95.8%;">
-					</div>
+				
+					<input type="file" name="photo" id="uploadData_input" size="70%">
+					
 					<!-- upload content -->
 					<!-- NOTE: STILL WORKING ON LAYOUT -->
 					<div id='uploadData_content'>
@@ -162,15 +162,12 @@
 								This is the PathGeo agreement.  
 							</div>
 						</div>
-						<div id="uploadData_controls" style="width: 95.8%; padding-top: 100px;">
-							<!--NOTE:  NEED TO MOVE THIS OUTSIDE OF THIS DIV TO GET POSITION RIGHT -->
-							<label for='uploadData_agreementCheck'>I agree the agreement</label>
-							<input type='checkbox' id='uploadData_agreementCheck' name='uploadData_agreementCheck' style="float: left; width: 150px;" />
-							
-							<div style='float:right; width:50%;'>
-								<input id="submit_button" type="submit" value="Map Your Data" data-theme="b">
-							</div>
-						</div>
+					</div>
+					<div id="uploadData_controls" style="width: 95.8%; padding-top: 10px; display: none;">
+						<!--NOTE:  NEED TO MOVE THIS OUTSIDE OF THIS DIV TO GET POSITION RIGHT -->
+						<label for='uploadData_agreementCheck'>I agree</label>
+						<input type='checkbox' id='uploadData_agreementCheck' name='uploadData_agreementCheck' style="float: left; width: 100px;" />
+						<input id="submit_button" type="submit" value="Map Your Data" data-theme="b" style='float:right; width:100px;'>
 					</div>
 				</fieldset>
 			</form>
