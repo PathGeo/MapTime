@@ -29,7 +29,7 @@ var app={
 		    onAdd: function (map) {
 	        	// create the control container with a particular class name
 		        var container=L.DomUtil.create('div', 'leaflet-control-mapGallery');
-		        var html="<ul><li title='Marker map' layer='geoJsonLayer' style='background-color:#ED3D86'><img src='images/marker-icon.png' /></li><li title='Cluster map' layer='markerClusterLayer'><img src='images/gallery-cluster.png' /></li><li title='Heat map' layer='heatMapLayer'><img src='images/gallery-heatmap.png' /></li></ul>";
+		        var html="<ul><li title='Marker map' layer='geoJsonLayer' style='background-color:#5B92C0'><img src='images/marker-icon.png' /></li><li title='Cluster map' layer='markerClusterLayer'><img src='images/gallery-cluster.png' /></li><li title='Heat map' layer='heatMapLayer'><img src='images/gallery-heatmap.png' /></li></ul>";
 		        
 		         //click map gallery event
 		        $(container).html(html)
@@ -44,7 +44,7 @@ var app={
 					        		$this.css({"background-color": ''});
 					        	}else{
 					        		layer.addTo(app.map);
-					        		$this.css({"background-color": '#ED3D86'});
+					        		$this.css({"background-color": '#5B92C0'});
 					        	}
 					        });
 		        
@@ -104,10 +104,20 @@ var app={
 $(document).on("pageshow", function(){	  
 	init_UI();
    
-    init_map();
+   	init_map();
 	
 	//directly shoing demo data
-	showTable(app.geocodingResult)
+	showTable(app.geocodingResult);
+	
+	pathgeo.service.zipcodeLookup(91745, function(placename, json, status){
+		if(!status) {
+			if(placename != '') {
+							
+			}
+		}
+		
+	});
+
 });
 
 
@@ -208,9 +218,11 @@ function init_UI(){
 	
 
 	//show main menu
+	//if directly show the main menu while initlizing the webpage, the main menu will be immediately disppeared in Chrome (noraml in the Firefo).
+	//JQM said this is the bug from webkit(Goolge chrome) https://github.com/jquery/jquery-mobile/issues/5775
 	setTimeout(function(){
-		//$("#dialog_menu").popup("open");
-	},100);
+		$("#dialog_menu").popup("open");
+	},1000);
 	
 	//dataFilter
 //	$("#dataFilter").css({"margin-top":$("#div_map").height()}).find(">ul li").click(function(){
@@ -925,9 +937,12 @@ function showLocalInfo(id, jumpToDataTablePage){
 	//layer.openPopup();
 	
 			
-	//demographic Data
-	$("#businessActions_type").change();
+	//trigger businessActions type to directly show the first option and draw its google chart
+	$("#businessActions_type").attr("zipcode", feature.properties['zip']).change();
 	
+	
+	
+	//demographic Data
 	//alert(app.layers.demographicData.toSource());
 	var $obj=$("#demographic_type").html("");
 	$.each(app.demographicData, function(k,v){
@@ -1050,10 +1065,12 @@ function showLocalInfo(id, jumpToDataTablePage){
 
 
 //business action
-function showBusinessAction(type, zipcode){
+function showBusinessAction(type){
 	var zipcodes=app.geocodingResult.zipcodes,
+		selectedZipcode=$("#businessActions_type").attr("zipcode"),
 		dataLength=app.geocodingResult.json.features.length;
 		dataArray=[],
+		sort=[{column: 1, desc:true}],
 		//draw chart
 		chartOptions={
 			googleChartWrapperOptions: {
@@ -1070,10 +1087,11 @@ function showBusinessAction(type, zipcode){
 					chartArea: {width: '', height: '85%', top:10},
 					fontSize: 11,
 					isStacked:true, 
-					series:{0:{color: '#5B92C0', visibleInLegend: true}, 1:{color: '#ED3D86', visibleInLegend: false}},
-					vAxis:{titleTextStyle:{color:"black"}, textStyle:{color:"#ffffff"}},
-					hAxis:{titleTextStyle:{color:"#ffffff"}, textStyle:{color:"#ffffff"}},
+					series:{0:{color: '#5B92C0', visibleInLegend: true}},
+					vAxes:{0:{titleTextStyle:{color:"black"}, textStyle:{color:"#ffffff"}}},
+					hAxes:{0:{titleTextStyle:{color: "#ffffff"},textStyle:{color: "#ffffff"}}},
 					backgroundColor: {fill:'transparent'},
+					tooltip: {isHtml: true},
 					is3D:true
 				}
 			},
@@ -1098,9 +1116,7 @@ function showBusinessAction(type, zipcode){
 								
 				//trigger dataTable to filter the zipcode
 				app.dataTable.fnFilter(zipcode);
-				
-				
-				
+
 				//show the detail of business actions
 				$(".businessActions_tabs").hide();
 				$("#businessActions_detail").show();
@@ -1108,11 +1124,35 @@ function showBusinessAction(type, zipcode){
 			}
 		};
 	
-	console.log(zipcode)
+	
 	switch(type){
 		case "top_users":
-			dataArray=[["zipcodes", "customers", "percentage"]];
-			$.each(zipcodes, function(k,v){dataArray.push([k, v.count, ((v.count/dataLength).toFixed(4))*100])});
+			dataArray = new google.visualization.DataTable();
+			dataArray.addColumn('string', "zipcodes");
+			dataArray.addColumn('number', "customers");
+			dataArray.addColumn({type:'string', role:'tooltip', 'p': {'html': true}});
+			dataArray.addColumn('number', "highlight");
+			dataArray.addColumn({type:'string', role:'tooltip', 'p': {'html': true}});
+			dataArray.addColumn('number', "originalCustomers"); // the original customer number for sorting. But this value will be devided by total number (dataLength) for better presentation
+			
+			var highlight=0, count=0;
+			$.each(zipcodes, function(k,v){
+				if(k==selectedZipcode){
+					highlight=v.count;
+					count=0; //in order to highlight this zipcode bar, the customers number should be set as 0 to show the highlight bar.
+				}else{
+					highlight=0;
+					count=v.count;
+				} 
+
+				dataArray.addRow([k, count, "<div id='chartTooltip'><b>Zipcode: </b>" + k + "<br><b>Customers: </b>"+ v.count + " ("+ (((v.count/dataLength).toFixed(4))*100)+ "%)</div>", highlight,"<div id='chartTooltip'><b>Zipcode: </b>" + k + "<br><b>Customers: </b>"+ v.count + " ("+ (((v.count/dataLength).toFixed(4))*100)+ "%)</div>", v.count/dataLength])
+			});
+			
+			sort=[{column: 5, desc:true}] //according column 5 (orginalCustomers) to sort whole datasets.
+			
+			//chartOptions
+			chartOptions.googleChartWrapperOptions.options.series[1]={color: '#ED3D86', visibleInLegend: false}; //set bar color=pink for highlight
+			chartOptions.googleChartWrapperOptions.options.series[2]={color: 'transparent', visibleInLegend: false}; //set bar color=transparent for originalCustomers
 			chartOptions.googleChartWrapperOptions.options.titleX="The number of customers";
 			chartOptions.googleChartWrapperOptions.options.titleY="Zip Codes"
 		break;
@@ -1134,7 +1174,7 @@ function showBusinessAction(type, zipcode){
 	}
 	
 	
-	pathgeo.service.drawGoogleChart(dataArray, [chartOptions], null, null, {sort:[{column: 1, desc:true}]}); //sort, but the sequence of the chart data will be different with the geojson
+	pathgeo.service.drawGoogleChart(dataArray, [chartOptions], null, null, {sort:sort}); //sort, but the sequence of the chart data will be different with the geojson
 	
 	
 }
@@ -1218,6 +1258,14 @@ function showLocalInfoChart(data, containerId){
 	};
 	pathgeo.service.drawGoogleChart(data, [chartOptions], null, null);
 }
+
+
+
+//search business Intelligent
+function searchBusinessIntelligent(geoname){
+	console.log(geoname);
+}
+
 
 
 

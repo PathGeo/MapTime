@@ -80,7 +80,7 @@
 			<!--<a href="#dialog_sharemap" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="star" class="" data-mini="true" style='float:right'>Share</a>-->
 			<!--<a href="#dialog_dataPanel" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="bars" class="" data-mini="true" style='float:right'>Data List</a>-->
 			<a href="#dialog_uploadData" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right' onclick='$("#uploadData_confirm").hide(); $("#uploadData_description").show(); $("#uploadData_controls").hide();'>Upload Data</a>
-			<a href="#dialog_menu" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right'>Menu</a>
+			<a id='test' href="#dialog_menu" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right'>Menu</a>
 		</div>
 		
 		
@@ -130,21 +130,29 @@
 	
 		
 		<!--main menu-->
-		<div id='dialog_menu' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false" style=''>
+		<div id='dialog_menu' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false" data-history="false" style=''>
 			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
 			
 			<h2>MapTime provides you two ways to visualize your data or play with Big data.</h2>
 			<ul>
-				<li onclick='$("#dialog_menu").popup("close"); if($.browser.mozilla){setTimeout(function(){$("#dialog_uploadData").popup("open");}, 100);}else{$("#dialog_uploadData").popup("open");}'>
-					<img src='images/1367841372_Drive_Upload.png'/><p></p>
-					<h1>Upload Data</h1>
-					<label class='menu_description'>Upload you data and <Br>find more patterns with demographic and social media data</label><P></P><br>
-					<input type='button' value='Try Demo Data' style='margin-top:50px;'  onclick='$("#dialog_menu").popup("close"); showTable(app.geocodingResult);'   />
+				<li>
+					<div onclick='$("#dialog_menu").popup("close"); if($.browser.mozilla){setTimeout(function(){$("#dialog_uploadData").popup("open");}, 100);}else{$("#dialog_uploadData").popup("open");}'>
+						<img src='images/1367841372_Drive_Upload.png'/><p></p>
+						<h1>Upload Data</h1>
+						<label class='menu_description'>Upload you data and <Br>find more patterns with demographic and social media data</label>
+					</div>
+					<P></P><br>
+					<input type='button' value='Try Demo Data' style='' onclick='$("#dialog_menu").popup("close"); showTable(app.geocodingResult);'   />
 				</li>
-				<li onclick='$("#dialog_menu").popup("close");'>
+				<li>
 					<img src='images/map-icons.png' width='300px' height='96px' /><p></p>
 					<h1>Business Intelligent</h1>
-					<label class='menu_description'>Find potential markets <Br>with demographic and social media data</label>
+					<label class='menu_description'>Find potential markets <Br>with demographic and social media data</label><P></P><br>
+
+					<div data-role="fieldcontain" style='width:100%; margin:0.5em 0'>
+				         <label for="input_location" style='float:left; padding-top:6px;'>Place: </label>
+				         <input type="text" name="input_location" id="input_location" value="San Diego" onkeypress='if(event.which==13 || event.keyCode==13){searchBusinessIntelligent(this.value);return false;}else{return true;}'>
+				    </div>
 				</li>
 			</ul>
 		</div>

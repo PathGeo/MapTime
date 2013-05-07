@@ -76,7 +76,7 @@
 			</h1>
 			
 			<a href="#dialog_usermenu" data-rel='popup' data-role='button' data-position-to="origin" data-inline="true" data-transition="slideup" data-icon="home" class="" data-mini="true" style='float:right'>User</a> 
-	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>
+	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>
 			<!--<a href="#dialog_sharemap" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="star" class="" data-mini="true" style='float:right'>Share</a>-->
 			<!--<a href="#dialog_dataPanel" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="bars" class="" data-mini="true" style='float:right'>Data List</a>-->
 			<a href="#dialog_uploadData" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right' onclick='$("#uploadData_confirm").hide(); $("#uploadData_description").show(); $("#uploadData_controls").hide();'>Upload Data</a>
@@ -220,7 +220,7 @@
                             </fieldset>
 							
                             <div id='usermenu_list' style='display:none'>
-                                <div data-role="collapsible" data-theme="d" data-content-theme="d" data-inset="true" data-mini="true"  data-iconpos="right">
+                                <div data-role="collapsible" data-theme="d" data-content-theme="d" data-inset="true" data-mini="true"  data-iconpos="right" data-collapsed-icon="arrow-d" data-expanded-icon="arrow-u">
 								    <h3>Upgrade Account</h3>
 								   	<p>
 										<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
@@ -240,15 +240,15 @@
 								   	</p>
 								</div>
 								
-								<div data-role="collapsible" data-theme="d" data-content-theme="d" data-inset="true"  data-mini="true"  data-iconpos="right">
+								<div data-role="collapsible" data-theme="d" data-content-theme="d" data-inset="true"  data-mini="true"  data-iconpos="right" data-collapsed-icon="arrow-d" data-expanded-icon="arrow-u">
 								    <h3>History</h3>
 								</div>
 								
-								<div data-role="collapsible" data-theme="d" data-content-theme="d" data-inset="true"  data-mini="true"  data-iconpos="right">
+								<div data-role="collapsible" data-theme="d" data-content-theme="d" data-inset="true"  data-mini="true"  data-iconpos="right" data-collapsed-icon="arrow-d" data-expanded-icon="arrow-u">
 								    <h3>Settings</h3>
 								</div>
 								
-								<div data-role="collapsible" data-theme="d" data-content-theme="d" data-inset="true"  data-mini="true"  data-iconpos="right">
+								<div data-role="collapsible" data-theme="d" data-content-theme="d" data-inset="true"  data-mini="true"  data-iconpos="right" data-collapsed-icon="arrow-d" data-expanded-icon="arrow-u">
 								    <h3>Log out</h3>
 								</div>
 								
@@ -265,8 +265,13 @@
 		
 		
 		<!--help-->
-		<div id='dialog_help' data-role="panel" data-position="right"  data-display="overlay" data-theme="a"  >
-				help
+		<div id='dialog_help' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false" style=''>
+				<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+				<div id="getsat-widget-5632"></div>
+				<script type="text/javascript" src="https://loader.engage.gsfn.us/loader.js"></script>
+				<script type="text/javascript">
+					if (typeof GSFN !== "undefined") { GSFN.loadWidget(5632,{"containerId":"getsat-widget-5632"}); }
+				</script>
 		</div>
 		
 
