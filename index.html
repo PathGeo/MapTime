@@ -405,40 +405,37 @@
 			<!-- social media-->
 			<div id='localInfo_socialMedia' style='display:none;'  class='localInfo_tabs'>
 				<div data-role="fieldcontain" style='margin:3px;'>
-					<label for='socialMedia_keyword' style='font-size:12px; font-weight:bold;'>Keyword: </label>
-					<input id='socialMedia_keyword' name='socialMedia_keyword' type='text' value='input your keyword' data-mini="true" onclick='this.value=""'/>
+					<input id='socialMedia_keyword' name='socialMedia_keyword' type='text' value='Enter a Keyword' data-mini="true" onclick='this.value=""'/>
 				</div>
+				
 				<input type="hidden" id="lat" value="test">
 				<input type="hidden" id="lng" value="test">
-				<!-- social media spatial filter -->
-				<div data-role="fieldcontain" style='margin:3px;'/>
-					<label for='socialMedia_spatial' style='font-size:12px; font-weight:bold;'>Spatial Filter: </label>
-					<select id='socialMedia_spatial' name='socialMedia_spatial' data-mini="true">
-						<option value='5'>5 miles of the address</option>
-						<option value='10'>10 miles of the address</option>
-						<option value='15'>15 miles of the address</option>
-					</select>
+
 				<!-- social media temporal filter -->
-				<div data-role="fieldcontain" style='margin:3px;'/>
-					<label for='socialMedia_temporal' style='font-size:12px; font-weight:bold;'>Temporal Filter: </label>
+				<div data-role="fieldcontain" style='margin:3px;'>
 					<select id='socialMedia_temporal' name='socialMedia_temporal' data-mini="true">
 						<option value='604800'>last week</option>
 						<option value='2592000'>last month</option>
 						<option value='31536000'>last year</option>
 						<option value='63072000'>last 2 years</option>
 					</select>
-					<div data-role="fieldcontain" style='margin:3px;'/>
-					<label for='socialMedia_source' style='font-size:12px; font-weight:bold;'>Social Media Filter: </label>
+				</div>
+				
+				<!-- social media source filter -->
+				<div data-role="fieldcontain" style='margin:3px;'>
 					<select id='socialMedia_source' name='socialMedia_source' data-mini="true">
 						<option value='flickr'>Flickr</option>
 						<option value='twitter'>Twitter</option>
 					</select>
+				</div>
+					
 				<button type='button' onclick='callPython()' data-mini="true">Search</button>
 				
 				
 				<div data-role="navbar" style='margin-bottom:15px; margin-top:15px' id="layer_selector">
 					<ul>
 						<li><a href="#" id="point_media" class="ui-btn-active" onclick='switchLayersMedia("point")'>Point Map</a></li>
+						<li><a href="#" id="cluster_media" onclick='switchLayersMedia("cluster")'>Cluster Map</a></li>
 						<li><a href="#" id="heat_media" onclick='switchLayersMedia("heatmap")'>Heat Map</a></li>
 					</ul>
 				</div>

@@ -12,7 +12,8 @@ function callPython(){
 	
 	var lat = document.getElementById("lat").value;
 	var lng = document.getElementById("lng").value;
-	var rad = document.getElementById("socialMedia_spatial").value;
+	//var rad = document.getElementById("socialMedia_spatial").value;
+	var rad = 15;
 	var ts = (Math.floor(Date.now()/1000)) - (document.getElementById("socialMedia_temporal").value);
 	
 	var source = document.getElementById("socialMedia_source").value;
@@ -58,6 +59,7 @@ function callPython(){
 				$("#layer_selector").show();
 				$("#point_media").addClass( "ui-btn-active" );
 				$("#heat_media").removeClass( "ui-btn-active" );
+				$("#cluster_media").removeClass( "ui-btn-active" );
 				
 				setDataMedia(contact);
 				app.map.fitBounds(curLayer.getBounds());
@@ -65,7 +67,7 @@ function callPython(){
 
 		}).error(function(error) {
 			console.log(error);
-			alert("There was an error in your search. Please try again");
+			alert("No results were found");
 		});
 	}
 	
@@ -112,6 +114,7 @@ function callPython(){
 				$("#layer_selector").show();
 				$("#point_media").addClass( "ui-btn-active" );
 				$("#heat_media").removeClass( "ui-btn-active" );
+				$("#cluster_media").removeClass( "ui-btn-active" );
 				
 				setDataMedia(contact);
 				app.map.fitBounds(curLayer.getBounds());
@@ -134,15 +137,22 @@ function getClusterLayerMedia(gjData) {
 		zoomToBoundsOnClick: false,
 		iconCreateFunction: function(cluster) {
 			//return new L.DivIcon({ html: cluster.getChildCount(), className: 'mycluster', iconSize: new L.Point() });
-			var amount = cluster.getChildCount();
-			if (amount >=10){
-				var icon = "<img border='0' src='images/photoIcon_large.png'>";
-			}
-			else if (amount >=5){
-				var icon = "<img border='0' src='images/photoIcon_medium.png'>";
+			if(curData[0].properties.Source == "twitter"){
+				var image = "newTweet";
 			}
 			else{
-				var icon = "<img border='0' src='images/photoIcon_small.png'>";
+				var image = "newPhoto";
+			}
+			
+			var amount = cluster.getChildCount();
+			if (amount >=10){
+				var icon = "<img border='0' src='images/" + image + ".png' width='62' height='74'>";
+			}
+			else if (amount >=5){
+				var icon = "<img border='0' src='images/" + image + ".png'  width='50' height='61'>";
+			}
+			else{
+				var icon = "<img border='0' src='images/" + image + ".png'>";
 			}
 	
 			return new L.DivIcon({ html: icon, className: 'mycluster' });
@@ -212,7 +222,7 @@ function getPointLayerMedia(gjData) {
 		
 			var icon = L.icon({ 
 				iconUrl: url,
-				popupAnchor: [15, 2]
+				popupAnchor: [1, 1]
 			});
 
 			marker = L.marker(latlng, {icon: icon});
@@ -273,7 +283,7 @@ function switchLayersMedia(newLayerName) {
 
 function setDataMedia(data) {
 	curData = data;
-	//alert(curData);
+	//console.log(curData);
 	//$(".features").removeClass("selected").addClass("selectable");
 	switchLayersMedia("point");
 	//$("#point").toggleClass("selected selectable");
