@@ -31,6 +31,7 @@ function callPython(){
 				}
 			}
 		}).success(function( contact ) {
+		console.log(contact);
 			if (curLayer && app.map.hasLayer(curLayer)) app.map.removeLayer(curLayer);
 			if (contact == 0){
 				$("#search_results").html('');
@@ -52,7 +53,7 @@ function callPython(){
 					var date = contact[i].properties.Date;
 					var account = contact[i].properties.Account;
 				
-					var results = "<li><h2>" + account + "</h2>" + image + "<br/><br/><p>" + date + "</p><br/><p>" + description + "</p></li>";
+					var results = "<li><h2>" + title + "</h2><img src='" + image + "' alt='...' style='float:left; margin-right:5px'>" + account + "<br/><p>" + date + "</p><br/></li>";
 					$("#search_results").append(results);
 				}
 				
@@ -109,7 +110,7 @@ function callPython(){
 					//var lat = contact[i].geometry.coordinates[0];
 					var account = contact[i].properties.Account;
 				
-					var results = "<li><h2>" + title + "</p><img  src=" + image + " alt='...' style='float:left; margin-right:5px'><a href='http://twitter.com/" + account + "' target='_blank'>" + account + "</a><br/><br/><p>" + date + "</p></li>";
+					var results = "<li><h2>" + title + "</h2><img  src=" + image + " alt='...' style='float:left; margin-right:5px'><a href='http://twitter.com/" + account + "' target='_blank'>@" + account + "</a><br/><p>" + date + "</p><br/></li>";
 					$("#search_results").append(results);
 				}
 				

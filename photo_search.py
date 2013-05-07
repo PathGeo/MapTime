@@ -32,8 +32,12 @@ count = 0
 
 for i in output['photos']['photo']:
 	count += 1
-	image = "<div><img src='http://farm" + str(i['farm']) + ".staticflickr.com/" + str(i['server']) + "/" + str(i['id']) + "_" + str(i['secret']) + "_s.jpg' alt='image here...'>"
-	account = "<a href='http://www.flickr.com/photos/" + str(i['owner']) + "/" + str(i['id']) + "' target='_blank'>" + str(i['title']) + "</a>"
+	#if(i['ownername']):
+		#name = "Unknown Name"
+	#else:
+		#name = str(i['ownername']
+	image = "http://farm" + str(i['farm']) + ".staticflickr.com/" + str(i['server']) + "/" + str(i['id']) + "_" + str(i['secret']) + "_s.jpg"
+	account = "<a href='http://www.flickr.com/photos/" + str(i['owner']) + "/" + str(i['id']) + "' target='_blank'>Username Here...</a>"
 	doc = {}
 	doc['type'] = "Feature"
 	doc['geometry'] = { "type": "Point"}
