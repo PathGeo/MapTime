@@ -34,13 +34,15 @@ function callPython(){
 			if (curLayer && app.map.hasLayer(curLayer)) app.map.removeLayer(curLayer);
 			if (contact == 0){
 				$("#search_results").html('');
+				$('#social_results_count').html('');
+				$("#layer_selector").hide();
 				alert("No results were found");
 			}
 			
 			else{
 				var count = contact.length;
 				$("#search_results").html('');
-				$("#layer_selector").hide();
+				$('#social_results_count').html('There are <b>' + count + '</b> results');
 			
 				for(i=0; i<count; i++){
 				
@@ -67,7 +69,7 @@ function callPython(){
 
 		}).error(function(error) {
 			console.log(error);
-			alert("No results were found");
+			alert("There was an error in your search. Please try again");
 		});
 	}
 	
@@ -88,24 +90,26 @@ function callPython(){
 			if (curLayer && app.map.hasLayer(curLayer)) app.map.removeLayer(curLayer);
 			if (!contact){
 				$("#search_results").html('');
-				alert("No results were found");
+				$('#social_results_count').html('');
 				$("#layer_selector").hide();
+				alert("No results were found");
 			}
 			
 			else{
 				var count = contact.length;
 				$("#search_results").html('');
+				$('#social_results_count').html('There are <b>' + count + '</b> results');
 
 				for(i=0; i<count; i++){
 				
 					var title = contact[i].properties.Title;
 					//var description = contact[i].properties.Description;
-					//var image = contact[i].properties.Img;
+					var image = contact[i].properties.Img;
 					var date = contact[i].properties.Date;
 					//var lat = contact[i].geometry.coordinates[0];
 					var account = contact[i].properties.Account;
 				
-					var results = "<li><h2>" + title + "</p><a href='http://twitter.com/" + account + "' target='_blank'>" + account + "</a><br/><br/><p>" + date + "</p></li>";
+					var results = "<li><h2>" + title + "</p><img  src=" + image + " alt='...' style='float:left; margin-right:5px'><a href='http://twitter.com/" + account + "' target='_blank'>" + account + "</a><br/><br/><p>" + date + "</p></li>";
 					$("#search_results").append(results);
 				}
 				
