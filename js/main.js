@@ -423,6 +423,7 @@ function showLayer(obj, isShow){
 									
 								
 									//based on _DT_RowIndex to insert layer into layers
+									//That means it is the geocoding layer
 									if(feature.properties._DT_RowIndex>=0){
 										var id=feature.properties["_DT_RowIndex"];
 										layers[id]=layer;
@@ -433,15 +434,20 @@ function showLayer(obj, isShow){
 												sales=feature.properties["sales"];
 											
 											if(zipcodes[code]){
-												zipcodes[code].ids.push(id);
-												zipcodes[code].count=zipcodes[code].ids.length;
-												zipcodes[code].sales_sum=zipcodes[code].sales_sum + sales;
+												var properties=zipcodes[code].feature.properties;
+												properties.ids.push(id);
+												properties.count=properties.ids.length;
+												properties.sales_sum=properties.sales_sum + sales;
 											}else{
-												zipcodes[code]={
-													ids:[id],
-													count:0,
-													sales_sum:sales
-												}
+												//assign zipcode layer in the demographic layer to the zipcodes array
+												var zipcodeLayer=app.layers.demographicData.zipcodes[code],
+													properties=zipcodeLayer.feature.properties;
+													
+												properties.ids=[id];
+												properties.count=0;
+												properties.sales_sum=sales;
+												
+												zipcodes[code]=zipcodeLayer;
 											}
 										}
 									}
@@ -483,7 +489,10 @@ function showLayer(obj, isShow){
 
 					
 					//zipcodes
-					obj.zipcodes=zipcodes;
+					obj.zipcodeLayer=zipcodes;
+					
+					
+					//add geojsonlayer to toc
 					app.controls.toc.addOverlay(obj.geoJsonLayer, "Marker Map");
 					
 
@@ -1066,7 +1075,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 
 //business action
 function showBusinessAction(type){
-	var zipcodes=app.geocodingResult.zipcodes,
+	var zipcodeLayer=app.geocodingResult.zipcodeLayer,
 		selectedZipcode=$("#businessActions_type").attr("zipcode"),
 		dataLength=app.geocodingResult.json.features.length;
 		dataArray=[],
@@ -1135,17 +1144,22 @@ function showBusinessAction(type){
 			dataArray.addColumn({type:'string', role:'tooltip', 'p': {'html': true}});
 			dataArray.addColumn('number', "originalCustomers"); // the original customer number for sorting. But this value will be devided by total number (dataLength) for better presentation
 			
-			var highlight=0, count=0;
-			$.each(zipcodes, function(k,v){
+			var highlight=0, count=0, tooltip="", originalCount=0;
+			$.each(zipcodeLayer, function(k,v){
+				originalCount=v.feature.properties.count;
+				highlight=0;
+				count=originalCount;
+				
 				if(k==selectedZipcode){
-					highlight=v.count;
+					highlight=originalCount;
 					count=0; //in order to highlight this zipcode bar, the customers number should be set as 0 to show the highlight bar.
-				}else{
-					highlight=0;
-					count=v.count;
-				} 
-
-				dataArray.addRow([k, count, "<div id='chartTooltip'><b>Zipcode: </b>" + k + "<br><b>Customers: </b>"+ v.count + " ("+ (((v.count/dataLength).toFixed(4))*100)+ "%)</div>", highlight,"<div id='chartTooltip'><b>Zipcode: </b>" + k + "<br><b>Customers: </b>"+ v.count + " ("+ (((v.count/dataLength).toFixed(4))*100)+ "%)</div>", v.count/dataLength])
+				}
+				
+				tooltip="<div id='chartTooltip'><b>Zipcode: </b>" + k + "<br><b>Customers: </b>"+ originalCount + " ("+ (((originalCount/dataLength).toFixed(4))*100)+ "%)</div>";
+				dataArray.addRow([k, count, tooltip, highlight, tooltip, originalCount/dataLength]);
+				
+				//show zipcode layer
+				v.addTo(app.map);
 			});
 			
 			sort=[{column: 5, desc:true}] //according column 5 (orginalCustomers) to sort whole datasets.
@@ -1155,10 +1169,11 @@ function showBusinessAction(type){
 			chartOptions.googleChartWrapperOptions.options.series[2]={color: 'transparent', visibleInLegend: false}; //set bar color=transparent for originalCustomers
 			chartOptions.googleChartWrapperOptions.options.titleX="The number of customers";
 			chartOptions.googleChartWrapperOptions.options.titleY="Zip Codes"
+			
 		break;
 		case "top_sales":
 			dataArray=[["zipcodes", "sum_sales"]];
-			$.each(zipcodes, function(k,v){dataArray.push([k, v.sales_sum]);});
+			$.each(zipcodeLayer, function(k,v){dataArray.push([k, v.feature.properties.sales_sum]);});
 			chartOptions.googleChartWrapperOptions.options.titleX="The sum of sales";
 			chartOptions.googleChartWrapperOptions.options.titleY="Zip Codes"
 		break;
