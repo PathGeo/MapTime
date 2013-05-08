@@ -13,16 +13,19 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
  * map
  */
 #div_map {width:100%; height:53%; padding:0px; margin:0px; position:relative; box-shadow:0 4px 10px #777777; -moz-box-shadow:0 4px 10px #777777; -webkit-box-shadow:0 4px 10px #777777;}
-#maxminMap {position:absolute; bottom:0px;left:43%; color:#cccccc; font-weight:bold; text-align:center; text-shadow:0 0px 0 #fff; margin:0 auto; z-index:500; background:rgba(0,0,0,0.3); width:150px; height:18px; -moz-border-radius:2px; -webkit-border-radius:2px;border-radius:2px;}
-#maxminMap:hover {background:rgba(0,0,0,0.7);cursor:pointer;color:#ffffff;}
+#showhideTable {position:absolute; bottom:0px;left:43%; color:#cccccc; font-weight:bold; text-align:center; text-shadow:0 0px 0 #fff; margin:0 auto; z-index:500; background:rgba(0,0,0,0.3); width:150px; height:18px; -moz-border-radius:2px; -webkit-border-radius:2px;border-radius:2px;}
+#showhideTable:hover {background:rgba(0,0,0,0.7);cursor:pointer;color:#ffffff;}
 
 
 /**
  * gallery
  */
-.leaflet-control-mapGallery {box-shadow: 0 1px 7px #999; background: #f8f8f9;-moz-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px;}
-.leaflet-control-mapGallery ul li div img {height:50px;-moz-border-radius:5px; -webkit-border-radius:5px;border-radius:5px;cursor:pointer;margin:2px;}
-.leaflet-control-mapGallery > a {float:left; background-image:url(../images/layers.png); background-repeat:no-repeat; width:35px; height:35px; padding:2px;  background-position: 50% 50%;}
+.leaflet-control-mapGallery {}
+.leaflet-control-mapGallery ul {list-style:none;padding:0px; margin:0px;}
+.leaflet-control-mapGallery ul li {padding:4px; margin:10px 0px 10px 0px;  text-align:center; box-shadow: 0 1px 7px #999; background: #f8f8f9;-moz-border-radius: 8px; -webkit-border-radius: 8px;border-radius: 8px;}
+.leaflet-control-mapGallery ul li:hover {background-color:#eeeeee; cursor:pointer;}
+.leaflet-control-mapGallery ul li img {height:28px;}
+
 
 /**
  * 	legend
@@ -48,12 +51,22 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /** social meadia */
 #localInfo_socialMedia {height:90%;}
 #socialMedia_result {height: 75%; overflow-y:auto;}
-#socialMedia_result .ui-li-heading {font-size:13px;}
-#socialMedia_result .ui-li-desc {font-size:10px;}
+#socialMedia_result .ui-li-heading {font-size:14px; margin-bottom:5px;}
+#socialMedia_result .ui-li-desc {font-size:12px;}
+#socialMedia_result .ui-li {padding-left:5px}
+#search_results {height:100%;}
+
 
 /** demographic data */
-#localInfo_demographicData {height:92%;}
-#demographic_type {height:80%; overflow-y:auto;}
+#localInfo_demographicData {height:92%; position:relative;}
+#demographic_type {height:95%; overflow-y:auto;}
+
+#localInfo_businessActions label.ui-select{font-size:110%; font-weight:bold;}
+#localInfo_businessActions {height:92%; position:relative;}
+.businessActions_tabs {height:100%; position:relative;}
+#businessActions_downloadReport {position:absolute; top:-5px; right:0px; cursor:pointer; width:25px;}
+#businessResult_result {height:85%;}
+#businessActions_detailContent {height:93%;overflow-y:auto;}
 
 
 /**
@@ -68,6 +81,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
  * dataTable
  */
 #dataPanel {margin:0 auto;  width:99%; overflow:hidden; height:45%; text-shadow: 0 0px 0 #fff; margin-top:7px}
+#dataTable {font-size:13px;}
 #dataTable tr:hover{background-color:#5e87b0; color:#000000; cursor:pointer;}
 
 #dataTable_control {height:30px; border-bottom:1px solid #cccccc; margin-bottom:10px;}
@@ -92,6 +106,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 
 #dataTable_length {float:right; padding-right:30px;}
 #dataTable_filter input {width:200px;}
+#dataTable { width: 100%; }
 /**
  * 	dataTable chart
  */
@@ -108,9 +123,12 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
  */
 #dialog_uploadData {width:700px; height:500px; text-shadow:0 0px 0 #fff;}
 #dialog_uploadData form {padding-top:30px;}
-#uploadData_content {width:95.8%; height:66.2%; margin-top:68px; background-color:#333333; color:#ffffff; padding:15px;-moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
+#uploadData_content {width:95.8%; height:66.2%; margin-top:10px; background-color:#333333; color:#ffffff; padding:15px;-moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
 #uploadData_agreement {height:150px; overflow-y:auto; background-color:#ffffff; border:1px solid #cccccc; color:#555555;padding:15px;}
 #uploadData_confirm .ui-checkbox {width:40%; float:left;}
+#uploadData_agreementCheck { height: 40px; }
+#submit_button { height: 40px; }
+#uploatData_form { width: 90%; margin: 0 auto; }
 
 
 
@@ -123,6 +141,29 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #header h1 div {position:absolute; padding:12px 150px}
 
 
+
+/**
+ * 	main menu
+ */
+#dialog_menu {width:900px; height:500px; text-shadow:0 0px 0 #fff; padding:10px; text-align:center}
+#dialog_menu ul {list-style:none; padding:0px; margin:0px; width:100%; height:100%;}
+#dialog_menu ul li {margin:20px; padding-top:100px; float:left; width:45%; height:65%; text-align:center; border:1px solid #cccccc; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
+#dialog_menu ul li:hover {background-color:#eeeeee; cursor:pointer;}
+#dialog_menu .menu_description {color:#777777; font-size:100%; margin-top:50px;}
+#dialog_menu-screen {height:100%;position:fixed}
+
+
+
+/**
+ * 	help menu
+ */
+#dialog_help {width:900px; padding:10px}
+
+
+
+
+/** google chart tooltip */
+#chartTooltip {color:#000000; padding:5px; font-size:70%;}
 
 
 

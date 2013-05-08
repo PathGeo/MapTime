@@ -14,8 +14,8 @@ var app={
 	layers: {
 			"demographicData":null
 	},
-	searchResult:{
-			name: "searchResult", 
+	geocodingResult:{
+			name: "geocodingResult", 
 			type: "GEOJSON", 
 			url: "db/demo-data300.json",
 			srs: "EPSG:4326",
@@ -23,23 +23,35 @@ var app={
 			keywords:[]
 	},
 	controls:{
+		mapGallery: L.Control.extend({
+		    options: {collapsed: true,position: 'bottomright',text: 'Map Gallery',},
+			initialize: function (options) {L.Util.setOptions(this, options);},
+		    onAdd: function (map) {
+	        	// create the control container with a particular class name
+		        var container=L.DomUtil.create('div', 'leaflet-control-mapGallery');
+		        var html="<ul><li title='Marker map' layer='geoJsonLayer' style='background-color:#5B92C0'><img src='images/marker-icon.png' /></li><li title='Cluster map' layer='markerClusterLayer'><img src='images/gallery-cluster.png' /></li><li title='Heat map' layer='heatMapLayer'><img src='images/gallery-heatmap.png' /></li></ul>";
+		        
+		         //click map gallery event
+		        $(container).html(html)
+		        			.find("ul li").click(function(){
+					        	var $this=$(this),
+					        		value=$this.attr("layer"),
+					        		layer=app.geocodingResult[value];
+					        	
+					        	//if this layer is already shown on the map, hide the layer and change the color
+					        	if(layer._map){
+					        		app.map.removeLayer(layer);
+					        		$this.css({"background-color": ''});
+					        	}else{
+					        		layer.addTo(app.map);
+					        		$this.css({"background-color": '#5B92C0'});
+					        	}
+					        });
+		        
+		        return container
+		    }
+		}),
 		toc:null,
-//		mapGallery: L.Control.extend({
-//		    options: {collapsed: true,position: 'topright',text: 'Map Gallery',},
-//			initialize: function (options) {L.Util.setOptions(this, options);},
-//		    onAdd: function (map) {
-//		        // create the control container with a particular class name
-//		        var container = L.DomUtil.create('div', 'leaflet-control-mapGallery');
-//				$(container).html($("#div_gallery").html())
-//				
-//				//mouseevent
-//				if(this.options){
-//					L.DomEvent.addListener(container, 'mouseover', function(){$("#mapGallery").show();}, this);
-//					L.DomEvent.addListener(container, 'mouseout', function(){$("#mapGallery").hide();}, this);
-//				}
-//		        return container
-//		    }
-//		}),
 		legend: L.Control.extend({
 		    options: {position: 'bottomright',text: 'Legend',},
 			initialize: function (options) {L.Util.setOptions(this, options);},
@@ -66,6 +78,17 @@ var app={
 		"HC01_VC112":"Median family income",
 		"HC01_VC113":"Mean family income",
 		"HC01_VC115":"Per capita income"
+		/*"HC01_VC04":"Total Population",
+		"HC01_VC20":"Total population with children at home ",
+		"HC01_VC21":"Median household income (dollars)",
+		"HC01_VC23":"Employed Population 16 years and over",
+		"HC01_VC28":"Average household size",
+		"HC01_VC74":"Age",
+		"HC01_VC85":"Sex",
+		"HC01_VC86":"Public Health"*/
+		//"HC01_VC112":"Median family income",
+		//"HC01_VC113":"Mean family income",
+		//"HC01_VC115":"Per capita income"		
 	},
 	geojsonReader: new jsts.io.GeoJSONReader(),
 	mapGalleryHtml:"",
@@ -80,15 +103,23 @@ var app={
 //init
 $(document).on("pageshow", function(){	  
 	init_UI();
-    
-    init_map();
-    
+   
+   	init_map();
 	
 	//directly shoing demo data
-	showLayer(app.searchResult,true)
+	showTable(app.geocodingResult);
 	
+	pathgeo.service.zipcodeLookup(91745, function(placename, json, status){
+		if(!status) {
+			if(placename != '') {
+							
+			}
+		}
+		
+	});
 
 });
+
 
 
 
@@ -98,7 +129,6 @@ function init_map(){
 	//adjust map height
 	//var map_height=((($(document).height()-$("#header").height()) / $(document).height())*100*0.45)+"%";
 	//$("#div_map").css({height:300});
-
 	
 	app.map = L.map("div_map", {
         center: app.initCenterLatLng,
@@ -126,21 +156,21 @@ function init_map(){
 	
 	
 	//create maxminMap DIV
-	$("#div_map").append("<div id='maxminMap' title='Maximum Map'>Maximum Map</div>");
+	$("#div_map").append("<div id='showhideTable' title='Hide Table'>Hide Table</div>");
 	
 	//maximum or mimimum map
-	$("#maxminMap").click(function(){
+	$("#showhideTable").click(function(){
 		var $this=$(this);
 		
 		//maximum map
-		if($this.html()=='Maximum Map'){
+		if($this.html()=='Hide Table'){
 			$("#div_map").animate({height:"80%"}, 500, function(){
 				//resize map
 				app.map.invalidateSize(false);
 				
 				$("#dataPanel").css({height:"17%"});
 	
-				$this.html("Minimum Map").attr("title", "Mimimum Map");
+				$this.html("Show Table").attr("title", "Show Table");
 			});
 		}else{
 			$("#div_map").animate({height:"53%"}, 500, function(){
@@ -149,16 +179,36 @@ function init_map(){
 				
 				$("#dataPanel").css({height:"45%"});
 	
-				$this.html("Maximum Map").attr("title", "Maximum Map");
+				$this.html("Hide Table").attr("title", "Hide Table");
 			});
 		}
+<<<<<<< HEAD
 	});
+=======
+	}).trigger('click');
+	
+	
+	//read demographic data
+	pathgeo.service.demographicData({
+		// filter:{
+			// type:"zipcode",
+			// value:"94131"
+		// },
+		callback:function(geojsonLayer){
+			app.layers.demographicData=geojsonLayer;
+		}
+	});
+	//alert(app.layers.demographicData.toSource());
+	//alert(pathgeo.service.demographicData.toSource());
+
+>>>>>>> origin/dev
 }
 
 
 
 //init UI
 function init_UI(){
+	
 	//content height
 	$("#content").height($(window).height()-$("#header").height());
 	
@@ -166,8 +216,17 @@ function init_UI(){
 		$(this).css("background-color", "#222222").siblings().css("background-color","");
 	});
 	
+	
 	//init popup
-	$("div[data-role='popup']").popup();
+	//$("div[data-role='popup']").popup();
+	
+
+	//show main menu
+	//if directly show the main menu while initlizing the webpage, the main menu will be immediately disppeared in Chrome (noraml in the Firefo).
+	//JQM said this is the bug from webkit(Goolge chrome) https://github.com/jquery/jquery-mobile/issues/5775
+	setTimeout(function(){
+		$("#dialog_menu").popup("open");
+	},1000);
 	
 	//dataFilter
 //	$("#dataFilter").css({"margin-top":$("#div_map").height()}).find(">ul li").click(function(){
@@ -205,42 +264,103 @@ function init_UI(){
 		if(value){
 			$("#uploadData_description").hide();
 			$("#uploadData_confirm").show();
+			$("#uploadData_controls").show();
 			//$(this).closest("form").submit();
 		}
-	});
-	
-	
-	//form
-	$('#uploadData_form').ajaxForm({
-		dataType:  'json',
-		timeout: 20000,
-		uploadProgress: function(e, position, total, percentComplete){
-			console.log(percentComplete)
-		},
-		success: function(data) { 
-			if (!data || data.length <= 0) return;
-			
-			 app.searchResult={
-				 name: "searchResult", 
-				 type: "GEOJSON",
-				 json: data,
-				 srs: "EPSG:4326",
-				 title: "keyword",
-				 fieldName:{username:null, text:"text"},
-				 keywords: "testing"
-			 };
 
-			showLayer(app.searchResult, true);
+	});
+
+	//businessActions selection change
+	$("#businessActions_type").change(function(){
+		showBusinessAction(this.value);
+	})
+	
+	
+	//Keep track of currently uploaded file 
+	var currentFileName = '';
+
+	//This is necessary to prevent being redirected when uploading data...
+	$('#uploadData_form').on('submit', function (e) {
+		if (e.preventDefault) e.preventDefault();
+		return false;
+	});
 			
-			app.map.fitBounds(app.searchResult.geoJsonLayer.getBounds());
-		},
-		error: function(e){
-			console.log("error upload file")
-			console.log(e)
-		}
+	//Submits form when user selects a file to upload
+	//The reponse is a list of column names, which are used to populate the drop-down menu
+	$("#uploadData_input").change(function() { 
+		$("#uploadData_form").ajaxSubmit({
+			dataType: 'json',
+			success: function (tableInfo) {
+				//remove current options in the drop-down
+				$("#uploadData_geocodingField option").remove();
+				
+				var columns = tableInfo.columns;
+				currentFileName = tableInfo.fileName;
+				
+				//set new options according to the returned value names
+				for (var indx in columns) {
+					var column = columns[indx];
+					$("#uploadData_geocodingField").append($('<option></option>').val(column).html(column))
+				}	
+				
+				//make sure that the first option is selected
+				$("#uploadData_geocodingField").val(columns[0]).change();
+				
+			}, error: function (error) {
+				console.log(error.responseText);
+			}
+		});
 	});
 	
+	//Submits upload file form and captures the response
+	$('#uploadData_form').submit( function() {
+		var geoColumn = $("#uploadData_geocodingField").val();
+		var checked = $("#uploadData_agreementCheck").attr("checked");
+		
+		if (!checked) {
+			alert("You must agree to the PathGeo agreement before your data is geocoded.");
+			return;
+		}
+		
+		$.ajax({
+			dataType: 'json',
+			url: "retrieveGeocodedTable.py", 
+			data: { 
+				fileName: currentFileName,
+				geoColumn: geoColumn
+			}, success: function(data) { 
+				if (!data || data.length <= 0) {
+					alert("No rows could be geocoded.  Please make sure you have selected the correct location column.");
+					return;
+				}
+										
+				app.map.removeLayer(app.geocodingResult.geoJsonLayer);
+
+				app.geocodingResult  = {
+					 name: "geocodingResult", 
+					 type: "GEOJSON",
+					 json: { type: "FeatureCollection", features: data }, //showTable now expecting a FeatureCollection
+					 srs: "EPSG:4326",
+					 title: "Your Data",
+					 keywords: ["testing"]
+				 };
+				 
+				showTable(app.geocodingResult);
+
+				app.map.fitBounds(app.geocodingResult.geoJsonLayer.getBounds());
+				
+				$('.ui-dialog').dialog('close');
+				
+			}, error: function (error) {
+				console.log("Error:");
+				console.log(error.responseText);
+			}
+		});
+	});
+	
+	$("#layer_selector").hide();
 }
+
 
 
 
@@ -252,35 +372,53 @@ function showLayer(obj, isShow){
 		//feature count
 		obj.featureCount=0;
 		
+<<<<<<< HEAD
+=======
+		//layers
+		obj.layers=[];
+		
+
+>>>>>>> origin/dev
 		//show layer
 		switch(obj.type){
 			case "GEOJSON":
+				
 				//show geojson
 				//need to be prior than the main part, otherwise this function will not be triggered in Firefox
 				function showGeojson(object){
 					parseGeojson(object);
 					addLayer(object);
 					
-				
-					//show table
-					//convert geojson properties to array
-					if(!obj.dataTable){
-						obj.dataTable=pathgeo.util.geojsonPropertiesToArray(obj.json);
-						showTable(obj.dataTable);
-					}
-					
-
 					//hide loadData dialog
 					$("#dialog_uploadData").popup("close");
 				}
 				
 				
+				
 				//parse geojson
 				function parseGeojson(obj){
-					//create layer
-					if(!obj.geoJsonLayer){
-						var layers=[];
-						obj.geoJsonLayer=new L.geoJson(obj.json, {
+					//remove layers
+					var layerNames=["geoJsonLayer", "markerClusterLayer", "heatMapLayer"],
+						showLayerNames=[];
+					$.each(layerNames, function(i,layerName){
+						var layer=obj[layerName];
+						if(layer){
+							//if layer._map has map object, that means the layer is shown in the map
+							if(layer._map){
+								showLayerNames.push(layerName);
+								app.map.removeLayer(layer);
+							}
+							app.controls.toc.removeLayer(layer);
+						}
+					});
+					
+				
+					var layers=[], 
+						zipcodes={};
+					
+					
+					//marker layer
+					obj.geoJsonLayer = new L.geoJson(obj.json, {
 								onEachFeature:function(feature,layer){
 									var html=pathgeo.util.objectToHtml(feature.properties);
 									
@@ -292,13 +430,39 @@ function showLayer(obj, isShow){
 									
 								
 									//based on _DT_RowIndex to insert layer into layers
+									//That means it is the geocoding layer
 									if(feature.properties._DT_RowIndex>=0){
-										layers[feature.properties._DT_RowIndex]=layer;
+										var id=feature.properties["_DT_RowIndex"];
+										layers[id]=layer;
+										
+										//if feature contains zipcode field, then calculate information in the feature attribute, e.g. how many users in the zip code, the sum of sales
+										if(feature.properties["zip"]){
+											var code=feature.properties["zip"],
+												sales=feature.properties["sales"];
+											
+											if(zipcodes[code]){
+												var properties=zipcodes[code].feature.properties;
+												properties.ids.push(id);
+												properties.count=properties.ids.length;
+												properties.sales_sum=properties.sales_sum + sales;
+											}else{
+												//assign zipcode layer in the demographic layer to the zipcodes array
+												var zipcodeLayer=app.layers.demographicData.zipcodes[code],
+													properties=zipcodeLayer.feature.properties;
+													
+												properties.ids=[id];
+												properties.count=0;
+												properties.sales_sum=sales;
+												
+												zipcodes[code]=zipcodeLayer;
+											}
+										}
 									}
 									
 									
 									//default icon
 									layer.defaultIcon=layer.options.icon;
+								
 									
 									//event
 									layer.on({
@@ -316,31 +480,67 @@ function showLayer(obj, isShow){
 								},
 								
 								//style
-								style: {}
-						});
-						obj.geoJsonLayer.layers=layers;
-						
-						app.controls.toc.addOverlay(obj.geoJsonLayer, "GeoJSON");
-						obj.layer=obj.geoJsonLayer;
-					}
+								style:{},
+								
+								//pointToLayer to change layers' icon
+								pointToLayer: function(feature, latlng){
+									var icon=new L.icon({
+											iconUrl: "images/marker-icon.png",
+											iconSize: [12.5, 21],
+											iconAnchor: [6.25, 10.5]
+									});
+									return new L.marker(latlng, {icon: icon})
+								}
+					});
+					obj.geoJsonLayer.layers=layers;
+
+					
+					//zipcodes
+					obj.zipcodeLayer=zipcodes;
 					
 					
-					//marker cluster
-					if(!obj.markerClusterLayer){
-						obj.markerClusterLayer = pathgeo.layer.markerCluster(obj.json, {
+					//add geojsonlayer to toc
+					app.controls.toc.addOverlay(obj.geoJsonLayer, "Marker Map");
+					
+
+					//markercluster layer
+					obj.markerClusterLayer = pathgeo.layer.markerCluster(obj.json, {
 								onEachFeature: function (feature, layer) {
 									var props = feature.properties;
-									var popupText = '';
+//									var popupText = '';
+//									
+//									for (var prop in props) { 
+//										var fieldName = prop.charAt(0).toUpperCase() + prop.slice(1);
+//										
+//										if (fieldName.toLowerCase() != "loc") {
+//											popupText += "<b>" + fieldName + "</b>: " + feature.properties[prop] + "<br>";
+//										}
+//									}
+//									
+//									layer.bindPopup(popupText, { maxWidth: 500, maxHeight: 300 } );
 									
-									for (var prop in props) { 
-										var fieldName = prop.charAt(0).toUpperCase() + prop.slice(1);
-										
-										if (fieldName.toLowerCase() != "loc") {
-											popupText += "<b>" + fieldName + "</b>: " + feature.properties[prop] + "<br>";
+									
+									
+									//event
+									layer.on({
+										mouseover: function(e){
+											
+										},
+										click: function(e){
+											//show local info
+											showLocalInfo(e.target.feature.properties._DT_RowIndex, true);
 										}
-									}
-									
-									layer.bindPopup(popupText, { maxWidth: 500, maxHeight: 300 } );
+									});
+								},
+								
+								//pointToLayer
+								pointToLayer: function(feature, latlng){
+									var icon=new L.icon({
+											iconUrl: "images/marker-icon.png",
+											iconSize: [12.5, 21],
+											iconAnchor: [6.25, 10.5]
+									});
+									return new L.marker(latlng, {icon: icon})
 								}
 							},{
 								//clusterclick event
@@ -363,16 +563,25 @@ function showLayer(obj, isShow){
 									}
 								}
 							}
-						);
-						app.controls.toc.addOverlay(obj.markerClusterLayer, "MarkerCluster");
-					}
+					);
+					app.controls.toc.addOverlay(obj.markerClusterLayer, "Cluster Map");
 					
 					
-					//heat map				
-					if(!obj.heatMapLayer){
-						obj.heatMapLayer=pathgeo.layer.heatMap(obj.json);
-						app.controls.toc.addOverlay(obj.heatMapLayer, "Heatmap");
-					}
+					
+					//heatmap
+					obj.heatMapLayer=pathgeo.layer.heatMap(obj.json);
+					app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
+					
+					
+					
+					//showLayerNames
+					//if this is the first time to load layers, the showLayerNames will be emplty.
+					//so the default layer is geoJsonLayer
+					if(showLayerNames.length==0){showLayerNames.push("geoJsonLayer");};
+					$.each(showLayerNames, function(i, name){
+						obj.layers.push(obj[name]);
+					})
+					
 				}//end parseGeojson
 				
 				
@@ -380,12 +589,14 @@ function showLayer(obj, isShow){
 				//main part
 				if(!obj.json){
 					$.getJSON(obj.url, function(json){
-						obj.json=json;
+						//if json is an array of features
+						obj.json=(json instanceof Array)?{type:"FeatureCollection", features:json} : json;
 						showGeojson(obj);
 					});
 				}else{
 					showGeojson(obj);
 				}
+				
 			break;
 			case "WMS":
 				//default param
@@ -393,28 +604,30 @@ function showLayer(obj, isShow){
 					obj.param.format= obj.param.format || 'image/png';
 					obj.param.transparent=obj.param.transparent || true
 					
-					obj.layer = L.tileLayer.wms(obj.url, obj.param);
+					obj.layers.push(L.tileLayer.wms(obj.url, obj.param));
 					
 					//events
-					obj.layer.on("load", function(e){
+					obj.layers[0].on("load", function(e){
 						console.log("loaded");
 					});
 					
 					//obj.layer.setOpacity(0.75).addTo(app.map).bringToFront();
 					addLayer(obj);
-					app.controls.toc.addOverlay(obj.layer, obj.name);
+					app.controls.toc.addOverlay(obj.layers[0], obj.name);
 				}
 			break;
 		}
 		
 		
-		
+		//add layer
 		function addLayer(obj){
 			if(isShow){
-				obj.layer.addTo(app.map);
-				app.showLayers.push(obj.layer);
+				$.each(obj.layers, function(i,layer){
+					layer.addTo(app.map);
+					app.showLayers.push(layer);
+				})
 				
-				app.map.fitBounds(app.searchResult.geoJsonLayer.getBounds());
+				app.map.fitBounds(obj.geoJsonLayer.getBounds());
 			}
 
 			//close dialog
@@ -435,13 +648,13 @@ function switchVisualization(types){
 	$.each(types, function(i,type){
 		switch(type){
 			case "MARKERCLUSTER":
-				layer=app.searchResult.markerClusterLayer.addTo(app.map);
+				layer=app.geocodingResult.markerClusterLayer.addTo(app.map);
 			break;
 			case "HEATMAP":
-				layer=app.searchResult.heatMapLayer.addTo(app.map);
+				layer=app.geocodingResult.heatMapLayer.addTo(app.map);
 			break;
 			case "GEOJSON":
-				layer=app.searchResult.geoJsonLayer.addTo(app.map);
+				layer=app.geocodingResult.geoJsonLayer.addTo(app.map);
 			break;
 		}
 		app.showLayers.push(layer);
@@ -454,8 +667,14 @@ function switchVisualization(types){
 
 //remove all layers on the map
 function removeLayers(){
+
 	if(app.showLayers.length>0){
 		$.each(app.showLayers, function(i,layer){
+			//if toc contains the layer
+			if(app.controls.toc._layers[layer._leaflet_id]){
+				app.controls.toc.removeLayer(layer);
+			}
+			//remove layer from the map
 			app.map.removeLayer(layer);
 		});
 		app.showLayers=[];
@@ -477,112 +696,133 @@ function switchBaseLayer(layer){
 
 
 //show pivot table
+//This first populates the table, then draws the geojson features
 function showTable(obj){
+	if(!obj.json){
+		$.getJSON(obj.url, function(json){
+			//if json is an array of features
+			obj.json=(json instanceof Array)?{type:"FeatureCollection", features:json} : json;
+			createTable(obj);
+		});
+	}else{
+		createTable(obj);
+	}
+	
+	//create table and chart
+	function createTable(obj){
+		//convert geojson properties to array
+		
+		if(!obj.dataTable){
+			obj.dataTable = pathgeo.util.geojsonPropertiesToArray(obj.json);
+		}
+	
+		var dataTable=obj.dataTable;
+		
 		//hide columns
-		var hiddenColumns=["Coordinates"];
-		$.each(obj.columns_dataTable, function(i,column){
+		var hiddenColumns = ["Coordinates"];
+		$.each(dataTable.columns_dataTable, function(i, column){
 			$.each(hiddenColumns, function(j, columnName){
-				if(columnName==column.sTitle){column.bVisible=false; column.bSearchable=false}
+				if (columnName == column.sTitle) {
+					column.bVisible = false;
+					column.bSearchable = false
+				}
 			});
 		});
-	
-
-		app.dataTable=$('#dataTable').dataTable({
-			"aaData": obj.datas,	//data
-			"aoColumns": obj.columns_dataTable, //column
+		
+		//if app.dataTable already exists, clear html in the .dataTable_na nad #dataTableControl to avoid duplicate nav and control toolboxes
+		if (app.dataTable) {
+			$(".dataTable_nav, #dataTable_control").html("");
+		}
+		
+		//init app.dataTable
+		app.dataTable = $('#dataTable').dataTable({
+			"bDestroy": !!app.dataTable, //destroy current object if one exists
+			"aaData": dataTable.datas, //data
+			"aoColumns": dataTable.columns_dataTable, //column
 			"bJQueryUI": false,
 			"sPaginationType": "full_numbers", //page number
 			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"f><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rti<pl>>', //DOM
 			fnDrawCallback: function(){
-				
+			
 				//backup orginal json to defaultJSON
-				if(!app.searchResult.defaultJSON){
-					app.searchResult.defaultJSON=app.searchResult.json;
-				}
-				
+				if (!obj.defaultJSON) {obj.defaultJSON = obj.json;}
+
 				//if jumpPage==true, The datatable only jumps to the page. Don't need to re-read the geojson and redraw the table
-				if(!app.jumpPage){
+				if (!app.jumpPage) {
 					//get filter data,
-					var	me=this,
-						features=app.searchResult.defaultJSON.features,
-						geojson={
-							type:"FeatureCollection",
-							features:[]
-						},
-						feature,
-						$selectedData=me.$('tr', {"filter": "applied"});
-					
+					var me = this, 
+						features = obj.defaultJSON.features, 
+						geojson = {
+							type: "FeatureCollection",
+							features: []
+						}, 
+						feature, 
+						$selectedData = me.$('tr', {"filter": "applied"});
+				
 					//remove demographic data
-					if(app.layers.demographicData){
+					if (app.layers.demographicData) {
 						app.map.removeLayer(app.layers.demographicData);
 					}
-					
+							
 					//reset table style
-					var $tr=$("#dataTable tr");
-					$.each(app.css["dataTable_highlightRow"], function(k,v){$tr.css(k,"");});
+					var $tr = $("#dataTable tr");
+					$.each(app.css["dataTable_highlightRow"], function(k, v){ $tr.css(k, "");});
+					
 					
 					//to avoid refresh too frequently to mark high CPU usage
 					setTimeout(function(){
-						if(me.$('tr', {"filter": "applied"}).length==$selectedData.length){
-							//remove layers
-							removeLayers();
-						
+						if (me.$('tr', {"filter": "applied"}).length == $selectedData.length) {
+		
 							//read selected layers
 							me.$('tr', {"filter": "applied"}).each(function(){
 								$(this).attr("_dt_rowindex", this._DT_RowIndex);
-	
-								feature=features[this._DT_RowIndex];
-								feature.properties._DT_RowIndex=this._DT_RowIndex;
+								
+								feature = features[this._DT_RowIndex];
+								feature.properties._DT_RowIndex = this._DT_RowIndex;
 								geojson.features.push(feature);
 							});
 							
 							
-							//overwrite app.searchResult.json and showlayer again
-							//remove geojsonLayer
-							if(geojson.features.length>0 && app.searchResult.geoJsonLayer){
-								app.map.removeLayer(app.searchResult.geoJsonLayer);
-								app.searchResult.geoJsonLayer=null;
-								app.searchResult.markerClusterLayer=null;
-								app.searchResult.heatMapLayer=null;
-								
-								app.searchResult.json=geojson;
-								showLayer(app.searchResult, true);
+							//overwrite app.geocodingResult.json and showlayer 
+							if (geojson.features.length > 0){
+							
+								obj.json = geojson;
+								showLayer(obj, true);
 								
 								//re-draw Chart
-								showDataTableChart(app.searchResult.json);
+								showDataTableChart(obj.json);
 							}
 						}
-					},500)
-				}
+					}, 500)
+				}//end if app.jumpPage
 				
-
-			}
-		});	
+			}//end drawCallback
+		});// end init dataTable
 		
 		//set all columns in to app.dataTable. Should have another way to get columns
-		app.dataTable.columns=obj.columns;
+		app.dataTable.columns = dataTable.columns;
 		
 		
 		//add dataTable tools and click event
-		var html="<ul>"+
-				 //"<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
-				 "<li><img src='images/1365858910_download.png' title='download'/></li>"+
-				 "<li><img src='images/1365858892_print.png' title='print'/></li>"+
-				 "<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/></li>"+
-				 //"<li><img src='images/1365860337_cube.png' title='canned report'/></li>"+
-				 //"<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
-				 "<li><img src='images/1365978110_gallery2.png' title='map gallery'/></li>"+
-				 //"<li><img src='images/1365872733_sq_br_down.png' title='maximum map'/></li>"+
-				 "</ul>";
-		$(".dataTable_tools")
-			.append(html)
-			.find("ul li").click(function(){
-				//show content in the infobox
-				showInfobox($(this).find("img").attr('title'), {left: $(this).offset().left, top: $(this).offset().top+15}, this);	
-			});
+		var html = "<ul>" +
+					//"<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
+					"<li><img src='images/1365858910_download.png' title='download'/></li>" +
+					"<li><img src='images/1365858892_print.png' title='print'/></li>" +
+					"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/></li>" +
+					//"<li><img src='images/1365860337_cube.png' title='canned report'/></li>"+
+					//"<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
+					//"<li><img src='images/1365978110_gallery2.png' title='map gallery'/></li>" +
+					//"<li><img src='images/1365872733_sq_br_down.png' title='maximum map'/></li>"+
+					"</ul>";
+		$(".dataTable_tools").append(html).find("ul li").click(function(){
+			//show content in the infobox
+			showInfobox($(this).find("img").attr('title'), {
+				left: $(this).offset().left,
+				top: $(this).offset().top + 15
+			}, this);
+		});
 		
-		
-		
+	
 		
 		//dataTable nav bar
 		$(".dataTable_nav").html($("#dataTable_nav").html())
@@ -591,7 +831,7 @@ function showTable(obj){
 		//copy dataTable toolbar html to dataTable_control
 		$("#dataTable_control").html($(".dataTable_toolbar"));
 		
-
+		
 		//click on rows
 		$("#dataTable").delegate("tr:not([role='row'])", "click", function(){
 			showLocalInfo($(this).context._DT_RowIndex);
@@ -601,24 +841,23 @@ function showTable(obj){
 		
 		//draw Chart
 		//add values to the select X and Y
-		var html=""
-		$.each(obj.columns, function(i,columnName){
-			html+="<option>"+columnName+"</option>";
+		var html = ""
+		$.each(dataTable.columns, function(i, columnName){
+			html += "<option>" + columnName + "</option>";
 		});
 		
 		//add events
-		var onchange=function(){
+		var onchange = function(){
 			//show chart
-			showDataTableChart(app.searchResult.json);
+			showDataTableChart(obj.json);
 		}//end onchange event
-			
-		
 		//give the html and onchange event to the selects and trigger change event
 		$("#dataTable_chart #select_x").append(html).change(onchange).val("name").change();
 		$("#dataTable_chart #select_y").append(html).change(onchange).val("sales").change();
 		$(".dataTable_chartType").click(onchange);
-			
 		
+	}//end createTable	
+	
 }
 
 
@@ -650,7 +889,7 @@ function showInfobox(type, css, dom){
 			];
 						
 			$.each(mapGalleries, function(i,gallery){
-				html+="<li><input type='radio' name='mapGallery' value='" + gallery.value + "' " + ((app.searchResult[gallery.layerName]._map)?"checked=checked":"") + " onclick='if(this.checked){switchVisualization([this.value]);}' />&nbsp; &nbsp; "+ gallery.label +"</li>";
+				html+="<li><input type='radio' name='mapGallery' value='" + gallery.value + "' " + ((app.geocodingResult[gallery.layerName]._map)?"checked=checked":"") + " onclick='if(this.checked){switchVisualization([this.value]);}' />&nbsp; &nbsp; "+ gallery.label +"</li>";
 			});
 		break;
 		case "canned report":
@@ -677,7 +916,7 @@ function showInfobox(type, css, dom){
 
 //show local info
 function showLocalInfo(id, jumpToDataTablePage){
-	var layer=app.searchResult.geoJsonLayer.layers[id],
+	var layer=app.geocodingResult.geoJsonLayer.layers[id],
 		feature=layer.feature;
 	
 	
@@ -696,28 +935,36 @@ function showLocalInfo(id, jumpToDataTablePage){
 	
 	//zoom to the layer, shift lng a little bit to east
 	var latlng=layer._latlng;
-	app.map.setView(new L.LatLng(latlng.lat, latlng.lng-0.0025), 16)
+	app.map.setView(new L.LatLng(latlng.lat, latlng.lng-0.0025), 14)
 			
 			
 	//reset layer to default style and change the selected layer icon
-	app.searchResult.geoJsonLayer.eachLayer(function(layer){
-		layer.setIcon(layer.defaultIcon).setOpacity(0.5);
+	app.geocodingResult.geoJsonLayer.eachLayer(function(layer){
+		layer.setIcon(layer.defaultIcon);//.setOpacity(0.5);
 	});
 
 	layer.setIcon(new L.icon({
 		iconUrl: "images/1365900599_Map-Marker-Marker-Outside-Pink.png",
-		iconSize: [36, 36],
-    	iconAnchor: [18, 36]
+		iconSize: [26, 26],
+    	iconAnchor: [13, 13]
 	})).setOpacity(1);
 			
 	
 	//layer.openPopup();
 	
 			
+	//trigger businessActions type to directly show the first option and draw its google chart
+	$("#businessActions_type").attr("zipcode", feature.properties['zip']).change();
+	
+	
+	
 	//demographic Data
+	//alert(app.layers.demographicData.toSource());
 	var $obj=$("#demographic_type").html("");
 	$.each(app.demographicData, function(k,v){
-		$obj.append("<div data-role='collapsible'><h3 value='" + k + "'>"+v+"</h3><p><div id='localInfo_chart' style='overflow-y:auto; overflow-x:hidden'></div></p></div>");
+		// alert(k);  k is HC01_VC04, HC01_VC20, hc01_VC23 .....
+		// alert(v);  v is "Total Population", "Total pouplation with childern at home". "Median household income",  .....
+		$obj.append("<div data-role='collapsible'><h3 value='" + k + "'>"+v+"</h3><p><div id='localInfo_chart_" + k + "' style='overflow-y:auto; overflow-x:hidden'></div></p></div>");
 	});
 	
 	$obj.collapsibleset("refresh").find("div[data-role='collapsible'] h3").click(function(){ //while clicking on the colllapse, redraw the demographic data and show on the map
@@ -728,6 +975,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 		}
 	});
 	
+<<<<<<< HEAD
 	//read demographic
 	pathgeo.service.demographicData({type:"zipcode", value:feature.properties["zip"]}, {
 		callback:function(geojsonLayer, legendHtml){
@@ -754,7 +1002,52 @@ function showLocalInfo(id, jumpToDataTablePage){
 		}
 	});
 	
+=======
 	
+	//highlight the zipcode boundary and show demographic data
+	app.layers.demographicData.redrawStyle("HC01_VC04", function(f){
+		var defaultStyle=app.layers.demographicData.options.styles(f,"HC01_VC04");
+		
+		if(f.properties["ZIP"]==feature.properties["zip"]){
+			defaultStyle.width=4;
+			defaultStyle.color="#666";
+			defaultStyle.dashArray='';
+		}
+		
+		return defaultStyle;
+	});
+	//app.layers.demographicData.addTo(app.map);//.bringToBack();
+	//app.map.fitBounds(app.layers.demographicData.getBounds());
+
+
+	//show legend
+	var defaultType=$("#demographic_type div[data-role='collapsible'] h3").attr("value");
+	//$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
+			
+	// alert(id);	 id is row number in table from 0
+	//chart
+	var totalPop=[
+			['pop', 'Population'],
+			['standard',  25678],
+			['local',  28734]
+	];
+	//draw chart
+	var containerId = "localInfo_chart_" + "HC01_VC20";
+	showLocalInfoChart(totalPop, containerId);
+>>>>>>> origin/dev
+	
+	$.each(app.demographicData, function(k,v){
+		var containerId = "localInfo_chart_" + k;
+		var property = app.properties[feature.properties["zip"]];
+		var chartData = [
+			[k, v],
+			['standard',  app.properties_average[k]],
+			['local',  property[k]]
+		];
+		showLocalInfoChart(chartData, containerId);
+	});
+
+				
 	
 	//select options for social media
 	//$select_media
@@ -799,7 +1092,131 @@ function showLocalInfo(id, jumpToDataTablePage){
 	
 }
 	
+
+
+//business action
+function showBusinessAction(type){
+	var zipcodeLayer=app.geocodingResult.zipcodeLayer,
+		selectedZipcode=$("#businessActions_type").attr("zipcode"),
+		dataLength=app.geocodingResult.json.features.length;
+		dataArray=[],
+		sort=[{column: 1, desc:true}],
+		//draw chart
+		chartOptions={
+			googleChartWrapperOptions: {
+				chartType: "BarChart",
+				containerId: "businessActions_result",
+				view:{columns:[0,1]},
+				options: {
+					width: 300,
+					height:500,
+					title: "",
+					titleX: "",
+					titleY: "",
+					legend: "none",//{position: 'top'},
+					chartArea: {width: '', height: '85%', top:10},
+					fontSize: 11,
+					isStacked:true, 
+					series:{0:{color: '#5B92C0', visibleInLegend: true}},
+					vAxes:{0:{titleTextStyle:{color:"black"}, textStyle:{color:"#ffffff"}}},
+					hAxes:{0:{titleTextStyle:{color: "#ffffff"},textStyle:{color: "#ffffff"}}},
+					backgroundColor: {fill:'transparent'},
+					tooltip: {isHtml: true},
+					is3D:true
+				}
+			},
+			callback:null,
+			callback_mouseover:null,
+			callback_mouseout:null,
+			callback_select:function(e){
+				var zipcode=e.data.getValue(e.row, 0),
+					value=e.value,
+					html="";
+				
+				//header
+				$("#businessActions_detailTitle").text(zipcode);
+				
+				//detailContent
+				var properties=app.layers.demographicData.zipcodes[zipcode].feature.properties;
+				$.each(properties, function(k,prop){
+					html+="<li>" + k + ": " + prop + "</li>";
+				});
+				$("#businessActions_detailContent ul").html(html).listview("refresh");
+								
+								
+				//trigger dataTable to filter the zipcode
+				app.dataTable.fnFilter(zipcode);
+
+				//show the detail of business actions
+				$(".businessActions_tabs").hide();
+				$("#businessActions_detail").show();
+
+			}
+		};
 	
+	
+	switch(type){
+		case "top_users":
+			dataArray = new google.visualization.DataTable();
+			dataArray.addColumn('string', "zipcodes");
+			dataArray.addColumn('number', "customers");
+			dataArray.addColumn({type:'string', role:'tooltip', 'p': {'html': true}});
+			dataArray.addColumn('number', "highlight");
+			dataArray.addColumn({type:'string', role:'tooltip', 'p': {'html': true}});
+			dataArray.addColumn('number', "originalCustomers"); // the original customer number for sorting. But this value will be devided by total number (dataLength) for better presentation
+			
+			var highlight=0, count=0, tooltip="", originalCount=0;
+			$.each(zipcodeLayer, function(k,v){
+				originalCount=v.feature.properties.count;
+				highlight=0;
+				count=originalCount;
+				
+				if(k==selectedZipcode){
+					highlight=originalCount;
+					count=0; //in order to highlight this zipcode bar, the customers number should be set as 0 to show the highlight bar.
+				}
+				
+				tooltip="<div id='chartTooltip'><b>Zipcode: </b>" + k + "<br><b>Customers: </b>"+ originalCount + " ("+ (((originalCount/dataLength).toFixed(4))*100)+ "%)</div>";
+				dataArray.addRow([k, count, tooltip, highlight, tooltip, originalCount/dataLength]);
+				
+				//show zipcode layer
+				v.addTo(app.map);
+			});
+			
+			sort=[{column: 5, desc:true}] //according column 5 (orginalCustomers) to sort whole datasets.
+			
+			//chartOptions
+			chartOptions.googleChartWrapperOptions.options.series[1]={color: '#ED3D86', visibleInLegend: false}; //set bar color=pink for highlight
+			chartOptions.googleChartWrapperOptions.options.series[2]={color: 'transparent', visibleInLegend: false}; //set bar color=transparent for originalCustomers
+			chartOptions.googleChartWrapperOptions.options.titleX="The number of customers";
+			chartOptions.googleChartWrapperOptions.options.titleY="Zip Codes"
+			
+		break;
+		case "top_sales":
+			dataArray=[["zipcodes", "sum_sales"]];
+			$.each(zipcodeLayer, function(k,v){dataArray.push([k, v.feature.properties.sales_sum]);});
+			chartOptions.googleChartWrapperOptions.options.titleX="The sum of sales";
+			chartOptions.googleChartWrapperOptions.options.titleY="Zip Codes"
+		break;
+		case "avg_income_from_users":
+			
+		break;
+		case "most_language_from_users":
+			
+		break;
+		case "potential_market":
+			
+		break;
+	}
+	
+	
+	pathgeo.service.drawGoogleChart(dataArray, [chartOptions], null, null, {sort:sort}); //sort, but the sequence of the chart data will be different with the geojson
+	
+	
+}
+
+
+
 
 //show chart in the dataTable
 function showDataTableChart(geojson){
@@ -851,11 +1268,12 @@ function showDataTableChart(geojson){
 
 
 //show chart in the localInfo
-function showLocalInfoChart(data){
+function showLocalInfoChart(data, containerId){
 	var chartOptions={
 		googleChartWrapperOptions: {
-			chartType: "PieChart",
-			containerId: "localInfo_chart",
+			chartType: "ColumnChart",
+			//containerId: "localInfo_chart",
+			containerId: containerId,
 			view:{columns:[0,1]},
 			options: {
 				width: 300,
@@ -876,6 +1294,14 @@ function showLocalInfoChart(data){
 	};
 	pathgeo.service.drawGoogleChart(data, [chartOptions], null, null);
 }
+
+
+
+//search business Intelligent
+function searchBusinessIntelligent(geoname){
+	console.log(geoname);
+}
+
 
 
 

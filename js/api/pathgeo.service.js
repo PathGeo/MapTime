@@ -111,7 +111,7 @@ pathgeo.service={
 				weight: 2,
 				opacity: 1,
 				color: 'white',
-				dashArray: '3',
+				dashArray: '',//'3'
 				fillOpacity: 0.6,
 				fillColor: options.color[type](feature.properties[type])
 			}
@@ -195,6 +195,40 @@ pathgeo.service={
 			parseJson(me.jsons[filter.type]);
 		}
 		
+		// Load data for chart by Su
+		$.getJSON(me.url, function(json){
+			//alert(json.toSource());
+			//alert(json.features[0].toSource());
+					
+			// Clear before summing attributes 
+			app.properties_total = [];
+			$.each(app.demographicData, function(k,v){
+				app.properties_total[k] = 0;
+				//alert(app.properties_total[k]);
+			});
+			
+			// Save property in array by zip code
+			app.properties = [];
+			$.each(json.features, function(i, feature){
+				var property = feature.properties;
+				//alert(property.toSource());
+				app.properties[property.ZIP] = property;
+				//sum all data item in each column
+				$.each(app.demographicData, function(k,v){
+					app.properties_total[k] += property[k];
+					//alert(app.properties_total[k]);
+				});			
+			});
+			
+			// Calculate average of each attribute
+			app.properties_average = [];
+			$.each(app.demographicData, function(k,v){
+				var average = app.properties_total[k] / json.features.length;
+				app.properties_average[k] = average.toFixed(2) * 1.0; 
+				//alert(k + " " + app.properties_total[k] + " " + app.properties_average[k]);
+			});
+		});
+		
 	},
 	
 	
@@ -256,42 +290,47 @@ pathgeo.service={
 	
 		//data for drawing
 		var values=[],
+			data,
 			columns=[],
 			rows=[];
 		if(limited_columns){values[0]=limited_columns};
 		
 		
-		//detenmine which data is 
-		if(chartData.type && chartData.type.toUpperCase()=="FEATURECOLLECTION"){
-			$.each(chartData.features, function(i,feature){
-				rows=[];
-				
-				//read column and rows
-				if(limited_columns){
-					$.each(limited_columns, function(j,obj){
-						rows.push(feature.properties[obj]);	
-					});	
-				}else{
-					$.each(feature.properties, function(k,v){
-						if(i==0){columns.push(k);}
-						rows.push(v);
-					});
-				}
-				
-				if(!values[0]){values.push(columns);}
-				values.push(rows);
-			});	
+		//detenmine chartData data type
+		if(chartData instanceof google.visualization.DataTable){
+			data=chartData;
 		}else{
-			if(chartData instanceof Array){
-				values=chartData;
+			//chartData=geojson
+			if(chartData.type && chartData.type.toUpperCase()=="FEATURECOLLECTION"){
+				$.each(chartData.features, function(i,feature){
+					rows=[];
+					
+					//read column and rows
+					if(limited_columns){
+						$.each(limited_columns, function(j,obj){
+							rows.push(feature.properties[obj]);	
+						});	
+					}else{
+						$.each(feature.properties, function(k,v){
+							if(i==0){columns.push(k);}
+							rows.push(v);
+						});
+					}
+					
+					if(!values[0]){values.push(columns);}
+					values.push(rows);
+				});	
 			}else{
-				console.log("pathgeo.service.drawGoogleChart: the data is not geojson object (must be a FeatureCollection) or a google chart array");
-				return;
+				if(chartData instanceof Array){
+					values=chartData;
+				}
 			}
+			
+			data=new google.visualization.arrayToDataTable(values);
 		}
 		
+
 		
-		var data = new google.visualization.arrayToDataTable(values);
 		
 		if(options.sort){
 			data.sort(options.sort);
@@ -376,13 +415,13 @@ pathgeo.service={
 					if (chart.callback_select) {
 						google.visualization.events.addListener(gChart, 'select', function(param){
 							var selection=gChart.getSelection()[0];
-								
 							if(selection){
 								chart.callback_select({
 									gChart:gChart,
+									data:data,
 									row: selection.row,
 									column: selection.column,
-									value: chartData.features[selection.row],
+									value: (chartData.features)? chartData.features[selection.row] : data.getValue(selection.row, 1),
 									param:param
 								});
 							}
@@ -394,7 +433,8 @@ pathgeo.service={
 					if (chart.callback_mouseover) {
 						google.visualization.events.addListener(gChart, 'onmouseover', function(e){
 							e.gChart=gChart;
-							e.value = chartData.features[e.row];
+							e.value = (chartData.features)? chartData.features[e.row] : data.getValue(e.row, 1);
+							e.data=data;
 							chart.callback_mouseover(e);
 						});
 					}
@@ -403,7 +443,8 @@ pathgeo.service={
 					if (chart.callback_mouseout) {
 						google.visualization.events.addListener(gChart, 'onmouseout', function(e){
 							e.gChart=gChart;
-							e.value = chartData.features[e.row];
+							e.value = (chartData.features)? chartData.features[e.row] : data.getValue(e.row, 1);
+							e.data=data;
 							chart.callback_mouseout(e);
 						});
 					}
@@ -466,8 +507,40 @@ pathgeo.service={
 			
 			return returnCharts;
 		}
-	}
+	},
 	
+	
+	
+	/**
+	 * zip code lookups for place names from geonames web service (Placename lookup with postalcode (JSON))
+	 * limited in USA
+	 * @param {Number} zipcode
+	 * @param {Function} callback function(placename, json result from geonames, error status)
+	 */
+	zipcodeLookup: function(zipcode, callback){
+		 if(!zipcode){console.log("[ERROR]pathgeo.service.zipcodeLookup: no zipcode"); return;}
+		 
+		 var country='us',
+		 	 username='pathgeo',
+		 	 url='http://api.geonames.org/postalCodeLookupJSON?postalcode='+zipcode + '&country='+ country +'&username='+username+'&callback=?';
+			
+		 $.getJSON(url, function(json){
+		 	if(callback){
+				var placename='';
+				//succeed
+				if(!json.status){
+					if(json.postalcodes && json.postalcodes.length>0){
+						placename=json.postalcodes[0].placeName;
+					}
+				}
+				if(callback){
+					callback(placename, json, json.status);
+				}
+				
+			}
+		 });
+	
+	}
 	
 	
 }

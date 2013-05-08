@@ -1,4 +1,5 @@
 var curLayer;
+var curData = [];
 //Work in Progrss... social media viewing
 function callPython(){
 	
@@ -11,49 +12,127 @@ function callPython(){
 	
 	var lat = document.getElementById("lat").value;
 	var lng = document.getElementById("lng").value;
-	var rad = document.getElementById("socialMedia_spatial").value;
+	//var rad = document.getElementById("socialMedia_spatial").value;
+	var rad = 15;
 	var ts = (Math.floor(Date.now()/1000)) - (document.getElementById("socialMedia_temporal").value);
 	
-	//Search Flickr
-	$.ajax({
-		type: "POST",
-		url: "photo_search.py",
-		data: {kwd:keyword, lat:lng, lng:lat, rad:rad, ts:ts},
-		beforeSend: function(xhr){
-			if (xhr.overrideMimeType){
-				xhr.overrideMimeType("application/json");
-			}
-		}
-	}).success(function( contact ) {
+	var source = document.getElementById("socialMedia_source").value;
 	
-		if (contact == 0){
-			$("#test").html('');
-			alert("No results were found");
-		}
-		
-		else{
-			var count = contact.length;
-			$("#test").html('');
-		
-			for(i=0; i<count; i++){
-			
-				var title = contact[i].properties.Title;
-				var description = contact[i].properties.Description;
-				var image = contact[i].properties.Img;
-				var date = contact[i].properties.Date;
-			
-				var results = "<li><h2>" + title + "</h2>" + image + "<br/><br/><p>" + date + "</p><p>" + description + "</p></li>";
-				$("#test").append(results);
+	
+	if(source == "flickr"){
+		//Search Flickr
+		$.ajax({
+			type: "POST",
+			url: "photo_search.py",
+			data: {kwd:keyword, lat:lng, lng:lat, rad:rad, ts:ts},
+			beforeSend: function(xhr){
+				if (xhr.overrideMimeType){
+					xhr.overrideMimeType("application/json");
+				}
+			}
+		}).success(function( contact ) {
+		console.log(contact);
+			if (curLayer && app.map.hasLayer(curLayer)) app.map.removeLayer(curLayer);
+			if (contact == 0){
+				$("#search_results").html('');
+				$('#social_results_count').html('');
+				$("#layer_selector").hide();
+				alert("No results were found");
 			}
 			
-			$('#test').trigger('create');
-			$('#test').listview('refresh');
+			else{
+				var count = contact.length;
+				$("#search_results").html('');
+				$('#social_results_count').html('There are <b>' + count + '</b> results');
 			
-			setDataMedia(contact);
-			app.map.fitBounds(curLayer.getBounds());
-		}
+				for(i=0; i<count; i++){
+				
+					var title = contact[i].properties.Title;
+					var description = contact[i].properties.Description;
+					var image = contact[i].properties.Img;
+					var date = contact[i].properties.Date;
+					var account = contact[i].properties.Account;
+				
+					var results = "<li><h2>" + title + "</h2><img src='" + image + "' alt='...' style='float:left; margin-right:5px'>" + account + "<br/><p>" + date + "</p><br/></li>";
+					$("#search_results").append(results);
+				}
+				
+				$('#search_results').trigger('create');
+				$('#search_results').listview('refresh');
+				$("#layer_selector").show();
+				$("#point_media").addClass( "ui-btn-active" );
+				$("#heat_media").removeClass( "ui-btn-active" );
+				$("#cluster_media").removeClass( "ui-btn-active" );
+				
+				setDataMedia(contact);
+				app.map.fitBounds(curLayer.getBounds());
+			}
 
-	});
+		}).error(function(error) {
+			console.log(error);
+			alert("There was an error in your search. Please try again");
+		});
+	}
+	
+	
+	if(source == "twitter"){
+		//Search Twitter
+		$.ajax({
+			type: "POST",
+			url: "twitter_search.py",
+			data: {kwd:keyword, lat:lng, lng:lat, rad:rad, ts:ts},
+			beforeSend: function(xhr){
+				if (xhr.overrideMimeType){
+					xhr.overrideMimeType("application/json");
+				}
+			}
+		}).success(function( contact ) {
+		//console.log(contact);
+			if (curLayer && app.map.hasLayer(curLayer)) app.map.removeLayer(curLayer);
+			if (!contact){
+				$("#search_results").html('');
+				$('#social_results_count').html('');
+				$("#layer_selector").hide();
+				alert("No results were found");
+			}
+			
+			else{
+				var count = contact.length;
+				$("#search_results").html('');
+				$('#social_results_count').html('There are <b>' + count + '</b> results');
+
+				for(i=0; i<count; i++){
+				
+					var title = contact[i].properties.Title;
+					//var description = contact[i].properties.Description;
+					var image = contact[i].properties.Img;
+					var date = contact[i].properties.Date;
+					//var lat = contact[i].geometry.coordinates[0];
+					var account = contact[i].properties.Account;
+				
+					var results = "<li><h2>" + title + "</h2><img  src=" + image + " alt='...' style='float:left; margin-right:5px'><a href='http://twitter.com/" + account + "' target='_blank'>@" + account + "</a><br/><p>" + date + "</p><br/></li>";
+					$("#search_results").append(results);
+				}
+				
+				$('#search_results').trigger('create');
+				$('#search_results').listview('refresh');
+				$("#layer_selector").show();
+				$("#point_media").addClass( "ui-btn-active" );
+				$("#heat_media").removeClass( "ui-btn-active" );
+				$("#cluster_media").removeClass( "ui-btn-active" );
+				
+				setDataMedia(contact);
+				app.map.fitBounds(curLayer.getBounds());
+			}
+
+		}).error(function(error) {
+			console.log(error);
+			alert("There was an error in your search. Please try again");
+		});
+		}
+	
+	
+	
 }
 
 function getClusterLayerMedia(gjData) {
@@ -63,15 +142,22 @@ function getClusterLayerMedia(gjData) {
 		zoomToBoundsOnClick: false,
 		iconCreateFunction: function(cluster) {
 			//return new L.DivIcon({ html: cluster.getChildCount(), className: 'mycluster', iconSize: new L.Point() });
-			var amount = cluster.getChildCount();
-			if (amount >=10){
-				var icon = "<img border='0' src='images/photoIcon_large.png'>";
-			}
-			else if (amount >=5){
-				var icon = "<img border='0' src='images/photoIcon_medium.png'>";
+			if(curData[0].properties.Source == "twitter"){
+				var image = "newTweet";
 			}
 			else{
-				var icon = "<img border='0' src='images/photoIcon_small.png'>";
+				var image = "newPhoto";
+			}
+			
+			var amount = cluster.getChildCount();
+			if (amount >=10){
+				var icon = "<img border='0' src='images/" + image + ".png' width='62' height='74'>";
+			}
+			else if (amount >=5){
+				var icon = "<img border='0' src='images/" + image + ".png'  width='50' height='61'>";
+			}
+			else{
+				var icon = "<img border='0' src='images/" + image + ".png'>";
 			}
 	
 			return new L.DivIcon({ html: icon, className: 'mycluster' });
@@ -121,12 +207,27 @@ function getPointLayerMedia(gjData) {
 	var pointLayer = new L.geoJson([], {
 		onEachFeature: function (feature, layer) {
 			var props = feature.properties;
-			var html = "<div class='popup'><ul><li><span class='clusterInfo'>" + props.Title + "</span><br><div class='extras' style='display: block;'> " + props.Img + "<br><br>" + props.Description + "</li></ul></div>";
+			if(props.Source == "flickr"){
+				var html = "<div class='popup'><ul><li><span class='clusterInfo'>" + props.Account + "</span><br><br><div class='extras' style='display: block;'> " + props.Img + "<br/><br/>" + props.Date + "</li></ul></div>";
+			}
+			else{
+				var html = "<div class='popup'><ul><li><span class='clusterInfo'>" + props.Title + "</span><br/><div class='extras' style='display: block;'><a href='http://twitter.com/" + props.Aaccount + "' target='_blank'>" + props.Account + "</a><br/><br/>" + props.Date + "</li></ul></div>";
+			}
 			layer.bindPopup(html);
 		}, 	pointToLayer: function (feature, latlng) {
+		
+			var props = feature.properties;
+			var url;
+			if(props.Source == "flickr"){
+				url = "images/newPhoto.png";
+			}
+			else{
+				url = "images/newTweet.png";
+			}
+		
 			var icon = L.icon({ 
-				iconUrl: "images/photoIcon.png",
-				popupAnchor: [16, 2],
+				iconUrl: url,
+				popupAnchor: [1, 1]
 			});
 
 			marker = L.marker(latlng, {icon: icon});
@@ -142,7 +243,7 @@ function getPointLayerMedia(gjData) {
 }
 
 function getHeatmapLayerMedia(gjData) {
-	var heatmapLayer = new L.TileLayer.heatMap({ 
+	var heatmapLayerMedia = new L.TileLayer.heatMap({ 
 		radius: 40,
 		opacity: 0.75,
 		gradient: {
@@ -154,14 +255,13 @@ function getHeatmapLayerMedia(gjData) {
 		}
 	});
 	
-	var heatmapData = [];
+	var heatmapDataMedia = [];
 	
-	for (var indx in gjData.features) {
-		heatmapData.push( { lat: gjData.features[indx].geometry.coordinates[1], lon: gjData.features[indx].geometry.coordinates[0], value: 1 } );
+	for (var indx in gjData) {
+		heatmapDataMedia.push( { lat: gjData[indx].geometry.coordinates[1], lon: gjData[indx].geometry.coordinates[0], value: 1 } );
 	}
-	
-	heatmapLayer.addData(heatmapData);
-	return heatmapLayer;
+	heatmapLayerMedia.addData(heatmapDataMedia);
+	return heatmapLayerMedia;
 }
 
 function switchLayersMedia(newLayerName) { 
@@ -180,7 +280,7 @@ function switchLayersMedia(newLayerName) {
 	}
 	else if (newLayerName == "census") {
 		enableCensusLayer();
-		$(".legend").show();
+		//$(".legend").show();
 		curLayer = getPointLayerMedia(curData);
 		app.map.addLayer(curLayer);
 	}
@@ -188,7 +288,8 @@ function switchLayersMedia(newLayerName) {
 
 function setDataMedia(data) {
 	curData = data;
-	$(".features").removeClass("selected").addClass("selectable");
-	switchLayersMedia("cluster");
-	$("#point").toggleClass("selected selectable");
+	//console.log(curData);
+	//$(".features").removeClass("selected").addClass("selectable");
+	switchLayersMedia("point");
+	//$("#point").toggleClass("selected selectable");
 }

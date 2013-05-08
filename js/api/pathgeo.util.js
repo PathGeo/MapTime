@@ -70,36 +70,44 @@ pathgeo.util={
 			googleChartData:[]
 		}
 		
+		
+		//if geojson is an array
+		if(geojson instanceof Array){
+			geojson={type:"FeatureCollection", features:geojson};
+		}
+		
+		
 		//geojson is featureCollection
 		if(geojson.type.toUpperCase()=='FEATURECOLLECTION'){
-			$.each(geojson.features, function(i, feature){
-				//get columns
-				if(i==0){
-					var temp=parseFeature(i, feature, true);
-					obj.columns_dataTable=temp.columns_dataTable;
-					obj.columns=temp.columns;
-					obj.datas.push(temp.datas);
-				}else{
-					obj.datas.push(parseFeature(i, feature, false).datas)
-				}
-			});
+				$.each(geojson.features, function(i, feature){
+					//get columns
+					if(i==0){
+						var temp=parseFeature(i, feature, true);
+						obj.columns_dataTable=temp.columns_dataTable;
+						obj.columns=temp.columns;
+						obj.datas.push(temp.datas);
+					}else{
+						obj.datas.push(parseFeature(i, feature, false).datas)
+					}
+				});
 		}
-		
-		
+			
+			
 		//geojson is a feature
 		if(geojson.type.toUpperCase()=='FEATURE'){
-			var temp=parseFeature(0, geojson, true);
-			obj.columns=temp.columns;
-			obj.columns_dataTable=temp.columns_dataTable;
-			obj.datas.push(temp.datas);
+				var temp=parseFeature(0, geojson, true);
+				obj.columns=temp.columns;
+				obj.columns_dataTable=temp.columns_dataTable;
+				obj.datas.push(temp.datas);
 		}
 		
+		
+	
 		
 		//googleChartData
 		obj.googleChartData=obj.datas.slice(0);
 		obj.googleChartData.splice(0,0,obj.columns);
 
-		
 		return obj;
 		
 		
