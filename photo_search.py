@@ -32,12 +32,17 @@ count = 0
 
 for i in output['photos']['photo']:
 	count += 1
-	#if(i['ownername']):
-		#name = "Unknown Name"
+	#if ownername in i:
+		#name = str(i['ownername'])
 	#else:
-		#name = str(i['ownername']
+		#name = "Unknown"
+	#if hasattr(i, 'title'):
+	#	name = str(i['title'])
+	#else:
+		#name = "Unknown"
+	name = "Name Goes Here..."
 	image = "http://farm" + str(i['farm']) + ".staticflickr.com/" + str(i['server']) + "/" + str(i['id']) + "_" + str(i['secret']) + "_s.jpg"
-	account = "<a href='http://www.flickr.com/photos/" + str(i['owner']) + "/" + str(i['id']) + "' target='_blank'>Username Here...</a>"
+	account = "<a href='http://www.flickr.com/photos/" + str(i['owner']) + "/" + str(i['id']) + "' target='_blank'>" + name + "</a>"
 	doc = {}
 	doc['type'] = "Feature"
 	doc['geometry'] = { "type": "Point"}
