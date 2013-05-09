@@ -54,23 +54,9 @@
 	<script src="{% static 'assets/db/sanFran.js' %}"></script>
 	
     <!-- main -->
-<<<<<<< HEAD
  	<script src="{% static 'assets/js/main.js' %}" type="text/javascript"></script>
 	<script src="{% static 'assets/js/social_media.js' %}" type="text/javascript"></script>
-        
-=======
- 	<script src="js/main.js" type="text/javascript"></script>
-	<script src="js/social_media.js" type="text/javascript"></script>
-	
-     
->>>>>>> origin/dev
-        <!-- fake function for login -->
-        <script type="text/javascript">
-            function fakeLogin(){
-                $("#usermenu_list").show();
-                $("#user_login").hide();                
-            }
-        </script>
+
   </head>
   
   
@@ -83,8 +69,6 @@
 				<img src="{% static 'assets/images/PathGeo-color.png' %}" height=35px onclick='window.open("http://www.pathgeo.com")'/>
 				<div>MapTime : <label id='lbl_dataName'></label></div>
 			</h1>
-			
-<<<<<<< HEAD
 			<a href="#dialog_usermenu" data-rel='popup' data-role='button' data-position-to="origin" data-inline="true" data-transition="slideup" data-icon="home" class="" data-mini="true" style='float:right'>
 				{% if user.is_authenticated %}
 					Welcome {{ username }}!
@@ -92,11 +76,7 @@
 					User
 				{% endif %}
 			</a> 
-	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>
-=======
-			<a href="#dialog_usermenu" data-rel='popup' data-role='button' data-position-to="origin" data-inline="true" data-transition="slideup" data-icon="home" class="" data-mini="true" style='float:right'>User</a> 
 	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>
->>>>>>> origin/dev
 			<!--<a href="#dialog_sharemap" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="star" class="" data-mini="true" style='float:right'>Share</a>-->
 			<!--<a href="#dialog_dataPanel" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="slideup" data-icon="bars" class="" data-mini="true" style='float:right'>Data List</a>-->
 			<a href="#dialog_uploadData" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right' onclick='$("#uploadData_confirm").hide(); $("#uploadData_description").show(); $("#uploadData_controls").hide();'>Upload Data</a>
@@ -189,51 +169,6 @@
 			
 			<form action="geocodeTable.py" method="post" id="uploadData_form" enctype="multipart/form-data" style="width: 90%; margin: 0 auto;">
 				<fieldset>
-<<<<<<< HEAD
-					<input type="file" name="photo" id="uploadData_input" style="">
-				</fieldset>
-			</form>
-			
-			<!-- upload content-->
-			<div id='uploadData_content'>
-				<div id='uploadData_description' >
-					<h3>Upload and Map Your Data:</h3><br>
-					MapTime only support XLS format for this beta version. <P></P>
-					We will support more data formats in the near future.	
-				</div>
-				
-				<div id='uploadData_confirm' style='display:none'>
-					<img id='img_loading' src="{% static 'assets/images/loading.gif' %}" width=15px  />
-					
-					<div data-role="fieldcontain">
-						<label for="uploadData_geocodingField">Select geocoding column: </label>
-						<select id='uploadData_geocodingField' name='uploadData_geocodingField' data-mini='true'>
-							<option>1</option>
-							<option>2</option>
-							<option>3</option>
-							<option>4</option>
-							<option>5</option>
-							<option>6</option>
-						</select>
-					</div>
-					
-					<div id='uploadData_agreement'>
-						this is a agreement
-					</div>
-					
-					
-					<label for='uploadData_agreementCheck'>I agree the agreement</label>
-					<input type='checkbox' id='uploadData_agreementCheck' name='uploadData_agreementCheck' />
-					
-					<div style='float:right; width:50%;'>
-						<input id="submit_button" type="submit" value="Map Your Data" data-theme="b">
-					</div>
-				</div>
-				
-			</div>
-			<!--<input type='button' value='DEMO Data' onclick='showLayer(app.searchResult, true)'/>-->
-=======
-				
 					<input type="file" name="photo" id="uploadData_input" size="70%">
 					
 					<!-- upload content -->
@@ -270,13 +205,11 @@
 			
 			
 			<!--<input type='button' value='DEMO Data' onclick='showLayer(app.geocodingResult, true)'/>-->
->>>>>>> origin/dev
 		</div>
 		
 		
 		<!--user menu-->
 		<div id='dialog_usermenu' data-role="panel" data-position="right"  data-display="overlay" data-theme="a"  >
-<<<<<<< HEAD
                             <div id="content">
 								{% block content %}{% endblock %}
 							</div>
@@ -288,23 +221,6 @@
                                     <li><a href="#">Settings</a></li>
                                     <li><a href="/accounts/logout/">Log out</a></li>
                                 </ul>
-=======
-                            <fieldset id='user_login'>
-            
-                               <!-- <asp:Literal runat="server" ID="litMessage"></asp:Literal>-->
-
-                                <label for="email">Email:</label>
-                                <input type="email" name="email" id="email" value=""  />
-
-                                <label for="password">Password:</label>
-                                <input type="password" name="password" id="password" value="" />
-
-                                    <input id="Submit1" type="submit" value="Login" data-role="button" data-inline="true" data-theme="b" onclick="fakeLogin()" />
-
-                                <hr />Don't have a login? <a href="#">Sign Up</a>
-                                <br />Forgot password? <a href="#">Click here</a>
-                            </fieldset>
-							
                             <div id='usermenu_list' style='display:none'>
                                 <div data-role="collapsible" data-theme="d" data-content-theme="d" data-inset="true" data-mini="true"  data-iconpos="right" data-collapsed-icon="arrow-d" data-expanded-icon="arrow-u">
 								    <h3>Upgrade Account</h3>
@@ -346,19 +262,12 @@
                                     <li><a href="#">Log out</a></li>
                                 </ul>-->
                                 
->>>>>>> origin/dev
                            </div>
 						   {% endif %}
 		</div>
 		
 		
 		<!--help-->
-<<<<<<< HEAD
-		<div id='dialog_help' data-role="panel" data-position="right"  data-display="overlay" data-theme="a"  >
-				help
-				<p>Please visit user forum for any question or issue.</p>
-				<a href="https://getsatisfaction.com/pathgeo"  target="_blank">GetSatisfaction</a>
-=======
 		<div id='dialog_help' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false" style=''>
 				<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
 				<div id="getsat-widget-5632"></div>
@@ -366,7 +275,6 @@
 				<script type="text/javascript">
 					if (typeof GSFN !== "undefined") { GSFN.loadWidget(5632,{"containerId":"getsat-widget-5632"}); }
 				</script>
->>>>>>> origin/dev
 		</div>
 		
 
