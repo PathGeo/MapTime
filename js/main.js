@@ -285,7 +285,7 @@ function init_UI(){
 	//The reponse is a list of column names, which are used to populate the drop-down menu
 	$("#uploadData_input").change(function() { 
 		$("#uploadData_form").ajaxSubmit({
-			dataType: 'json',
+			dataType: 'json',		
 			success: function (tableInfo) {
 				//remove current options in the drop-down
 				$("#uploadData_geocodingField option").remove();
@@ -296,11 +296,16 @@ function init_UI(){
 				//set new options according to the returned value names
 				for (var indx in columns) {
 					var column = columns[indx];
-					$("#uploadData_geocodingField").append($('<option></option>').val(column).html(column))
+					$("#uploadData_geocodingField").append($('<option></option>').val(column).html(column));
 				}	
 				
 				//make sure that the first option is selected
 				$("#uploadData_geocodingField").val(columns[0]).change();
+				
+				//NOTE: For some reason, need to uncheck the checkbox, or else something goes wrong... (MAYBE????)
+				//this doesnt seem to work though...
+				//$("#uploadData_agreementCheck").removeProp('checked');
+				//$("#uploadData_agreementCheck").prop("checked", false);
 				
 			}, error: function (error) {
 				console.log(error.responseText);
@@ -310,42 +315,45 @@ function init_UI(){
 	
 	//Submits upload file form and captures the response
 	$('#uploadData_form').submit( function() {
-		var geoColumn = $("#uploadData_geocodingField").val();
-		var checked = $("#uploadData_agreementCheck").attr("checked");
+
+		var geoColumnVal = $("#uploadData_geocodingField").val();
+		var checked = $("#uploadData_agreementCheck").prop("checked");
 		
 		if (!checked) {
 			alert("You must agree to the PathGeo agreement before your data is geocoded.");
 			return;
 		}
 		
+console.log("SUBMITTING FORM DATA");
 		$.ajax({
 			dataType: 'json',
 			url: "retrieveGeocodedTable.py", 
 			data: { 
 				fileName: currentFileName,
-				geoColumn: geoColumn
-			}, success: function(data) { 
-				if (!data || data.length <= 0) {
+				geoColumn: geoColumnVal
+			}, success: function(featureCollection) { 
+
+				if (!featureCollection || featureCollection.features.length <= 0) {
 					alert("No rows could be geocoded.  Please make sure you have selected the correct location column.");
 					return;
 				}
-										
-				app.map.removeLayer(app.geocodingResult.geoJsonLayer);
-
+							
+				if (app.geocodingResult.geoJsonLayer) {
+					app.map.removeLayer(app.geocodingResult.geoJsonLayer);
+				}
+					
 				app.geocodingResult  = {
 					 name: "geocodingResult", 
 					 type: "GEOJSON",
-					 json: { type: "FeatureCollection", features: data }, //showTable now expecting a FeatureCollection
+					 json: featureCollection, //showTable now expecting a FeatureCollection
 					 srs: "EPSG:4326",
 					 title: "Your Data",
 					 keywords: ["testing"]
 				 };
 				 
 				showTable(app.geocodingResult);
-
-				app.map.fitBounds(app.geocodingResult.geoJsonLayer.getBounds());
 				
-				$('.ui-dialog').dialog('close');
+				$('.ui-dialog').dialog('close');		
 				
 			}, error: function (error) {
 				console.log("Error:");
