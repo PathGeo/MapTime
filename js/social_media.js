@@ -43,7 +43,7 @@ function callPython(){
 			else{
 				var count = contact.length;
 				$("#search_results").html('');
-				$('#social_results_count').html('There are <b>' + count + '</b> results');
+				$('#social_results_count').html("There are <b>" + count + "</b> results<br/>Seacrh: <input type='text' name='search' value='' onkeypress='filterResults()'>");
 			
 				for(i=0; i<count; i++){
 				
@@ -99,7 +99,7 @@ function callPython(){
 			else{
 				var count = contact.length;
 				$("#search_results").html('');
-				$('#social_results_count').html('There are <b>' + count + '</b> results');
+				$('#social_results_count').html("There are <b>" + count + "</b> results<br/>Seacrh: <input type='text' name='search' value='' onkeypress='filterResults()'>");
 
 				for(i=0; i<count; i++){
 				
@@ -292,4 +292,8 @@ function setDataMedia(data) {
 	//$(".features").removeClass("selected").addClass("selectable");
 	switchLayersMedia("point");
 	//$("#point").toggleClass("selected selectable");
+}
+
+function filterResults(){
+	alert("hi");
 }
