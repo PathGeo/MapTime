@@ -294,7 +294,7 @@ function init_UI(){
 				currentFileName = tableInfo.fileName;
 				
 				//set new options according to the returned value names
-				for (var indx in columns) {
+				for (var indx = 0; indx < columns.length; indx++) {
 					var column = columns[indx];
 					$("#uploadData_geocodingField").append($('<option></option>').val(column).html(column));
 				}	
@@ -327,12 +327,11 @@ function init_UI(){
 console.log("SUBMITTING FORM DATA");
 		$.ajax({
 			dataType: 'json',
-			url: "retrieveGeocodedTable.py", 
+			url: "retrieveAndGeocode.py", 
 			data: { 
 				fileName: currentFileName,
 				geoColumn: geoColumnVal
-			}, success: function(featureCollection) { 
-
+			}, success: function(featureCollection) { 	
 				if (!featureCollection || featureCollection.features.length <= 0) {
 					alert("No rows could be geocoded.  Please make sure you have selected the correct location column.");
 					return;
