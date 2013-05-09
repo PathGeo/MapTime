@@ -314,8 +314,9 @@ function init_UI(){
 	});
 	
 	//Submits upload file form and captures the response
-	$('#uploadData_form').submit( function() {
-
+	//$('#uploadData_form').submit( function() {
+	$('#submit_button').click(function() {
+console.log("SUBMITTING FORM DATA");
 		var geoColumnVal = $("#uploadData_geocodingField").val();
 		var checked = $("#uploadData_agreementCheck").prop("checked");
 		
@@ -324,7 +325,6 @@ function init_UI(){
 			return;
 		}
 		
-console.log("SUBMITTING FORM DATA");
 		$.ajax({
 			dataType: 'json',
 			url: "retrieveAndGeocode.py", 
@@ -352,7 +352,13 @@ console.log("SUBMITTING FORM DATA");
 				 
 				showTable(app.geocodingResult);
 				
-				$('.ui-dialog').dialog('close');		
+				$('.ui-dialog').dialog('close');
+				
+				//trying to clear input box...
+				//var input = $('#uploadData_input');
+				//input.after(input.clone(true)).remove();  
+				
+				//$('#uploadData_input').replaceWith($('#uploadData_input').clone(true));				
 				
 			}, error: function (error) {
 				console.log("Error:");

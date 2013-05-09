@@ -15,6 +15,8 @@ geoColumn = form['geoColumn'].value
 
 jsonRows = pickle.load(open(os.path.abspath(__file__).replace(__file__, fname + ".p")))
 
+#os.remove(os.path.abspath(__file__).replace(__file__, fname + ".p"))
+
 geoRows = []
 geocoder = AddressGeocoder()
 
