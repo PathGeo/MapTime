@@ -174,6 +174,7 @@
 					
 					<!-- upload content -->
 					<!-- NOTE: STILL WORKING ON LAYOUT -->
+					
 					<div id='uploadData_content'>
 						<div id='uploadData_description' >
 							<h3>Upload and Map Your Data:</h3><br>
@@ -196,11 +197,13 @@
 						</div>
 					</div>
 					<div id="uploadData_controls" style="width: 95.8%; padding-top: 10px; display: none;">
-						<!--NOTE:  NEED TO MOVE THIS OUTSIDE OF THIS DIV TO GET POSITION RIGHT -->
 						<label for='uploadData_agreementCheck'>I agree</label>
 						<input type='checkbox' id='uploadData_agreementCheck' name='uploadData_agreementCheck' style="float: left; width: 100px;" />
-						<input id="submit_button" type="submit" value="Map Your Data" data-theme="b" style='float:right; width:100px;'>
+						<!-- NOTE: There seems to be an issue with Jquery Mobile and this button.  The click button doesn't always fire.  
+						Setting data-role to "none" means that it will not be processed by Jquery Mobile, and the event seems to work now. -->
+						<input id="submit_button" type="submit" value="Map Your Data" data-theme="b" style='float:right; width:100px;' data-role="none">
 					</div>
+					
 				</fieldset>
 			</form>
 			

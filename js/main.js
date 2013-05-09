@@ -253,19 +253,6 @@ function init_UI(){
 	});
 	
 	
-	//event when users select a file to upload
-	$("#uploadData_input").change(function(){
-		var value=$(this).val();
-		//if user select a file
-		if(value){
-			$("#uploadData_description").hide();
-			$("#uploadData_confirm").show();
-			$("#uploadData_controls").show();
-			//$(this).closest("form").submit();
-		}
-
-	});
-
 	//businessActions selection change
 	$("#businessActions_type").change(function(){
 		showBusinessAction(this.value);
@@ -302,21 +289,20 @@ function init_UI(){
 				//make sure that the first option is selected
 				$("#uploadData_geocodingField").val(columns[0]).change();
 				
-				//NOTE: For some reason, need to uncheck the checkbox, or else something goes wrong... (MAYBE????)
-				//this doesnt seem to work though...
-				//$("#uploadData_agreementCheck").removeProp('checked');
-				//$("#uploadData_agreementCheck").prop("checked", false);
+				$("#uploadData_description").hide();
+				$("#uploadData_confirm").show();
+				$("#uploadData_controls").show();	
 				
 			}, error: function (error) {
 				console.log(error.responseText);
 			}
 		});
+	
 	});
 	
 	//Submits upload file form and captures the response
 	//$('#uploadData_form').submit( function() {
-	$('#submit_button').click(function() {
-console.log("SUBMITTING FORM DATA");
+	$('#submit_button').click(function() {	
 		var geoColumnVal = $("#uploadData_geocodingField").val();
 		var checked = $("#uploadData_agreementCheck").prop("checked");
 		
@@ -344,7 +330,7 @@ console.log("SUBMITTING FORM DATA");
 				app.geocodingResult  = {
 					 name: "geocodingResult", 
 					 type: "GEOJSON",
-					 json: featureCollection, //showTable now expecting a FeatureCollection
+					 json: featureCollection, 
 					 srs: "EPSG:4326",
 					 title: "Your Data",
 					 keywords: ["testing"]
@@ -353,20 +339,13 @@ console.log("SUBMITTING FORM DATA");
 				showTable(app.geocodingResult);
 				
 				$('.ui-dialog').dialog('close');
-				
-				//trying to clear input box...
-				//var input = $('#uploadData_input');
-				//input.after(input.clone(true)).remove();  
-				
-				//$('#uploadData_input').replaceWith($('#uploadData_input').clone(true));				
-				
+								
 			}, error: function (error) {
 				console.log("Error:");
 				console.log(error.responseText);
 			}
 		});
 	});
-	
 	$("#layer_selector").hide();
 }
 
