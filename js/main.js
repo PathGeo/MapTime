@@ -53,7 +53,7 @@ var app={
 		}),
 		toc:null,
 		legend: L.Control.extend({
-		    options: {position: 'bottomright',text: 'Legend',},
+		    options: {position: 'topright',text: 'Legend',},
 			initialize: function (options) {L.Util.setOptions(this, options);},
 		    onAdd: function (map) {
 		        // create the control container with a particular class name
@@ -182,9 +182,6 @@ function init_map(){
 				$this.html("Hide Table").attr("title", "Hide Table");
 			});
 		}
-<<<<<<< HEAD
-	});
-=======
 	}).trigger('click');
 	
 	
@@ -201,7 +198,6 @@ function init_map(){
 	//alert(app.layers.demographicData.toSource());
 	//alert(pathgeo.service.demographicData.toSource());
 
->>>>>>> origin/dev
 }
 
 
@@ -372,13 +368,10 @@ function showLayer(obj, isShow){
 		//feature count
 		obj.featureCount=0;
 		
-<<<<<<< HEAD
-=======
 		//layers
 		obj.layers=[];
 		
 
->>>>>>> origin/dev
 		//show layer
 		switch(obj.type){
 			case "GEOJSON":
@@ -971,38 +964,25 @@ function showLocalInfo(id, jumpToDataTablePage){
 		var value=$(this).attr("value");
 		
 		if(app.layers.demographicData){
-			app.layers.demographicData.redrawStyle(value); 
+			var demographic=app.layers.demographicData;
+			//highlight the zipcode boundary
+			demographic.redrawStyle(value, function(f){
+				var defaultStyle=demographic.options.styles(f,value);
+		
+				if(f.properties["ZIP"]==feature.properties["zip"]){
+					defaultStyle.width=4;
+					defaultStyle.color="#666";
+					defaultStyle.dashArray='';
+				}
+				
+				return defaultStyle;
+			}); 
+			
+			//change legend
+			$(".leaflet-control-legend").html(demographic.getLegend(value));
 		}
 	});
 	
-<<<<<<< HEAD
-	//read demographic
-	pathgeo.service.demographicData({type:"zipcode", value:feature.properties["zip"]}, {
-		callback:function(geojsonLayer, legendHtml){
-			//remove previous
-			if(app.layers.demographicData){
-				app.map.removeLayer(app.layers.demographicData);
-			}
-			
-			app.layers.demographicData=geojsonLayer;
-			app.layers.demographicData.addTo(app.map);
-			//app.map.fitBounds(app.layers.demographicData.getBounds());
-
-			//chart
-			var sexData=[
-					['Sex', 'Population'],
-					['Male',  25678],
-					['Female',  28734]
-			];
-			//draw chart
-			showLocalInfoChart(sexData);
-			
-			//show legend
-			$(".leaflet-control-legend").html(legendHtml);
-		}
-	});
-	
-=======
 	
 	//highlight the zipcode boundary and show demographic data
 	app.layers.demographicData.redrawStyle("HC01_VC04", function(f){
@@ -1034,7 +1014,6 @@ function showLocalInfo(id, jumpToDataTablePage){
 	//draw chart
 	var containerId = "localInfo_chart_" + "HC01_VC20";
 	showLocalInfoChart(totalPop, containerId);
->>>>>>> origin/dev
 	
 	$.each(app.demographicData, function(k,v){
 		var containerId = "localInfo_chart_" + k;
