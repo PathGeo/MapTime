@@ -3,27 +3,65 @@
 from GeocodingEngine.Geocoder import AddressGeocoder
 
 #Standard Libraries
-import cgi, json, re
+import cgi, json, re, functools
 import cgitb, os, pickle
 
 
 #Functions to check potential location fields
-IS_LAT = lambda text: bool(re.compile(r'lat|latitude', re.I).search(text))
-IS_LON = lambda text: bool(re.compile(r'lon|lng|longitude', re.I).search(text))
+IS_LAT = lambda text: bool(re.compile(r'(?:^|\s|_)lat(?:\s|_|$)|latitude', re.I).search(text))
+IS_LON = lambda text: bool(re.compile(r'(?:^|\s|_)lon(?:\s|_|$)|(?:^|\s|_)lng(?:\s|_|$)|longitude', re.I).search(text))
 IS_ADDR = lambda text: bool(re.compile(r'addr|address', re.I).search(text))
 IS_CITY = lambda text: bool(re.compile(r'city', re.I).search(text))
 IS_STATE = lambda text: bool(re.compile(r'state', re.I).search(text))
 IS_ZIP = lambda text: bool(re.compile(r'zip|postal', re.I).search(text))
-IS_LOCATION = lambda text: bool(re.compile(r'loc|location', re.I).search(text))
+IS_LOCATION = lambda text: bool(re.compile(r'(?:^|\s|_)loc(?:\s|_|$)|location', re.I).search(text))
 
 
 def containsField(items, checker):
+	'''
+		Returns True if any of the items in the list match.
+	'''
+
 	return any(map(lambda item: checker(item), items))
 
+	
 def getField(items, checker):
+	'''
+		Gets the first item from the list that matches.
+	'''
+	
 	found = filter(lambda item: checker(item), items)
 	return None if not found else found.pop()
 
+	
+def geocodeRows(rows, locFunc):
+	features = []
+
+	#Go through each row and geocode location field.
+	for row in rows:
+		try: 
+			lat, lon = locFunc(row)
+			if lat and lon:			
+				#NOTE: This is just a temporary workaround for the problem with DataTables (can't display a lot of columns)
+				if len(row.keys()) > 5:
+					for key in row.keys()[5:]:
+						del row[key]
+				#End Note
+				doc = dict(type='Feature', geometry=dict(type="Point", coordinates=[lon, lat]), properties=row.copy())
+				features.append(doc)
+		except Exception, e:
+			return json.dumps({ 'error': str(e) })
+	
+	return json.dumps({ 'type': 'FeatureCollection', 'features': features })
+	
+def geocodeRow(row, fields=None, geocoder=None):
+	if not geocoder or not fields:
+		return None, None
+	
+	place, (llat, llon) = geocoder.lookup(' '.join([row[field] for field in fields]))
+	
+	return llat, llon
+	
 	
 cgitb.enable()
 
@@ -45,71 +83,37 @@ zip = getField(geoColumns, IS_ZIP)
 loc = getField(geoColumns, IS_LOCATION)
 
 
+
+#Note: Username and PW for geocoder.US does not currently seem to work with geopy
+#so this is not actually using our account right now...
+geocoder = AddressGeocoder(username='PathGeo2', password='PGGe0C0der')
+
+geoFunc = None
+
 if lat and lon:
-	geoRows = []
 	
-	jsonRows = pickle.load(open(os.path.abspath(__file__).replace(__file__, fname + ".p")))
-
-	for row in jsonRows:
+	def getByLatLon(row, latField=None, lonField=None):
 		try: 
-			thisLat, thisLon = float(row[lat]), float(row[lon])
-			if thisLat and thisLon:
-				#SEEMS LIKE DATATABLE ONLY WORKS IF IT DOESNT HAVE TOO MANY COLS(?)
-				if len(row.keys()) > 10:
-					for key in row.keys()[9:]:
-						del row[key]
-				
-				doc = dict(type='Feature', geometry=dict(type="Point", coordinates=[thisLon, thisLat]), properties=row.copy())
-				geoRows.append(doc)
-		except Exception, e:
-			pass
-
-
-	print ''
-	print json.dumps({ 'type': 'FeatureCollection', 'features': geoRows })
-	exit()
-
+			return float(row[latField]), float(row[lonField])
+		except:
+			return None, None
+		
+	geoFunc = functools.partial(getByLatLon, latField=lat, lonField=lon)
 elif addr and city and state and zip:
-	geoFields.append(addr)
-	geoFields.append(city)
-	geoFields.append(state)
-	geoFields.append(zip)
-	
+	geoFunc = functools.partial(geocodeRow, fields=[addr, city, state, zip], geocoder=geocoder)	
 elif loc:
-	geoFields.append(loc)
-	
+	geoFunc = functools.partial(geocodeRow, fields=[loc], geocoder=geocoder)
 elif addr:
-	geoFields.append(addr)
+	geoFunc = functools.partial(geocodeRow, fields=[addr], geocoder=geocoder)
 	
 
 jsonRows = pickle.load(open(os.path.abspath(__file__).replace(__file__, fname + ".p")))
 
 os.remove(os.path.abspath(__file__).replace(__file__, fname + ".p"))
 
-geoRows = []
-
-#Note: Username and PW for geocoder.US does not currently seem to work with geopy
-#so this is not actually using our account right now...
-geocoder = AddressGeocoder(username='PathGeo2', password='PGGe0C0der')
-
-#Go through each row and geocode location field.
-for row in jsonRows:
-	try: 
-		place, (lat, lng) = geocoder.lookup(' '.join([row[field] for field in geoFields]))
-		if place and lat and lng:
-			#SEEMS LIKE DATATABLE ONLY WORKS IF IT DOESNT HAVE TOO MANY COLS(?)
-			if len(row.keys()) > 4:
-				for key in row.keys()[:-3]:
-					del row[key]
-			
-			doc = dict(type='Feature', geometry=dict(type="Point", coordinates=[lng, lat]), properties=row.copy())
-			geoRows.append(doc)
-	except Exception, e:
-		print ''
-		print json.dumps({ 'error': str(e) })
-		exit()
+output = geocodeRows(jsonRows, geoFunc)
 
 
 print ''
-print json.dumps({ 'type': 'FeatureCollection', 'features': geoRows })
+print output
 
