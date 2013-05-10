@@ -14,8 +14,8 @@ function callPython(){
 	var lng = document.getElementById("lng").value;
 	//var rad = document.getElementById("socialMedia_spatial").value;
 	var rad = 15;
-	var ts = (Math.floor(Date.now()/1000)) - (document.getElementById("socialMedia_temporal").value);
-	
+	//var ts = (Math.floor(Date.now()/1000)) - (document.getElementById("socialMedia_temporal").value);
+	var ts = (Math.floor(Date.now()/1000)) - (63072000);
 	var source = document.getElementById("socialMedia_source").value;
 	
 	
@@ -43,7 +43,8 @@ function callPython(){
 			else{
 				var count = contact.length;
 				$("#search_results").html('');
-				$('#social_results_count').html("There are <b>" + count + "</b> results<br/>Seacrh: <input type='text' name='search' value='' onkeypress='filterResults()'>");
+				$('#social_results_count').html("There are <b>" + count + "</b> results<br/>");
+				$('#social_results_search').html("Seacrh: <input type='text' name='search' id='search' value=''><input type='submit' value='Search' onClick='filterResults()'>");
 			
 				for(i=0; i<count; i++){
 				
@@ -99,7 +100,8 @@ function callPython(){
 			else{
 				var count = contact.length;
 				$("#search_results").html('');
-				$('#social_results_count').html("There are <b>" + count + "</b> results<br/>Seacrh: <input type='text' name='search' value='' onkeypress='filterResults()'>");
+				$('#social_results_count').html("There are <b>" + count + "</b> results<br/>");
+				$('#social_results_search').html("Seacrh: <input type='text' name='search' id='search' value=''><input type='submit' value='Search' onClick='filterResults()'>");
 
 				for(i=0; i<count; i++){
 				
@@ -295,5 +297,42 @@ function setDataMedia(data) {
 }
 
 function filterResults(){
-	alert("hi");
+	var keyword = String(document.getElementById("search").value);
+	//console.log(keyword);
+	
+	
+	var count = curData.length;
+	var newCount = 0;
+	$("#search_results").html('');
+	//$('#social_results_count').html("There are <b>" + count + "</b> results<br/>Seacrh: <input type='text' name='search' id='search' value='' onkeyup='filterResults()'>");
+
+	for(i=0; i<count; i++){
+	
+		
+	
+		var title = String(curData[i].properties.Title);
+		var n1=title.search(keyword);
+		
+		var description = curData[i].properties.Description;
+		var n2=description.search(keyword);
+		
+		var account = String(curData[i].properties.Account);
+		var n3=account.search(keyword);
+		
+		var image = curData[i].properties.Img;
+		var date = curData[i].properties.Date;
+
+		
+		if(n1>=0 || n2>=0 || n3>=0){
+			var results = "<li><h2>" + title + "</h2><img src='" + image + "' alt='...' style='float:left; margin-right:5px'>" + account + "<br/><p>" + date + "</p><br/></li>";
+			$("#search_results").append(results);
+			newCount++;
+		}
+		
+		$("#search_results_count").html('');
+		$('#social_results_count').html("There are <b>" + newCount + "</b> results<br/>");
+		$('#search_results').trigger('create');
+		$('#search_results').listview('refresh');
+	}
+
 }
