@@ -31,6 +31,7 @@ cgitb.enable()
 form = cgi.FieldStorage()
 fname = form['fileName'].value
 geoColumns = form.getlist("geoColumns[]")
+geoColumns = map(lambda item: item.replace(' ', '_'), geoColumns)
 
 
 geoFields = []
