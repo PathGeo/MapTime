@@ -20,4 +20,4 @@ jsonRows = table.getRowsAsJSON()
 pickle.dump(jsonRows, open(os.path.abspath(__file__).replace(__file__, name + ".p"), "w"))
 		
 print ''
-print json.dumps({'columns': table.getColumnNames(), 'fileName': name})
+print json.dumps({'columns': [col for col in table.getColumnNames() if col], 'fileName': name})

@@ -46,8 +46,29 @@ loc = getField(geoColumns, IS_LOCATION)
 
 
 if lat and lon:
-	print 'COOL!'
+	geoRows = []
 	
+	jsonRows = pickle.load(open(os.path.abspath(__file__).replace(__file__, fname + ".p")))
+
+	for row in jsonRows:
+		try: 
+			thisLat, thisLon = float(row[lat]), float(row[lon])
+			if thisLat and thisLon:
+				#SEEMS LIKE DATATABLE ONLY WORKS IF IT DOESNT HAVE TOO MANY COLS(?)
+				if len(row.keys()) > 10:
+					for key in row.keys()[9:]:
+						del row[key]
+				
+				doc = dict(type='Feature', geometry=dict(type="Point", coordinates=[thisLon, thisLat]), properties=row.copy())
+				geoRows.append(doc)
+		except Exception, e:
+			pass
+
+
+	print ''
+	print json.dumps({ 'type': 'FeatureCollection', 'features': geoRows })
+	exit()
+
 elif addr and city and state and zip:
 	geoFields.append(addr)
 	geoFields.append(city)
@@ -76,6 +97,11 @@ for row in jsonRows:
 	try: 
 		place, (lat, lng) = geocoder.lookup(' '.join([row[field] for field in geoFields]))
 		if place and lat and lng:
+			#SEEMS LIKE DATATABLE ONLY WORKS IF IT DOESNT HAVE TOO MANY COLS(?)
+			if len(row.keys()) > 4:
+				for key in row.keys()[:-3]:
+					del row[key]
+			
 			doc = dict(type='Feature', geometry=dict(type="Point", coordinates=[lng, lat]), properties=row.copy())
 			geoRows.append(doc)
 	except Exception, e:

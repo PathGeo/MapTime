@@ -316,7 +316,7 @@ function init_UI(){
 				fileName: currentFileName,
 				geoColumns: geoColumns
 			}, success: function(featureCollection) { 	
-console.log(featureCollection);
+console.log(featureCollection); 
 				if (!featureCollection || featureCollection.features.length <= 0) {
 					alert("No rows could be geocoded.  Please make sure you have selected the correct location column.");
 					return;
