@@ -274,8 +274,8 @@ function init_UI(){
 		$("#uploadData_form").ajaxSubmit({
 			dataType: 'json',		
 			success: function (tableInfo) {
-				//remove current options in the drop-down
-				$("#uploadData_geocodingField option").remove();
+				//remove old options 
+				$("#uploadData_geocodingFields").html("");
 				
 				var columns = tableInfo.columns;
 				currentFileName = tableInfo.fileName;
@@ -283,12 +283,9 @@ function init_UI(){
 				//set new options according to the returned value names
 				for (var indx = 0; indx < columns.length; indx++) {
 					var column = columns[indx];
-					$("#uploadData_geocodingField").append($('<option></option>').val(column).html(column));
+					$("#uploadData_geocodingFields").append("<input type='checkbox' id='" + column + "'/>" + column + " <br>");
 				}	
-				
-				//make sure that the first option is selected
-				$("#uploadData_geocodingField").val(columns[0]).change();
-				
+								
 				$("#uploadData_description").hide();
 				$("#uploadData_confirm").show();
 				$("#uploadData_controls").show();	
@@ -303,7 +300,8 @@ function init_UI(){
 	//Submits upload file form and captures the response
 	//$('#uploadData_form').submit( function() {
 	$('#submit_button').click(function() {	
-		var geoColumnVal = $("#uploadData_geocodingField").val();
+		//var geoColumnVal = $("#uploadData_geocodingField").val();
+		var geoColumns = $.map($("#uploadData_geocodingFields").children(":checked"), function(item) { return item.id; });
 		var checked = $("#uploadData_agreementCheck").prop("checked");
 		
 		if (!checked) {
@@ -316,7 +314,7 @@ function init_UI(){
 			url: "retrieveAndGeocode.py", 
 			data: { 
 				fileName: currentFileName,
-				geoColumn: geoColumnVal
+				geoColumns: geoColumns
 			}, success: function(featureCollection) { 	
 				if (!featureCollection || featureCollection.features.length <= 0) {
 					alert("No rows could be geocoded.  Please make sure you have selected the correct location column.");
