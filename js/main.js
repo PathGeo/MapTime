@@ -299,7 +299,7 @@ function init_UI(){
 	
 	//Submits upload file form and captures the response
 	//$('#uploadData_form').submit( function() {
-	$('#submit_button').click(function() {	
+	$('#submit_button').click(function() {
 		//var geoColumnVal = $("#uploadData_geocodingField").val();
 		var geoColumns = $.map($("#uploadData_geocodingFields").children(":checked"), function(item) { return item.id; });
 		var checked = $("#uploadData_agreementCheck").prop("checked");
@@ -316,7 +316,7 @@ function init_UI(){
 				fileName: currentFileName,
 				geoColumns: geoColumns
 			}, success: function(featureCollection) { 	
-console.log(featureCollection); 
+				console.log(featureCollection); 
 				if (!featureCollection || featureCollection.features.length <= 0) {
 					alert("No rows could be geocoded.  Please make sure you have selected the correct location column.");
 					return;
@@ -344,6 +344,8 @@ console.log(featureCollection);
 				console.log(error.responseText);
 			}
 		});
+		
+		
 	});
 	$("#layer_selector").hide();
 }
