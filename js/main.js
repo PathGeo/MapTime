@@ -15,11 +15,9 @@ var app={
 			"demographicData":null
 	},
 	geocodingResult:{
-			name: "geocodingResult", 
-			type: "GEOJSON", 
-			url: "db/demo-data300.json",
-			srs: "EPSG:4326",
-			title: "Demo Data",
+			type:"GEOJSON",
+			url: null,
+			title: null,
 			keywords:[]
 	},
 	controls:{
@@ -106,9 +104,6 @@ $(document).on("pageshow", function(){
    
    	init_map();
 	
-	//directly shoing demo data
-	showTable(app.geocodingResult);
-	
 	pathgeo.service.zipcodeLookup(91745, function(placename, json, status){
 		if(!status) {
 			if(placename != '') {
@@ -193,6 +188,9 @@ function init_map(){
 		// },
 		callback:function(geojsonLayer){
 			app.layers.demographicData=geojsonLayer;
+			
+			//showDemo data
+			showDemo('SAN FRANCISCO');
 		}
 	});
 	//alert(app.layers.demographicData.toSource());
@@ -327,7 +325,6 @@ function init_UI(){
 				}
 					
 				app.geocodingResult  = {
-					 name: "geocodingResult", 
 					 type: "GEOJSON",
 					 json: featureCollection, 
 					 srs: "EPSG:4326",
@@ -428,17 +425,17 @@ function showLayer(obj, isShow){
 											
 											if(zipcodes[code]){
 												var properties=zipcodes[code].feature.properties;
-												properties.ids.push(id);
-												properties.count=properties.ids.length;
-												properties.sales_sum=properties.sales_sum + sales;
+												properties["extra-ids"].push(id);
+												properties["extra-count"]=properties["extra-ids"].length;
+												properties["extra-sales_sum"]=properties["extra-sales_sum"] + sales;
 											}else{
 												//assign zipcode layer in the demographic layer to the zipcodes array
 												var zipcodeLayer=app.layers.demographicData.zipcodes[code],
 													properties=zipcodeLayer.feature.properties;
 													
-												properties.ids=[id];
-												properties.count=0;
-												properties.sales_sum=sales;
+												properties["extra-ids"]=[id];
+												properties["extra-count"]=0;
+												properties["extra-sales_sum"]=sales;
 												
 												zipcodes[code]=zipcodeLayer;
 											}
@@ -1112,13 +1109,15 @@ function showBusinessAction(type){
 				//detailContent
 				var properties=app.layers.demographicData.zipcodes[zipcode].feature.properties;
 				$.each(properties, function(k,prop){
-					html+="<li>" + k + ": " + prop + "</li>";
+					if(k.split("extra-").length==1){ // only show origianl properties without extra properties
+						html+="<li><a href='#'><img src='images/1368477544_FootballPlayer_Male_Dark.png'><p>" + k + "</p><h2>" + prop + "</h2></a></li>";
+					}
 				});
 				$("#businessActions_detailContent ul").html(html).listview("refresh");
 								
 								
 				//trigger dataTable to filter the zipcode
-				app.dataTable.fnFilter(zipcode);
+				//app.dataTable.fnFilter(zipcode);
 
 				//show the detail of business actions
 				$(".businessActions_tabs").hide();
@@ -1140,7 +1139,7 @@ function showBusinessAction(type){
 			
 			var highlight=0, count=0, tooltip="", originalCount=0;
 			$.each(zipcodeLayer, function(k,v){
-				originalCount=v.feature.properties.count;
+				originalCount=v.feature.properties["extra-count"];
 				highlight=0;
 				count=originalCount;
 				
@@ -1167,7 +1166,7 @@ function showBusinessAction(type){
 		break;
 		case "top_sales":
 			dataArray=[["zipcodes", "sum_sales"]];
-			$.each(zipcodeLayer, function(k,v){dataArray.push([k, v.feature.properties.sales_sum]);});
+			$.each(zipcodeLayer, function(k,v){dataArray.push([k, v.feature.properties["extra-sales_sum"]]);});
 			chartOptions.googleChartWrapperOptions.options.titleX="The sum of sales";
 			chartOptions.googleChartWrapperOptions.options.titleY="Zip Codes"
 		break;
@@ -1275,6 +1274,38 @@ function searchBusinessIntelligent(geoname){
 	console.log(geoname);
 }
 
+
+
+
+//show demo
+function showDemo(demoType){
+	var obj=null;
+	
+	switch(demoType){
+		case "SAN FRANCISCO":
+			obj = {
+				url: 'db/demo-SanFrancisco.json',
+				title:'[DEMO] San Francisco shoes customer',
+				keywords: []		
+			}
+		break;
+		case "SAN DIEGO":
+			obj = {
+				url: 'db/demo-SanDiego.json',
+				title:'[DEMO] San Diego demo data',
+				keywords: []		
+			}
+		break;
+	}
+	
+	if(obj){
+		obj.type='GEOJSON';
+		app.geocodingResult=obj;
+		
+		//show table
+		showTable(app.geocodingResult);
+	}
+}
 
 
 
