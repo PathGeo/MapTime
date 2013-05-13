@@ -100,8 +100,11 @@ if lat and lon:
 			return None, None
 		
 	geoFunc = functools.partial(getByLatLon, latField=lat, lonField=lon)
-elif addr and city and state and zip:
-	geoFunc = functools.partial(geocodeRow, fields=[addr, city, state, zip], geocoder=geocoder)	
+elif addr and city:
+	#only address and city are necessary to geocode, but check if state or zipcode are present
+	#and, if so, add them to out list of geocoding fields
+	otherFields = filter(lambda item: bool(item), [state, zip])
+	geoFunc = functools.partial(geocodeRow, fields=[addr, city] + otherFields, geocoder=geocoder)	
 elif loc:
 	geoFunc = functools.partial(geocodeRow, fields=[loc], geocoder=geocoder)
 elif addr:
