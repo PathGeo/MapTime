@@ -43,11 +43,11 @@ def geocodeRows(rows, locFunc):
 			lat, lon = locFunc(row)
 			if lat and lon:			
 				#NOTE: This is just a temporary workaround for the problem with DataTables (can't display a lot of columns)
-				'''
+				#Comment out lines 47-49 to return all properties
 				if len(row.keys()) > 5:
 					for key in row.keys()[5:]:
 						del row[key]
-				'''
+				
 				#End Note
 				doc = dict(type='Feature', geometry=dict(type="Point", coordinates=[lon, lat]), properties=row.copy())
 				features.append(doc)
