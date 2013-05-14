@@ -32,17 +32,8 @@ count = 0
 
 for i in output['photos']['photo']:
 	count += 1
-	#if 'ownername' in i:
-		#name = str(i['ownername'])
-	#else:
-		#name = "Unknown"
-		
 	name = i.get('ownername', 'no owner name')
-	#if hasattr(i, 'ownername'):
-	#	name = str(i['ownername'])
-	#else:
-		#name = "Unknown"
-	#name = "Name Goes Here..."
+
 	image = "http://farm" + str(i['farm']) + ".staticflickr.com/" + str(i['server']) + "/" + str(i['id']) + "_" + str(i['secret']) + "_s.jpg"
 	account = "<a href='http://www.flickr.com/photos/" + str(i['owner']) + "/" + str(i['id']) + "' target='_blank'>" + name + "</a>"
 	doc = {}

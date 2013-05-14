@@ -88,7 +88,6 @@ function callPython(){
 				}
 			}
 		}).success(function( contact ) {
-		//console.log(contact);
 			if (curLayer && app.map.hasLayer(curLayer)) app.map.removeLayer(curLayer);
 			if (!contact){
 				$("#search_results").html('');
@@ -139,6 +138,7 @@ function getClusterLayerMedia(gjData) {
 		zoomToBoundsOnClick: false,
 		iconCreateFunction: function(cluster) {
 			//return new L.DivIcon({ html: cluster.getChildCount(), className: 'mycluster', iconSize: new L.Point() });
+			var count = cluster.getChildCount();
 			if(curData[0].properties.Source == "twitter"){
 				var image = "newTweet";
 			}
@@ -148,13 +148,13 @@ function getClusterLayerMedia(gjData) {
 			
 			var amount = cluster.getChildCount();
 			if (amount >=10){
-				var icon = "<img border='0' src='images/" + image + ".png' width='62' height='74'>";
+				var icon = "<b style='position:absolute; left:3px; top:1px'>" + count + "</b><img border='0' src='images/" + image + ".png' width='62' height='74'>";
 			}
 			else if (amount >=5){
-				var icon = "<img border='0' src='images/" + image + ".png'  width='50' height='61'>";
+				var icon = "<b style='position:absolute; left:3px; top:1px'>" + count + "</b><img border='0' src='images/" + image + ".png'  width='50' height='61'>";
 			}
 			else{
-				var icon = "<img border='0' src='images/" + image + ".png'>";
+				var icon = "<b style='position:absolute; left:3px; top:1px'>" + count + "</b><img border='0' src='images/" + image + ".png'>";
 			}
 	
 			return new L.DivIcon({ html: icon, className: 'mycluster' });
@@ -277,7 +277,6 @@ function switchLayersMedia(newLayerName) {
 	}
 	else if (newLayerName == "census") {
 		enableCensusLayer();
-		//$(".legend").show();
 		curLayer = getPointLayerMedia(curData);
 		app.map.addLayer(curLayer);
 	}
@@ -285,16 +284,11 @@ function switchLayersMedia(newLayerName) {
 
 function setDataMedia(data) {
 	curData = data;
-	//console.log(curData);
-	//$(".features").removeClass("selected").addClass("selectable");
 	switchLayersMedia("point");
-	//$("#point").toggleClass("selected selectable");
 }
 
 function filterResults(){
 	var keyword = String(document.getElementById("search").value);
-	//console.log(keyword);
-	
 	
 	var count = curData.length;
 	var newCount = 0;

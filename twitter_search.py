@@ -23,7 +23,6 @@ geocoder = CityGeocoder()
 
 results = []
 
-
 for tweet in tweets:
 	#If the tweet is geotagged, use that lat/lon
 	if tweet.geo and tweet.geo['coordinates'] and tweet.geo['coordinates'][0] and tweet.geo['coordinates'][1]:
@@ -35,13 +34,8 @@ for tweet in tweets:
 		city, (glat, glon) = geocoder.lookup(tweet.location.encode("ascii", "ignore"))
 		
 		#make sure that geocoded lat and lons are within search radius
-		
 		if glat and glon and distance.distance((lat, lng), (glat, glon)).miles <= float(rad):
 			results.append(dict(type="Feature", geometry=dict(type="Point", coordinates=[glon, glat]), properties=dict(Img=str(tweet.profile_image_url), Title=tweet.text, Date=str(tweet.created_at), Account=str(tweet.from_user), Source="twitter")))
-	
-	#doc['properties'] = {}
-	#doc['properties']["Title"] = "testing"
-	#results.append(doc)
 
 print ''	
 print json.dumps(results)
