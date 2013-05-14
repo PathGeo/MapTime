@@ -168,7 +168,12 @@ function getClusterLayerMedia(gjData) {
 			var properties = pathgeo.util.readClusterFeatureProperies(e.layer, []);
 			var html = "<div class='popup'><p style='font-weight: 900;'>There are " + e.layer._childCount + " addresses:</p><ul>";
 			$.each(properties, function(i, property){
-				html += "<li><span class='ui-icon ui-icon-circle-plus iconExpand' style='display:inline-block'></span><span class='clusterInfo'>" + property.Title + "</span><br><div class='extras' style='margin-bottom: 10px;'>" + property.Img + "<br><br>" + property.Description + "</div></li>";
+				if (property.Source == "flickr") {
+					html += "<li><span class='ui-icon ui-icon-circle-plus iconExpand' style='display:inline-block'></span><span class='clusterInfo'>" + property.Title + "</span><br><div class='extras' style='margin-bottom: 30px;'><img src='" + property.Img + "' alt='...' style='float:left; margin-right:5px'><div class='extras' style='display: block;'> " + property.Account + "<br/><br/>" + property.Date + "</div></li>";
+				}
+				else {
+					html += "<li><span class='ui-icon ui-icon-circle-plus iconExpand' style='display:inline-block'></span><span class='clusterInfo'>" + property.Title + "</span><br><div class='extras' style='margin-bottom: 10px;'><img src='" + property.Img + "' alt='...' style='float:left; margin-right:5px'><div class='extras' style='display: block;'><a href='http://twitter.com/" + property.Account + "' target='_blank'>" + property.Account + "</a><br/><br/>" + property.Date + "</div></li>";
+				}
 			});
 			html+="</ul></div>";
 						
@@ -204,10 +209,10 @@ function getPointLayerMedia(gjData) {
 	var pointLayer = new L.geoJson([], {
 		onEachFeature: function (feature, layer) {
 			var props = feature.properties;
-			if(props.Source == "flickr"){
-				var html = "<div class='popup'><ul><li><span class='clusterInfo'>" + props.Title + "</span><br/><img src='" + props.Img + "' alt='...' style='float:left; margin-right:5px'><div class='extras' style='display: block;'> " + props.Account + "<br/><br/>" + props.Date + "</li></ul></div>";
+			if (props.Source == "flickr"){
+				var html = "<div class='popup'><ul><li><span class='clusterInfo'>" + props.Title + "</span><br/><img src='" + props.Img + "' alt='...' style='float:left; margin-right:5px'><div class='extras' style='display: block; padding-bottom:20px'> " + props.Account + "<br/><br/>" + props.Date + "</li></ul></div>";
 			}
-			else{
+			else {
 				var html = "<div class='popup'><ul><li><span class='clusterInfo'>" + props.Title + "</span><br/><img src='" + props.Img + "' alt='...' style='float:left; margin-right:5px'><div class='extras' style='display: block;'><a href='http://twitter.com/" + props.Account + "' target='_blank'>" + props.Account + "</a><br/><br/>" + props.Date + "</li></ul></div>";
 			}
 			layer.bindPopup(html);
@@ -215,10 +220,10 @@ function getPointLayerMedia(gjData) {
 		
 			var props = feature.properties;
 			var url;
-			if(props.Source == "flickr"){
+			if (props.Source == "flickr"){
 				url = "images/newPhoto.png";
 			}
-			else{
+			else {
 				url = "images/newTweet.png";
 			}
 		
