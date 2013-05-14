@@ -44,7 +44,7 @@ function callPython(){
 				var count = contact.length;
 				$("#search_results").html('');
 				$('#social_results_count').html("There are <b>" + count + "</b> results<br/>");
-				$('#social_results_search').html("Seacrh: <input type='text' name='search' id='search' value=''><input type='submit' value='Search' onClick='filterResults()'>");
+				$('#social_results_search').html("Filter: <input type='text' name='filter' id='search' value=''><input type='submit' value='Filter' onClick='filterResults()'>");
 			
 				for(i=0; i<count; i++){
 				
@@ -101,15 +101,13 @@ function callPython(){
 				var count = contact.length;
 				$("#search_results").html('');
 				$('#social_results_count').html("There are <b>" + count + "</b> results<br/>");
-				$('#social_results_search').html("Seacrh: <input type='text' name='search' id='search' value=''><input type='submit' value='Search' onClick='filterResults()'>");
+				$('#social_results_search').html("Filter: <input type='text' name='filter' id='search' value=''><input type='submit' value='Filter' onClick='filterResults()'>");
 
 				for(i=0; i<count; i++){
 				
 					var title = contact[i].properties.Title;
-					//var description = contact[i].properties.Description;
 					var image = contact[i].properties.Img;
 					var date = contact[i].properties.Date;
-					//var lat = contact[i].geometry.coordinates[0];
 					var account = contact[i].properties.Account;
 				
 					var results = "<li><h2>" + title + "</h2><img  src=" + image + " alt='...' style='float:left; margin-right:5px'><a href='http://twitter.com/" + account + "' target='_blank'>@" + account + "</a><br/><p>" + date + "</p><br/></li>";
@@ -131,10 +129,7 @@ function callPython(){
 			console.log(error);
 			alert("There was an error in your search. Please try again");
 		});
-		}
-	
-	
-	
+	}
 }
 
 function getClusterLayerMedia(gjData) {
@@ -308,25 +303,40 @@ function filterResults(){
 
 	for(i=0; i<count; i++){
 	
+		if(curData[i].properties.Source == "flickr"){
 		
-	
-		var title = String(curData[i].properties.Title);
-		var n1=title.search(keyword);
-		
-		var description = curData[i].properties.Description;
-		var n2=description.search(keyword);
-		
-		var account = String(curData[i].properties.Account);
-		var n3=account.search(keyword);
-		
-		var image = curData[i].properties.Img;
-		var date = curData[i].properties.Date;
+			var title = String(curData[i].properties.Title);
+			var n1=title.search(keyword);
+			
+			var description = curData[i].properties.Description;
+			var n2=description.search(keyword);
+			
+			var account = curData[i].properties.Account;
+			var image = curData[i].properties.Img;
+			var date = curData[i].properties.Date;
 
+			
+			if(n1>=0 || n2>=0){
+				var results = "<li><h2>" + title + "</h2><img src='" + image + "' alt='...' style='float:left; margin-right:5px'>" + account + "<br/><p>" + date + "</p><br/></li>";
+				$("#search_results").append(results);
+				newCount++;
+			}
+		}
 		
-		if(n1>=0 || n2>=0 || n3>=0){
-			var results = "<li><h2>" + title + "</h2><img src='" + image + "' alt='...' style='float:left; margin-right:5px'>" + account + "<br/><p>" + date + "</p><br/></li>";
-			$("#search_results").append(results);
-			newCount++;
+		else {
+			var title = curData[i].properties.Title;
+			var n1=title.search(keyword);
+			
+			var image = curData[i].properties.Img;
+			var date = curData[i].properties.Date;
+			var account = curData[i].properties.Account;
+
+			
+			if(n1>=0){
+				var results = "<li><h2>" + title + "</h2><img  src=" + image + " alt='...' style='float:left; margin-right:5px'><a href='http://twitter.com/" + account + "' target='_blank'>@" + account + "</a><br/><p>" + date + "</p><br/></li>";
+				$("#search_results").append(results);
+				newCount++;
+			}
 		}
 		
 		$("#search_results_count").html('');
