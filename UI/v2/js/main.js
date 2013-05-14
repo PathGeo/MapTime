@@ -145,36 +145,7 @@ function init_map(){
 			app.map.addControl(new v());
 		}
 	});
-	
-	
-	//create maxminMap DIV
-	$("#div_map").append("<div id='showhideTable' title='Hide Table'>Hide Table</div>");
-	
-	//maximum or mimimum map
-//	$("#showhideTable").click(function(){
-//		var $this=$(this);
-//		
-//		//maximum map
-//		if($this.html()=='Hide Table'){
-//			$("#div_map").animate({height:"80%"}, 500, function(){
-//				//resize map
-//				app.map.invalidateSize(false);
-//				
-//				$("#dataPanel").css({height:"17%"});
-//	
-//				$this.html("Show Table").attr("title", "Show Table");
-//			});
-//		}else{
-//			$("#div_map").animate({height:"53%"}, 500, function(){
-//				//resize map
-//				app.map.invalidateSize(false);
-//				
-//				$("#dataPanel").css({height:"45%"});
-//	
-//				$this.html("Hide Table").attr("title", "Hide Table");
-//			});
-//		}
-//	}).trigger('click');
+
 	
 	
 	//read demographic data
@@ -203,9 +174,7 @@ function init_UI(){
 	//content height
 	$("#content").height($(window).height()-$("#header").height());
 	
-	$("#div_gallery ul li").click(function(){
-		$(this).css("background-color", "#222222").siblings().css("background-color","");
-	});
+
 	
 	
 
@@ -229,12 +198,15 @@ function init_UI(){
 	//adjust localInfo
 	$("#localInfo").css({height:$("#content").height()-30});
 	
+	//adjust infoPanel height
+	$(".infoPanel").css({height:$("#content").height()-20, width:$("#content").width()*0.42});
 	
 	
 	//when window resize
 	$(window).resize(function(){
 		$("#content").height($(window).height()-$("#header").height());
 		$("#localInfo").css({height:$("#content").height()-30});
+		$(".infoPanel").css({height:$("#content").height()-20, width:$("#content").width()*0.42});
 	})
 	
 	
@@ -251,6 +223,11 @@ function init_UI(){
 	$("#businessActions_type").change(function(){
 		showBusinessAction(this.value);
 	})
+	
+	
+	//add close button in the infoPanel
+	$(".infoPanel").append("<a id='closeInfoPanel' href='#' data-role='button' data-theme='a' data-icon='delete' data-iconpos='notext'  style='position:absolute; right:-10px; top:-6px;z-index:500;' onclick='closeInfoPanel()'>Close</a>")
+	$(".infoPanel #closeInfoPanel").buttonMarkup("refresh");
 	
 	
 	//Keep track of currently uploaded file 
@@ -786,9 +763,9 @@ function showTable(obj){
 		//add dataTable tools and click event
 		var html = "<ul>" +
 					//"<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
-					"<li><img src='images/1365858910_download.png' title='download'/></li>" +
-					"<li><img src='images/1365858892_print.png' title='print'/></li>" +
-					"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/></li>" +
+					//"<li><img src='images/1365858910_download.png' title='download'/></li>" +
+					//"<li><img src='images/1365858892_print.png' title='print'/></li>" +
+					//"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/></li>" +
 					//"<li><img src='images/1365860337_cube.png' title='canned report'/></li>"+
 					//"<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
 					//"<li><img src='images/1365978110_gallery2.png' title='map gallery'/></li>" +
@@ -1302,6 +1279,36 @@ function showDemo(demoType){
 		showTable(app.geocodingResult);
 	}
 }
+
+
+
+
+//show infoPanel
+function showInfoPanel(domID){
+	//hide other infoPanels
+	$(".infoPanel").hide();
+	
+	
+	//show infoPanel	
+	$("#"+domID).show();
+	
+	
+	//resize map
+	$("#div_map").css({width:'55%'});
+	app.map.invalidateSize(false);
+}
+
+
+
+//close infoPanel
+function closeInfoPanel(){
+	$(".infoPanel").hide();
+	
+	//resize map
+	$("#div_map").css({width:'100%'});
+	app.map.invalidateSize(false);
+}
+
 
 
 

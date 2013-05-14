@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>PathGeo-MapTime</title>
+    <title>PathGeo-MapTime v2.0</title>
     <meta name="viewport" http-equiv="Content-Type" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	
 	<link type="text/css" href='js/jquery/jquery.mobile-1.3.0.min.css' rel="stylesheet" />
@@ -76,11 +76,11 @@
 			<!-- toolbox-->
 			<div id='menuToolbox'>
 				<ul>
-					<li title='Your Uploaded Data' onclick='$("#localInfo").show();'><img src='images/1368495654_document.png' /></li>
-					<li title='Chart' onclick=''><img src='images/1368495559_chart_bar_up.png' /></li>
-					<li title='Find the Best Business Actions' onclick=''><img src='images/1368495683_speaker.png' /></li>
-					<li title='Search Social Media' onclick=''><img src='images/1368495760_bulb_off.png' /></li>
-					<li title='Account Settings' onclick='$("#dialog_usermenu").popup("open")'><img src='images/1368496469_man.png' /></li>
+					<li title='Your Uploaded Data' onclick='showInfoPanel("dataPanel")'><img src='images/1368495654_document.png' /></li>
+					<!--<li title='Chart' onclick='showInfoPanel("chartPanel")'><img src='images/1368495559_chart_bar_up.png' /></li>-->
+					<li title='Find the Best Business Actions' onclick='showInfoPanel("localInfoPanel")'><img src='images/1368495683_speaker.png' /></li>
+					<li title='Search Social Media' onclick='showInfoPanel("socialMediaPanel")'><img src='images/1368495760_bulb_off.png' /></li>
+					<li title='Account Settings' onclick='showInfoPanel("userPanel")'><img src='images/1368496469_man.png' /></li>
 					<li title='Main Menu' onclick='$("#uploadData_confirm").hide(); $("#uploadData_description").show(); $("#uploadData_controls").hide();$("#dialog_menu").popup("open")'><img src='images/1368496597_outbox.png' /></li>
 					<li title='Help' onclick='$("#dialog_help").popup("open")'><img src='images/1368495535_help.png' /></li>
 					<li title='About us' onclick=''><img src='images/1368495810_home.png' /></li>
@@ -89,48 +89,11 @@
 			
 			
 			<!-- map-->
-			<div id="div_map"></div>
-					
-			
-			<!-- data table -->
-			<div id='dataPanel'>
-				<div id='dataTable_control'></div>
-				<table cellpadding="0" cellspacing="0" border="0" class="display" id="dataTable"></table>
-				
-				<!-- dataTable chart-->
-				<div id='dataTable_chart' style='display:none'>
-					<!--chart control-->
-					<div id='dataTable_chartControl' title='Chart settings'  onclick='$("#dataTable_chartControlMenu").css({left:-($("#dataTable_chartControlMenu").width()-10)}).show();'>
-						<img src='images/1365859519_cog.png' width=25px height=25px />
-						<div id='dataTable_chartControlMenu'>
-							Change Chart Type:<br>
-							<fieldset data-role="controlgroup" data-mini="true" data-type="horizontal">
-							 	<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_area" value="AreaChart" checked="checked">
-							 	<label for="dataTable_chartType_area">Area Chart</label>
-								<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_pie" value="PieChart">
-								<label for="dataTable_chartType_pie">Pie Chart</label>
-								<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_column" value="ColumnChart">
-								<label for="dataTable_chartType_column">Column Chart</label>
-							</fieldset>
-							<hr>
-							Change X and Y axis: 
-							<fieldset data-role="controlgroup" data-type="horizontal">
-								<label for="select_x">X:</label>
-								<select id="select_x" name='select_x' data-mini="true"><option value='none'>Select X Axis</option></select>
-								
-								<label for="select_y">Y:</label>
-								<select id="select_y" name='select_y' data-mini="true"><option value='none'>Select Y Axis</option></select>
-							</fieldset>
-						</div>
-					</div>
-					
-					<!--chart content-->
-					<div id='dataTable_chartContent'></div>
-				</div>
-			</div>
+			<div id="div_map"></div>	
 		</div>
 		
 	
+		
 		
 		<!--main menu-->
 		<div id='dialog_menu' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false" data-history="false" style=''>
@@ -213,15 +176,190 @@
 					
 				</fieldset>
 			</form>
-			
-			
-			<!--<input type='button' value='DEMO Data' onclick='showLayer(app.geocodingResult, true)'/>-->
 		</div>
 		
 		
 		<!--user menu-->
 		<div id='dialog_usermenu' data-role="panel" data-position="right"  data-display="overlay" data-theme="a"  >
-                            <fieldset id='user_login'>
+                           
+		</div>
+		
+		
+		<!--help-->
+		<div id='dialog_help' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false" style=''>
+				<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+				<div id="getsat-widget-5632"></div>
+				
+				<script type="text/javascript" src="https://loader.engage.gsfn.us/loader.js"></script>
+				<script type="text/javascript">
+					if (typeof GSFN !== "undefined") { GSFN.loadWidget(5632,{"containerId":"getsat-widget-5632"}); }
+				</script>
+		</div>
+
+		
+		
+		
+		
+		
+		<!--dataTable-->
+		<!-- data table -->
+		<div id='dataPanel' class='infoPanel'>
+				<!-- dataTable -->
+				<div id='dataTable_control'></div>
+				<table cellpadding="0" cellspacing="0" border="0" class="display" id="dataTable"></table>
+				
+				
+				<!-- dataTable chart-->
+				<div id='dataTable_chart' style='display:none'>
+					<!--chart control-->
+					<div id='dataTable_chartControl' title='Chart settings'  onclick='$("#dataTable_chartControlMenu").css({left:-($("#dataTable_chartControlMenu").width()-10)}).show();'>
+						<img src='images/1365859519_cog.png' width=25px height=25px />
+						<div id='dataTable_chartControlMenu'>
+							Change Chart Type:<br>
+							<fieldset data-role="controlgroup" data-mini="true" data-type="horizontal">
+							 	<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_area" value="AreaChart" checked="checked">
+							 	<label for="dataTable_chartType_area">Area Chart</label>
+								<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_pie" value="PieChart">
+								<label for="dataTable_chartType_pie">Pie Chart</label>
+								<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_column" value="ColumnChart">
+								<label for="dataTable_chartType_column">Column Chart</label>
+							</fieldset>
+							<hr>
+							Change X and Y axis: 
+							<fieldset data-role="controlgroup" data-type="horizontal">
+								<label for="select_x">X:</label>
+								<select id="select_x" name='select_x' data-mini="true"><option value='none'>Select X Axis</option></select>
+								
+								<label for="select_y">Y:</label>
+								<select id="select_y" name='select_y' data-mini="true"><option value='none'>Select Y Axis</option></select>
+							</fieldset>
+						</div>
+					</div>
+					
+					<!--chart content-->
+					<div id='dataTable_chartContent'></div>
+				</div>
+
+			
+			
+			<!-- dataTable_nav-->
+			<div id='dataTable_nav' style="display:none">
+				<div data-role="navbar">
+				    <ul>
+				        <li><a href="#" class="ui-btn-active" onclick='$("#dataTable_wrapper").show();$("#dataTable_chart").hide();$("#dataTable_control .dataTable_nav ul li a").removeClass("ui-btn-active");$(this).addClass("ui-btn-active")'><img src='images/1365859564_3x3_grid_2.png' /></a></li>
+				        <li><a href="#" onclick='$("#dataTable_wrapper").hide();$("#dataTable_chart").show();$("#dataTable_control .dataTable_nav ul li a").removeClass("ui-btn-active");$(this).addClass("ui-btn-active")'><img src='images/1365860260_chart_bar.png' /></a></li>
+				    </ul>
+				</div>
+			</div>
+		</div>
+		
+		
+		
+
+	
+		<!-- localInfoPanel-->
+		<div id='localInfoPanel' class='infoPanel'>
+			<div id='localInfo' >
+				
+				<!-- business intelligent -->
+				<div id='localInfo_businessActions' style='' class='localInfo_tabs'>
+					<!-- select business actions-->
+					<div id='businessActions_select' class='businessActions_tabs'>
+						<!-- download report -->
+						<label for='businessActions_type'>Business Actions</label>
+						<img id='businessActions_downloadReport' src='images/1367454585_Cloud Download Off.png'  onclick='window.open("images/pathgeo_report.pdf")' title='Download Report' />
+						
+						<select id='businessActions_type' name='businessActions_type' data-mini="true">
+							<option value='top_users'>Which zipcode has the highest number of customers</option>
+							<option value='top_sales'>Which zipcode has the highest value of sales</option>
+							<option value='avg_income_from_users'>What’s the average incomes for my customers</option>
+							<option value='most_language_from_users'>Which languages do users use most</option>
+							<option value='potential_market'>Where are potential Markets</option>
+						</select>
+						
+						<!-- business actions result-->
+						<div id='businessActions_result'></div>
+					</div>
+					
+					<!-- show the details of business actions, including demographic data-->
+					<div id='businessActions_detail' style='display:none;' class='businessActions_tabs'>
+						<!--header-->
+						<div data-role='header' data-mini-"true">
+							<a href="#" data-icon="back" onclick='$(".businessActions_tabs").hide(); $("#businessActions_select").show();'>Back</a>
+							<h1 id='businessActions_detailTitle'></h1>
+							<!--<a href="#" data-icon="forward">Export</a>-->
+						</div>
+						<!--content-->
+						<div id='businessActions_detailContent'>
+							<ul data-role='listview' data-inset='true'></ul>
+						</div>
+					</div>
+					
+				</div>
+					
+			</div>
+		</div>
+		
+		
+		
+		<!-- social media Panel-->
+		<div id='socialMediaPanel' class='infoPanel'>
+			
+				<!-- social media-->
+				<div id='localInfo_socialMedia' style='display:none;'  class='localInfo_tabs'>
+					<div data-role="fieldcontain" style='margin:3px;'>
+						<input id='socialMedia_keyword' name='socialMedia_keyword' type='text' value='Enter a Keyword' data-mini="true" onclick='this.value=""'/>
+					</div>
+					
+					<input type="hidden" id="lat" value="test">
+					<input type="hidden" id="lng" value="test">
+	
+					<!-- social media temporal filter -->
+					<!--<div data-role="fieldcontain" style='margin:3px;'>
+						<select id='socialMedia_temporal' name='socialMedia_temporal' data-mini="true">
+							<option value='604800'>last week</option>
+							<option value='2592000'>last month</option>
+							<option value='31536000'>last year</option>
+							<option value='63072000'>last 2 years</option>
+						</select>
+					</div>-->
+					
+					<!-- social media source filter -->
+					<div data-role="fieldcontain" style='margin:3px;'>
+						<select id='socialMedia_source' name='socialMedia_source' data-mini="true">
+							<option value='flickr'>Flickr</option>
+							<option value='twitter'>Twitter</option>
+						</select>
+					</div>
+						
+					<button type='button' onclick='callPython()' data-mini="true">Search</button>
+					
+					
+					<div data-role="navbar" style='margin-bottom:15px; margin-top:15px' id="layer_selector">
+						<ul>
+							<li><a href="#" id="point_media" class="ui-btn-active" onclick='switchLayersMedia("point")'>Point Map</a></li>
+							<li><a href="#" id="cluster_media" onclick='switchLayersMedia("cluster")'>Cluster Map</a></li>
+							<li><a href="#" id="heat_media" onclick='switchLayersMedia("heatmap")'>Heat Map</a></li>
+						</ul>
+					</div>
+					
+					
+					
+	
+					<p id='social_results_count'></p>
+					<p id='social_results_search'></p>
+					<div id='socialMedia_result'>
+						<ul data-role="listview" data-inset="true" id="search_results"></ul>
+					</div>
+				</div>
+		</div>
+		
+		
+		
+		
+		<!-- userPanel -->
+		<div id='userPanel' class='infoPanel'>
+			 				<fieldset id='user_login' style=''>
             
                                <!-- <asp:Literal runat="server" ID="litMessage"></asp:Literal>-->
 
@@ -283,196 +421,9 @@
 		</div>
 		
 		
-		<!--help-->
-		<div id='dialog_help' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false" style=''>
-				<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
-				<div id="getsat-widget-5632"></div>
-				
-				<script type="text/javascript" src="https://loader.engage.gsfn.us/loader.js"></script>
-				<script type="text/javascript">
-					if (typeof GSFN !== "undefined") { GSFN.loadWidget(5632,{"containerId":"getsat-widget-5632"}); }
-				</script>
-		</div>
-		
-
-		<!-- gallery-->
-		<div id='div_gallery' style='bottom:0px;display:none;'>
-			<div style='float:left;display:none; padding:10px;' id='mapGallery'>
-				<ul data-role="listview" data-inset="true" data-divider-theme="b">
-					<li>
-						<div>
-							<img src='images/gallery-defaultmap.png' title='Demographic Map' onclick='switchBaseLayer(app.layers.demographicData)'/>
-							<img src='images/gallery-streetmap.png' title='Goolge Street Map' onclick='switchBaseLayer(app.basemaps["Google Streetmap"])'/>
-							<img src='images/gallery-streetmap.png' title='Open Street Map' onclick='switchBaseLayer(app.basemaps["OpenStreetMap"])'/>
-						</div>
-					</li>		
-				</ul>
-			</div>
-			<!--image-->
-			<a href="#"></a>
-		</div>
 		
 		
 		
-		<!--DATA LIST-->
-		<div id='dialog_dataPanel' data-role="panel" data-position="left"  data-display="overlay" data-dismissible="false" data-theme="a"  >
-			<div id='dataList'>
-				<!--header-->
-				<div data-role='header'>
-					<a href="#" data-icon="check">Print</a>
-					<h1>Data List</h1>
-					<a href="#" data-icon="forward">Export</a>
-				</div>
-				<p></p>
-				<!--datalist_container-->
-				<div id='datalist_container'><ul data-role="listview" data-filter="true" data-filter-placeholder="Search your data" data-filter-theme="a" data-theme="a" ></ul></div>
-			</div>
-			
-			<div id='dataDetail' data-role='panel' data-theme="a" data-overlay-theme=a data-transition="slide">
-				<!--header-->
-				<div data-role='header'>
-					<a href="#" data-icon="home" onclick='$("#dataDetail").hide();$("#dataList").show();'>Data List</a>
-					<h1 id='dataDetail_title'></h1>
-					<a href="#" data-icon="forward" >Export</a>
-				</div>
-				
-				<!--content-->
-				<div id='dataDetail_content'></div>
-			</div>
-		</div>
-		
-		
-	
-		<!-- localInfo-->
-		<div id='localInfo'>
-			<a href="#" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext"  style='position:absolute; right:-10px; top:-6px;' onclick='$("#localInfo").hide();app.map.removeLayer(app.layers.demographicData);$(".leaflet-control-legend").hide();'>Close</a>
-			<div data-role="navbar" style='margin-bottom:15px;'>
-			    <ul>
-			        <!--<li><a href="#" class="ui-btn-active" onclick='$(".localInfo_tabs").hide();$("#localInfo_demographicData").show();'>Demographic Data</a></li>-->
-			        <li><a href="#" class="ui-btn-active" onclick='$(".localInfo_tabs").hide();$("#localInfo_businessActions").show();'>Business Actions</a></li>
-			        <li><a href="#" onclick='$(".localInfo_tabs").hide();$("#localInfo_socialMedia").show();'>Social Media</a></li>
-			    </ul>
-			</div>
-			
-			<!-- demographic data-->
-			<div id='localInfo_demographicData' class='localInfo_tabs' style='display:none'>
-				<!-- demographic spatial-->
-				<!--<label for='demographic_spatial'></label>
-				<select id='demographic_spatial' name='demographic_spatial' data-mini="true">
-					<option value='address'>5/10/15 miles of the address</option>
-					<option value='zipcode'>zipcode level</option>
-					<option value='city'>city level</option>
-					<option value='county'>county level</option>
-				</select>-->
-				
-				<!-- demographic dataType (seleect differnt types of demographic data)--> 
-				<div id='demographic_type' data-role="collapsible-set" data-theme="c" data-content-theme="d" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-d"> </div>
-				
-				
-				
-				<!--<a href='images/pathgeo_report.pdf' data-role='button' target='_blank'>Download Report</a>
-				<P></P>-->
-				
-				<!--<div id='localInfo_chart' style='overflow-y:auto; overflow-x:hidden'></div>-->
-			</div>
-			
-			<!-- business intelligent -->
-			<div id='localInfo_businessActions' style='' class='localInfo_tabs'>
-				<!-- select business actions-->
-				<div id='businessActions_select' class='businessActions_tabs'>
-					<!-- download report -->
-					<label for='businessActions_type'>Business Actions</label>
-					<img id='businessActions_downloadReport' src='images/1367454585_Cloud Download Off.png'  onclick='window.open("images/pathgeo_report.pdf")' title='Download Report' />
-					
-					<select id='businessActions_type' name='businessActions_type' data-mini="true">
-						<option value='top_users'>Which zipcode has the highest number of customers</option>
-						<option value='top_sales'>Which zipcode has the highest value of sales</option>
-						<option value='avg_income_from_users'>What’s the average incomes for my customers</option>
-						<option value='most_language_from_users'>Which languages do users use most</option>
-						<option value='potential_market'>Where are potential Markets</option>
-					</select>
-					
-					<!-- business actions result-->
-					<div id='businessActions_result'></div>
-				</div>
-				
-				<!-- show the details of business actions, including demographic data-->
-				<div id='businessActions_detail' style='display:none;' class='businessActions_tabs'>
-					<!--header-->
-					<div data-role='header' data-mini-"true">
-						<a href="#" data-icon="back" onclick='$(".businessActions_tabs").hide(); $("#businessActions_select").show();'>Back</a>
-						<h1 id='businessActions_detailTitle'></h1>
-						<!--<a href="#" data-icon="forward">Export</a>-->
-					</div>
-					<!--content-->
-					<div id='businessActions_detailContent'>
-						<ul data-role='listview' data-inset='true'></ul>
-					</div>
-				</div>
-				
-			</div>
-				
-		
-			
-			<!-- social media-->
-			<div id='localInfo_socialMedia' style='display:none;'  class='localInfo_tabs'>
-				<div data-role="fieldcontain" style='margin:3px;'>
-					<input id='socialMedia_keyword' name='socialMedia_keyword' type='text' value='Enter a Keyword' data-mini="true" onclick='this.value=""'/>
-				</div>
-				
-				<input type="hidden" id="lat" value="test">
-				<input type="hidden" id="lng" value="test">
-
-				<!-- social media temporal filter -->
-				<!--<div data-role="fieldcontain" style='margin:3px;'>
-					<select id='socialMedia_temporal' name='socialMedia_temporal' data-mini="true">
-						<option value='604800'>last week</option>
-						<option value='2592000'>last month</option>
-						<option value='31536000'>last year</option>
-						<option value='63072000'>last 2 years</option>
-					</select>
-				</div>-->
-				
-				<!-- social media source filter -->
-				<div data-role="fieldcontain" style='margin:3px;'>
-					<select id='socialMedia_source' name='socialMedia_source' data-mini="true">
-						<option value='flickr'>Flickr</option>
-						<option value='twitter'>Twitter</option>
-					</select>
-				</div>
-					
-				<button type='button' onclick='callPython()' data-mini="true">Search</button>
-				
-				
-				<div data-role="navbar" style='margin-bottom:15px; margin-top:15px' id="layer_selector">
-					<ul>
-						<li><a href="#" id="point_media" class="ui-btn-active" onclick='switchLayersMedia("point")'>Point Map</a></li>
-						<li><a href="#" id="cluster_media" onclick='switchLayersMedia("cluster")'>Cluster Map</a></li>
-						<li><a href="#" id="heat_media" onclick='switchLayersMedia("heatmap")'>Heat Map</a></li>
-					</ul>
-				</div>
-				
-				
-				
-
-				<p id='social_results_count'></p>
-				<p id='social_results_search'></p>
-				<div id='socialMedia_result'>
-					<ul data-role="listview" data-inset="true" id="search_results"></ul>
-				</div>
-			</div>
-		</div>
-		
-		
-		<!-- dataTable_nav-->
-		<div id='dataTable_nav' style="display:none">
-			<div data-role="navbar">
-			    <ul>
-			        <li><a href="#" class="ui-btn-active" onclick='$("#dataTable_wrapper").show();$("#dataTable_chart").hide();$("#dataTable_control .dataTable_nav ul li a").removeClass("ui-btn-active");$(this).addClass("ui-btn-active")'>Table</a></li>
-			        <li><a href="#" onclick='$("#dataTable_wrapper").hide();$("#dataTable_chart").show();$("#dataTable_control .dataTable_nav ul li a").removeClass("ui-btn-active");$(this).addClass("ui-btn-active")'>Chart</a></li>
-			    </ul>
-			</div>
-		</div>
 		
 	</div>
 	

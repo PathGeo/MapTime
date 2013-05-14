@@ -13,16 +13,24 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /**
  * map
  */
-#div_map {width:95.5%; height:100%; float:right; padding:0px; margin:0px; position:relative; box-shadow:0 4px 10px #777777; -moz-box-shadow:0 4px 10px #777777; -webkit-box-shadow:0 4px 10px #777777;}
+#div_map {width:100%; height:100%; float:right; padding:0px; margin:0px; position:relative; box-shadow:0 4px 10px #777777; -moz-box-shadow:0 4px 10px #777777; -webkit-box-shadow:0 4px 10px #777777;}
 #showhideTable {position:absolute; bottom:0px;left:43%; color:#cccccc; font-weight:bold; text-align:center; text-shadow:0 0px 0 #fff; margin:0 auto; z-index:500; background:rgba(0,0,0,0.3); width:150px; height:18px; -moz-border-radius:2px; -webkit-border-radius:2px;border-radius:2px;}
 #showhideTable:hover {background:rgba(0,0,0,0.7);cursor:pointer;color:#ffffff;}
+
+
+
+
+/**
+ * 	content
+ */
+#content {position:relative;}
 
 
 
 /**
  * menu toolbox
  */
-#menuToolbox {float:left; position:relative; width:45px; height:100%; text-shadow:0 0px 0 #fff; color:#ffffff;
+#menuToolbox {position:absolute; left:0px; width:45px; height:100%; text-shadow:0 0px 0 #fff; color:#ffffff; z-index:500;
 	box-shadow:0 4px 10px #777777; -moz-box-shadow:0 4px 10px #777777; -webkit-box-shadow:0 4px 10px #777777;
 	background-image:-webkit-gradient(linear,left top,left bottom,from( rgba(60,60,60,0.9) ),to( rgba(17,16,0,0.9) ));
 	background-image:-webkit-linear-gradient( rgba(60,60,60,0.9),rgba(17,16,0,0.9) );
@@ -32,9 +40,25 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 	background-image:linear-gradient( rgba(60,60,60,0.9),rgba(17,16,0,0.9) )
 }
 #menuToolbox ul {list-style:none; padding:0px; margin:0px}
-#menuToolbox ul li {padding:5px; margin:15px 5px 15px 5px; background-color:#666666; -moz-border-radius:60px; -webkit-border-radius:60px;border-radius:60px; overflow:hidden; border:0px solid #cccccc;}
+#menuToolbox ul li {padding:5px; margin:15px 5px 15px 5px; background:rgba(255,255,255,0.3); -moz-border-radius:60px; -webkit-border-radius:60px;border-radius:60px; overflow:hidden; border:0px solid #cccccc;}
 #menuToolbox ul li img {width:26px;}
 #menuToolbox ul li:hover {cursor:pointer; background-color:#4F83B4; box-shadow:0 4px 10px #777777; -moz-box-shadow:0 4px 10px #777777; -webkit-box-shadow:0 4px 10px #777777;}
+
+
+
+/**
+ * 	infoPanel
+ */
+.infoPanel {
+	position:absolute; left:46px; top:41px; display:none; padding:10px; text-shadow:0 0px 0 #fff;
+	box-shadow:0 4px 10px #777777; -moz-box-shadow:0 4px 10px #777777; -webkit-box-shadow:0 4px 10px #777777;
+	background-image:-webkit-gradient(linear,left top,left bottom,from( rgba(60,60,60,0.9) ),to( rgba(17,16,0,0.9) ));
+	background-image:-webkit-linear-gradient( rgba(60,60,60,0.9),rgba(17,16,0,0.9) );
+	background-image:-moz-linear-gradient( rgba(60,60,60,0.9),rgba(17,16,0,0.9) );
+	background-image:-ms-linear-gradient( rgba(60,60,60,0.9),rgba(17,16,0,0.9) );
+	background-image:-o-linear-gradient( rgba(60,60,60,0.9),rgba(17,16,0,0.9) );
+	background-image:linear-gradient( rgba(60,60,60,0.9),rgba(17,16,0,0.9) );
+}
 
 
 
@@ -95,30 +119,25 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #businessActions_detailContent ul li img {height:40px; margin:15px 10px 20px 20px;}
 #businessActions_detailContent ul li p {margin-top:3px;}
 
-/**
- * data list
- */
-#dialog_dataPanel {overflow-y:auto;}
-#datalist_container {height:100px;}
-#dataDetail {display:none; top:0px; position:absolute; width:100%; height:500px;}
+
 
 
 /**
  * dataTable
  */
-#dataPanel {margin:0 auto;  width:99%; overflow:hidden; height:0%; text-shadow: 0 0px 0 #fff; margin-top:7px}
-#dataTable {font-size:13px;}
+#dataPanel {text-shadow: 0 0px 0 #fff;}
+#dataTable {font-size:13px; background-color:#ffffff;}
 #dataTable tr:hover{background-color:#5e87b0; color:#000000; cursor:pointer;}
 
-#dataTable_control {height:30px; border-bottom:1px solid #cccccc; margin-bottom:10px;}
-#dataTable_wrapper {height:88%; overflow:auto;}
+#dataTable_control {height:35px; border-bottom:0px solid #cccccc; margin-bottom:10px; }
+#dataTable_wrapper {height:92%; overflow:auto;}
 
-.dataTable_tools{float:right; margin:2px 5px 2px 5px; width:75%; height:30px; }
+.dataTable_tools {float:right; margin:2px 5px 2px 5px; width:75%; height:35px; padding-top:5px;}
 .dataTable_tools > div {float:right;}
 .dataTable_tools ul {list-style:none; padding:0px; margin:0px;}
 .dataTable_tools ul li {padding:0px 15px 0px 15px; cursor:pointer; float:right; border-left:1px solid #cccccc;}
 .dataTable_tools ul li:hover {background-color:#dddddd;}
-.dataTable_tools img {width:22px}
+.dataTable_tools img {width:25px}
 .dataTable_tools > div {padding:0px 15px 0px 15px;}
 
 .dataTable_menu {display:none;height:150px; width:200px; top:15px; position:absolute; z-index:1000; }
@@ -127,8 +146,9 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 .dataTable_menu .infobox ul {list-style:none; padding:0px; margin:0px}
 .dataTable_menu .infobox ul li {padding:1px; font-weight:bold; }
 
-.dataTable_nav {width:230px; float:left;}
-.dataTable_nav li a > span {height:10px;}
+.dataTable_nav {width:150px; float:left;}
+.dataTable_nav li a > span {height:15px;}
+.dataTable_nav li a img {width:20px;}
 
 #dataTable_length {float:right; padding-right:30px;}
 #dataTable_filter input {width:200px;}
@@ -164,7 +184,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #header {padding:0px !important}
 #header h1 {padding-left:7px;}
 #header h1 img {float:left; cursor:pointer;}
-#header h1 div {position:absolute; padding:12px 150px}
+#header h1 div {position:absolute; padding:10px 150px}
 
 
 
@@ -177,6 +197,15 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #dialog_menu ul li:hover {background-color:#eeeeee; cursor:pointer;}
 #dialog_menu .menu_description {color:#777777; font-size:100%; margin-top:50px;}
 #dialog_menu-screen {height:100%;position:fixed}
+
+
+
+/**
+ * 	user infoPanel
+ */
+#userPanel fieldset {text-shadow:0 0px 0 #fff; color:#ffffff;}
+
+
 
 
 
