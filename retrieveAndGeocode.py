@@ -84,7 +84,6 @@ zip = getField(geoColumns, IS_ZIP)
 loc = getField(geoColumns, IS_LOCATION)
 
 
-
 #Note: Username and PW for geocoder.US does not currently seem to work with geopy
 #so this is not actually using our account right now...
 geocoder = AddressGeocoder(username='PathGeo2', password='PGGe0C0der')
