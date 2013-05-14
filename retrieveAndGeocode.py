@@ -44,10 +44,9 @@ def geocodeRows(rows, locFunc):
 			if lat and lon:			
 				#NOTE: This is just a temporary workaround for the problem with DataTables (can't display a lot of columns)
 				#Comment out lines 47-49 to return all properties
-				if len(row.keys()) > 5:
-					for key in row.keys()[5:]:
-						del row[key]
-				
+				#if len(row.keys()) > 5:
+				#	for key in row.keys()[5:]:
+				#		del row[key]
 				#End Note
 				doc = dict(type='Feature', geometry=dict(type="Point", coordinates=[lon, lat]), properties=row.copy())
 				features.append(doc)
@@ -101,8 +100,11 @@ if lat and lon:
 			return None, None
 		
 	geoFunc = functools.partial(getByLatLon, latField=lat, lonField=lon)
-elif addr and city and state and zip:
-	geoFunc = functools.partial(geocodeRow, fields=[addr, city, state, zip], geocoder=geocoder)	
+elif addr and city:
+	#only address and city are necessary to geocode, but check if state or zipcode are present
+	#and, if so, add them to out list of geocoding fields
+	otherFields = filter(lambda item: bool(item), [state, zip])
+	geoFunc = functools.partial(geocodeRow, fields=[addr, city] + otherFields, geocoder=geocoder)	
 elif loc:
 	geoFunc = functools.partial(geocodeRow, fields=[loc], geocoder=geocoder)
 elif addr:
