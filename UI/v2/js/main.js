@@ -174,15 +174,11 @@ function init_UI(){
 	//content height
 	$("#content").height($(window).height()-$("#header").height());
 	
-
-	
-	
-
 	//show main menu
 	//if directly show the main menu while initlizing the webpage, the main menu will be immediately disppeared in Chrome (noraml in the Firefo).
 	//JQM said this is the bug from webkit(Goolge chrome) https://github.com/jquery/jquery-mobile/issues/5775
 	setTimeout(function(){
-		$("#dialog_menu").popup("open");
+		//$("#dialog_menu").popup("open");
 	},1000);
 	
 	
@@ -199,14 +195,14 @@ function init_UI(){
 	$("#localInfo").css({height:$("#content").height()-30});
 	
 	//adjust infoPanel height
-	$(".infoPanel").css({height:$("#content").height()-20, width:$("#content").width()*0.42});
+	$(".infoPanel").css({height:$("#content").height()-20, width:$("#content").width()*0.375});
 	
 	
 	//when window resize
 	$(window).resize(function(){
 		$("#content").height($(window).height()-$("#header").height());
 		$("#localInfo").css({height:$("#content").height()-30});
-		$(".infoPanel").css({height:$("#content").height()-20, width:$("#content").width()*0.42});
+		$(".infoPanel").css({height:$("#content").height()-20, width:$("#content").width()*0.375});
 	})
 	
 	
@@ -697,12 +693,24 @@ function showTable(obj){
 			"aaData": dataTable.datas, //data
 			"aoColumns": dataTable.columns_dataTable, //column
 			"bJQueryUI": false,
-			"sPaginationType": "full_numbers", //page number
-			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"f><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rti<pl>>', //DOM
-			fnDrawCallback: function(){
-			
+			"sPaginationType": "two_button", //"full_numbers",    //page number 
+		    "oLanguage": {
+		      "sSearch": ""
+		    },
+			"iDisplayLength": 1000,
+			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"f><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rti<>>', //DOM
+			"fnInitComplete": function(oSettings, json) {
+				$("#" + oSettings.sTableId+"_filter input").val("Filter your data....").focus(function(){
+					if($(this).val()=="Filter your data...."){
+						$(this).val("");
+					}
+				});
+		    },
+			"fnDrawCallback": function(){
 				//backup orginal json to defaultJSON
-				if (!obj.defaultJSON) {obj.defaultJSON = obj.json;}
+				if (!obj.defaultJSON) {
+					obj.defaultJSON = obj.json;
+				}
 
 				//if jumpPage==true, The datatable only jumps to the page. Don't need to re-read the geojson and redraw the table
 				if (!app.jumpPage) {
@@ -765,7 +773,7 @@ function showTable(obj){
 					//"<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
 					//"<li><img src='images/1365858910_download.png' title='download'/></li>" +
 					//"<li><img src='images/1365858892_print.png' title='print'/></li>" +
-					//"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/></li>" +
+					"<li><img src='images/1365978110_gallery2.png' title='show / hide columns'/></li>" +
 					//"<li><img src='images/1365860337_cube.png' title='canned report'/></li>"+
 					//"<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
 					//"<li><img src='images/1365978110_gallery2.png' title='map gallery'/></li>" +
@@ -774,8 +782,8 @@ function showTable(obj){
 		$(".dataTable_tools").append(html).find("ul li").click(function(){
 			//show content in the infobox
 			showInfobox($(this).find("img").attr('title'), {
-				left: $(this).offset().left,
-				top: $(this).offset().top + 15
+				left: $(this).offset().left - 45,
+				top: $(this).offset().top - 25
 			}, this);
 		});
 		
@@ -977,7 +985,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 	];
 	//draw chart
 	var containerId = "localInfo_chart_" + "HC01_VC20";
-	showLocalInfoChart(totalPop, containerId);
+	//showLocalInfoChart(totalPop, containerId);
 	
 	$.each(app.demographicData, function(k,v){
 		var containerId = "localInfo_chart_" + k;
@@ -987,7 +995,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 			['standard',  app.properties_average[k]],
 			['local',  property[k]]
 		];
-		showLocalInfoChart(chartData, containerId);
+		//showLocalInfoChart(chartData, containerId);
 	});
 
 				
@@ -1185,7 +1193,7 @@ function showDataTableChart(geojson){
 			view:{columns:[0,1]},
 			options: {
 				width: $("#dataTable_chart").width()-20,
-				height: 225,
+				height: 2000,
 				title: "",
 				titleX: x,
 				titleY: y,
@@ -1294,7 +1302,7 @@ function showInfoPanel(domID){
 	
 	
 	//resize map
-	$("#div_map").css({width:'55%'});
+	$("#div_map").css({width:'56%'});
 	app.map.invalidateSize(false);
 }
 
