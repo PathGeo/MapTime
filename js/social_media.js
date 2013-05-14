@@ -205,10 +205,10 @@ function getPointLayerMedia(gjData) {
 		onEachFeature: function (feature, layer) {
 			var props = feature.properties;
 			if(props.Source == "flickr"){
-				var html = "<div class='popup'><ul><li><span class='clusterInfo'>" + props.Account + "</span><br><br><div class='extras' style='display: block;'> " + props.Img + "<br/><br/>" + props.Date + "</li></ul></div>";
+				var html = "<div class='popup'><ul><li><span class='clusterInfo'>" + props.Title + "</span><br/><img src='" + props.Img + "' alt='...' style='float:left; margin-right:5px'><div class='extras' style='display: block;'> " + props.Account + "<br/><br/>" + props.Date + "</li></ul></div>";
 			}
 			else{
-				var html = "<div class='popup'><ul><li><span class='clusterInfo'>" + props.Title + "</span><br/><div class='extras' style='display: block;'><a href='http://twitter.com/" + props.Aaccount + "' target='_blank'>" + props.Account + "</a><br/><br/>" + props.Date + "</li></ul></div>";
+				var html = "<div class='popup'><ul><li><span class='clusterInfo'>" + props.Title + "</span><br/><img src='" + props.Img + "' alt='...' style='float:left; margin-right:5px'><div class='extras' style='display: block;'><a href='http://twitter.com/" + props.Account + "' target='_blank'>" + props.Account + "</a><br/><br/>" + props.Date + "</li></ul></div>";
 			}
 			layer.bindPopup(html);
 		}, 	pointToLayer: function (feature, latlng) {
