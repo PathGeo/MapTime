@@ -76,11 +76,11 @@
 			<!-- toolbox-->
 			<div id='menuToolbox'>
 				<ul>
-					<li title='Your Uploaded Data' onclick='showInfoPanel("dataPanel")'><img src='images/1368495654_document.png' /></li>
+					<li title='Your Uploaded Data' onclick='showInfoPanel("dataPanel", this)'><img src='images/1368495654_document.png' /></li>
 					<!--<li title='Chart' onclick='showInfoPanel("chartPanel")'><img src='images/1368495559_chart_bar_up.png' /></li>-->
-					<li title='Find the Best Business Actions' onclick='showInfoPanel("localInfoPanel")'><img src='images/1368495683_speaker.png' /></li>
-					<li title='Search Social Media' onclick='showInfoPanel("socialMediaPanel")'><img src='images/1368495760_bulb_off.png' /></li>
-					<li title='Account Settings' onclick='showInfoPanel("userPanel")'><img src='images/1368496469_man.png' /></li>
+					<li title='Find the Best Business Actions' onclick='showInfoPanel("localInfoPanel", this)'><img src='images/1368495683_speaker.png' /></li>
+					<li title='Search Social Media' onclick='showInfoPanel("socialMediaPanel", this)'><img src='images/1368495760_bulb_off.png' /></li>
+					<li title='Account Settings' onclick='showInfoPanel("userPanel", this)'><img src='images/1368496469_man.png' /></li>
 					<li title='Main Menu' onclick='$("#uploadData_confirm").hide(); $("#uploadData_description").show(); $("#uploadData_controls").hide();$("#dialog_menu").popup("open")'><img src='images/1368496597_outbox.png' /></li>
 					<li title='Help' onclick='$("#dialog_help").popup("open")'><img src='images/1368495535_help.png' /></li>
 					<li title='About us' onclick=''><img src='images/1368495810_home.png' /></li>
@@ -270,16 +270,23 @@
 						<img id='businessActions_downloadReport' src='images/1367454585_Cloud Download Off.png'  onclick='window.open("images/pathgeo_report.pdf")' title='Download Report' />
 						
 						<select id='businessActions_type' name='businessActions_type' data-mini="true">
-							<option value='top_users'>Which zipcode has the highest number of customers</option>
-							<option value='top_sales'>Which zipcode has the highest value of sales</option>
-							<option value='avg_income_from_users'>What’s the average incomes for my customers</option>
-							<option value='most_language_from_users'>Which languages do users use most</option>
-							<option value='potential_market'>Where are potential Markets</option>
+							<optgroup label="About Your Data">
+								<option value='top_users'>Which zipcode has the highest number of customers</option>
+								<option value='top_sales'>Which zipcode has the highest value of sales</option>
+							</optgroup>
+							<optgroup label="About Demographic Data">
+								<option value='avg_income_from_users'>What is the average incomes for my customers</option>
+								<option value='most_language_from_users'>Which languages do users use most</option>
+							</optgroup>
+							<optgroup label="Predict Potential Market">
+								<option value='potential_market'>Where are potential Markets</option>
+							</optgroup>
 						</select>
 						
 						<!-- business actions result-->
 						<div id='businessActions_result'></div>
 					</div>
+					
 					
 					<!-- show the details of business actions, including demographic data-->
 					<div id='businessActions_detail' style='display:none;' class='businessActions_tabs'>
@@ -306,10 +313,10 @@
 		<div id='socialMediaPanel' class='infoPanel'>
 			
 				<!-- social media-->
-				<div id='localInfo_socialMedia' style='display:none;'  class='localInfo_tabs'>
-					<div data-role="fieldcontain" style='margin:3px;'>
-						<input id='socialMedia_keyword' name='socialMedia_keyword' type='text' value='Enter a Keyword' data-mini="true" onclick='this.value=""'/>
-					</div>
+				<div id='localInfo_socialMedia'  class='localInfo_tabs'>
+					
+					<input id='socialMedia_keyword' name='socialMedia_keyword' type='text' value='Enter a Keyword' data-mini="true" onclick='this.value=""'/>
+					
 					
 					<input type="hidden" id="lat" value="test">
 					<input type="hidden" id="lng" value="test">
@@ -325,21 +332,25 @@
 					</div>-->
 					
 					<!-- social media source filter -->
-					<div data-role="fieldcontain" style='margin:3px;'>
-						<select id='socialMedia_source' name='socialMedia_source' data-mini="true">
+					<ul>
+						<li title='Twitter'><img src='images/1368626186_twitter_circle_gray.png' onmouseover="this.src='images/1368626247_twitter_circle_color.png'"  onmouseout="this.src='images/1368626186_twitter_circle_gray.png'" /></li>
+						<li title='Flickr'><img src='images/1368626308_flickr_circle_gray.png' onmouseover="this.src='images/1368626412_flickr_circle_color.png'"  onmouseout="this.src='images/1368626308_flickr_circle_gray.png'" /></li>
+					</ul>
+					
+						<!--<select id='socialMedia_source' name='socialMedia_source' data-mini="true">
 							<option value='flickr'>Flickr</option>
 							<option value='twitter'>Twitter</option>
-						</select>
-					</div>
+						</select>-->
+					
 						
-					<button type='button' onclick='callPython()' data-mini="true">Search</button>
+					<button type='button' id='socialMedia_searchButton' onclick='callPython()' data-mini="true">Search</button>
 					
 					
 					<div data-role="navbar" style='margin-bottom:15px; margin-top:15px' id="layer_selector">
 						<ul>
 							<li><a href="#" id="point_media" class="ui-btn-active" onclick='switchLayersMedia("point")'>Point Map</a></li>
 							<li><a href="#" id="cluster_media" onclick='switchLayersMedia("cluster")'>Cluster Map</a></li>
-							<li><a href="#" id="heat_media" onclick='switchLayersMedia("heatmap")'>Heat Map</a></li>
+							<li><a href="#" id="heat_media" onclick='switchLayersMedia("heatmap")'>Hot Spots</a></li>
 						</ul>
 					</div>
 					
@@ -348,6 +359,7 @@
 	
 					<p id='social_results_count'></p>
 					<p id='social_results_search'></p>
+					
 					<div id='socialMedia_result'>
 						<ul data-role="listview" data-inset="true" id="search_results"></ul>
 					</div>

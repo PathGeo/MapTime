@@ -51,7 +51,7 @@ var app={
 		}),
 		toc:null,
 		legend: L.Control.extend({
-		    options: {position: 'topright',text: 'Legend',},
+		    options: {position: 'bottomright',text: 'Legend',},
 			initialize: function (options) {L.Util.setOptions(this, options);},
 		    onAdd: function (map) {
 		        // create the control container with a particular class name
@@ -126,7 +126,7 @@ function init_map(){
         center: app.initCenterLatLng,
 		zoom: app.initCenterZoom,
 		layers:[app.basemaps["Cloudmade"]],
-		attributionControl:false,
+		attributionControl:true,
 		trackResize:true
     }); 
 	
@@ -181,18 +181,8 @@ function init_UI(){
 		//$("#dialog_menu").popup("open");
 	},1000);
 	
+
 	
-	//dataFilter
-//	$("#dataFilter").css({"margin-top":$("#div_map").height()}).find(">ul li").click(function(){
-//		$(this).find("span").toggle();
-//	})
-	
-	//adjust dataPanel
-	//$("#dataPanel").css({"margin-top":$("#div_map").height()+10, height: $(document).height()-$("#div_map").height()-$("#header").height()-30});
-	
-	
-	//adjust localInfo
-	$("#localInfo").css({height:$("#content").height()-30});
 	
 	//adjust infoPanel height
 	$(".infoPanel").css({height:$("#content").height()-20, width:$("#content").width()*0.375});
@@ -201,7 +191,6 @@ function init_UI(){
 	//when window resize
 	$(window).resize(function(){
 		$("#content").height($(window).height()-$("#header").height());
-		$("#localInfo").css({height:$("#content").height()-30});
 		$(".infoPanel").css({height:$("#content").height()-20, width:$("#content").width()*0.375});
 	})
 	
@@ -218,7 +207,7 @@ function init_UI(){
 	//businessActions selection change
 	$("#businessActions_type").change(function(){
 		showBusinessAction(this.value);
-	})
+	});
 	
 	
 	//add close button in the infoPanel
@@ -974,7 +963,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 
 	//show legend
 	var defaultType=$("#demographic_type div[data-role='collapsible'] h3").attr("value");
-	//$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
+	$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
 			
 	// alert(id);	 id is row number in table from 0
 	//chart
@@ -1016,12 +1005,12 @@ function showLocalInfo(id, jumpToDataTablePage){
 	
 	
 	//show localInfo
-	$("#localInfo").show();
+	//$("#localInfo").show();
 	
 	
 	//using jsts jts topology suite to find out the polygon the point is within
 	var point=app.geojsonReader.read(feature.geometry);
-	var polygon, withinLayer;
+	var polygon, withinLayer; 
 
 	if(app.layers.demographicData){
 		$.each(app.layers.demographicData._layers, function(k,layer){
@@ -1059,13 +1048,13 @@ function showBusinessAction(type){
 				containerId: "businessActions_result",
 				view:{columns:[0,1]},
 				options: {
-					width: 300,
-					height:500,
+					width: $(".infoPanel").width()-50,
+					height:$(".infoPanel").height()-80,
 					title: "",
 					titleX: "",
 					titleY: "",
 					legend: "none",//{position: 'top'},
-					chartArea: {width: '', height: '85%', top:10},
+					chartArea: {width: '75%', height: '85%', top:10},
 					fontSize: 11,
 					isStacked:true, 
 					series:{0:{color: '#5B92C0', visibleInLegend: true}},
@@ -1192,16 +1181,16 @@ function showDataTableChart(geojson){
 			containerId: "dataTable_chartContent",
 			view:{columns:[0,1]},
 			options: {
-				width: $("#dataTable_chart").width()-20,
-				height: 2000,
+				width: $(".infoPanel").width()-50,
+				height: geojson.features.length*30,
 				title: "",
 				titleX: x,
 				titleY: y,
 				legend: {position: 'right'},
-				chartArea: {width: '85%', height: '84%', top:20},
+				chartArea: {width: '65%', height: '90%', top:20},
 				fontSize: 12,
-				vAxes:{},
-				hAxes:{},
+				vAxes:{0:{titleTextStyle:{color:"#ffffff"}, textStyle:{color:"#ffffff"}}},
+				hAxes:{0:{titleTextStyle:{color: "#ffffff"},textStyle:{color: "#ffffff"}}},
 				backgroundColor: {fill:'transparent'}
 			}
 		},
@@ -1235,6 +1224,8 @@ function showLocalInfoChart(data, containerId){
 				titleX: "",
 				titleY: "",
 				legend: "",
+				vAxes:{0:{titleTextStyle:{color:"#ffffff"}, textStyle:{color:"#ffffff"}}},
+				hAxes:{0:{titleTextStyle:{color: "#ffffff"},textStyle:{color: "#ffffff"}}},
 				backgroundColor: {fill:'transparent'}
 			}
 		},
@@ -1292,7 +1283,12 @@ function showDemo(demoType){
 
 
 //show infoPanel
-function showInfoPanel(domID){
+function showInfoPanel(domID, obj){
+	//change obj's background color
+	$("#menuToolbox ul li").css("background", "");
+	$(obj).css('background', "rgba(255,255,255,0.3)")
+
+	
 	//hide other infoPanels
 	$(".infoPanel").hide();
 	
@@ -1302,7 +1298,8 @@ function showInfoPanel(domID){
 	
 	
 	//resize map
-	$("#div_map").css({width:'56%'});
+	var width=($("#content").width() - $(".infoPanel").width() - $("#menuToolbox").width() - 20) / $("#content").width() * 100;
+	$("#div_map").css({width:width+"%"});
 	app.map.invalidateSize(false);
 }
 
@@ -1310,6 +1307,10 @@ function showInfoPanel(domID){
 
 //close infoPanel
 function closeInfoPanel(){
+	//cancel obj's background color
+	$("#menuToolbox ul li").css("background", "");
+	
+	
 	$(".infoPanel").hide();
 	
 	//resize map
