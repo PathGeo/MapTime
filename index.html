@@ -319,11 +319,7 @@
 				<!-- social media-->
 				<div id='localInfo_socialMedia'  class='localInfo_tabs'>
 					
-					<input id='socialMedia_keyword' name='socialMedia_keyword' type='text' value='Enter a Keyword' data-mini="true" onclick='this.value=""'/>
 					
-					
-					<input type="hidden" id="lat" value="test">
-					<input type="hidden" id="lng" value="test">
 	
 					<!-- social media temporal filter -->
 					<!--<div data-role="fieldcontain" style='margin:3px;'>
@@ -336,48 +332,49 @@
 					</div>-->
 					
 					<!-- social media source filter -->
-					<ul id='socialMedia_source' >
-						<li title='Twitter' ><img src='images/1368626186_twitter_circle_gray.png' value='twitter' onmouseover="this.src='images/1368626247_twitter_circle_color.png'"  onmouseout="this.src='images/1368626186_twitter_circle_gray.png'" selected=true /></li>
-						<li title='Flickr' ><img src='images/1368626308_flickr_circle_gray.png' value='flickr' onmouseover="this.src='images/1368626412_flickr_circle_color.png'"  onmouseout="this.src='images/1368626308_flickr_circle_gray.png'" selected=false /></li>
-					</ul>
+					<div id='socialMedia_search'>
+						<input id='socialMedia_keyword' name='socialMedia_keyword' type='text' value='Enter a Keyword' data-mini="true" onclick='this.value=""'/>
 					
-					
+						<input type="hidden" id="lat" value="test">
+						<input type="hidden" id="lng" value="test">
+						
+						<ul id='socialMedia_source' >
+							<li title='Twitter' ><img src='images/1368626186_twitter_circle_gray.png' value='twitter' onmouseover="this.src='images/1368626247_twitter_circle_color.png'"  onmouseout="this.src='images/1368626186_twitter_circle_gray.png'" selected=false onclick='this.selected=!this.selected; ' /></li>
+							<li title='Flickr' ><img src='images/1368626308_flickr_circle_gray.png' value='flickr' onmouseover="this.src='images/1368626412_flickr_circle_color.png'"  onmouseout="this.src='images/1368626308_flickr_circle_gray.png'" selected=true onclick='this.selected=!this.selected; ' /></li>
+						</ul>
+						
+						<button type='button' id='socialMedia_searchButton' onclick='callPython();' data-mini="true" data-theme="b" >Search</button>
+					</div>
+
 						<!--<select id='socialMedia_source' name='socialMedia_source' data-mini="true">
 							<option value='flickr'>Flickr</option>
 							<option value='twitter'>Twitter</option>
 						</select>-->
 					
-					<button type='button' id='socialMedia_searchButton' onclick='callPython();' data-mini="true">Search</button>
-					
-					
-					
+
+					<!-- social media gallery -->
+					<div id='socialMedia_gallery'>
+						
+					</div>
+
+
 					<!-- change social media map type-->
-					<div data-role="fieldcontain" style='padding:5px; margin-top:10px; border-top:1px solid #cccccc; '>
-						<label for="socialMedia_mapType">Change Map Type: </label>
-						<div id='socialMedia_mapType' name='socialMedia_mapType'>
-							<div data-role="controlgroup" data-type="horizontal" data-mini="true" >
-							    <a href="#" data-role="button" data-iconpos="notext" data-icon="plus" data-theme="b" onclick='switchLayersMedia("point")'>Point Map</a>
-							    <a href="#" data-role="button" data-iconpos="notext" data-icon="delete" data-theme="b" onclick='switchLayersMedia("cluster")'>Cluster Map</a>
-							    <a href="#" data-role="button" data-iconpos="notext" data-icon="grid" data-theme="b" onclick='switchLayersMedia("heatmap")'>Hot Spots</a>
-							</div>
+					<div id='socialMedia_mapType'>
+						<div data-role="controlgroup" data-type="horizontal" data-mini="true" >
+							 <a href="#" data-role="button"  data-theme="b" onclick='switchLayersMedia("point")'>Point Map</a>
+							 <a href="#" data-role="button"  data-theme="b" onclick='switchLayersMedia("cluster")'>Cluster Map</a>
+							 <a href="#" data-role="button"  data-theme="b" onclick='switchLayersMedia("heatmap")'>Hot Spots</a>
 						</div>
+						<label>Map Type: </label>
 					</div>
 					
 					
-					<!--
-					<div data-role="navbar" style='margin-bottom:15px; margin-top:15px' id="layer_selector">
-						<ul>
-							<li><a href="#" id="point_media" class="ui-btn-active" onclick='switchLayersMedia("point")'>Point Map</a></li>
-							<li><a href="#" id="cluster_media" onclick='switchLayersMedia("cluster")'>Cluster Map</a></li>
-							<li><a href="#" id="heat_media" onclick='switchLayersMedia("heatmap")'>Hot Spots</a></li>
-						</ul>
-					</div>
-					-->
+	
 					
 					<!-- social media search result-->
 					<div id='socialMedia_result'>
-						<p id='social_results_count'></p>
-						<p id='social_results_search'></p>
+						<!--<p id='social_results_count'></p>-->
+						<!--<p id='social_results_search'></p>-->
 					
 						<ul data-role="listview" data-inset="true" id="search_results" data-divider-theme="d" data-filter="true" data-filter-placeholder="Filter..."></ul>
 					</div>

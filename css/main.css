@@ -87,16 +87,22 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 
 /** social meadia */
 #localInfo_socialMedia {height:90%;}
-#localInfo_socialMedia ul {list-style:none; float:left;padding:0px; margin:0px; }
-#localInfo_socialMedia ul li {float:left; padding:10px; padding-left:0px; }
-#localInfo_socialMedia ul li:hover {}
-#localInfo_socialMedia ul li img {width:35px;}
-#localInfo_socialMedia .ui-btn {float:right; width:40%; }
-#socialMedia_result {display:none; height: 75%; overflow-y:auto;}
-#socialMedia_result .ui-li-heading {font-size:14px; margin-bottom:5px;}
-#socialMedia_result .ui-li-desc {font-size:12px;}
-#socialMedia_result .ui-li {padding-left:5px}
-#search_results {height:100%;}
+#socialMedia_search {height:90px; border-bottom:1px solid #cccccc;}
+#socialMedia_search ul {list-style:none; float:left;padding:0px; margin:0px; }
+#socialMedia_search ul li {float:left; padding:10px; padding-left:0px; }
+#socialMedia_search ul li:hover {}
+#socialMedia_search ul li img {width:35px;}
+#socialMedia_search .ui-btn {float:right; width:40%; margin-top:15px;}
+
+#socialMedia_mapType {padding:5px; margin-top:10px;  display:none;}
+#socialMedia_mapType label {float:right; color:#ffffff; font-size:13px; padding-top:10px; }
+#socialMedia_mapType > div {float:right; margin-left:10px; }
+
+#socialMedia_result {display:none; height: 82%;}
+#socialMedia_result .ui-li-heading {position:absolute; top:5px; left:110px; }
+#socialMedia_result ul {height:100%; overflow-y:auto; overflow-x:hidden; margin-top:15px; }
+.socialMedia_description {position:absolute; top:50px; left:110px; }
+
 
 
 /** demographic data */

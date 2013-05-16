@@ -12,6 +12,12 @@ function callPython(){
 	
 	var lat = document.getElementById("lat").value;
 	var lng = document.getElementById("lng").value;
+	//try to get the center latlng of the map view
+	var center=app.map.getCenter();
+		lat=center.lat;
+		lng=center.lng;
+	
+	
 	//var rad = document.getElementById("socialMedia_spatial").value;
 	var rad = 15;
 	//var ts = (Math.floor(Date.now()/1000)) - (document.getElementById("socialMedia_temporal").value);
@@ -26,7 +32,7 @@ function callPython(){
 		$.ajax({
 			type: "POST",
 			url: "photo_search.py",
-			data: {kwd:keyword, lat:lng, lng:lat, rad:rad, ts:ts},
+			data: {kwd:keyword, lat:lat, lng:lng, rad:rad, ts:ts},
 			beforeSend: function(xhr){
 				if (xhr.overrideMimeType){
 					xhr.overrideMimeType("application/json");
@@ -58,17 +64,19 @@ function callPython(){
 					var date = contact[i].properties.Date;
 					var account = contact[i].properties.Account;
 				
-					var results="<li><a href='#'><img src='" + image + "'/><h2>" + account + "</h2><p>" + title + "</p><p class='ui-li-aside'><strong>" + date.split(" ")[0] + "</strong></p></a></li>";
+					var results="<li><a href='#'><img src='" + image + "'/><h2>" + account + "</h2><p class='socialMedia_description'>" + title + "</p><p class='ui-li-aside'><strong>" + date.split(" ")[0] + "</strong></p></a></li>";
 					//var results = "<li><h2>" + title + "</h2><img src='" + image + "' alt='...' style='float:left; margin-right:5px'>" + account + "<br/><p>" + date + "</p><br/></li>";
 					$("#search_results").append(results);
 				}
 				
 				$('#search_results').trigger('create');
 				$('#search_results').listview('refresh');
-				$("#layer_selector").show();
+				//$("#layer_selector").show();
 				$("#point_media").addClass( "ui-btn-active" );
 				$("#heat_media").removeClass( "ui-btn-active" );
 				$("#cluster_media").removeClass( "ui-btn-active" );
+				
+				$("#socialMedia_result, #socialMedia_mapType").show();
 				
 				setDataMedia(contact);
 				app.map.fitBounds(curLayer.getBounds());
@@ -86,7 +94,7 @@ function callPython(){
 		$.ajax({
 			type: "POST",
 			url: "twitter_search.py",
-			data: {kwd:keyword, lat:lng, lng:lat, rad:rad, ts:ts},
+			data: {kwd:keyword, lat:lat, lng:lng, rad:rad, ts:ts},
 			beforeSend: function(xhr){
 				if (xhr.overrideMimeType){
 					xhr.overrideMimeType("application/json");
@@ -116,17 +124,19 @@ function callPython(){
 					var date = contact[i].properties.Date;
 					var account = contact[i].properties.Account;
 				
-					var results="<li><a href='#'><img src='" + image + "'/><h2>" + account + "</h2><p>" + title + "</p><p class='ui-li-aside'><strong>" + date.split(" ")[0] + "</strong></p></a></li>";
+					var results="<li><a href='#'><img src='" + image + "'/><h2>" + account + "</h2><p class='socialMedia_description'>" + title + "</p><p class='ui-li-aside'><strong>" + date.split(" ")[0] + "</strong></p></a></li>";
 					//var results = "<li><h2>" + title + "</h2><img  src=" + image + " alt='...' style='float:left; margin-right:5px'><a href='http://twitter.com/" + account + "' target='_blank'>@" + account + "</a><br/><p>" + date + "</p><br/></li>";
 					$("#search_results").append(results);
 				}
 				
 				$('#search_results').trigger('create');
 				$('#search_results').listview('refresh');
-				$("#layer_selector").show();
+				//$("#layer_selector").show();
 				$("#point_media").addClass( "ui-btn-active" );
 				$("#heat_media").removeClass( "ui-btn-active" );
 				$("#cluster_media").removeClass( "ui-btn-active" );
+				
+				$("#socialMedia_result, #socialMedia_mapType").show();
 				
 				setDataMedia(contact);
 				app.map.fitBounds(curLayer.getBounds());
