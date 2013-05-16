@@ -204,6 +204,15 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #dialog_menu-screen {height:100%;position:fixed}
 
 
+
+/**
+ * user log in
+ */
+#dialog_login {width:400px; height:250px;padding:50px; }
+
+
+
+
 /**
  * 	user infoPanel
  */

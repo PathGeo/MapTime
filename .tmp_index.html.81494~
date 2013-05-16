@@ -70,10 +70,8 @@
 				<div>MapTime : <label id='lbl_dataName'></label></div>
 			</h1>
 			
-			<a href="#dialog_login" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="home" class="" data-mini="true" style='float:right'>Log in</a>
 	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>
 			<a id='test' href="#dialog_menu" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right'>Menu</a>
-		
 		</div>
 		
 		
@@ -185,27 +183,9 @@
 		</div>
 		
 		
-		<!--user log in-->
-		<div id='dialog_login' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
-             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
-			 <fieldset id='user_login' style=''>
-                               <!-- <asp:Literal runat="server" ID="litMessage"></asp:Literal>-->
-
-                                <label for="email">Email:</label>
-                                <input type="email" name="email" id="email" value=""  />
-
-                                <label for="password">Password:</label>
-                                <input type="password" name="password" id="password" value="" />
-
-                                <input id="Submit1" type="submit" value="Login" data-role="button" data-inline="true" data-theme="b" onclick="fakeLogin(); $('#dialog_login').popup('close');" />
-
-                                <hr/>
-								
-								<div style='text-align:right'>
-									Don't have a login? <a href="#">Sign Up</a>
-                               		<br />Forgot password? <a href="#">Click here</a>
-								</div>
-            </fieldset>              
+		<!--user menu-->
+		<div id='dialog_usermenu' data-role="panel" data-position="right"  data-display="overlay" data-theme="a"  >
+                           
 		</div>
 		
 		

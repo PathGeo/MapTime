@@ -164,7 +164,13 @@ function init_map(){
 	});
 	//alert(app.layers.demographicData.toSource());
 	//alert(pathgeo.service.demographicData.toSource());
-
+	
+	
+	//change leaflet attribution
+	$(".leaflet-control-attribution a:first-child").attr("href", "http://www.pathgeo.com").html("PathGeo");
+	app.map.on("baselayerchange", function(e){
+		$(".leaflet-control-attribution a:first-child").attr("href", "http://www.pathgeo.com").html("PathGeo");
+	})
 }
 
 
@@ -428,9 +434,9 @@ function showLayer(obj, isShow){
 								//pointToLayer to change layers' icon
 								pointToLayer: function(feature, latlng){
 									var icon=new L.icon({
-											iconUrl: "images/marker-icon.png",
-											iconSize: [12.5, 21],
-											iconAnchor: [6.25, 10.5]
+											iconUrl: "images/1368754654_stock_draw-circle.png",
+											iconSize: [12, 12],//[12.5, 21],
+											iconAnchor: [6, 6]// [6.25, 10.5]
 									});
 									return new L.marker(latlng, {icon: icon})
 								}
@@ -479,9 +485,9 @@ function showLayer(obj, isShow){
 								//pointToLayer
 								pointToLayer: function(feature, latlng){
 									var icon=new L.icon({
-											iconUrl: "images/marker-icon.png",
-											iconSize: [12.5, 21],
-											iconAnchor: [6.25, 10.5]
+											iconUrl: "images/1368754654_stock_draw-circle.png",
+											iconSize: [12, 12],//[12.5, 21],
+											iconAnchor: [6, 6]// [6.25, 10.5]
 									});
 									return new L.marker(latlng, {icon: icon})
 								}
@@ -684,6 +690,7 @@ function showTable(obj){
 			"aaData": dataTable.datas, //data
 			"aoColumns": dataTable.columns_dataTable, //column
 			"bJQueryUI": false,
+			"bAutoWidth":false,
 			"sPaginationType": "two_button", //"full_numbers",    //page number 
 			"oLanguage": {
 		      "sSearch": ""
@@ -904,14 +911,12 @@ function showLocalInfo(id, jumpToDataTablePage){
 	});
 
 	layer.setIcon(new L.icon({
-		iconUrl: "images/1365900599_Map-Marker-Marker-Outside-Pink.png",
-		iconSize: [26, 26],
-    	iconAnchor: [13, 13]
+		iconUrl: "images/1368754953_Red Ball.png",
+		iconSize: [18, 18], //[26, 26],
+    	iconAnchor: [9, 9] //[13, 13]
 	})).setOpacity(1);
 			
-	
-	//layer.openPopup();
-	
+
 			
 	//trigger businessActions type to directly show the first option and draw its google chart
 	$("#businessActions_type").attr("zipcode", feature.properties['zip']).change();
@@ -934,7 +939,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 			var demographic=app.layers.demographicData;
 			//highlight the zipcode boundary
 			demographic.redrawStyle(value, function(f){
-				var defaultStyle=demographic.options.styles(f,value);
+				var defaultStyle=demographic.options.styles(f, value);
 		
 				if(f.properties["ZIP"]==feature.properties["zip"]){
 					defaultStyle.width=4;
