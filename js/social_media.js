@@ -46,15 +46,18 @@ function callPython(){
 				$('#social_results_count').html("There are <b>" + count + "</b> results<br/>");
 				$('#social_results_search').html("Filter: <input type='text' name='filter' id='search' value=''><input type='submit' value='Filter' onClick='filterResults()'>");
 			
-				for(i=0; i<count; i++){
+				//appen source header in the listview
+				$("#search_results").append("<li data-role='list-divider'>" + source + "<span class='ui-li-count'>" + count + "</span></li>");
 				
+				for(i=0; i<count; i++){
 					var title = contact[i].properties.Title;
 					var description = contact[i].properties.Description;
 					var image = contact[i].properties.Img;
 					var date = contact[i].properties.Date;
 					var account = contact[i].properties.Account;
 				
-					var results = "<li><h2>" + title + "</h2><img src='" + image + "' alt='...' style='float:left; margin-right:5px'>" + account + "<br/><p>" + date + "</p><br/></li>";
+					var results="<li><a href='#'><img src='" + image + "'/><h2>" + account + "</h2><p>" + title + "</p><p class='ui-li-aside'><strong>" + date.split(" ")[0] + "</strong></p></a></li>';
+					//var results = "<li><h2>" + title + "</h2><img src='" + image + "' alt='...' style='float:left; margin-right:5px'>" + account + "<br/><p>" + date + "</p><br/></li>";
 					$("#search_results").append(results);
 				}
 				
@@ -102,14 +105,17 @@ function callPython(){
 				$('#social_results_count').html("There are <b>" + count + "</b> results<br/>");
 				$('#social_results_search').html("Filter: <input type='text' name='filter' id='search' value=''><input type='submit' value='Filter' onClick='filterResults()'>");
 
+				//appen source header in the listview
+				$("#search_results").append("<li data-role='list-divider'>" + source + "<span class='ui-li-count'>" + count + "</span></li>");
+
 				for(i=0; i<count; i++){
-				
 					var title = contact[i].properties.Title;
 					var image = contact[i].properties.Img;
 					var date = contact[i].properties.Date;
 					var account = contact[i].properties.Account;
 				
-					var results = "<li><h2>" + title + "</h2><img  src=" + image + " alt='...' style='float:left; margin-right:5px'><a href='http://twitter.com/" + account + "' target='_blank'>@" + account + "</a><br/><p>" + date + "</p><br/></li>";
+					var results="<li><a href='#'><img src='" + image + "'/><h2>" + account + "</h2><p>" + title + "</p><p class='ui-li-aside'><strong>" + date.split(" ")[0] + "</strong></p></a></li>';
+					//var results = "<li><h2>" + title + "</h2><img  src=" + image + " alt='...' style='float:left; margin-right:5px'><a href='http://twitter.com/" + account + "' target='_blank'>@" + account + "</a><br/><p>" + date + "</p><br/></li>";
 					$("#search_results").append(results);
 				}
 				

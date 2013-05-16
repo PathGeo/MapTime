@@ -22,7 +22,7 @@ var app={
 	},
 	controls:{
 		mapGallery: L.Control.extend({
-		    options: {collapsed: true,position: 'bottomright',text: 'Map Gallery',},
+		    options: {collapsed: true,position: 'topright',text: 'Map Gallery',},
 			initialize: function (options) {L.Util.setOptions(this, options);},
 		    onAdd: function (map) {
 	        	// create the control container with a particular class name
@@ -51,7 +51,7 @@ var app={
 		}),
 		toc:null,
 		legend: L.Control.extend({
-		    options: {position: 'topright',text: 'Legend',},
+		    options: {position: 'bottomright',text: 'Legend',},
 			initialize: function (options) {L.Util.setOptions(this, options);},
 		    onAdd: function (map) {
 		        // create the control container with a particular class name
@@ -100,9 +100,12 @@ var app={
 
 //init
 $(document).on("pageshow", function(){	  
+	
 	init_UI();
    
    	init_map();
+	
+	
 	
 	pathgeo.service.zipcodeLookup(91745, function(placename, json, status){
 		if(!status) {
@@ -121,23 +124,19 @@ $(document).on("pageshow", function(){
 
 //init openlayers
 function init_map(){
-	//adjust map height
-	//var map_height=((($(document).height()-$("#header").height()) / $(document).height())*100*0.45)+"%";
-	//$("#div_map").css({height:300});
-	
 	app.map = L.map("div_map", {
         center: app.initCenterLatLng,
 		zoom: app.initCenterZoom,
 		layers:[app.basemaps["Cloudmade"]],
-		attributionControl:false,
+		attributionControl:true,
 		trackResize:true
     }); 
 	
 	//move the location of zoomcontrol to the bottom right
-	app.map.zoomControl.setPosition("bottomright");
+	app.map.zoomControl.setPosition("topright");
 	
 	//layers control
-	app.controls.toc=L.control.layers(app.basemaps).setPosition("bottomright");
+	app.controls.toc=L.control.layers(app.basemaps).setPosition("topright");
 
 	//map gallery control
 	$.each(app.controls, function(k,v){
@@ -149,37 +148,7 @@ function init_map(){
 		}
 	});
 	
-	
-	//create maxminMap DIV
-	$("#div_map").append("<div id='showhideTable' title='Hide Table'>Hide Table</div>");
-	
-	//maximum or mimimum map
-	$("#showhideTable").click(function(){
-		var $this=$(this);
-		
-		//maximum map
-		if($this.html()=='Hide Table'){
-			$("#div_map").animate({height:"80%"}, 500, function(){
-				//resize map
-				app.map.invalidateSize(false);
-				
-				$("#dataPanel").css({height:"17%"});
-	
-				$this.html("Show Table").attr("title", "Show Table");
-			});
-		}else{
-			$("#div_map").animate({height:"53%"}, 500, function(){
-				//resize map
-				app.map.invalidateSize(false);
-				
-				$("#dataPanel").css({height:"45%"});
-	
-				$this.html("Hide Table").attr("title", "Hide Table");
-			});
-		}
-	}).trigger('click');
-	
-	
+
 	//read demographic data
 	pathgeo.service.demographicData({
 		// filter:{
@@ -206,15 +175,7 @@ function init_UI(){
 	//content height
 	$("#content").height($(window).height()-$("#header").height());
 	
-	$("#div_gallery ul li").click(function(){
-		$(this).css("background-color", "#222222").siblings().css("background-color","");
-	});
 	
-	
-	//init popup
-	//$("div[data-role='popup']").popup();
-	
-
 	//show main menu
 	//if directly show the main menu while initlizing the webpage, the main menu will be immediately disppeared in Chrome (noraml in the Firefo).
 	//JQM said this is the bug from webkit(Goolge chrome) https://github.com/jquery/jquery-mobile/issues/5775
@@ -222,23 +183,17 @@ function init_UI(){
 		$("#dialog_menu").popup("open");
 	},1000);
 	
-	//dataFilter
-//	$("#dataFilter").css({"margin-top":$("#div_map").height()}).find(">ul li").click(function(){
-//		$(this).find("span").toggle();
-//	})
 	
-	//adjust dataPanel
-	//$("#dataPanel").css({"margin-top":$("#div_map").height()+10, height: $(document).height()-$("#div_map").height()-$("#header").height()-30});
+	//adjust infoPanel height
+	$(".infoPanel").css({height:$("#content").height()-20, width:$("#content").width()*0.375});
 	
-	//adjust localInfo
-	$("#localInfo").css({height:$("#content").height()-30});
 	
 	
 	
 	//when window resize
 	$(window).resize(function(){
 		$("#content").height($(window).height()-$("#header").height());
-		$("#localInfo").css({height:$("#content").height()-30});
+		$(".infoPanel").css({height:$("#content").height()-20, width:$("#content").width()*0.375});
 	})
 	
 	
@@ -254,7 +209,12 @@ function init_UI(){
 	//businessActions selection change
 	$("#businessActions_type").change(function(){
 		showBusinessAction(this.value);
-	})
+	});
+	
+	//add close button in the infoPanel
+	$(".infoPanel").append("<a id='closeInfoPanel' href='#' data-role='button' data-theme='a' data-icon='delete' data-iconpos='notext'  style='position:absolute; right:-10px; top:-6px;z-index:500;' onclick='closeInfoPanel()'>Close</a>")
+	$(".infoPanel #closeInfoPanel").buttonMarkup("refresh");
+	
 	
 	
 	//Keep track of currently uploaded file 
@@ -724,8 +684,20 @@ function showTable(obj){
 			"aaData": dataTable.datas, //data
 			"aoColumns": dataTable.columns_dataTable, //column
 			"bJQueryUI": false,
-			"sPaginationType": "full_numbers", //page number
-			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"f><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rti<pl>>', //DOM
+			"sPaginationType": "two_button", //"full_numbers",    //page number 
+			"oLanguage": {
+		      "sSearch": ""
+		    },
+			"iDisplayLength": 1000,
+			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"f><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rti<>>', //DOM
+			"fnInitComplete": function(oSettings, json) {
+				$("#" + oSettings.sTableId+"_filter input").val("Filter your data....").focus(function(){
+
+					if($(this).val()=="Filter your data...."){
+						$(this).val("");
+					}
+				});
+		    },
 			fnDrawCallback: function(){
 			
 				//backup orginal json to defaultJSON
@@ -790,8 +762,8 @@ function showTable(obj){
 		//add dataTable tools and click event
 		var html = "<ul>" +
 					//"<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
-					"<li><img src='images/1365858910_download.png' title='download'/></li>" +
-					"<li><img src='images/1365858892_print.png' title='print'/></li>" +
+					//"<li><img src='images/1365858910_download.png' title='download'/></li>" +
+					//"<li><img src='images/1365858892_print.png' title='print'/></li>" +
 					"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/></li>" +
 					//"<li><img src='images/1365860337_cube.png' title='canned report'/></li>"+
 					//"<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
@@ -801,8 +773,8 @@ function showTable(obj){
 		$(".dataTable_tools").append(html).find("ul li").click(function(){
 			//show content in the infobox
 			showInfobox($(this).find("img").attr('title'), {
-				left: $(this).offset().left,
-				top: $(this).offset().top + 15
+				left: $(this).offset().left - 45,
+				top: $(this).offset().top - 25
 			}, this);
 		});
 		
@@ -839,6 +811,10 @@ function showTable(obj){
 		$("#dataTable_chart #select_x").append(html).change(onchange).val("name").change();
 		$("#dataTable_chart #select_y").append(html).change(onchange).val("sales").change();
 		$(".dataTable_chartType").click(onchange);
+		
+		
+		//show dataTable Panel
+		showInfoPanel("dataPanel", $("#menuToolbox ul li:first-child")[0])
 		
 	}//end createTable	
 	
@@ -993,7 +969,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 
 	//show legend
 	var defaultType=$("#demographic_type div[data-role='collapsible'] h3").attr("value");
-	//$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
+	$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
 			
 	// alert(id);	 id is row number in table from 0
 	//chart
@@ -1004,7 +980,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 	];
 	//draw chart
 	var containerId = "localInfo_chart_" + "HC01_VC20";
-	showLocalInfoChart(totalPop, containerId);
+	//showLocalInfoChart(totalPop, containerId);
 	
 	$.each(app.demographicData, function(k,v){
 		var containerId = "localInfo_chart_" + k;
@@ -1014,7 +990,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 			['standard',  app.properties_average[k]],
 			['local',  property[k]]
 		];
-		showLocalInfoChart(chartData, containerId);
+		//showLocalInfoChart(chartData, containerId);
 	});
 
 				
@@ -1035,7 +1011,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 	
 	
 	//show localInfo
-	$("#localInfo").show();
+	//$("#localInfo").show();
 	
 	
 	//using jsts jts topology suite to find out the polygon the point is within
@@ -1078,13 +1054,13 @@ function showBusinessAction(type){
 				containerId: "businessActions_result",
 				view:{columns:[0,1]},
 				options: {
-					width: 300,
-					height:500,
+					width: $(".infoPanel").width()-50,
+					height:$(".infoPanel").height()-80,
 					title: "",
 					titleX: "",
 					titleY: "",
 					legend: "none",//{position: 'top'},
-					chartArea: {width: '', height: '85%', top:10},
+					chartArea: {width: '65%', height: '85%', top:10},
 					fontSize: 11,
 					isStacked:true, 
 					series:{0:{color: '#5B92C0', visibleInLegend: true}},
@@ -1211,16 +1187,16 @@ function showDataTableChart(geojson){
 			containerId: "dataTable_chartContent",
 			view:{columns:[0,1]},
 			options: {
-				width: $("#dataTable_chart").width()-20,
-				height: 225,
+				width: $(".infoPanel").width()-20,
+				height: geojson.features.length*30,
 				title: "",
 				titleX: x,
 				titleY: y,
-				legend: {position: 'right'},
-				chartArea: {width: '85%', height: '84%', top:20},
-				fontSize: 12,
-				vAxes:{},
-				hAxes:{},
+				legend: {position: 'top'},
+				chartArea: {width: '', height: '90%', top:20},
+				fontSize: 11,
+				vAxes:{0:{titleTextStyle:{color:"#ffffff"}, textStyle:{color:"#ffffff"}}},
+				hAxes:{0:{titleTextStyle:{color: "#ffffff"},textStyle:{color: "#ffffff"}}},
 				backgroundColor: {fill:'transparent'}
 			}
 		},
@@ -1254,6 +1230,8 @@ function showLocalInfoChart(data, containerId){
 				titleX: "",
 				titleY: "",
 				legend: "",
+				vAxes:{0:{titleTextStyle:{color:"#ffffff"}, textStyle:{color:"#ffffff"}}},
+				hAxes:{0:{titleTextStyle:{color: "#ffffff"},textStyle:{color: "#ffffff"}}},
 				backgroundColor: {fill:'transparent'}
 			}
 		},
@@ -1309,9 +1287,47 @@ function showDemo(demoType){
 
 
 
+//show infoPanel
+function showInfoPanel(domID, obj){
+	//change obj's background color
+	$("#menuToolbox ul li").css("background", "");
+	$(obj).css('background', "rgba(255,255,255,0.3)")
+
+	
+	//hide other infoPanels
+	$(".infoPanel").hide();
+	
+	
+	//show infoPanel	
+	$("#"+domID).show();
+	
+	
+	//resize map
+	var width=($("#content").width() - $(".infoPanel").width() - $("#menuToolbox").width() - 20) / $("#content").width() * 100;
+	$("#div_map").css({width:width+"%"});
+	app.map.invalidateSize(false);
+}
+
+
+
+//close infoPanel
+function closeInfoPanel(){
+	//cancel obj's background color
+	$("#menuToolbox ul li").css("background", "");
+	
+	
+	$(".infoPanel").hide();
+	
+	//resize map
+	$("#div_map").css({width:'100%'});
+	app.map.invalidateSize(false);
+}
+
+
+
+
 function showDialog(dom_id){
 	$("#"+dom_id).popup("open");
 }
-
 
 
