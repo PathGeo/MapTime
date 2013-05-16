@@ -343,7 +343,7 @@
 							<li title='Flickr' ><img src='images/1368626308_flickr_circle_gray.png' value='flickr' onmouseover="this.src='images/1368626412_flickr_circle_color.png'"  onmouseout="this.src='images/1368626308_flickr_circle_gray.png'" selected=true onclick='this.selected=!this.selected; ' /></li>
 						</ul>
 						
-						<button type='button' id='socialMedia_searchButton' onclick='callPython();' data-mini="true" data-theme="b" >Search</button>
+						<button type='button' id='socialMedia_searchButton' onclick='callPython();$("#socialMedia_loading").show();' data-mini="true" data-theme="b" >Search <span><img src='images/loading.gif' id='socialMedia_loading' /></span></button>
 					</div>
 
 						<!--<select id='socialMedia_source' name='socialMedia_source' data-mini="true">

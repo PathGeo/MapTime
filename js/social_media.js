@@ -46,6 +46,7 @@ function callPython(){
 				$('#social_results_count').html('');
 				$("#layer_selector").hide();
 				alert("No results were found");
+				$("#socialMedia_loading").hide();
 			}
 			
 			else{
@@ -77,6 +78,7 @@ function callPython(){
 				$("#cluster_media").removeClass( "ui-btn-active" );
 				
 				$("#socialMedia_result, #socialMedia_mapType").show();
+				$("#socialMedia_loading").hide();
 				
 				setDataMedia(contact);
 				app.map.fitBounds(curLayer.getBounds());
@@ -85,6 +87,7 @@ function callPython(){
 		}).error(function(error) {
 			console.log(error);
 			alert("There was an error in your search. Please try again");
+			$("#socialMedia_loading").hide();
 		});
 	}
 	
@@ -137,6 +140,7 @@ function callPython(){
 				$("#cluster_media").removeClass( "ui-btn-active" );
 				
 				$("#socialMedia_result, #socialMedia_mapType").show();
+				$("#socialMedia_loading").hide();
 				
 				setDataMedia(contact);
 				app.map.fitBounds(curLayer.getBounds());
@@ -145,6 +149,7 @@ function callPython(){
 		}).error(function(error) {
 			console.log(error);
 			alert("There was an error in your search. Please try again");
+			$("#socialMedia_loading").hide();
 		});
 	}
 }
