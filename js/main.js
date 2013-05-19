@@ -976,28 +976,6 @@ function showLocalInfo(id, jumpToDataTablePage){
 	var defaultType=$("#demographic_type div[data-role='collapsible'] h3").attr("value");
 	$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
 			
-	// alert(id);	 id is row number in table from 0
-	//chart
-	var totalPop=[
-			['pop', 'Population'],
-			['standard',  25678],
-			['local',  28734]
-	];
-	//draw chart
-	var containerId = "localInfo_chart_" + "HC01_VC20";
-	//showLocalInfoChart(totalPop, containerId);
-	
-	$.each(app.demographicData, function(k,v){
-		var containerId = "localInfo_chart_" + k;
-		var property = app.properties[feature.properties["zip"]];
-		var chartData = [
-			[k, v],
-			['standard',  app.properties_average[k]],
-			['local',  property[k]]
-		];
-		//showLocalInfoChart(chartData, containerId);
-	});
-
 				
 	
 	//select options for social media
@@ -1013,11 +991,6 @@ function showLocalInfo(id, jumpToDataTablePage){
 	//$select_media.html("<br/>Lat: <input type='text' id=lat value=" + locationX + "> <br/>Long: <input type='text' id=lng value=" + locationY + "> <br/>Keyword: <input type='text' id='keyword' value='shoes'><br><button type='button' onclick='callPython()'>Search</button>");
 	
 
-	
-	
-	//show localInfo
-	//$("#localInfo").show();
-	
 	
 	//using jsts jts topology suite to find out the polygon the point is within
 	var point=app.geojsonReader.read(feature.geometry);
@@ -1082,20 +1055,50 @@ function showBusinessAction(type){
 			callback_select:function(e){
 				var zipcode=e.data.getValue(e.row, 0),
 					value=e.value,
-					html="";
-				
-				//header
-				$("#businessActions_detailTitle").text(zipcode);
+					html_listview="",
+					html_collapsible="";
 				
 				//detailContent
 				var properties=app.layers.demographicData.zipcodes[zipcode].feature.properties;
+				
+				
+				//header
+				$("#businessActions_detailTitle").text(properties["NAME"]);
+				
+				//CONTENT
 				$.each(properties, function(k,prop){
 					if(k.split("extra-").length==1){ // only show origianl properties without extra properties
-						html+="<li><a href='#'><img src='images/1368477544_FootballPlayer_Male_Dark.png'><p>" + k + "</p><h2>" + prop + "</h2></a></li>";
+						//list view
+						if((k=='ZIP' || k=='NAME' || k=='STABB' || k=='AREA' || k=='id1')){
+							html_listview+="<li><h4>"+ k + "<p>" + prop + "</p></h4></li>";
+						}else{
+							html_collapsible+="<div data-role='collapsible' data-theme='c' data-content-theme='d' data-collapsed-icon='arrow-d' data-expanded-icon='arrow-u' data-iconpos='right'>" + 
+							  				 	"<h4 value='" + k + "'>"+ k + "<p>" + prop + "</p></h4>"+
+											 	"<div id='demographicChart_" + k + "' class='demographicChart'></div>" +
+											  "</div>";
+						}
+						//html+="<li><a href='#'><img src='images/1368477544_FootballPlayer_Male_Dark.png'><p>" + k + "</p><h2>" + prop + "</h2></a></li>";
 					}
 				});
-				$("#businessActions_detailContent ul").html(html).listview("refresh");
-								
+				html_listview+="<ul>"
+				html_collapsible+="</div>";
+				
+				$("#businessActions_detailContent_listview").html(html_listview).listview('refresh');
+				$("#businessActions_detailContent_collapsible").html(html_collapsible).trigger('create');
+				
+				//expand events
+				$('#businessActions_detailContent_collapsible div.ui-collapsible h4').on('click', function(e,ui){
+					//do only when expand
+					if(!$(this).hasClass('ui-collapsible-heading-collapsed')){
+						var type=$(this).attr('value'),
+							domID='demographicChart_'+type;
+							
+						showDemographicChart(type, zipcode, domID);
+					}
+				});
+				
+				
+				
 								
 				//trigger dataTable to filter the zipcode
 				//app.dataTable.fnFilter(zipcode);
@@ -1170,6 +1173,44 @@ function showBusinessAction(type){
 
 
 
+//show demographic data chart
+function showDemographicChart(type, zipcode, domID){
+	var chartData=[["type", "value"]];
+	chartData.push([String(zipcode), app.properties[zipcode][type]]);
+	chartData.push(['CA Average', app.properties_average[type]]);
+	
+	var chartOptions={
+		googleChartWrapperOptions: {
+			chartType: "ColumnChart",
+			containerId: domID,
+			view:{columns:[0,1]},
+			options: {
+				width: 300,
+				height: 230,
+				title: "",
+				titleX: "Type",
+				titleY: "Value",
+				legend: "none",
+//				vAxes:{0:{titleTextStyle:{color:"#ffffff"}, textStyle:{color:"#ffffff"}}},
+//				hAxes:{0:{titleTextStyle:{color: "#ffffff"},textStyle:{color: "#ffffff"}}},
+				backgroundColor: {fill:'transparent'}
+			}
+		},
+		callback:null,
+		callback_mouseover:null,
+		callback_mouseout:null,
+		callback_select:function(obj){
+			console.log(obj)
+		}
+	};
+	
+	//drawChart
+	pathgeo.service.drawGoogleChart(chartData, [chartOptions], null, null);
+}
+
+
+
+
 
 //show chart in the dataTable
 function showDataTableChart(geojson){
@@ -1220,35 +1261,6 @@ function showDataTableChart(geojson){
 
 
 
-//show chart in the localInfo
-function showLocalInfoChart(data, containerId){
-	var chartOptions={
-		googleChartWrapperOptions: {
-			chartType: "ColumnChart",
-			//containerId: "localInfo_chart",
-			containerId: containerId,
-			view:{columns:[0,1]},
-			options: {
-				width: 300,
-				height: 200,
-				title: "",
-				titleX: "",
-				titleY: "",
-				legend: "",
-				vAxes:{0:{titleTextStyle:{color:"#ffffff"}, textStyle:{color:"#ffffff"}}},
-				hAxes:{0:{titleTextStyle:{color: "#ffffff"},textStyle:{color: "#ffffff"}}},
-				backgroundColor: {fill:'transparent'}
-			}
-		},
-		callback:null,
-		callback_mouseover:null,
-		callback_mouseout:null,
-		callback_select:function(obj){
-			console.log(obj)
-		}
-	};
-	pathgeo.service.drawGoogleChart(data, [chartOptions], null, null);
-}
 
 
 

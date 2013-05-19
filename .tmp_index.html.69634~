@@ -315,15 +315,14 @@
 					<!-- show the details of business actions, including demographic data-->
 					<div id='businessActions_detail' style='display:none;' class='businessActions_tabs'>
 						<!--header-->
-						<div data-role='header' data-mini-"true" >
+						<div data-role='header' data-mini-"true">
 							<a href="#" data-icon="back" onclick='$(".businessActions_tabs").hide(); $("#businessActions_select").show();'>Back</a>
 							<h1 id='businessActions_detailTitle'></h1>
 							<!--<a href="#" data-icon="forward">Export</a>-->
 						</div>
 						<!--content-->
 						<div id='businessActions_detailContent'>
-							<ul id='businessActions_detailContent_listview' data-role='listview' data-count-theme='c' data-inset='true'></ul>
-							<div id='businessActions_detailContent_collapsible' data-role='collapsible-set' data-theme='b' data-content-theme='d'></div>
+							<ul data-role='listview' data-inset='true'></ul>
 						</div>
 					</div>
 					

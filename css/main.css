@@ -119,9 +119,13 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #businessResult_result {height:85%;}
 #businessActions_detail {height:100%;}
 #businessActions_detailContent {height:98%;overflow-y:auto;}
-#businessActions_detailContent ul li img {height:40px; margin:15px 10px 20px 20px;}
-#businessActions_detailContent ul li p {margin-top:3px;}
+#businessActions_detailContent h4 img {height:40px; margin:15px 10px 20px 20px;}
+#businessActions_detailContent h4 p {color:#555555}
+#businessActions_detailContent_listview h4 p {margin-top:10px; font-size:14px; font-weight:bold;}
+#businessActions_detailContent_listview .ui-li-heading {font-size:14px;}
+#businessActions_detailContent_collapsible {margin-top:-1px;}
 
+.demographicChart{height:250px}
 
 /**
  * dataTable
