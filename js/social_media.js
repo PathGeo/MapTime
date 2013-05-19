@@ -77,7 +77,7 @@ function callPython(){
 				$("#cluster_media").removeClass( "ui-btn-active" );
 				
 				$("#socialMedia_result, #socialMedia_mapType").show();
-				$("#socialMedia_loading").hide();
+				$("#socialMedia_loading, #socialMedia_gallery").hide();
 				
 				setDataMedia(contact);
 				app.map.fitBounds(curLayer.getBounds());
@@ -139,7 +139,7 @@ function callPython(){
 				$("#cluster_media").removeClass( "ui-btn-active" );
 				
 				$("#socialMedia_result, #socialMedia_mapType").show();
-				$("#socialMedia_loading").hide();
+				$("#socialMedia_loading, #socialMedia_gallery").hide();
 				
 				setDataMedia(contact);
 				app.map.fitBounds(curLayer.getBounds());

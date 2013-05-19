@@ -102,10 +102,18 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #socialMedia_mapType > div {float:right; margin-left:10px; }
 
 #socialMedia_result {display:none; height: 82%;}
-#socialMedia_result .ui-li-heading {position:absolute; top:5px; left:110px; }
+#socialMedia_result .ui-li-thumb {width:75px; height:75px; -moz-border-radius:5px; -webkit-border-radius:5px;border-radius:5px;}
+#socialMedia_result .ui-li-heading {position:absolute; top:5px; left:100px; }
 #socialMedia_result ul {height:100%; overflow-y:auto; overflow-x:hidden; margin-top:15px; }
-.socialMedia_description {position:absolute; top:50px; left:110px; }
+.socialMedia_description {position:absolute; top:50px; left:100px; }
 
+#socialMedia_gallery {width:100%; height:90%; margin-top:10px; display:none; }
+#socialMedia_gallery ul {list-style:none; padding:0px; margin:0px;}
+#socialMedia_gallery ul li {width:100px; height:100px; padding:0px; margin:13px; color:#cccccc; background-color:#666666; text-align:center; float:left; -moz-border-radius:5px; -webkit-border-radius:5px;border-radius:5px;}
+#socialMedia_gallery ul li:hover {background-color:#5084B5; cursor:pointer; border:0px solid #000000; box-shadow: 0 1px 7px #5893BE;}
+#socialMedia_gallery ul li img {width:55px;}
+#socialMedia_gallery ul li h4 {color:#ffffff; font-size:14px; font-weight:bold; margin:2px;}
+#socialMedia_gallery ul li:hover {cursor:pointer;}
 
 
 /** demographic data */
