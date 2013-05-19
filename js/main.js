@@ -203,6 +203,12 @@ function init_UI(){
 	})
 	
 	
+	//slider
+	 $('#slider').nivoSlider({
+	 	effect: "fade"
+	 });
+
+	
 	//when mouse click on otherplace, hide dataTable_menu
 	$(document).mouseup(function(e){
 		var $container=$(".dataTable_menu, #dataTable_chartControlMenu");

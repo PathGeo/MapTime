@@ -195,6 +195,12 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #uploatData_form { width: 90%; margin: 0 auto; }
 
 
+/**
+ * lab
+ */
+#dialog_lab {width:900px; height:550px; text-shadow:0 0px 0 #fff; padding:20px;text-align:center;}
+#slider_wrapper {width:90%; height:90%;margin:0 auto;margin-top:20px;text-align:left;}
+.nivo-caption {font-weight:bold; font-size:16px; padding:10px; text-align:right;}
 
 /**
  * header

@@ -10,6 +10,8 @@
 	<link rel="stylesheet" href="js/leaflet/MarkerCluster.css" />
 	<link rel="stylesheet" href="js/leaflet/MarkerCluster.Default.css" />
 	<link rel="stylesheet" href="css/jquery.dataTables.css" />
+	<link rel="stylesheet" href="css/slider/default/default.css" />
+	<link rel="stylesheet" href="css/slider/nivo-slider.css" />
 	<!--[if lte IE 8]><link rel="stylesheet" href="js/leaflet/MarkerCluster.Default.ie.css" /><![endif]-->
 	<!--[if IE]><link type="text/css" href='css/main_ie.css' rel="stylesheet" /><![endif]-->
 	<!--[if !IE]><!--><link type="text/css" href='css/main.css' rel="stylesheet" /><!--<![endif]-->
@@ -36,6 +38,9 @@
 	
 	<!--google chart-->
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>  
+	
+	<!-- slider-->
+	<script type="text/javascript" src="js/jquery/jquery.nivo.slider.pack.js"></script>  
 	
 	<!-- api -->
 	<script src="js/api/pathgeo.layer.js" type="text/javascript"></script>
@@ -73,7 +78,7 @@
 			<a href="#dialog_login" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="home" class="" data-mini="true" style='float:right'>Log in</a>
 	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>
 			<a id='test' href="#dialog_menu" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right'>Menu</a>
-		
+			<a id='test' href="#dialog_lab" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right'>Lab</a>
 		</div>
 		
 		
@@ -220,7 +225,21 @@
 				</script>
 		</div>
 
-		
+
+		<!--lab-->
+		<div id='dialog_lab' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true" style=''>
+				<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+				
+				<h2>MapTime Lab: we are working on some new and fun functions for social media!</h2>
+				
+				<!--slider-->
+				<div class="slider-wrapper theme-default" id='slider_wrapper'>
+		            <div id="slider" class="nivoSlider" style=''>
+		                <img src="images/slider/angeliaJolie.png" data-thumb="images/slider/angeliaJolie.png" alt=""  title="Twitter map" />
+						<img src="images/slider/hotspot.png" data-thumb="images/slider/hotspot.png" alt=""  title="HotSpot map" />
+		            </div>
+		        </div>
+		</div>
 		
 		
 		
