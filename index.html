@@ -84,7 +84,7 @@
 				<ul>
 					<li title='Your Uploaded Data' onclick='showInfoPanel("dataPanel", this)'><img src='images/1368495654_document.png' /></li>
 					<!--<li title='Chart' onclick='showInfoPanel("chartPanel")'><img src='images/1368495559_chart_bar_up.png' /></li>-->
-					<li title='Find the Best Business Actions' onclick='showInfoPanel("localInfoPanel", this)'><img src='images/1368666773_money.png' /></li>
+					<li title='Find the Best Business Actions' onclick='showInfoPanel("localInfoPanel", this); $("#businessActions_type").change()'><img src='images/1368666773_money.png' /></li>
 					<li title='Search Social Media' onclick='showInfoPanel("socialMediaPanel", this)'><img src='images/1368666894_comment_check.png' /></li>
 					<li title='Account Settings' onclick='showInfoPanel("userPanel", this)'><img src='images/1368496469_man.png' /></li>
 					<!--<li title='Main Menu' onclick='$("#uploadData_confirm").hide(); $("#uploadData_description").show(); $("#uploadData_controls").hide();$("#dialog_menu").popup("open")'><img src='images/1368496597_outbox.png' /></li>
@@ -295,15 +295,15 @@
 						
 						<select id='businessActions_type' name='businessActions_type' data-mini="true">
 							<optgroup label="About Your Data">
-								<option value='top_users'>Which zipcode has the highest number of customers</option>
-								<option value='top_sales'>Which zipcode has the highest value of sales</option>
+								<option value='top_users'>Zipcode with the most customers</option>
+								<option value='top_sales'>Zipcode with the most sales</option>
 							</optgroup>
 							<optgroup label="About Demographic Data">
-								<option value='avg_income_from_users'>What is the average incomes for my customers</option>
-								<option value='most_language_from_users'>Which languages do users use most</option>
+								<option value='avg_income_from_users'>Average incomes from customers</option>
+								<option value='most_language_from_users'>Most used languages from customers</option>
 							</optgroup>
 							<optgroup label="Predict Potential Market">
-								<option value='potential_market'>Where are potential Markets</option>
+								<option value='potential_market'>Potential Markets</option>
 							</optgroup>
 						</select>
 						

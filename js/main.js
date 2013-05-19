@@ -217,6 +217,7 @@ function init_UI(){
 		showBusinessAction(this.value);
 	});
 	
+	
 	//add close button in the infoPanel
 	$(".infoPanel").append("<a id='closeInfoPanel' href='#' data-role='button' data-theme='a' data-icon='delete' data-iconpos='notext'  style='position:absolute; right:-10px; top:-6px;z-index:500;' onclick='closeInfoPanel()'>Close</a>")
 	$(".infoPanel #closeInfoPanel").buttonMarkup("refresh");
@@ -1042,7 +1043,7 @@ function showBusinessAction(type){
 					fontSize: 11,
 					isStacked:true, 
 					series:{0:{color: '#5B92C0', visibleInLegend: true}},
-					vAxes:{0:{titleTextStyle:{color:"black"}, textStyle:{color:"#ffffff"}}},
+					vAxes:{0:{titleTextStyle:{color:"#ffffff"}, textStyle:{color:"#ffffff"}}},
 					hAxes:{0:{titleTextStyle:{color: "#ffffff"},textStyle:{color: "#ffffff"}}},
 					backgroundColor: {fill:'transparent'},
 					tooltip: {isHtml: true},
@@ -1167,8 +1168,6 @@ function showBusinessAction(type){
 	
 	
 	pathgeo.service.drawGoogleChart(dataArray, [chartOptions], null, null, {sort:sort}); //sort, but the sequence of the chart data will be different with the geojson
-	
-	
 }
 
 
@@ -1185,8 +1184,8 @@ function showDemographicChart(type, zipcode, domID){
 			containerId: domID,
 			view:{columns:[0,1]},
 			options: {
-				width: 300,
-				height: 230,
+				width: $("#"+domID).width(),
+				height: $("#"+domID).height(),
 				title: "",
 				titleX: "Type",
 				titleY: "Value",
