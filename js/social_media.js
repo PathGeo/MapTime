@@ -23,8 +23,7 @@ function callPython(){
 	//var ts = (Math.floor(Date.now()/1000)) - (document.getElementById("socialMedia_temporal").value);
 	var ts = (Math.floor(Date.now()/1000)) - (63072000);
 	//var source = document.getElementById("socialMedia_source").value;
-	var source = $("#socialMedia_source li img[selected=true]").attr("value");
-
+	var source = $("#socialMedia_source li img[selected=selected]").attr("value");
 	
 	
 	if(source == "flickr"){
