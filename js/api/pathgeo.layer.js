@@ -46,9 +46,10 @@ pathgeo.layer={
 		
 		//options
 		if(!options){options={}}
-		options.unloadInvisibleTiles= options.unloadInvisibleTiles || true;
-		options.reuseTiles= options.reuseTiles || true;
-		options.radius= options.radius || 30;
+		//options.unloadInvisibleTiles= options.unloadInvisibleTiles || true;
+		//options.reuseTiles= options.reuseTiles || true;
+		//options.radius= options.radius || 30;
+		options.radius= options.radius || { value: 200, absolute: true };
 		options.opacity= options.opacity || 0.8;
 		options.gradient= options.gradient || {
 				0.45: "rgb(0,0,255)",
@@ -87,7 +88,7 @@ pathgeo.layer={
 			}
 		}
 		
-		heatmapLayer.addData(hitMapData.data);
+		heatmapLayer.setData(hitMapData.data);
 		return heatmapLayer;
 	}
 	
