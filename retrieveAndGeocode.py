@@ -8,13 +8,13 @@ import cgitb, os, pickle
 
 
 #Functions to check potential location fields (are all these functions necessary?  just pass pattern as argument!)
-IS_LAT = lambda text: bool(re.compile(r'(?:^|\s|_)lat(?:\s|_|$)|latitude', re.I).search(text))
-IS_LON = lambda text: bool(re.compile(r'(?:^|\s|_)lon(?:\s|_|$)|(?:^|\s|_)lng(?:\s|_|$)|longitude', re.I).search(text))
+IS_LAT = lambda text: bool(re.compile(r'(?:^|\s|_)\d*lat\d*(?:\s|_|$)|latitude', re.I).search(text))
+IS_LON = lambda text: bool(re.compile(r'(?:^|\s|_)\d*lon\d*(?:\s|_|$)|(?:^|\s|_)\d*lng\d*(?:\s|_|$)|longitude', re.I).search(text))
 IS_ADDR = lambda text: bool(re.compile(r'addr|address', re.I).search(text))
 IS_CITY = lambda text: bool(re.compile(r'city', re.I).search(text))
 IS_STATE = lambda text: bool(re.compile(r'state', re.I).search(text))
 IS_ZIP = lambda text: bool(re.compile(r'zip|postal', re.I).search(text))
-IS_LOCATION = lambda text: bool(re.compile(r'(?:^|\s|_)loc(?:\s|_|$)|location', re.I).search(text))
+IS_LOCATION = lambda text: bool(re.compile(r'(?:^|\s|_)\d*loc\d*(?:\s|_|$)|location', re.I).search(text))
 IS_GEO = lambda text: bool(re.compile(r'^geo$', re.I).search(text))
 
 def containsField(items, checker):
@@ -22,7 +22,7 @@ def containsField(items, checker):
 		Returns True if any of the items in the list match.
 	'''
 
-	return any(map(lambda item: checker(item), items))
+	return any(map(checker, items))
 
 	
 def getField(items, checker):
@@ -42,12 +42,6 @@ def geocodeRows(rows, locFunc):
 		try: 
 			lat, lon = locFunc(row)
 			if lat and lon:			
-				#NOTE: This is just a temporary workaround for the problem with DataTables (can't display a lot of columns)
-				#Comment out lines 47-49 to return all properties
-				#if len(row.keys()) > 5:
-				#	for key in row.keys()[5:]:
-				#		del row[key]
-				#End Note
 				doc = dict(type='Feature', geometry=dict(type="Point", coordinates=[lon, lat]), properties=row.copy())
 				features.append(doc)
 		except Exception, e:
@@ -71,9 +65,6 @@ form = cgi.FieldStorage()
 fname = form['fileName'].value
 geoColumns = form.getlist("geoColumns[]")
 geoColumns = map(lambda item: item.replace(' ', '_'), geoColumns)
-
-
-geoFields = []
 
 lat = getField(geoColumns, IS_LAT)
 lon = getField(geoColumns, IS_LON)

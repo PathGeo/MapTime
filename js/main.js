@@ -306,9 +306,20 @@ function init_UI(){
 				 };
 				 
 				showTable(app.geocodingResult);
-				
+					
 				$('.ui-dialog').dialog('close');
-								
+				
+				$("#uploadData_description").show();
+				$("#uploadData_confirm").hide();
+				$("#uploadData_controls").hide();	
+				
+				//clear checkbox
+				$("#uploadData_agreementCheck").attr('checked', false);
+				$("#uploadData_agreementCheck").checkboxradio("refresh");
+				
+				//clear file selected
+				$("#uploadData_input").val(''); //not sure this works with IE or Opera
+
 			}, error: function (error) {
 				console.log("Error:");
 				console.log(error.responseText);
