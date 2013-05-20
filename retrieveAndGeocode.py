@@ -7,7 +7,7 @@ import cgi, json, re, functools
 import cgitb, os, pickle
 
 
-#Functions to check potential location fields
+#Functions to check potential location fields (are all these functions necessary?  just pass pattern as argument!)
 IS_LAT = lambda text: bool(re.compile(r'(?:^|\s|_)lat(?:\s|_|$)|latitude', re.I).search(text))
 IS_LON = lambda text: bool(re.compile(r'(?:^|\s|_)lon(?:\s|_|$)|(?:^|\s|_)lng(?:\s|_|$)|longitude', re.I).search(text))
 IS_ADDR = lambda text: bool(re.compile(r'addr|address', re.I).search(text))
@@ -15,7 +15,7 @@ IS_CITY = lambda text: bool(re.compile(r'city', re.I).search(text))
 IS_STATE = lambda text: bool(re.compile(r'state', re.I).search(text))
 IS_ZIP = lambda text: bool(re.compile(r'zip|postal', re.I).search(text))
 IS_LOCATION = lambda text: bool(re.compile(r'(?:^|\s|_)loc(?:\s|_|$)|location', re.I).search(text))
-
+IS_GEO = lambda text: bool(re.compile(r'^geo$', re.I).search(text))
 
 def containsField(items, checker):
 	'''
@@ -82,6 +82,8 @@ city = getField(geoColumns, IS_CITY)
 state = getField(geoColumns, IS_STATE)
 zip = getField(geoColumns, IS_ZIP)
 loc = getField(geoColumns, IS_LOCATION)
+#geo just temporary for the angelina jolie tweets
+geo = getField(geoColumns, IS_GEO)
 
 
 #Note: Username and PW for geocoder.US does not currently seem to work with geopy
@@ -99,6 +101,17 @@ if lat and lon:
 			return None, None
 		
 	geoFunc = functools.partial(getByLatLon, latField=lat, lonField=lon)
+	
+elif geo:
+	def getByLatLon(row, geoField=None):
+		try: 
+			coords = row[geoField].split(',')
+			return float(coords[0]), float(coords[1])
+		except:
+			return None, None
+		
+	geoFunc = functools.partial(getByLatLon, geoField=geo)
+	
 elif addr and city:
 	#only address and city are necessary to geocode, but check if state or zipcode are present
 	#and, if so, add them to out list of geocoding fields
