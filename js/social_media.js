@@ -170,13 +170,13 @@ function getClusterLayerMedia(gjData) {
 			
 			var amount = cluster.getChildCount();
 			if (amount >=10){
-				var icon = "<b style='position:absolute; left:3px; top:1px'>" + count + "</b><img border='0' src='images/" + image + ".png' width='62' height='74'>";
+				var icon = "<b style='position:absolute; left:2px; top:0px; color:white'>" + count + "</b><img border='0' src='images/" + image + ".png' width='62' height='74'>";
 			}
 			else if (amount >=5){
-				var icon = "<b style='position:absolute; left:3px; top:1px'>" + count + "</b><img border='0' src='images/" + image + ".png'  width='50' height='61'>";
+				var icon = "<b style='position:absolute; left:2px; top:0px; color:white'>" + count + "</b><img border='0' src='images/" + image + ".png'  width='50' height='61'>";
 			}
 			else{
-				var icon = "<b style='position:absolute; left:3px; top:1px'>" + count + "</b><img border='0' src='images/" + image + ".png'>";
+				var icon = "<b style='position:absolute; left:2px; top:0px; color:white; font-size: 10px'>" + count + "</b><img border='0' src='images/" + image + ".png'>";
 			}
 	
 			return new L.DivIcon({ html: icon, className: 'mycluster' });
