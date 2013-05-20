@@ -64,7 +64,7 @@ function callPython(){
 					var date = contact[i].properties.Date;
 					var account = contact[i].properties.Account;
 				
-					var results="<li><a href='#'><img src='" + image + "'/><h2>" + account + "</h2><p class='socialMedia_description'>" + title + "</p><p class='ui-li-aside'><strong>" + date.split(" ")[0] + "</strong></p></a></li>";
+					var results="<li><a href='#'><img src='" + image + "'/><h2>" + $(account).html() + "</h2><p class='socialMedia_description'>" + title + "</p><p class='ui-li-aside'><strong>" + date.split(" ")[0] + "</strong></p></a>"+account+"</li>";
 					//var results = "<li><h2>" + title + "</h2><img src='" + image + "' alt='...' style='float:left; margin-right:5px'>" + account + "<br/><p>" + date + "</p><br/></li>";
 					$("#search_results").append(results);
 				}
@@ -126,7 +126,7 @@ function callPython(){
 					var date = contact[i].properties.Date;
 					var account = contact[i].properties.Account;
 				
-					var results="<li><a href='#'><img src='" + image + "'/><a href='http://twitter.com/" + account + "' target='_blank'><h2>" + account + "</h2></a><p class='socialMedia_description'>" + title + "</p><p class='ui-li-aside'><strong>" + date.split(" ")[0] + "</strong></p></a></li>";
+					var results="<li><a href='#'><img src='" + image + "'/><h2>" + account + "</h2><p class='socialMedia_description'>" + title + "</p><p class='ui-li-aside'><strong>" + date.split(" ")[0] + "</strong></p></a><a href='http://twitter.com/" + account + "' target='_blank'>Go to this Tweet</a></li>";
 					//var results = "<li><h2>" + title + "</h2><img  src=" + image + " alt='...' style='float:left; margin-right:5px'><a href='http://twitter.com/" + account + "' target='_blank'>@" + account + "</a><br/><p>" + date + "</p><br/></li>";
 					$("#search_results").append(results);
 				}
