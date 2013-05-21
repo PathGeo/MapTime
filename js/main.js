@@ -286,6 +286,8 @@ function init_UI(){
 	//Submits form when user selects a file to upload
 	//The reponse is a list of column names, which are used to populate the drop-down menu
 	$("#uploadData_input").change(function() { 
+		$("#geocoding_loading").show();
+	
 		$("#uploadData_form").ajaxSubmit({
 			dataType: 'json',		
 			success: function (tableInfo) {
@@ -305,6 +307,7 @@ function init_UI(){
 				$("#uploadData_confirm").show();
 				$("#uploadData_controls").show();	
 				
+				$("#geocoding_loading").hide();
 			}, error: function (error) {
 				console.log(error.responseText);
 			}
@@ -323,6 +326,8 @@ function init_UI(){
 			alert("You must agree to the PathGeo agreement before your data is geocoded.");
 			return;
 		}
+		
+		$("#geocoding_loading").show();
 		
 		$.ajax({
 			dataType: 'json',
@@ -352,7 +357,22 @@ function init_UI(){
 				showTable(app.geocodingResult);
 				
 				$('.ui-dialog').dialog('close');
-								
+				//For some reason, the dialog closes very slowly, 
+				//so need to delay resetting these components until it is closed
+				setTimeout(function() {
+					$("#uploadData_description").show();
+					$("#uploadData_confirm").hide();
+					$("#uploadData_controls").hide();	
+					
+					//clear checkbox
+					$("#uploadData_agreementCheck").attr('checked', false);
+					$("#uploadData_agreementCheck").checkboxradio("refresh");
+					
+					//clear file selected
+					$("#uploadData_input").val(''); //not sure this works with IE or Opera
+					$("#geocoding_loading").hide();
+				}, 100);
+	
 			}, error: function (error) {
 				console.log("Error:");
 				console.log(error.responseText);
