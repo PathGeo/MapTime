@@ -8,8 +8,8 @@ var app={
 	map:null,
 	basemaps:{
 			"Cloudmade": L.tileLayer("http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png", {styleId: 22677}),
-			"OpenStreetMap": L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
-			//"Google Streetmap":L.tileLayer("https://mts{s}.googleapis.com/vt?lyrs=m@207265067&src=apiv3&hl=zh-TW&x={x}&y={y}&z={z}&s=Ga&style=api%7Csmartmaps",{subdomains:"123", attribution:"Map Source from Google"})
+			"OpenStreetMap": L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"),
+			"Google Streetmap":L.tileLayer("https://mts{s}.googleapis.com/vt?lyrs=m@207265067&src=apiv3&hl=zh-TW&x={x}&y={y}&z={z}&s=Ga&style=api%7Csmartmaps",{subdomains:"123", attribution:"Map Source from Google"})
 	},
 	layers: {
 			"demographicData":null
@@ -27,8 +27,8 @@ var app={
 		    onAdd: function (map) {
 	        	// create the control container with a particular class name
 		        var container=L.DomUtil.create('div', 'leaflet-control-mapGallery');
-		        var html="<ul><li title='Marker map' layer='geoJsonLayer' style='background-color:#5B92C0'><img src='images/marker-icon.png' /></li><li title='Cluster map' layer='markerClusterLayer'><img src='images/gallery-cluster.png' /></li><li title='HotSpot map' layer='heatMapLayer'><img src='images/gallery-heatmap.png' /></li></ul>";
-		        
+		        var html="<ul><li title='Marker map' layer='geoJsonLayer' style='background-color:#5B92C0'><img src='images/marker-icon.png' /></li><li title='Cluster map' layer='markerClusterLayer'><img src='images/gallery-cluster.png' /></li><li title='Heat map' layer='heatMapLayer'><img src='images/gallery-heatmap.png' /></li></ul>";
+       
 		         //click map gallery event
 		        $(container).html(html)
 		        			.find("ul li").click(function(){
@@ -38,11 +38,14 @@ var app={
 					        	
 					        	//if this layer is already shown on the map, hide the layer and change the color
 					        	if(layer._map){
+									//if(value=='heatMapLayer') alert(value);
+									//document.getElementById('slider').style.opacity = "0";
 					        		app.map.removeLayer(layer);
 					        		$this.css({"background-color": ''});
 					        	}else{
 					        		layer.addTo(app.map);
 					        		$this.css({"background-color": '#5B92C0'});
+									//slider(400, 200, 600, 100);
 					        	}
 					        });
 		        
@@ -95,8 +98,56 @@ var app={
 	}
 }
 
+//change radius
+$('.radi').live("click",function(){
+	var radiusId =  $(this).attr("id");
+	radiusId *= 1.0;    //convert to numeric
+	
+	// radius by zoom level -> 6.25 * 2^(18-zoomLevel)
+	var radius = 6.25 * Math.pow(2,(18-app.zoomLevel));
+	radius = radius * (1+radiusId);
+	//alert("change radius zoom = "+app.zoomLevel);
+	var obj = app.geocodingResult;
+	var oldLayer = obj.heatMapLayer;
+	
+	if(!app.map.hasLayer(oldLayer)) return;   //if invisible, no action
+	
+	//remove previous heatmap layer
+	app.map.removeLayer(oldLayer);
+	app.controls.toc.removeLayer(oldLayer);
+	
+	//create new heat map with new radius
+	obj.heatMapLayer=pathgeo.layer.heatMap(obj.json, radius);
+	app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
+	
+	//show new heatmap to the map
+	var newLayer = obj.heatMapLayer;
+	newLayer.addTo(app.map);
+})
 
 
+//slider
+function slider(value, min, max, step){
+
+  $(function() {
+    $( "#slider" ).slider({
+      value:value,
+      min: min,
+      max: max,
+      step: step,
+	  orientation: "vertical",
+      slide: function( event, ui ) {
+	  
+        $( "#amount" ).val( "" + ui.value );
+		
+		Heatmap(ui.value );
+		
+      }
+    });
+    $( "#amount" ).val( "" + $( "#slider" ).slider( "value" ) );
+  });
+
+ }
 
 //init
 $(document).on("pageshow", function(){	  
@@ -203,12 +254,6 @@ function init_UI(){
 	})
 	
 	
-	//slider
-	 $('#slider').nivoSlider({
-	 	effect: "fade"
-	 });
-
-	
 	//when mouse click on otherplace, hide dataTable_menu
 	$(document).mouseup(function(e){
 		var $container=$(".dataTable_menu, #dataTable_chartControlMenu");
@@ -222,7 +267,6 @@ function init_UI(){
 	$("#businessActions_type").change(function(){
 		showBusinessAction(this.value);
 	});
-	
 	
 	//add close button in the infoPanel
 	$(".infoPanel").append("<a id='closeInfoPanel' href='#' data-role='button' data-theme='a' data-icon='delete' data-iconpos='notext'  style='position:absolute; right:-10px; top:-6px;z-index:500;' onclick='closeInfoPanel()'>Close</a>")
@@ -242,7 +286,6 @@ function init_UI(){
 	//Submits form when user selects a file to upload
 	//The reponse is a list of column names, which are used to populate the drop-down menu
 	$("#uploadData_input").change(function() { 
-		$("#geocoding_loading").show();
 		$("#uploadData_form").ajaxSubmit({
 			dataType: 'json',		
 			success: function (tableInfo) {
@@ -262,8 +305,6 @@ function init_UI(){
 				$("#uploadData_confirm").show();
 				$("#uploadData_controls").show();	
 				
-				$("#geocoding_loading").hide();
-				
 			}, error: function (error) {
 				console.log(error.responseText);
 			}
@@ -282,7 +323,7 @@ function init_UI(){
 			alert("You must agree to the PathGeo agreement before your data is geocoded.");
 			return;
 		}
-		$("#geocoding_loading").show();
+		
 		$.ajax({
 			dataType: 'json',
 			url: "retrieveAndGeocode.py", 
@@ -309,25 +350,9 @@ function init_UI(){
 				 };
 				 
 				showTable(app.geocodingResult);
-					
-				$('.ui-dialog').dialog('close');
 				
-				//For some reason, the dialog closes very slowly, 
-				//so need to delay resetting these components until it is closed
-				setTimeout(function() {
-					$("#uploadData_description").show();
-					$("#uploadData_confirm").hide();
-					$("#uploadData_controls").hide();	
-					
-					//clear checkbox
-					$("#uploadData_agreementCheck").attr('checked', false);
-					$("#uploadData_agreementCheck").checkboxradio("refresh");
-					
-					//clear file selected
-					$("#uploadData_input").val(''); //not sure this works with IE or Opera
-					$("#geocoding_loading").hide();
-				}, 100);
-
+				$('.ui-dialog').dialog('close');
+								
 			}, error: function (error) {
 				console.log("Error:");
 				console.log(error.responseText);
@@ -363,7 +388,6 @@ function showLayer(obj, isShow){
 				function showGeojson(object){
 					parseGeojson(object);
 					addLayer(object);
-					
 					//hide loadData dialog
 					$("#dialog_uploadData").popup("close");
 				}
@@ -544,7 +568,12 @@ function showLayer(obj, isShow){
 					
 					
 					//heatmap
-					obj.heatMapLayer=pathgeo.layer.heatMap(obj.json);
+					app.map.fitBounds(obj.geoJsonLayer.getBounds());    // Tempeory for zoom level of heatmap
+					app.zoomLevel = app.map.getZoom();
+					//alert("Zoom level before call pathgeo.layer.heatMap = "+app.zoomLevel);
+					// radius by zoom level -> 6.25 * 2^(18-zoomLevel)
+					var radius = 6.25 * Math.pow(2,(18-app.zoomLevel));
+					obj.heatMapLayer=pathgeo.layer.heatMap(obj.json, radius);
 					app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
 					
 					
@@ -603,6 +632,8 @@ function showLayer(obj, isShow){
 				})
 				
 				app.map.fitBounds(obj.geoJsonLayer.getBounds());
+				app.zoomLevel = app.map.getZoom();
+				//alert("Zoom level after fitBounds = "+app.zoomLevel);
 			}
 
 			//close dialog
@@ -961,7 +992,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 	$obj.collapsibleset("refresh").find("div[data-role='collapsible'] h3").click(function(){ //while clicking on the colllapse, redraw the demographic data and show on the map
 		var value=$(this).attr("value");
 		
-		if(app.layers.demographicData){Ffitbound
+		if(app.layers.demographicData){
 			var demographic=app.layers.demographicData;
 			//highlight the zipcode boundary
 			demographic.redrawStyle(value, function(f){
@@ -1002,6 +1033,28 @@ function showLocalInfo(id, jumpToDataTablePage){
 	var defaultType=$("#demographic_type div[data-role='collapsible'] h3").attr("value");
 	$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
 			
+	// alert(id);	 id is row number in table from 0
+	//chart
+	var totalPop=[
+			['pop', 'Population'],
+			['standard',  25678],
+			['local',  28734]
+	];
+	//draw chart
+	var containerId = "localInfo_chart_" + "HC01_VC20";
+	//showLocalInfoChart(totalPop, containerId);
+	
+	$.each(app.demographicData, function(k,v){
+		var containerId = "localInfo_chart_" + k;
+		var property = app.properties[feature.properties["zip"]];
+		var chartData = [
+			[k, v],
+			['standard',  app.properties_average[k]],
+			['local',  property[k]]
+		];
+		//showLocalInfoChart(chartData, containerId);
+	});
+
 				
 	
 	//select options for social media
@@ -1017,6 +1070,11 @@ function showLocalInfo(id, jumpToDataTablePage){
 	//$select_media.html("<br/>Lat: <input type='text' id=lat value=" + locationX + "> <br/>Long: <input type='text' id=lng value=" + locationY + "> <br/>Keyword: <input type='text' id='keyword' value='shoes'><br><button type='button' onclick='callPython()'>Search</button>");
 	
 
+	
+	
+	//show localInfo
+	//$("#localInfo").show();
+	
 	
 	//using jsts jts topology suite to find out the polygon the point is within
 	var point=app.geojsonReader.read(feature.geometry);
@@ -1068,7 +1126,7 @@ function showBusinessAction(type){
 					fontSize: 11,
 					isStacked:true, 
 					series:{0:{color: '#5B92C0', visibleInLegend: true}},
-					vAxes:{0:{titleTextStyle:{color:"#ffffff"}, textStyle:{color:"#ffffff"}}},
+					vAxes:{0:{titleTextStyle:{color:"black"}, textStyle:{color:"#ffffff"}}},
 					hAxes:{0:{titleTextStyle:{color: "#ffffff"},textStyle:{color: "#ffffff"}}},
 					backgroundColor: {fill:'transparent'},
 					tooltip: {isHtml: true},
@@ -1081,50 +1139,20 @@ function showBusinessAction(type){
 			callback_select:function(e){
 				var zipcode=e.data.getValue(e.row, 0),
 					value=e.value,
-					html_listview="",
-					html_collapsible="";
+					html="";
+				
+				//header
+				$("#businessActions_detailTitle").text(zipcode);
 				
 				//detailContent
 				var properties=app.layers.demographicData.zipcodes[zipcode].feature.properties;
-				
-				
-				//header
-				$("#businessActions_detailTitle").text(properties["NAME"]);
-				
-				//CONTENT
 				$.each(properties, function(k,prop){
 					if(k.split("extra-").length==1){ // only show origianl properties without extra properties
-						//list view
-						if((k=='ZIP' || k=='NAME' || k=='STABB' || k=='AREA' || k=='id1')){
-							html_listview+="<li><h4>"+ k + "<p>" + prop + "</p></h4></li>";
-						}else{
-							html_collapsible+="<div data-role='collapsible' data-theme='c' data-content-theme='d' data-collapsed-icon='arrow-d' data-expanded-icon='arrow-u' data-iconpos='right'>" + 
-							  				 	"<h4 value='" + k + "'>"+ k + "<p>" + prop + "</p></h4>"+
-											 	"<div id='demographicChart_" + k + "' class='demographicChart'></div>" +
-											  "</div>";
-						}
-						//html+="<li><a href='#'><img src='images/1368477544_FootballPlayer_Male_Dark.png'><p>" + k + "</p><h2>" + prop + "</h2></a></li>";
+						html+="<li><a href='#'><img src='images/1368477544_FootballPlayer_Male_Dark.png'><p>" + k + "</p><h2>" + prop + "</h2></a></li>";
 					}
 				});
-				html_listview+="<ul>"
-				html_collapsible+="</div>";
-				
-				$("#businessActions_detailContent_listview").html(html_listview).listview('refresh');
-				$("#businessActions_detailContent_collapsible").html(html_collapsible).trigger('create');
-				
-				//expand events
-				$('#businessActions_detailContent_collapsible div.ui-collapsible h4').on('click', function(e,ui){
-					//do only when expand
-					if(!$(this).hasClass('ui-collapsible-heading-collapsed')){
-						var type=$(this).attr('value'),
-							domID='demographicChart_'+type;
-							
-						showDemographicChart(type, zipcode, domID);
-					}
-				});
-				
-				
-				
+				$("#businessActions_detailContent ul").html(html).listview("refresh");
+								
 								
 				//trigger dataTable to filter the zipcode
 				//app.dataTable.fnFilter(zipcode);
@@ -1193,45 +1221,9 @@ function showBusinessAction(type){
 	
 	
 	pathgeo.service.drawGoogleChart(dataArray, [chartOptions], null, null, {sort:sort}); //sort, but the sequence of the chart data will be different with the geojson
-}
-
-
-
-//show demographic data chart
-function showDemographicChart(type, zipcode, domID){
-	var chartData=[["type", "value"]];
-	chartData.push([String(zipcode), app.properties[zipcode][type]]);
-	chartData.push(['CA Average', app.properties_average[type]]);
 	
-	var chartOptions={
-		googleChartWrapperOptions: {
-			chartType: "ColumnChart",
-			containerId: domID,
-			view:{columns:[0,1]},
-			options: {
-				width: $("#"+domID).width(),
-				height: $("#"+domID).height(),
-				title: "",
-				titleX: "Type",
-				titleY: "Value",
-				legend: "none",
-//				vAxes:{0:{titleTextStyle:{color:"#ffffff"}, textStyle:{color:"#ffffff"}}},
-//				hAxes:{0:{titleTextStyle:{color: "#ffffff"},textStyle:{color: "#ffffff"}}},
-				backgroundColor: {fill:'transparent'}
-			}
-		},
-		callback:null,
-		callback_mouseover:null,
-		callback_mouseout:null,
-		callback_select:function(obj){
-			console.log(obj)
-		}
-	};
 	
-	//drawChart
-	pathgeo.service.drawGoogleChart(chartData, [chartOptions], null, null);
 }
-
 
 
 
@@ -1285,6 +1277,35 @@ function showDataTableChart(geojson){
 
 
 
+//show chart in the localInfo
+function showLocalInfoChart(data, containerId){
+	var chartOptions={
+		googleChartWrapperOptions: {
+			chartType: "ColumnChart",
+			//containerId: "localInfo_chart",
+			containerId: containerId,
+			view:{columns:[0,1]},
+			options: {
+				width: 300,
+				height: 200,
+				title: "",
+				titleX: "",
+				titleY: "",
+				legend: "",
+				vAxes:{0:{titleTextStyle:{color:"#ffffff"}, textStyle:{color:"#ffffff"}}},
+				hAxes:{0:{titleTextStyle:{color: "#ffffff"},textStyle:{color: "#ffffff"}}},
+				backgroundColor: {fill:'transparent'}
+			}
+		},
+		callback:null,
+		callback_mouseover:null,
+		callback_mouseout:null,
+		callback_select:function(obj){
+			console.log(obj)
+		}
+	};
+	pathgeo.service.drawGoogleChart(data, [chartOptions], null, null);
+}
 
 
 

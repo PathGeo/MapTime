@@ -41,21 +41,26 @@ pathgeo.layer={
 	 * @param {object} heatCanvas options from https://github.com/sunng87/heatcanvas
 	 * @return 
 	 */
-	heatMap: function(geojson, options){
+	heatMap: function(geojson, radius, options){
 		if(!geojson){console.log("[ERROR] pathgeo.layer.heatMap: no geojson!");return;}
+		
+		//zoomLevel
+		if(!radius){radius=0}
 		
 		//options
 		if(!options){options={}}
 		//options.unloadInvisibleTiles= options.unloadInvisibleTiles || true;
 		//options.reuseTiles= options.reuseTiles || true;
 		//options.radius= options.radius || 30;
-		options.radius= options.radius || { value: 200, absolute: true };
+		//options.radius= options.radius || { value: 300, absolute: true };
+		//alert("Radius before heatMap = "+radius);
+		options.radius= options.radius || { value: radius, absolute: true };
 		options.opacity= options.opacity || 0.8;
 		options.gradient= options.gradient || {
 				0.45: "rgb(0,0,255)",
 				0.65: "rgb(0,255,255)",
 				0.85: "rgb(0,255,0)",
-				0.98: "yellow",
+				0.99: "yellow",
 				1.0: "rgb(255,0,0)"
 		};
 		
