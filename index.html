@@ -10,6 +10,7 @@
 	<link rel="stylesheet" href="js/leaflet/MarkerCluster.css" />
 	<link rel="stylesheet" href="js/leaflet/MarkerCluster.Default.css" />
 	<link rel="stylesheet" href="css/jquery.dataTables.css" />
+	<link rel="stylesheet" href="css/slider/nivo-slider.css" />
 	<!--[if lte IE 8]><link rel="stylesheet" href="js/leaflet/MarkerCluster.Default.ie.css" /><![endif]-->
 	<!--[if IE]><link type="text/css" href='css/main_ie.css' rel="stylesheet" /><![endif]-->
 	<!--[if !IE]><!--><link type="text/css" href='css/main.css' rel="stylesheet" /><!--<![endif]-->
@@ -38,6 +39,9 @@
 	<!--google chart-->
 	<script type="text/javascript" src="https://www.google.com/jsapi"></script>  
 	
+	<!-- slider-->
+	<script type="text/javascript" src="js/jquery/jquery.nivo.slider.pack.js"></script> 
+	
 	<!-- api -->
 	<script src="js/api/pathgeo.layer.js" type="text/javascript"></script>
 	<script src="js/api/pathgeo.util.js" type="text/javascript"></script>
@@ -50,23 +54,6 @@
  	<script src="js/main.js" type="text/javascript"></script>
 	<script src="js/social_media.js" type="text/javascript"></script>
 	
-		<style type="text/css" media="screen">
-		#slider {
-			width: 10px;
-			height:100px;
-			position:absolute;
-			top: 160px;
-			right: 30px;
-		}		
-		</style>
-		
-        <!-- fake function for login -->
-        <script type="text/javascript">
-            function fakeLogin(){
-                $("#usermenu_list").show();
-                $("#user_login").hide();                
-            }
-        </script>
   </head>
   
   
@@ -115,13 +102,10 @@
 		<div id='heatmap_radius' >
 			<div id='heatmap_radiusArrow'></div>
 			<div id='heatmap_radiusContent' class='ui-corner-all'>
-				<a href="#" class="radi" id="+1.5" data-role="button" data-inline="true" style='float:right' data-icon="arrow-r" data-iconpos="notext"></a>
-				<a href="#" class="radi" id="+0.5" data-role="button" data-inline="true" style='float:right' data-icon="arrow-r" data-iconpos="notext"></a>
-				<a href="#" class="radi" id="+0.25" data-role="button" data-inline="true" style='float:right' data-icon="arrow-r" data-iconpos="notext"></a>
-				<a href="#" class="radi" id="0" data-role="button" data-inline="true" style='float:right' data-icon="star"    data-iconpos="notext"></a>
-				<a href="#" class="radi" id="-0.25" data-role="button" data-inline="true" style='float:right' data-icon="arrow-l" data-iconpos="notext"></a>
-				<a href="#" class="radi" id="-0.5" data-role="button" data-inline="true" style='float:right' data-icon="arrow-l" data-iconpos="notext"></a>
-				<a href="#" class="radi" id="-0.75" data-role="button" data-inline="true" style='float:right' data-icon="arrow-l" data-iconpos="notext"></a>
+				<form>
+				    <label for="heatmap_slider">Slider:</label>
+				    <input type="range" name="heatmap_slider" id="heatmap_slider" data-track-theme="d" data-theme="b" data-mini='true' min="0" max="100" value="50">
+				</form>
 			</div>
 			
 		</div>

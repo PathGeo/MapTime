@@ -103,56 +103,8 @@ var app={
 	}
 }
 
-//change radius
-$('.radi').live("click",function(){
-	var radiusId =  $(this).attr("id");
-	radiusId *= 1.0;    //convert to numeric
-	
-	// radius by zoom level -> 6.25 * 2^(18-zoomLevel)
-	var radius = 6.25 * Math.pow(2,(18-app.zoomLevel));
-	radius = radius * (1+radiusId);
-	//alert("change radius zoom = "+app.zoomLevel);
-	var obj = app.geocodingResult;
-	var oldLayer = obj.heatMapLayer;
-	
-	if(!app.map.hasLayer(oldLayer)) return;   //if invisible, no action
-	
-	//remove previous heatmap layer
-	app.map.removeLayer(oldLayer);
-	app.controls.toc.removeLayer(oldLayer);
-	
-	//create new heat map with new radius
-	obj.heatMapLayer=pathgeo.layer.heatMap(obj.json, radius);
-	app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
-	
-	//show new heatmap to the map
-	var newLayer = obj.heatMapLayer;
-	newLayer.addTo(app.map);
-})
 
 
-//slider
-function slider(value, min, max, step){
-
-  $(function() {
-    $( "#slider" ).slider({
-      value:value,
-      min: min,
-      max: max,
-      step: step,
-	  orientation: "vertical",
-      slide: function( event, ui ) {
-	  
-        $( "#amount" ).val( "" + ui.value );
-		
-		Heatmap(ui.value );
-		
-      }
-    });
-    $( "#amount" ).val( "" + $( "#slider" ).slider( "value" ) );
-  });
-
- }
 
 //init
 $(document).on("pageshow", function(){	  
@@ -161,8 +113,7 @@ $(document).on("pageshow", function(){
    
    	init_map();
 	
-	
-	
+
 	pathgeo.service.zipcodeLookup(91745, function(placename, json, status){
 		if(!status) {
 			if(placename != '') {
@@ -259,6 +210,38 @@ function init_UI(){
 	})
 	
 	
+	//slider
+	 $('#slider').nivoSlider({
+	 	effect: "fade"
+	 });
+	 
+	 
+	//set up heatmap slider
+	var getRadius = function(z){
+		return	6.25 * Math.pow(2, (z + 1));
+	};
+	$("#heatmap_slider").attr({
+		'min': getRadius(3),
+		'max': getRadius(8),
+		'step': (getRadius(8) - getRadius(3)) / 10,
+		'value': getRadius(4)
+	}).on("slidestop", function(e){
+		var radius=e.currentTarget.value,
+			obj=app.geocodingResult;
+		
+		//remove existing heatmap
+		if(obj.heatMapLayer._map){
+			app.map.removeLayer(obj.heatMapLayer);
+		}
+		app.controls.toc.removeLayer(obj.heatMapLayer);
+		
+		obj.heatMapLayer=pathgeo.layer.heatMap(obj.json, radius);
+		obj.heatMapLayer.addTo(app.map);
+		app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
+	}).slider('refresh'); 
+	$("#heatmap_radius .ui-input-text").html("Change Hot Spot's Radius (unit: Feet)")
+	
+	 
 	//when mouse click on otherplace, hide dataTable_menu
 	$(document).mouseup(function(e){
 		var $container=$(".dataTable_menu, #dataTable_chartControlMenu, #heatmap_radius");
@@ -598,10 +581,11 @@ function showLayer(obj, isShow){
 					
 					//heatmap
 					app.map.fitBounds(obj.geoJsonLayer.getBounds());    // Tempeory for zoom level of heatmap
-					app.zoomLevel = app.map.getZoom();
+					//app.zoomLevel = app.map.getZoom();
 					//alert("Zoom level before call pathgeo.layer.heatMap = "+app.zoomLevel);
 					// radius by zoom level -> 6.25 * 2^(18-zoomLevel)
-					var radius = 6.25 * Math.pow(2,(18-app.zoomLevel));
+					var radius = 6.25 * Math.pow(2,(app.map.getZoom()+1));
+
 					obj.heatMapLayer=pathgeo.layer.heatMap(obj.json, radius);
 					app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
 					
@@ -1440,4 +1424,10 @@ function showDialog(dom_id){
 	$("#"+dom_id).popup("open");
 }
 
+
+//fake function for login
+function fakeLogin(){
+	$("#usermenu_list").show();
+    $("#user_login").hide();                
+}
 
