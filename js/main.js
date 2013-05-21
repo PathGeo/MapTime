@@ -961,7 +961,7 @@ function showLocalInfo(id, jumpToDataTablePage){
 	$obj.collapsibleset("refresh").find("div[data-role='collapsible'] h3").click(function(){ //while clicking on the colllapse, redraw the demographic data and show on the map
 		var value=$(this).attr("value");
 		
-		if(app.layers.demographicData){
+		if(app.layers.demographicData){Ffitbound
 			var demographic=app.layers.demographicData;
 			//highlight the zipcode boundary
 			demographic.redrawStyle(value, function(f){
