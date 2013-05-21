@@ -82,16 +82,8 @@
 			
 			<a href="#dialog_login" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="home" class="" data-mini="true" style='float:right'>Log in</a>
 	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>
+			<a href="#dialog_lab" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right'>Lab</a>
 			<a id='test' href="#dialog_menu" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right'>Menu</a>
-
-			<a href="javascript:void(0)" class="radi" id="+1.5" data-role="button" data-inline="true" style='float:right' data-icon="arrow-r" data-iconpos="notext"></a>
-			<a href="javascript:void(0)" class="radi" id="+0.5" data-role="button" data-inline="true" style='float:right' data-icon="arrow-r" data-iconpos="notext"></a>
-			<a href="javascript:void(0)" class="radi" id="+0.25" data-role="button" data-inline="true" style='float:right' data-icon="arrow-r" data-iconpos="notext"></a>
-			<a href="javascript:void(0)" class="radi" id="0" data-role="button" data-inline="true" style='float:right' data-icon="star"    data-iconpos="notext"></a>
-			<a href="javascript:void(0)" class="radi" id="-0.25" data-role="button" data-inline="true" style='float:right' data-icon="arrow-l" data-iconpos="notext"></a>
-			<a href="javascript:void(0)" class="radi" id="-0.5" data-role="button" data-inline="true" style='float:right' data-icon="arrow-l" data-iconpos="notext"></a>
-			<a href="javascript:void(0)" class="radi" id="-0.75" data-role="button" data-inline="true" style='float:right' data-icon="arrow-l" data-iconpos="notext"></a>
-				
 		</div>
 		
 
@@ -119,6 +111,22 @@
 		</div>
 		
 	
+		<!-- heatmap radius window-->
+		<div id='heatmap_radius' >
+			<div id='heatmap_radiusArrow'></div>
+			<div id='heatmap_radiusContent' class='ui-corner-all'>
+				<a href="#" class="radi" id="+1.5" data-role="button" data-inline="true" style='float:right' data-icon="arrow-r" data-iconpos="notext"></a>
+				<a href="#" class="radi" id="+0.5" data-role="button" data-inline="true" style='float:right' data-icon="arrow-r" data-iconpos="notext"></a>
+				<a href="#" class="radi" id="+0.25" data-role="button" data-inline="true" style='float:right' data-icon="arrow-r" data-iconpos="notext"></a>
+				<a href="#" class="radi" id="0" data-role="button" data-inline="true" style='float:right' data-icon="star"    data-iconpos="notext"></a>
+				<a href="#" class="radi" id="-0.25" data-role="button" data-inline="true" style='float:right' data-icon="arrow-l" data-iconpos="notext"></a>
+				<a href="#" class="radi" id="-0.5" data-role="button" data-inline="true" style='float:right' data-icon="arrow-l" data-iconpos="notext"></a>
+				<a href="#" class="radi" id="-0.75" data-role="button" data-inline="true" style='float:right' data-icon="arrow-l" data-iconpos="notext"></a>
+			</div>
+			
+		</div>
+		
+		
 		
 		<!--main menu-->
 		<div id='dialog_menu' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false" data-history="false" style=''>
@@ -238,6 +246,22 @@
 				<script type="text/javascript">
 					if (typeof GSFN !== "undefined") { GSFN.loadWidget(5632,{"containerId":"getsat-widget-5632"}); }
 				</script>
+		</div>
+		
+		
+		<!--lab-->
+		<div id='dialog_lab' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true" style=''>
+				<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+				
+				<h2>MapTime Lab: we are working on some new and fun functions for social media!</h2>
+				
+				<!--slider-->
+				<div class="slider-wrapper theme-default" id='slider_wrapper'>
+		            <div id="slider" class="nivoSlider" style=''>
+		                <img src="images/slider/angeliaJolie.png" data-thumb="images/slider/angeliaJolie.png" alt=""  title="Twitter map" />
+						<img src="images/slider/hotspot.png" data-thumb="images/slider/hotspot.png" alt=""  title="HotSpot map" />
+		            </div>
+		        </div>
 		</div>
 
 		

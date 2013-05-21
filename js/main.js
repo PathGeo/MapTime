@@ -45,6 +45,11 @@ var app={
 					        	}else{
 					        		layer.addTo(app.map);
 					        		$this.css({"background-color": '#5B92C0'});
+									
+									//show heatmap radius content
+									if(value=='heatMapLayer'){
+										$("#heatmap_radius").show()
+									}
 									//slider(400, 200, 600, 100);
 					        	}
 					        });
@@ -256,7 +261,7 @@ function init_UI(){
 	
 	//when mouse click on otherplace, hide dataTable_menu
 	$(document).mouseup(function(e){
-		var $container=$(".dataTable_menu, #dataTable_chartControlMenu");
+		var $container=$(".dataTable_menu, #dataTable_chartControlMenu, #heatmap_radius");
 		if(!$container.is(e.target) && $container.has(e.target).length===0){
 			$container.hide();
 		}
@@ -408,6 +413,10 @@ function showLayer(obj, isShow){
 				function showGeojson(object){
 					parseGeojson(object);
 					addLayer(object);
+					
+					//make geojsonLayer as the default layer > change the background-color of the map gallery icon
+					$('.leaflet-control-mapGallery ul li[layer="geoJsonLayer"]').css('background-color', "#5B92C0");
+					
 					//hide loadData dialog
 					$("#dialog_uploadData").popup("close");
 				}
@@ -1340,6 +1349,25 @@ function searchBusinessIntelligent(geoname){
 //show demo
 function showDemo(demoType){
 	var obj=null;
+	
+	//clear all layers
+	if(app.geocodingResult.layers){
+		var layerNames=["geoJsonLayer", "markerClusterLayer", "heatMapLayer"];
+		
+		$.each(layerNames, function(i,layerName){
+			var layer=app.geocodingResult[layerName];
+			if(layer){
+				//if layer._map has map object, that means the layer is shown in the map
+				if(layer._map){
+					app.map.removeLayer(layer);
+					
+					//restore the default background color for the button of map gallery
+					$(".leaflet-control-mapGallery ul li[layer='" + layerName + "']").css('background-color','');
+				}
+				app.controls.toc.removeLayer(layer);
+			}
+		});
+	}
 	
 	switch(demoType){
 		case "SAN FRANCISCO":
