@@ -1,5 +1,11 @@
 var curLayer;
 var curData = [];
+var source = "twitter";
+
+function assignSource(sr){
+	source=sr;
+}
+
 //Work in Progrss... social media viewing
 function callPython(){
 	
@@ -23,8 +29,14 @@ function callPython(){
 	//var ts = (Math.floor(Date.now()/1000)) - (document.getElementById("socialMedia_temporal").value);
 	var ts = (Math.floor(Date.now()/1000)) - (63072000);
 	//var source = document.getElementById("socialMedia_source").value;
-	var source = $("#socialMedia_source li img[selected=selected]").attr("value");
+	//var source = $("#socialMedia_source li img[selected=selected]").attr("value");
 	
+	
+	console.log(lat);
+	console.log(lng);
+	console.log(keyword);
+	console.log(source);
+	//source = "twitter";
 	
 	if(source == "flickr"){
 		//Search Flickr

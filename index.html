@@ -387,8 +387,8 @@
 						<input type="hidden" id="lng" value="test">
 						
 						<ul id='socialMedia_source' >
-							<li title='Twitter' ><img src='images/1368626186_twitter_circle_gray.png' value='twitter' onmouseover="this.src='images/1368626247_twitter_circle_color.png'"  onmouseout="this.src='images/1368626186_twitter_circle_gray.png'" selected=false onclick='this.selected=!this.selected; ' /></li>
-							<li title='Flickr' ><img src='images/1368626308_flickr_circle_gray.png' value='flickr' onmouseover="this.src='images/1368626412_flickr_circle_color.png'"  onmouseout="this.src='images/1368626308_flickr_circle_gray.png'" selected=true onclick='this.selected=!this.selected; ' /></li>
+							<li title='Twitter' ><img src='images/1368626186_twitter_circle_gray.png' value='twitter' onmouseover="this.src='images/1368626247_twitter_circle_color.png'"  onmouseout="this.src='images/1368626186_twitter_circle_gray.png'" selected=false onclick='this.selected=!this.selected; assignSource("twitter");' /></li>
+							<li title='Flickr' ><img src='images/1368626308_flickr_circle_gray.png' value='flickr' onmouseover="this.src='images/1368626412_flickr_circle_color.png'"  onmouseout="this.src='images/1368626308_flickr_circle_gray.png'" selected=true onclick='this.selected=!this.selected; assignSource("flickr");' /></li>
 						</ul>
 						
 						<button type='button' id='socialMedia_searchButton' onclick='callPython();$("#socialMedia_loading").show();' data-mini="true" data-theme="b" >Search <span><img src='images/loading.gif' id='socialMedia_loading' /></span></button>
