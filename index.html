@@ -83,8 +83,8 @@
 				<ul>
 					<li title='Your Uploaded Data' onclick='showInfoPanel("dataPanel", this)'><img src='images/1368495654_document.png' /></li>
 					<!--<li title='Chart' onclick='showInfoPanel("chartPanel")'><img src='images/1368495559_chart_bar_up.png' /></li>-->
-					<li title='Find the Best Business Actions' onclick='showInfoPanel("localInfoPanel", this)'><img src='images/1368666773_money.png' /></li>
-					<li title='Search Social Media' onclick='showInfoPanel("socialMediaPanel", this)'><img src='images/1368666894_comment_check.png' /></li>
+					<li title='Find the Best Business Actions' onclick='showInfoPanel("localInfoPanel", this);$("#businessActions_type").change()'><img src='images/1368666773_money.png' /></li>
+					<li title='Search Social Media' onclick='showInfoPanel("socialMediaPanel", this);'><img src='images/1368666894_comment_check.png' /></li>
 					<li title='Account Settings' onclick='showInfoPanel("userPanel", this)'><img src='images/1368496469_man.png' /></li>
 					<!--<li title='Main Menu' onclick='$("#uploadData_confirm").hide(); $("#uploadData_description").show(); $("#uploadData_controls").hide();$("#dialog_menu").popup("open")'><img src='images/1368496597_outbox.png' /></li>
 					<li title='Help' onclick='$("#dialog_help").popup("open")'><img src='images/1368495535_help.png' /></li>
@@ -343,14 +343,15 @@
 					<!-- show the details of business actions, including demographic data-->
 					<div id='businessActions_detail' style='display:none;' class='businessActions_tabs'>
 						<!--header-->
-						<div data-role='header' data-mini-"true">
+						<div data-role='header' data-mini-"true" >
 							<a href="#" data-icon="back" onclick='$(".businessActions_tabs").hide(); $("#businessActions_select").show();'>Back</a>
 							<h1 id='businessActions_detailTitle'></h1>
 							<!--<a href="#" data-icon="forward">Export</a>-->
 						</div>
 						<!--content-->
 						<div id='businessActions_detailContent'>
-							<ul data-role='listview' data-inset='true'></ul>
+							<ul id='businessActions_detailContent_listview' data-role='listview' data-count-theme='c' data-inset='true'></ul>
+							<div id='businessActions_detailContent_collapsible' data-role='collapsible-set' data-theme='b' data-content-theme='d'></div>
 						</div>
 					</div>
 					
@@ -387,8 +388,8 @@
 						<input type="hidden" id="lng" value="test">
 						
 						<ul id='socialMedia_source' >
-							<li title='Twitter' ><img src='images/1368626186_twitter_circle_gray.png' value='twitter' onmouseover="this.src='images/1368626247_twitter_circle_color.png'"  onmouseout="this.src='images/1368626186_twitter_circle_gray.png'" selected=false onclick='this.selected=!this.selected; assignSource("twitter");' /></li>
-							<li title='Flickr' ><img src='images/1368626308_flickr_circle_gray.png' value='flickr' onmouseover="this.src='images/1368626412_flickr_circle_color.png'"  onmouseout="this.src='images/1368626308_flickr_circle_gray.png'" selected=true onclick='this.selected=!this.selected; assignSource("flickr");' /></li>
+							<li title='Twitter' ><img src='images/1368984286_twitter_six_black.png' value='twitter' selected='selected' onclick="this.selected=!this.selected; $(this).attr('selected', this.selected); if(this.selected){this.src='images/1368984286_twitter_six_black.png'}else{this.src='images/1368984257_twitter_six.png'}" /></li>
+							<li title='Flickr' ><img src='images/1368984199_flickr_six_gray.png' value='flickr' selected=false onclick="this.selected=!this.selected; $(this).attr('selected', this.selected); if(this.selected){this.src='images/1368984138_flickr_six_black.png'}else{this.src='images/1368984199_flickr_six_gray.png'}" /></li>
 						</ul>
 						
 						<button type='button' id='socialMedia_searchButton' onclick='callPython();$("#socialMedia_loading").show();' data-mini="true" data-theme="b" >Search <span><img src='images/loading.gif' id='socialMedia_loading' /></span></button>
@@ -402,7 +403,16 @@
 
 					<!-- social media gallery -->
 					<div id='socialMedia_gallery'>
-						
+						<h3 style='padding-left:10px; margin-top:10px; color:#eeeeee;'>Social Media Gallery</h3>
+						<ul>
+							<li onclick='' title='Check Tweets about Angelia Jolie @ 2013/05/15'><img src='images/1368984257_twitter_six.png' /><h4>Angelia Jolie</h4>2013/05/15</li>
+							<li onclick='' title=''><img src='images/1368984199_flickr_six_gray.png' /><h4>Shoes</h4>2013/05/17</li>
+							<li onclick='' title=''><img src='images/1368984257_twitter_six.png' /><h4>Angelia Jolie</h4>2013/05/15</li>
+							<li onclick='' title=''><img src='images/1368984257_twitter_six.png' /><h4>Angelia Jolie</h4>2013/05/15</li>
+							<li onclick='' title=''><img src='images/1368984257_twitter_six.png' /><h4>Angelia Jolie</h4>2013/05/15</li>
+							<li onclick='' title=''><img src='images/1368984257_twitter_six.png' /><h4>Angelia Jolie</h4>2013/05/15</li>
+							<li onclick='' title=''><img src='images/1368984257_twitter_six.png' /><h4>Angelia Jolie</h4>2013/05/15</li>
+						</ul>
 					</div>
 
 
@@ -416,8 +426,6 @@
 						<label>Map Type: </label>
 					</div>
 					
-					
-	
 					
 					<!-- social media search result-->
 					<div id='socialMedia_result'>
