@@ -107,7 +107,6 @@
 				    <input type="range" name="heatmap_slider" id="heatmap_slider" data-track-theme="d" data-theme="b" data-mini='true' min="0" max="100" value="50">
 				</form>
 			</div>
-			
 		</div>
 		
 		
@@ -125,8 +124,8 @@
 						<label class='menu_description'>Upload you data and <Br>find more patterns with demographic and social media data</label>
 					</div>
 					<P></P><br>
-					<input type='button' value='Try San Francisco Demo Data' style='' onclick='$("#dialog_menu").popup("close"); showDemo("SAN FRANCISCO");'   />
-					<input type='button' value='Try San Diego Demo Data' style='' onclick='$("#dialog_menu").popup("close"); showDemo("SAN DIEGO");'   />
+					<input type='button' value='Try San Francisco Demo Data' style='' onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);$("#dialog_menu").popup("close"); showDemo("SAN FRANCISCO");}}, 100)'   />
+					<input type='button' value='Try San Diego Demo Data' style='' onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);$("#dialog_menu").popup("close"); showDemo("SAN DIEGO");}}, 100)'   />
 				</li>
 				<li>
 					<img src='images/map-icons.png' width='300px' height='96px' /><p></p>
@@ -242,7 +241,7 @@
 				<!--slider-->
 				<div class="slider-wrapper theme-default" id='slider_wrapper'>
 		            <div id="slider" class="nivoSlider" style=''>
-		                <img src="images/slider/angeliaJolie.png" data-thumb="images/slider/angeliaJolie.png" alt=""  title="Twitter map" />
+		                <!--<img src="images/slider/angeliaJolie.png" data-thumb="images/slider/angeliaJolie.png" alt=""  title="Twitter map" />-->
 						<img src="images/slider/hotspot.png" data-thumb="images/slider/hotspot.png" alt=""  title="HotSpot map" />
 		            </div>
 		        </div>

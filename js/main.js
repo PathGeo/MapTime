@@ -8,8 +8,8 @@ var app={
 	map:null,
 	basemaps:{
 			"Cloudmade": L.tileLayer("http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png", {styleId: 22677}),
-			"OpenStreetMap": L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"),
-			"Google Streetmap":L.tileLayer("https://mts{s}.googleapis.com/vt?lyrs=m@207265067&src=apiv3&hl=zh-TW&x={x}&y={y}&z={z}&s=Ga&style=api%7Csmartmaps",{subdomains:"123", attribution:"Map Source from Google"})
+			"OpenStreetMap": L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png")
+			//"Google Streetmap":L.tileLayer("https://mts{s}.googleapis.com/vt?lyrs=m@207265067&src=apiv3&hl=zh-TW&x={x}&y={y}&z={z}&s=Ga&style=api%7Csmartmaps",{subdomains:"123", attribution:"Map Source from Google"})
 	},
 	layers: {
 			"demographicData":null
@@ -50,7 +50,6 @@ var app={
 									if(value=='heatMapLayer'){
 										$("#heatmap_radius").show()
 									}
-									//slider(400, 200, 600, 100);
 					        	}
 					        });
 		        
@@ -94,24 +93,26 @@ var app={
 
 
 
+//read demographic data
+pathgeo.service.demographicData({
+	// filter:{
+		// type:"zipcode",
+		// value:"94131"
+	// },
+	callback:function(geojsonLayer){
+		app.layers.demographicData=geojsonLayer;		
+		//showDemo data
+		//showDemo('SAN FRANCISCO');
+	}
+});
+
+
 
 //init
 $(document).on("pageshow", function(){	  
-	
 	init_UI();
    
    	init_map();
-	
-
-	pathgeo.service.zipcodeLookup(91745, function(placename, json, status){
-		if(!status) {
-			if(placename != '') {
-							
-			}
-		}
-		
-	});
-
 });
 
 
@@ -144,22 +145,6 @@ function init_map(){
 		}
 	});
 	
-
-	//read demographic data
-	pathgeo.service.demographicData({
-		// filter:{
-			// type:"zipcode",
-			// value:"94131"
-		// },
-		callback:function(geojsonLayer){
-			app.layers.demographicData=geojsonLayer;
-			
-			//showDemo data
-			showDemo('SAN FRANCISCO');
-		}
-	});
-	//alert(app.layers.demographicData.toSource());
-	//alert(pathgeo.service.demographicData.toSource());
 	
 	
 	//change leaflet attribution
@@ -569,12 +554,16 @@ function showLayer(obj, isShow){
 					
 					
 					//heatmap
-					app.map.fitBounds(obj.geoJsonLayer.getBounds());    // Tempeory for zoom level of heatmap
+					//app.map.fitBounds(obj.geoJsonLayer.getBounds());    // Tempeory for zoom level of heatmap
 					//app.zoomLevel = app.map.getZoom();
 					//alert("Zoom level before call pathgeo.layer.heatMap = "+app.zoomLevel);
 					// radius by zoom level -> 6.25 * 2^(18-zoomLevel)
+					
 					var radius = 6.25 * Math.pow(2,(app.map.getZoom()+1));
-
+					if(radius>3200){radius=3200}
+					if(radius<100){radius=100}
+					$("#heatmap_slider").attr("value", radius).slider('refresh')
+					
 					obj.heatMapLayer=pathgeo.layer.heatMap(obj.json, radius);
 					app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
 					
@@ -750,7 +739,11 @@ function showTable(obj){
 			"aoColumns": dataTable.columns_dataTable, //column
 			"bJQueryUI": false,
 			"bAutoWidth":false,
+			"bPaginate": false,
 			"sPaginationType": "two_button", //"full_numbers",    //page number 
+			"sScrollY": $("#dataPanel").height()-87,
+			"sScrollX": $("#dataPanel").width()-10,
+			"bDeferRender": true,
 			"oLanguage": {
 		      "sSearch": ""
 		    },
@@ -821,8 +814,11 @@ function showTable(obj){
 			}//end drawCallback
 		});// end init dataTable
 		
+		
 		//set all columns in to app.dataTable. Should have another way to get columns
 		app.dataTable.columns = dataTable.columns;
+		
+		
 		
 		
 		//add dataTable tools and click event
@@ -978,42 +974,9 @@ function showLocalInfo(id, jumpToDataTablePage){
 
 			
 	//trigger businessActions type to directly show the first option and draw its google chart
-	$("#businessActions_type").attr("zipcode", feature.properties['zip']).change();
+	$("#businessActions_type").attr("zipcode", feature.properties['zip'])//.change();
 	
 	
-	
-	//demographic Data
-	//alert(app.layers.demographicData.toSource());
-	var $obj=$("#demographic_type").html("");
-	$.each(app.demographicData, function(k,v){
-		// alert(k);  k is HC01_VC04, HC01_VC20, hc01_VC23 .....
-		// alert(v);  v is "Total Population", "Total pouplation with childern at home". "Median household income",  .....
-		$obj.append("<div data-role='collapsible'><h3 value='" + k + "'>"+v+"</h3><p><div id='localInfo_chart_" + k + "' style='overflow-y:auto; overflow-x:hidden'></div></p></div>");
-	});
-	
-	
-	$obj.collapsibleset("refresh").find("div[data-role='collapsible'] h3").click(function(){ //while clicking on the colllapse, redraw the demographic data and show on the map
-		var value=$(this).attr("value");
-		
-		if(app.layers.demographicData){
-			var demographic=app.layers.demographicData;
-			//highlight the zipcode boundary
-			demographic.redrawStyle(value, function(f){
-				var defaultStyle=demographic.options.styles(f, value);
-		
-				if(f.properties["ZIP"]==feature.properties["zip"]){
-					defaultStyle.width=4;
-					defaultStyle.color="#666";
-					defaultStyle.dashArray='';
-				}
-				
-				return defaultStyle;
-			}); 
-			
-			//change legend
-			$(".leaflet-control-legend").html(demographic.getLegend(value));
-		}
-	});
 	
 	
 	//highlight the zipcode boundary and show demographic data
@@ -1155,8 +1118,34 @@ function showBusinessAction(type){
 							domID='demographicChart_'+type;
 							
 						showDemographicChart(type, zipcode, domID);
+						
+						
+						//show demographic layer on the map
+						if(app.layers.demographicData){
+							var demographic=app.layers.demographicData;
+							//highlight the zipcode boundary
+							demographic.redrawStyle(type, function(f){
+								var defaultStyle=demographic.options.styles(f, type);
+						
+								if(f.properties["ZIP"]==zipcode){
+									defaultStyle.width=4;
+									defaultStyle.color="#666";
+									defaultStyle.dashArray='';
+								}
+								
+								return defaultStyle;
+							})
+							
+							demographic.addTo(app.map); 
+							
+							
+							
+							//change legend
+							$(".leaflet-control-legend").html(demographic.getLegend(type));
+						}
 					}
 				});
+								
 								
 				//trigger dataTable to filter the zipcode
 				//app.dataTable.fnFilter(zipcode);
@@ -1167,7 +1156,7 @@ function showBusinessAction(type){
 
 			}
 		};
-	
+		
 	
 	switch(type){
 		case "top_users":
@@ -1194,7 +1183,7 @@ function showBusinessAction(type){
 				dataArray.addRow([k, count, tooltip, highlight, tooltip, originalCount/dataLength]);
 				
 				//show zipcode layer
-				v.addTo(app.map);
+				//v.addTo(app.map);
 			});
 			
 			sort=[{column: 5, desc:true}] //according column 5 (orginalCustomers) to sort whole datasets.
@@ -1204,7 +1193,6 @@ function showBusinessAction(type){
 			chartOptions.googleChartWrapperOptions.options.series[2]={color: 'transparent', visibleInLegend: false}; //set bar color=transparent for originalCustomers
 			chartOptions.googleChartWrapperOptions.options.titleX="The number of customers";
 			chartOptions.googleChartWrapperOptions.options.titleY="Zip Codes"
-			
 		break;
 		case "top_sales":
 			dataArray=[["zipcodes", "sum_sales"]];
