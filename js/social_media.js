@@ -25,7 +25,7 @@ function callPython(){
 	
 	
 	//var rad = document.getElementById("socialMedia_spatial").value;
-	var rad = 15;
+	var rad = 18;
 	//var ts = (Math.floor(Date.now()/1000)) - (document.getElementById("socialMedia_temporal").value);
 	var ts = (Math.floor(Date.now()/1000)) - (63072000);
 	//var source = document.getElementById("socialMedia_source").value;
