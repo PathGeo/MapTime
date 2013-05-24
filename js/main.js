@@ -88,7 +88,8 @@ var app={
 	mapGalleryHtml:"",
 	css:{
 		"dataTable_highlightRow":{"background-color":"#ED3D86", "color":"#ffffff"}
-	}
+	},
+	$tr:null
 }
 
 
@@ -414,10 +415,10 @@ function showLayer(obj, isShow){
 									//layer.bindPopup(html,{maxWidth:500, maxHeight:300});
 									
 								
-									//based on _DT_RowIndex to insert layer into layers
+									//based on _featureID to insert layer into layers
 									//That means it is the geocoding layer
-									if(feature.properties._DT_RowIndex>=0){
-										var id=feature.properties["_DT_RowIndex"];
+									if(feature.properties._featureID>=0){
+										var id=feature.properties["_featureID"];
 										layers[id]=layer;
 										
 										//if feature contains zipcode field, then calculate information in the feature attribute, e.g. how many users in the zip code, the sum of sales
@@ -459,7 +460,7 @@ function showLayer(obj, isShow){
 										},
 										click:function(e){
 											//show local info
-											showLocalInfo(e.target.feature.properties._DT_RowIndex, true);
+											showLocalInfo(e.target.feature.properties._featureID, true);
 										}
 									})
 								},
@@ -513,7 +514,7 @@ function showLayer(obj, isShow){
 										},
 										click: function(e){
 											//show local info
-											showLocalInfo(e.target.feature.properties._DT_RowIndex, true);
+											showLocalInfo(e.target.feature.properties._featureID, true);
 										}
 									});
 								},
@@ -738,32 +739,59 @@ function showTable(obj){
 			"aaData": dataTable.datas, //data
 			"aoColumns": dataTable.columns_dataTable, //column
 			"bJQueryUI": false,
-			"bAutoWidth":false,
+			"bAutoWidth":true,
 			"bPaginate": false,
 			"sPaginationType": "two_button", //"full_numbers",    //page number 
 			"sScrollY": $("#dataPanel").height()-87,
-			"sScrollX": $("#dataPanel").width()-10,
-			"bDeferRender": true,
+			"sScrollX": "100%",
+			//"bDeferRender": true,
 			"oLanguage": {
 		      "sSearch": ""
 		    },
 			"iDisplayLength": 1000,
-			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"f><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rti<>>', //DOM
+			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"f><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rtiS<>>', //DOM
 			"fnInitComplete": function(oSettings, json) {
 				$("#" + oSettings.sTableId+"_filter input").val("Filter your data....").focus(function(){
-
 					if($(this).val()=="Filter your data...."){
 						$(this).val("");
 					}
 				});
+				
+				//need to wait a few time to adjust the column size
+				setTimeout(function (){
+					//backup orginal json to defaultJSON
+					if (!obj.defaultJSON) {obj.defaultJSON = obj.json;}
+					
+					//ajust column width
+					app.dataTable.fnAdjustColumnSizing();
+					
+					//get all tr
+					app.$tr=$(".dataTable tr");
+					
+					//draw layers on the map
+					showLayer(obj, true);
+								
+					//re-draw Chart
+					showDataTableChart(obj.json);
+				}, 10);
+				
 		    },
-			fnDrawCallback: function(){
-			
-				//backup orginal json to defaultJSON
-				if (!obj.defaultJSON) {obj.defaultJSON = obj.json;}
-
-				//if jumpPage==true, The datatable only jumps to the page. Don't need to re-read the geojson and redraw the table
-				if (!app.jumpPage) {
+			"fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull ) {
+				//only give the attr "_featureID" into each tr at the first time
+				if($(nRow).attr("_featureID")==undefined){
+					$(nRow).attr({"_featureID": iDisplayIndexFull, "_rowID": iDisplayIndexFull});
+					
+					var properties=obj.json.features[iDisplayIndexFull].properties;
+					properties["_featureID"]=iDisplayIndexFull;
+					properties["_rowID"]=iDisplayIndexFull;
+				}
+		    },
+			fnDrawCallback: function(oSettings){
+				
+				//only works while filter input box is focused!! 
+				if($(".dataTables_filter input").is(":focus")){
+					//console.log('filter refresh map');
+					
 					//get filter data,
 					var me = this, 
 						features = obj.defaultJSON.features, 
@@ -789,18 +817,15 @@ function showTable(obj){
 						if (me.$('tr', {"filter": "applied"}).length == $selectedData.length) {
 		
 							//read selected layers
-							me.$('tr', {"filter": "applied"}).each(function(){
-								$(this).attr("_dt_rowindex", this._DT_RowIndex);
-								
+							me.$('tr', {"filter": "applied"}).each(function(i,tr){
 								feature = features[this._DT_RowIndex];
-								feature.properties._DT_RowIndex = this._DT_RowIndex;
+								feature.properties["_rowID"]=i;
 								geojson.features.push(feature);
 							});
 							
 							
 							//overwrite app.geocodingResult.json and showlayer 
 							if (geojson.features.length > 0){
-							
 								obj.json = geojson;
 								showLayer(obj, true);
 								
@@ -809,7 +834,8 @@ function showTable(obj){
 							}
 						}
 					}, 500)
-				}//end if app.jumpPage
+				}
+				 
 				
 			}//end drawCallback
 		});// end init dataTable
@@ -817,8 +843,6 @@ function showTable(obj){
 		
 		//set all columns in to app.dataTable. Should have another way to get columns
 		app.dataTable.columns = dataTable.columns;
-		
-		
 		
 		
 		//add dataTable tools and click event
@@ -893,7 +917,7 @@ function showInfobox(type, css, dom){
 			//get all columns name from table
 			$.each(app.dataTable.columns, function(i,columnName){
 				//check if the columnName is visible in the dataTable
-				var isShow=($("#dataTable th:contains('"+ columnName + "')").length > 0) ? 'checked' : '';
+				var isShow=($(".dataTable th:contains('"+ columnName + "')").length > 0) ? 'checked' : '';
 				html+="<li><input type='checkbox' id="+i+" " + isShow + " onclick='app.dataTable.fnSetColumnVis(this.id, this.checked); ColVis.fnRebuild(app.dataTable);' />&nbsp; &nbsp; "+columnName +"</li>";
 			});
 		break;
@@ -930,55 +954,52 @@ function showInfobox(type, css, dom){
 	
 	$(".dataTable_menu .infobox").html(html);
 	$(".dataTable_menu").css(css).show();
-
 }
 
 
 
 
 //show local info
-function showLocalInfo(id, jumpToDataTablePage){
-	var layer=app.geocodingResult.geoJsonLayer.layers[id],
+function showLocalInfo(fid, scrollToRow){
+	var layer=app.geocodingResult.geoJsonLayer.layers[fid],
 		feature=layer.feature;
 	
 	
-	//jump to the page in the dataTable
-	if(jumpToDataTablePage){
-		app.jumpPage=true;
-		app.dataTable.fnPageChange(Math.floor(parseFloat(id)/10), true);
-		app.jumpPage=false;
+	//scroll to the selected row
+	if(scrollToRow){
+		var rid=feature.properties["_rowID"];
+		app.dataTable.fnSettings().oScroller.fnScrollToRow(rid);
 	}
 	
+	
 	//highlight the tr in the dataTable
-	var $tr=$("#dataTable tr");
-	$.each(app.css["dataTable_highlightRow"], function(k,v){$tr.css(k,"");});
-	$tr.closest("[_dt_rowindex=" + id +"]").css(app.css["dataTable_highlightRow"]);
-	
-	
+	$.each(app.css["dataTable_highlightRow"], function(k,v){app.$tr.css(k,"");});
+	app.$tr.closest("[_featureID=" + fid +"]").css(app.css["dataTable_highlightRow"]);
+		
 	//zoom to the layer, shift lng a little bit to east
 	var latlng=layer._latlng;
 	app.map.setView(new L.LatLng(latlng.lat, latlng.lng-0.0025), 14)
-			
-			
+				
+				
 	//reset layer to default style and change the selected layer icon
 	app.geocodingResult.geoJsonLayer.eachLayer(function(layer){
 		layer.setIcon(layer.defaultIcon);//.setOpacity(0.5);
 	});
-
+	
 	layer.setIcon(new L.icon({
 		iconUrl: "images/1368754953_Red Ball.png",
 		iconSize: [18, 18], //[26, 26],
-    	iconAnchor: [9, 9] //[13, 13]
+	   	iconAnchor: [9, 9] //[13, 13]
 	})).setOpacity(1);
-			
-
-			
+				
+	
+				
 	//trigger businessActions type to directly show the first option and draw its google chart
 	$("#businessActions_type").attr("zipcode", feature.properties['zip'])//.change();
-	
-	
-	
-	
+		
+		
+		
+		
 	//highlight the zipcode boundary and show demographic data
 	app.layers.demographicData.redrawStyle("HC01_VC04", function(f){
 		var defaultStyle=app.layers.demographicData.options.styles(f,"HC01_VC04");
@@ -988,19 +1009,19 @@ function showLocalInfo(id, jumpToDataTablePage){
 			defaultStyle.color="#666";
 			defaultStyle.dashArray='';
 		}
-		
+			
 		return defaultStyle;
 	});
 	//app.layers.demographicData.addTo(app.map);//.bringToBack();
 	//app.map.fitBounds(app.layers.demographicData.getBounds());
-
-
+	
+	
 	//show legend
 	var defaultType=$("#demographic_type div[data-role='collapsible'] h3").attr("value");
-	$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
-			
+	//$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
 				
-	
+					
+		
 	//select options for social media
 	//$select_media
 	var location=app.geojsonReader.read(feature.geometry);
@@ -1012,14 +1033,14 @@ function showLocalInfo(id, jumpToDataTablePage){
 	$("#lat").val(locationX);
 	var $select_media=$("#localInfo_socialMedia");
 	//$select_media.html("<br/>Lat: <input type='text' id=lat value=" + locationX + "> <br/>Long: <input type='text' id=lng value=" + locationY + "> <br/>Keyword: <input type='text' id='keyword' value='shoes'><br><button type='button' onclick='callPython()'>Search</button>");
+		
 	
-
-
 	
+		
 	//using jsts jts topology suite to find out the polygon the point is within
 	var point=app.geojsonReader.read(feature.geometry);
 	var polygon, withinLayer;
-
+	
 	if(app.layers.demographicData){
 		$.each(app.layers.demographicData._layers, function(k,layer){
 			polygon=app.geojsonReader.read(layer.feature.geometry);
@@ -1028,16 +1049,14 @@ function showLocalInfo(id, jumpToDataTablePage){
 				return false; //break the loop
 			}
 		});
-		
+			
 		if(withinLayer){
 			// $select.change(function(){
 				// console.log(withinLayer.feature.properties[this.value]);
 			// });
 		}
 	}
-	
-	
-	
+		
 }
 	
 
@@ -1293,7 +1312,7 @@ function showDataTableChart(geojson){
 		callback_mouseover:null,
 		callback_mouseout:null,
 		callback_select:function(obj){
-			showLocalInfo(obj.value.properties._DT_RowIndex, true)
+			showLocalInfo(obj.value.properties._featureID, true)
 		}
 	};
 	//pathgeo.service.drawGoogleChart(geojson, [chartOptions], [x, y], null, {sort:[{column: 1}]}); //sort, but the sequence of the chart data will be different with the geojson
