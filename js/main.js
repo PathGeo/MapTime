@@ -12,12 +12,16 @@ var app={
 			//"Google Streetmap":L.tileLayer("https://mts{s}.googleapis.com/vt?lyrs=m@207265067&src=apiv3&hl=zh-TW&x={x}&y={y}&z={z}&s=Ga&style=api%7Csmartmaps",{subdomains:"123", attribution:"Map Source from Google"})
 	},
 	layers: {
-			"demographicData":null
+			"demographicData":null,
+			selectedZipcodeLayer:null
 	},
 	geocodingResult:{
 			type:"GEOJSON",
 			url: null,
 			title: null,
+			column:{
+				statistics:""
+			},
 			keywords:[]
 	},
 	controls:{
@@ -400,19 +404,21 @@ function showLayer(obj, isShow){
 					
 				
 					var layers=[], 
-						zipcodes={};
+						zipcodes={},
+						statisticsColumn=obj.column.statistics,
+						totalSum=obj.dataTable.statisticsColumn[statisticsColumn].sum;
 					
-					
+			
 					//marker layer
 					obj.geoJsonLayer = new L.geoJson(obj.json, {
 								onEachFeature:function(feature,layer){
-									var html=pathgeo.util.objectToHtml(feature.properties);
+									var html=pathgeo.util.objectToHtml(feature.properties, ["_featureID", "_rowID"]);
 									
 									//highlight keyword
 									html=pathgeo.util.highlightKeyword(obj.keywords,html);
 									
 									//info window
-									//layer.bindPopup(html,{maxWidth:500, maxHeight:300});
+									layer.bindPopup(html,{maxWidth:500, maxHeight:300});
 									
 								
 									//based on _featureID to insert layer into layers
@@ -424,13 +430,13 @@ function showLayer(obj, isShow){
 										//if feature contains zipcode field, then calculate information in the feature attribute, e.g. how many users in the zip code, the sum of sales
 										if(feature.properties["zip"]){
 											var code=feature.properties["zip"],
-												sales=feature.properties["sales"];
+												columnValue=feature.properties[statisticsColumn];
 											
 											if(zipcodes[code]){
 												var properties=zipcodes[code].feature.properties;
 												properties["extra-ids"].push(id);
 												properties["extra-count"]=properties["extra-ids"].length;
-												properties["extra-sales_sum"]=properties["extra-sales_sum"] + sales;
+												properties["extra-"+statisticsColumn+"_sum"]+= columnValue;
 											}else{
 												//assign zipcode layer in the demographic layer to the zipcodes array
 												var zipcodeLayer=app.layers.demographicData.zipcodes[code],
@@ -438,7 +444,7 @@ function showLayer(obj, isShow){
 													
 												properties["extra-ids"]=[id];
 												properties["extra-count"]=0;
-												properties["extra-sales_sum"]=sales;
+												properties["extra-"+statisticsColumn+"_sum"]=columnValue;
 												
 												zipcodes[code]=zipcodeLayer;
 											}
@@ -453,14 +459,15 @@ function showLayer(obj, isShow){
 									//event
 									layer.on({
 										mouseover: function(e){
-											
+											showLocalInfo(e.target.feature.properties._featureID, {scrollToRow:true, zoomToCenter:false});
 										},
 										mouseout: function(e){
 											obj.geoJsonLayer.resetStyle(e.target);
+											//app.map.closePopup();
 										},
 										click:function(e){
 											//show local info
-											showLocalInfo(e.target.feature.properties._featureID, true);
+											showLocalInfo(e.target.feature.properties._featureID, {scrollToRow:true, zoomToCenter:false});
 										}
 									})
 								},
@@ -482,6 +489,23 @@ function showLayer(obj, isShow){
 
 					
 					//zipcodes
+					var totalColumnValue=obj.dataTable.statisticsColumn[statisticsColumn].sum;
+					$.each(zipcodes, function(i,zipcodeLayer){
+						var properties=zipcodeLayer.feature.properties;
+						
+						//bind popup on the zipcode layer
+						zipcodeLayer.bindPopup(
+							"<h3>Your customers in Zipcode: " + properties["ZIP"] + "</h3>"+
+							"<ul class='objToHtml'>"+
+							"<li><b>Total Number: </b>" + properties["extra-count"] + "</li>"+
+							"<li><b>Total Sales: </b>" + parseFloat(properties["extra-"+statisticsColumn+"_sum"]).toFixed(2) + " (" + parseFloat(properties["extra-"+statisticsColumn+"_sum"] / totalColumnValue).toFixed(4)*100 + "%)</li>"+
+							"<li><div id='zipcodeChart'></div></li>"+
+							"</ul>"
+						);
+						zipcodeLayer.on('click', function(e){
+							showZipcodeChart("zipcodeChart", properties["ZIP"], properties["extra-"+statisticsColumn+"_sum"], totalColumnValue);
+						});
+					})
 					obj.zipcodeLayer=zipcodes;
 					
 					
@@ -514,7 +538,7 @@ function showLayer(obj, isShow){
 										},
 										click: function(e){
 											//show local info
-											showLocalInfo(e.target.feature.properties._featureID, true);
+											showLocalInfo(e.target.feature.properties._featureID, {scrollToRow:true, zoomToCenter:false});
 										}
 									});
 								},
@@ -706,16 +730,16 @@ function showTable(obj){
 		createTable(obj);
 	}
 	
+	
 	//create table and chart
 	function createTable(obj){
 		//convert geojson properties to array
-		
 		if(!obj.dataTable){
-			obj.dataTable = pathgeo.util.geojsonPropertiesToArray(obj.json);
+			obj.dataTable = pathgeo.util.geojsonPropertiesToArray(obj.json, {statisticsColumn: obj.column.statistics});
 		}
 	
 		var dataTable=obj.dataTable;
-		
+
 		//hide columns
 		var hiddenColumns = ["Coordinates"];
 		$.each(dataTable.columns_dataTable, function(i, column){
@@ -875,8 +899,9 @@ function showTable(obj){
 		
 		
 		//click on rows
-		$("#dataTable").delegate("tr:not([role='row'])", "click", function(){
-			showLocalInfo($(this).context._DT_RowIndex);
+		$("#dataTable tr:not([role='row'])").on({
+			click: function(){showLocalInfo($(this).context._DT_RowIndex, {scrollToRow: false,zoomToCenter: true});},
+			mouseover: function(){}//showLocalInfo($(this).context._DT_RowIndex, {scrollToRow: false,zoomToCenter: true});}
 		});
 		
 		
@@ -895,7 +920,7 @@ function showTable(obj){
 		}//end onchange event
 		//give the html and onchange event to the selects and trigger change event
 		$("#dataTable_chart #select_x").append(html).change(onchange).val("name").change();
-		$("#dataTable_chart #select_y").append(html).change(onchange).val("sales").change();
+		$("#dataTable_chart #select_y").append(html).change(onchange).val(app.geocodingResult.column.statistics).change();
 		$(".dataTable_chartType").click(onchange);
 		
 		
@@ -960,15 +985,37 @@ function showInfobox(type, css, dom){
 
 
 //show local info
-function showLocalInfo(fid, scrollToRow){
+function showLocalInfo(fid, options){
 	var layer=app.geocodingResult.geoJsonLayer.layers[fid],
 		feature=layer.feature;
 	
+	//options
+	if(!options){options={}}
+	options.scrollToRow=options.scrollToRow || false;
+	options.zoomToCenter=options.zoomToCenter || false;
+	options.showPopup=options.showPopup || false;
+	
+	
+	//close popup
+	app.map.closePopup();
 	
 	//scroll to the selected row
-	if(scrollToRow){
+	if(options.scrollToRow){
 		var rid=feature.properties["_rowID"];
-		app.dataTable.fnSettings().oScroller.fnScrollToRow(rid);
+		app.dataTable.fnSettings().oScroller.fnScrollToRow(rid, false);
+	}
+	
+	
+	//zoom to the layer, shift lng a little bit to east
+	if(options.zoomToCenter){
+		var latlng=layer._latlng;
+		app.map.setView(new L.LatLng(latlng.lat, latlng.lng-0.0025), 14)
+	}
+	
+	
+	//open popup
+	if(options.showPopup){
+		layer.openPopup();
 	}
 	
 	
@@ -976,16 +1023,11 @@ function showLocalInfo(fid, scrollToRow){
 	$.each(app.css["dataTable_highlightRow"], function(k,v){app.$tr.css(k,"");});
 	app.$tr.closest("[_featureID=" + fid +"]").css(app.css["dataTable_highlightRow"]);
 		
-	//zoom to the layer, shift lng a little bit to east
-	var latlng=layer._latlng;
-	app.map.setView(new L.LatLng(latlng.lat, latlng.lng-0.0025), 14)
-				
-				
+					
 	//reset layer to default style and change the selected layer icon
 	app.geocodingResult.geoJsonLayer.eachLayer(function(layer){
 		layer.setIcon(layer.defaultIcon);//.setOpacity(0.5);
 	});
-	
 	layer.setIcon(new L.icon({
 		iconUrl: "images/1368754953_Red Ball.png",
 		iconSize: [18, 18], //[26, 26],
@@ -995,25 +1037,19 @@ function showLocalInfo(fid, scrollToRow){
 	
 				
 	//trigger businessActions type to directly show the first option and draw its google chart
-	$("#businessActions_type").attr("zipcode", feature.properties['zip'])//.change();
-		
+	$("#businessActions_type").attr("zipcode", feature.properties['zip'])
 		
 		
 		
 	//highlight the zipcode boundary and show demographic data
-	app.layers.demographicData.redrawStyle("HC01_VC04", function(f){
-		var defaultStyle=app.layers.demographicData.options.styles(f,"HC01_VC04");
-		
-		if(f.properties["ZIP"]==feature.properties["zip"]){
-			defaultStyle.width=4;
-			defaultStyle.color="#666";
-			defaultStyle.dashArray='';
-		}
-			
-		return defaultStyle;
-	});
-	//app.layers.demographicData.addTo(app.map);//.bringToBack();
-	//app.map.fitBounds(app.layers.demographicData.getBounds());
+	var zipcodeLayer=app.layers.selectedZipcodeLayer;
+	if(zipcodeLayer && app.map.hasLayer(zipcodeLayer)){
+		app.map.removeLayer(zipcodeLayer);
+	}
+	zipcodeLayer=app.geocodingResult.zipcodeLayer[feature.properties["zip"]];
+	zipcodeLayer.addTo(app.map).bringToBack();
+	app.layers.selectedZipcodeLayer=zipcodeLayer;
+
 	
 	
 	//show legend
@@ -1024,38 +1060,38 @@ function showLocalInfo(fid, scrollToRow){
 		
 	//select options for social media
 	//$select_media
-	var location=app.geojsonReader.read(feature.geometry);
-	var locationX = location.coordinate.x;
-	var locationY = location.coordinate.y;
-	//document.getElementById("lng").value = locationY;
-	//document.getElementById("lat").value = locationX;
-	$("#lng").val(locationY);
-	$("#lat").val(locationX);
-	var $select_media=$("#localInfo_socialMedia");
+//	var location=app.geojsonReader.read(feature.geometry);
+//	var locationX = location.coordinate.x;
+//	var locationY = location.coordinate.y;
+//	//document.getElementById("lng").value = locationY;
+//	//document.getElementById("lat").value = locationX;
+//	$("#lng").val(locationY);
+//	$("#lat").val(locationX);
+//	var $select_media=$("#localInfo_socialMedia");
 	//$select_media.html("<br/>Lat: <input type='text' id=lat value=" + locationX + "> <br/>Long: <input type='text' id=lng value=" + locationY + "> <br/>Keyword: <input type='text' id='keyword' value='shoes'><br><button type='button' onclick='callPython()'>Search</button>");
 		
 	
 	
 		
 	//using jsts jts topology suite to find out the polygon the point is within
-	var point=app.geojsonReader.read(feature.geometry);
-	var polygon, withinLayer;
-	
-	if(app.layers.demographicData){
-		$.each(app.layers.demographicData._layers, function(k,layer){
-			polygon=app.geojsonReader.read(layer.feature.geometry);
-			if(point.within(polygon)){
-				withinLayer=layer;
-				return false; //break the loop
-			}
-		});
-			
-		if(withinLayer){
-			// $select.change(function(){
-				// console.log(withinLayer.feature.properties[this.value]);
-			// });
-		}
-	}
+//	var point=app.geojsonReader.read(feature.geometry);
+//	var polygon, withinLayer;
+//	
+//	if(app.layers.demographicData){
+//		$.each(app.layers.demographicData._layers, function(k,layer){
+//			polygon=app.geojsonReader.read(layer.feature.geometry);
+//			if(point.within(polygon)){
+//				withinLayer=layer;
+//				return false; //break the loop
+//			}
+//		});
+//			
+//		if(withinLayer){
+//			// $select.change(function(){
+//				// console.log(withinLayer.feature.properties[this.value]);
+//			// });
+//		}
+//	}
 		
 }
 	
@@ -1214,9 +1250,10 @@ function showBusinessAction(type){
 			chartOptions.googleChartWrapperOptions.options.titleY="Zip Codes"
 		break;
 		case "top_sales":
-			dataArray=[["zipcodes", "sum_sales"]];
-			$.each(zipcodeLayer, function(k,v){dataArray.push([k, v.feature.properties["extra-sales_sum"]]);});
-			chartOptions.googleChartWrapperOptions.options.titleX="The sum of sales";
+			var columnName=app.geocodingResult.column.statistics;
+			dataArray=[["zipcodes", "sum_"+columnName+""]];
+			$.each(zipcodeLayer, function(k,v){dataArray.push([k, v.feature.properties["extra-" + columnName +"_sum"]]);});
+			chartOptions.googleChartWrapperOptions.options.titleX="The sum of "+columnName;
 			chartOptions.googleChartWrapperOptions.options.titleY="Zip Codes"
 		break;
 		case "avg_income_from_users":
@@ -1309,10 +1346,12 @@ function showDataTableChart(geojson){
 			}
 		},
 		callback:null,
-		callback_mouseover:null,
+		callback_mouseover:function(obj){
+			showLocalInfo(obj.value.properties._featureID, {scrollToRow:true, zoomToCenter:true, showPopup:true})
+		},
 		callback_mouseout:null,
 		callback_select:function(obj){
-			showLocalInfo(obj.value.properties._featureID, true)
+			showLocalInfo(obj.value.properties._featureID, {scrollToRow:true, zoomToCenter:true, showPopup:true})
 		}
 	};
 	//pathgeo.service.drawGoogleChart(geojson, [chartOptions], [x, y], null, {sort:[{column: 1}]}); //sort, but the sequence of the chart data will be different with the geojson
@@ -1355,6 +1394,46 @@ function showLocalInfoChart(data, containerId){
 
 
 
+//show zipcode chart
+//when user click on the zipcode layer on the map
+function showZipcodeChart(domID, zipcode, value, totalValue){
+	var chartOptions={
+		googleChartWrapperOptions: {
+			chartType: "PieChart",
+			containerId: domID,
+			view:{columns:[0,1]},
+			options: {
+				width: 300,
+				height: 200,
+				title: "",
+				titleX: "",
+				titleY: "",
+				legend: "",
+				backgroundColor: {fill:'transparent'}
+			}
+		},
+		callback:null,
+		callback_mouseover:null,
+		callback_mouseout:null,
+		callback_select:null
+	};
+	
+	var data=[
+		["zipcode", "value"],
+		[zipcode, value],
+		["others", totalValue-value]
+	];
+	
+	setTimeout(function(){
+		pathgeo.service.drawGoogleChart(data, [chartOptions], null, null);
+	},10);
+}
+
+
+
+
+
+
 //search business Intelligent
 function searchBusinessIntelligent(geoname){
 	console.log(geoname);
@@ -1391,13 +1470,19 @@ function showDemo(demoType){
 			obj = {
 				url: 'db/demo-SanFrancisco.json',
 				title:'[DEMO] San Francisco shoes customer',
-				keywords: []		
+				column:{
+					statistics:"sales"
+				},
+				keywords: []	
 			}
 		break;
 		case "SAN DIEGO":
 			obj = {
 				url: 'db/demo-SanDiego.json',
 				title:'[DEMO] San Diego demo data',
+				column:{
+					statistics:"Connectory"
+				},
 				keywords: []		
 			}
 		break;

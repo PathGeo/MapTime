@@ -4,14 +4,20 @@ pathgeo.util={
 	/**
 	 * convert javascript object to html
 	 * @param {Object} obj
+	 * @param {Array} notShowArray is an array of string which is not shown in the html
 	 * @return {String} html string
 	 */
-	objectToHtml: function(obj){
+	objectToHtml: function(obj, notShowArray){
 		if(!obj){console.log("[ERROR]pathgeo.util.objectToHtml: obj is null!");return;}
+		
+		if(!notShowArray){notShowArray=[]}
 		
 		var html="<ul class='objToHtml'>";
 		for(var k in obj){
-			html+="<li><b>"+k+"</b>: " + obj[k] + "</li>";
+			//if k (a property) is not in the notShowArray($.inArray(k, notShowArray)==-1) 
+			if($.inArray(k, notShowArray)==-1){
+				html+="<li><b>"+k+"</b>: " + obj[k] + "</li>";
+			}
 		}
 		html+="</ul>";
 		
@@ -60,14 +66,25 @@ pathgeo.util={
 	 * @param {GEOJSON} geojson can be featureColleciton or a feature
 	 * @return {Object} containing {columns: an array of titles, datas: an array of properties}
 	 */
-	geojsonPropertiesToArray: function(geojson){
+	geojsonPropertiesToArray: function(geojson, options){
 		if(!geojson){console.log("[ERROR] pathgeo.util.geoJsonPropertiesToArray: no geojson");return;}
 		
 		var obj={
 			columns_dataTable:[],
 			columns:[],
 			datas:[],
-			googleChartData:[]
+			googleChartData:[],
+			statisticsColumn:{}
+		}
+		
+		//options
+		if(!options){options={}}
+		options.statisticsColumn=options.statisticsColumn || null
+		
+		if(options.statisticsColumn){
+			obj.statisticsColumn[options.statisticsColumn]={
+				"sum":0
+			};
 		}
 		
 		
@@ -88,6 +105,11 @@ pathgeo.util={
 						obj.datas.push(temp.datas);
 					}else{
 						obj.datas.push(parseFeature(i, feature, false).datas)
+					}
+					
+					//statistics
+					if(options.statisticsColumn){
+						obj.statisticsColumn[options.statisticsColumn]['sum']+=parseFloat(feature.properties[options.statisticsColumn])
 					}
 				});
 		}

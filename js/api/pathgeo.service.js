@@ -59,7 +59,7 @@ pathgeo.service={
 		
 		//options
 		if(!options){options={}}
-		options.type=options.type || "HC01_VC04";  //if no type, default is the first one
+		options.type=options.type || "DEFAULT";  //if no type, default is the first one
 		options.featureStyle=options.featureStyle || function(feature){return options.styles(feature, options.type)};
 		options.popupHTML=options.popupHTML || function(feature){
 			return options.filter.type + ": " + feature.properties[options.filter.column] ;
@@ -67,7 +67,7 @@ pathgeo.service={
 		options.popupMaxWidth=options.popupMaxWidth || 500;
 		options.popupMaxHeight=options.poupMaxHeight || 300;
 		options.onFeatureMouseover=options.onFeatureMouseover || function(e){
-			e.target.setStyle({weight: 3, dashArray: '',fillOpacity: 0.6});
+			e.target.setStyle({weight: 3, dashArray: '', fillOpacity: 0.6});
 		};
 		options.onFeatureMouseout=options.onFeatureMouseout || function(e){
 			me.geojsonLayer.resetStyle(e.target);
@@ -89,14 +89,26 @@ pathgeo.service={
 		options.filter=options.filter || {type: "zipcode", value:null}
 		options.styles=options.styles || function(feature, type){
 			if(!type){type=options.type}
-			return {
+			
+			var style={
 				weight: 2,
 				opacity: 1,
 				color: 'white',
 				dashArray: '',//'3'
-				fillOpacity: 0.6,
-				fillColor: me.getColor(type, feature.properties[type])
+				fillOpacity: 0.6
 			}
+			
+			if(type=='DEFAULT'){
+				style.fillColor='transparent';
+				style.fillOpacity=0.2;
+				style.color='#ED3D86';
+				style.dashArray='3';
+				style.width=3
+			}else{
+				style.fillColor= me.getColor(type, feature.properties[type])
+			}
+	
+			return style;
 		}
 		
 		
@@ -235,6 +247,7 @@ pathgeo.service={
 			if(options.callback){options.callback(me.geojsonLayer)}
 			
 		}//end parseJson
+		
 		
 		
 		//load data

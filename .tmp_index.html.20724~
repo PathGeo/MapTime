@@ -270,10 +270,10 @@
 						<div id='dataTable_chartControlMenu'>
 							Change Chart Type:<br>
 							<fieldset data-role="controlgroup" data-mini="true" data-type="horizontal">
-							 	<!--<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_area" value="AreaChart" >
+							 	<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_area" value="AreaChart" >
 							 	<label for="dataTable_chartType_area">Area Chart</label>
 								<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_pie" value="PieChart">
-								<label for="dataTable_chartType_pie">Pie Chart</label>-->
+								<label for="dataTable_chartType_pie">Pie Chart</label>
 								<input type="radio" name="dataTable_chartType" class="dataTable_chartType" id="dataTable_chartType_bar" value="BarChart" checked="checked">
 								<label for="dataTable_chartType_bar">Bar Chart</label>
 							</fieldset>
