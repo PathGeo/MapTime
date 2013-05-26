@@ -507,7 +507,7 @@ function showLayer(obj, isShow){
 							"<li><b>Total Sales: </b>" + parseFloat(properties["extra-"+statisticsColumn+"_sum"]).toFixed(2) + " (" + parseFloat(properties["extra-"+statisticsColumn+"_sum"] / totalColumnValue).toFixed(4)*100 + "%)</li>"+
 							"<li><div id='zipcodeChart'></div></li>"+
 							"</ul>"+
-							"<a href='#' onclick=\"showDemographicData('" + properties["ZIP"] +"');\" style='cursor:pointer;'>See more.....</a>"
+							"<a href='#' onclick=\"showDemographicData('" + properties["ZIP"] +"');\" style='cursor:pointer;'>See more about the zipcode area.....</a>"
 						);
 						zipcodeLayer.on('click', function(e){
 							showZipcodeChart("zipcodeChart", properties["ZIP"], properties["extra-"+statisticsColumn+"_sum"], totalColumnValue);
@@ -727,6 +727,13 @@ function switchBaseLayer(layer){
 //show pivot table
 //This first populates the table, then draws the geojson features
 function showTable(obj){
+	//clear zipcodelayer if any
+	if(app.layers.selectedZipcodeLayer && app.map.hasLayer(app.layers.selectedZipcodeLayer)){
+		app.map.removeLayer(app.layers.selectedZipcodeLayer);
+		app.layers.selectedZipcodeLayer.clearLayers();
+	}
+	
+	
 	if(!obj.json){
 		$.getJSON(obj.url, function(json){
 			//if json is an array of features
@@ -1130,6 +1137,8 @@ function showLocalInfo(fid, options){
 //highlight zipcode area and show zipcodelayer on the map
 function highlightZipcode(zipcodes, options){
 	if(!options){options={}}
+	options.zoomToBounds=options.zoomToBounds || false;
+	
 	
 	var zipcodeLayer=app.layers.selectedZipcodeLayer;
 	if(zipcodeLayer && app.map.hasLayer(zipcodeLayer)){
@@ -1142,6 +1151,11 @@ function highlightZipcode(zipcodes, options){
 	});
 	zipcodeLayer.addTo(app.map).bringToBack();
 	app.layers.selectedZipcodeLayer=zipcodeLayer;
+	
+	//zoom to bounds
+	if(options.zoomToBounds){
+		app.map.fitBounds(zipcodeLayer.getBounds());
+	}
 }
 	
 
@@ -1266,12 +1280,18 @@ function showDemographicData(zipcode){
 		$("#businessActions_detailTitle").text(properties["NAME"]);
 		
 		
+		//highlight zipcode
+		highlightZipcode([zipcode], {zoomToBounds:true});
+		
+		
 		//CONTENT
 		$.each(properties, function(k,prop){
 			if(k.split("extra-").length==1){ // only show origianl properties without extra properties
 				//list view
-				if((k=='ZIP' || k=='NAME' || k=='STABB' || k=='AREA' || k=='id1')){
-					html_listview+="<li><h4>"+ k + "<p>" + prop + "</p></h4></li>";
+				if(k=='ZIP' || k=='NAME' || k=='STABB' || k=='AREA' || k=='id1'){
+					if(k=='ZIP' || k=='NAME'){
+						html_listview+="<li><h4>"+ k + "<p>" + prop + "</p></h4></li>";
+					}
 				}else{
 					html_collapsible+="<div data-role='collapsible' data-theme='c' data-content-theme='d' data-collapsed-icon='arrow-d' data-expanded-icon='arrow-u' data-iconpos='right'>" + 
 					  				 	"<h4 value='" + k + "'>"+ app.demographicData[k] + "<p>" + prop + "</p></h4>"+
@@ -1298,28 +1318,27 @@ function showDemographicData(zipcode){
 						
 						
 				//show demographic layer on the map
-				if(app.layers.demographicData){
-					var demographic=app.layers.demographicData;
-					//highlight the zipcode boundary
-					demographic.redrawStyle(type, function(f){
-						var defaultStyle=demographic.options.styles(f, type);
-						
-						if(f.properties["ZIP"]==zipcode){
-							defaultStyle.width=4;
-							defaultStyle.color="#666";
-							defaultStyle.dashArray='';
-						}
-								
-						return defaultStyle;
-					})
-							
-					demographic.addTo(app.map); 
-							
-							
-							
-					//change legend
-					$(".leaflet-control-legend").html(demographic.getLegend(type));
-				}
+//				if(app.layers.demographicData){
+//					var demographic=app.layers.demographicData;
+//					//highlight the zipcode boundary
+//					demographic.redrawStyle(type, function(f){
+//						var defaultStyle=demographic.options.styles(f, type);
+//						
+//						if(f.properties["ZIP"]==zipcode){
+//							defaultStyle.width=4;
+//							defaultStyle.color="#666";
+//							defaultStyle.dashArray='';
+//						}
+//							
+//						console.log(defaultStyle)
+//						return defaultStyle;
+//					})
+//							
+//					demographic.addTo(app.map); 		
+//							
+//					//change legend
+//					$(".leaflet-control-legend").html(demographic.getLegend(type));
+//				}
 			}
 		});
 								

@@ -174,12 +174,12 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 .dataTable_menu .infobox ul {list-style:none; padding:0px; margin:0px}
 .dataTable_menu .infobox ul li {padding:1px; font-weight:bold; }
 
-.dataTable_nav {width:120px; float:left;}
+.dataTable_nav {width:120px; float:left; display:none;}
 .dataTable_nav li a > span {height:15px;}
 .dataTable_nav li a img {width:20px;}
 
 #dataTable_length {float:right; padding-right:30px;}
-#dataTable_filter input {width:180px;height:26px;}
+#dataTable_filter input {width:280px;height:26px;padding:0px 5px 0px 5px; -moz-border-radius:5px; -webkit-border-radius:5px;border-radius:5px;}
 #dataTable_filter label {font-weight:bold; color:#ffffff;}
 #dataTable { width: 100%; }
 #dataTable_chart {width:100%; }
