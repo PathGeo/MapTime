@@ -157,12 +157,26 @@ function init_map(){
 	app.map.on("baselayerchange", function(e){
 		$(".leaflet-control-attribution a:first-child").attr("href", "http://www.pathgeo.com").html("PathGeo");
 	})
-	
+
 	
 	//open popup event
-	app.map.on('popupopen', function(e){
-		
-	})
+	app.map.on({
+		'popupopen':function(e){
+			//if the popup source is zipcode layer
+			if($(e.popup._content).hasClass('zipcodePopup')){
+				$(".leaflet-tile-pane").css({opacity:0.3, "z-index":6});
+			}
+		},
+		'popupclose':function(e){
+			//if the popup source is zipcode layer
+			if($(e.popup._content).hasClass('zipcodePopup')){
+				$(".leaflet-tile-pane").css({opacity:1, "z-index":2});
+			}
+		},
+		"viewreset": function(e){
+			console.log('reset');
+		}
+	});
 }
 
 
@@ -200,32 +214,7 @@ function init_UI(){
 	 	effect: "fade"
 	 });
 	 
-	 
-	//set up heatmap slider
-	var getRadius = function(z){
-		return	6.25 * Math.pow(2, (z + 1));
-	};
-	$("#heatmap_slider").attr({
-		'min': getRadius(3),
-		'max': getRadius(8),
-		'step': (getRadius(8) - getRadius(3)) / 10,
-		'value': getRadius(4)
-	}).on("slidestop", function(e){
-		var radius=e.currentTarget.value,
-			obj=app.geocodingResult;
-		
-		//remove existing heatmap
-		if(obj.heatMapLayer._map){
-			app.map.removeLayer(obj.heatMapLayer);
-		}
-		app.controls.toc.removeLayer(obj.heatMapLayer);
-		
-		obj.heatMapLayer=pathgeo.layer.heatMap(obj.json, radius);
-		obj.heatMapLayer.addTo(app.map);
-		app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
-	}).slider('refresh'); 
-	$("#heatmap_radius .ui-input-text").html("Change Hot Spot's Radius (unit: Feet)")
-	
+
 	 
 	//when mouse click on otherplace, hide dataTable_menu
 	$(document).mouseup(function(e){
@@ -457,21 +446,17 @@ function showLayer(obj, isShow){
 										}
 									}
 									
-									
-									//default icon
-									layer.defaultIcon=layer.options.icon;
-								
-									
 									//event
 									layer.on({
 										mouseover: function(e){
 											showLocalInfo(e.target.feature.properties._featureID, {scrollToRow:true, zoomToCenter:false, showPopup:false});
 										},
 										mouseout: function(e){
-											obj.geoJsonLayer.resetStyle(e.target);
+											e.target.setIcon(e.target.options.iconDefault)
 											//app.map.closePopup();
 										},
 										click:function(e){
+											console.log('click');
 											//show local info
 											showLocalInfo(e.target.feature.properties._featureID, {scrollToRow:true, zoomToCenter:false});
 										}
@@ -488,7 +473,13 @@ function showLayer(obj, isShow){
 											iconSize: [12, 12],//[12.5, 21],
 											iconAnchor: [6, 6]// [6.25, 10.5]
 									});
-									return new L.marker(latlng, {icon: icon})
+									
+									var iconHover=new L.icon({
+										iconUrl: "images/1368754953_Red Ball.png",
+										iconSize: [18, 18], //[26, 26],
+									   	iconAnchor: [9, 9] //[13, 13]
+									})
+									return new L.marker(latlng, {icon: icon, iconHover:iconHover, iconDefault:icon})
 								}
 					});
 					obj.geoJsonLayer.layers=layers;
@@ -501,13 +492,13 @@ function showLayer(obj, isShow){
 						
 						//bind popup on the zipcode layer
 						zipcodeLayer.bindPopup(
-							"<h3>Your customers in Zipcode: " + properties["ZIP"] + "</h3>"+
+							"<div class='zipcodePopup'><h3>Your customers in Zipcode: " + properties["ZIP"] + "</h3>"+
 							"<ul class='objToHtml'>"+
 							"<li><b>Total Number: </b>" + properties["extra-count"] + "</li>"+
 							"<li><b>Total Sales: </b>" + parseFloat(properties["extra-"+statisticsColumn+"_sum"]).toFixed(2) + " (" + parseFloat(properties["extra-"+statisticsColumn+"_sum"] / totalColumnValue).toFixed(4)*100 + "%)</li>"+
 							"<li><div id='zipcodeChart'></div></li>"+
 							"</ul>"+
-							"<a href='#' onclick=\"showDemographicData('" + properties["ZIP"] +"');\" style='cursor:pointer;'>See more about the zipcode area.....</a>"
+							"<a href='#' onclick=\"showDemographicData('" + properties["ZIP"] +"');\" style='cursor:pointer;'>See more about the zipcode area.....</a></div>"
 						);
 						zipcodeLayer.on('click', function(e){
 							showZipcodeChart("zipcodeChart", properties["ZIP"], properties["extra-"+statisticsColumn+"_sum"], totalColumnValue);
@@ -586,14 +577,7 @@ function showLayer(obj, isShow){
 					
 					
 					//heatmap
-					//app.map.fitBounds(obj.geoJsonLayer.getBounds());    // Tempeory for zoom level of heatmap
-					//app.zoomLevel = app.map.getZoom();
-					//alert("Zoom level before call pathgeo.layer.heatMap = "+app.zoomLevel);
-					// radius by zoom level -> 6.25 * 2^(18-zoomLevel)
-					
-					var radius = 6.25 * Math.pow(2,(app.map.getZoom()+1));
-					if(radius>3200){radius=3200}
-					if(radius<100){radius=100}
+					var radius = 300;
 					$("#heatmap_slider").attr("value", radius).slider('refresh')
 					
 					obj.heatMapLayer=pathgeo.layer.heatMap(obj.json, radius);
@@ -655,8 +639,38 @@ function showLayer(obj, isShow){
 				})
 				
 				app.map.fitBounds(obj.geoJsonLayer.getBounds());
-				app.zoomLevel = app.map.getZoom();
-				//alert("Zoom level after fitBounds = "+app.zoomLevel);
+				
+	
+				
+				//heatmap
+				
+				var zoomLevel=app.map.getBoundsZoom(obj.geoJsonLayer.getBounds());
+				var getRadius = function(i){
+					return	6.25 * Math.pow(2, (17-zoomLevel+i));
+				};
+				app.controls.toc.removeLayer(obj.heatMapLayer);
+				obj.heatMapLayer=pathgeo.layer.heatMap(obj.json, getRadius(0));
+				app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
+					
+					
+				//set up heatmap slider		
+				$("#heatmap_slider").attr({
+					'min': getRadius(0),
+					'max':  getRadius(2),
+					'step': (getRadius(2) - getRadius(0))/3,
+					'value': getRadius(0)
+				}).on("slidestop", function(e){
+					var radius=e.currentTarget.value;
+					
+					//remove existing heatmap
+					if(obj.heatMapLayer._map){app.map.removeLayer(obj.heatMapLayer);}
+					app.controls.toc.removeLayer(obj.heatMapLayer);
+						
+					obj.heatMapLayer=pathgeo.layer.heatMap(obj.json, radius);
+					obj.heatMapLayer.addTo(app.map);
+					app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
+				}).slider('refresh'); 
+				$("#heatmap_radius .ui-input-text").html("Change Hot Spot's Radius (unit: Feet)")
 			}
 
 			//close dialog
@@ -1065,19 +1079,11 @@ function showLocalInfo(fid, options){
 	//highlight the tr in the dataTable
 	$.each(app.css["dataTable_highlightRow"], function(k,v){app.$tr.css(k,"");});
 	app.$tr.closest("[_featureID=" + fid +"]").css(app.css["dataTable_highlightRow"]);
-		
-					
-	//reset layer to default style and change the selected layer icon
-	app.geocodingResult.geoJsonLayer.eachLayer(function(layer){
-		layer.setIcon(layer.defaultIcon);//.setOpacity(0.5);
-	});
-	layer.setIcon(new L.icon({
-		iconUrl: "images/1368754953_Red Ball.png",
-		iconSize: [18, 18], //[26, 26],
-	   	iconAnchor: [9, 9] //[13, 13]
-	})).setOpacity(1);
-				
 	
+	
+	//change marker icon
+	layer.setIcon(layer.options.iconHover);
+		
 				
 	//trigger businessActions type to directly show the first option and draw its google chart
 	$("#businessActions_type").attr("zipcode", feature.properties['zip'])
