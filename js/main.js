@@ -172,9 +172,6 @@ function init_map(){
 			if($(e.popup._content).hasClass('zipcodePopup')){
 				$(".leaflet-tile-pane").css({opacity:1, "z-index":2});
 			}
-		},
-		"viewreset": function(e){
-			console.log('reset');
 		}
 	});
 }
@@ -248,8 +245,8 @@ function init_UI(){
 	//Submits form when user selects a file to upload
 	//The reponse is a list of column names, which are used to populate the drop-down menu
 	$("#uploadData_input").change(function() { 
-		$("#geocoding_loading").show();
-	
+		$("#geocoding_loading").css({position:"absolute", top:"45px", right:"40px"}).show();
+		
 		$("#uploadData_form").ajaxSubmit({
 			dataType: 'json',		
 			success: function (tableInfo) {
@@ -265,17 +262,15 @@ function init_UI(){
 					$("#uploadData_geocodingFields").append("<input type='checkbox' id='" + column + "'/>" + column + " <br>");
 				}	
 								
-				$("#uploadData_description").hide();
-				$("#uploadData_confirm").show();
-				$("#uploadData_controls").show();	
-				
-				$("#geocoding_loading").hide();
+				$("#uploadData_description, #geocoding_loading").hide();
+				$("#uploadData_confirm, #uploadData_controls").show();	
 			}, error: function (error) {
 				console.log(error.responseText);
 			}
 		});
 	
 	});
+	
 	
 	//Submits upload file form and captures the response
 	//$('#uploadData_form').submit( function() {
@@ -289,7 +284,8 @@ function init_UI(){
 			return;
 		}
 		
-		$("#geocoding_loading").show();
+		//show geocoding loading icon
+		$("#geocoding_loading").css({top:"460px"}).show();
 		
 		$.ajax({
 			dataType: 'json',
@@ -577,11 +573,35 @@ function showLayer(obj, isShow){
 					
 					
 					//heatmap
-					var radius = 300;
-					$("#heatmap_slider").attr("value", radius).slider('refresh')
-					
-					obj.heatMapLayer=pathgeo.layer.heatMap(obj.json, radius);
+					//heatmap
+					var zoomLevel=app.map.getBoundsZoom(obj.geoJsonLayer.getBounds());
+					var getRadius = function(i){
+						return	6.25 * Math.pow(2, (17-zoomLevel+i));
+					};
+					//app.controls.toc.removeLayer(obj.heatMapLayer);
+					obj.heatMapLayer=pathgeo.layer.heatMap(obj.json, getRadius(0));
 					app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
+						
+					//set up heatmap slider		
+					$("#heatmap_slider").attr({
+						'min': getRadius(0),
+						'max':  getRadius(2),
+						'step': (getRadius(2) - getRadius(0))/3,
+						'value': getRadius(0)
+					}).on("slidestop", function(e){
+						var radius=e.currentTarget.value;
+						var geocodingResult=app.geocodingResult;
+						//remove existing heatmap
+						if(geocodingResult.heatMapLayer._map){app.map.removeLayer(geocodingResult.heatMapLayer);}
+						app.controls.toc.removeLayer(geocodingResult.heatMapLayer);
+							
+						geocodingResult.heatMapLayer=pathgeo.layer.heatMap(geocodingResult.json, radius);
+						geocodingResult.heatMapLayer.addTo(app.map);
+						app.controls.toc.addOverlay(geocodingResult.heatMapLayer, "Heat Map");
+					}).slider('refresh'); 
+					$("#heatmap_radius .ui-input-text").html("Change Hot Spot's Radius (unit: Feet)");
+					
+			
 					
 					
 					
@@ -639,38 +659,7 @@ function showLayer(obj, isShow){
 				})
 				
 				app.map.fitBounds(obj.geoJsonLayer.getBounds());
-				
 	
-				
-				//heatmap
-				
-				var zoomLevel=app.map.getBoundsZoom(obj.geoJsonLayer.getBounds());
-				var getRadius = function(i){
-					return	6.25 * Math.pow(2, (17-zoomLevel+i));
-				};
-				app.controls.toc.removeLayer(obj.heatMapLayer);
-				obj.heatMapLayer=pathgeo.layer.heatMap(obj.json, getRadius(0));
-				app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
-					
-					
-				//set up heatmap slider		
-				$("#heatmap_slider").attr({
-					'min': getRadius(0),
-					'max':  getRadius(2),
-					'step': (getRadius(2) - getRadius(0))/3,
-					'value': getRadius(0)
-				}).on("slidestop", function(e){
-					var radius=e.currentTarget.value;
-					
-					//remove existing heatmap
-					if(obj.heatMapLayer._map){app.map.removeLayer(obj.heatMapLayer);}
-					app.controls.toc.removeLayer(obj.heatMapLayer);
-						
-					obj.heatMapLayer=pathgeo.layer.heatMap(obj.json, radius);
-					obj.heatMapLayer.addTo(app.map);
-					app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
-				}).slider('refresh'); 
-				$("#heatmap_radius .ui-input-text").html("Change Hot Spot's Radius (unit: Feet)")
 			}
 
 			//close dialog
@@ -1269,6 +1258,7 @@ function showBusinessAction(type){
 
 
 
+
 //show demographic Data
 function showDemographicData(zipcode){
 		var html_listview="",
@@ -1291,6 +1281,10 @@ function showDemographicData(zipcode){
 		
 		
 		//CONTENT
+		var html_higher="<div data-role='collapsible' data-collapsed='false' data-theme='b' data-content-theme='d' data-collapsed-icon='arrow-d' data-expanded-icon='arrow-u' data-iconpos='right'>"+
+						"<h4>Higher than the average</h4><ul data-role='listview' data-divider-theme='d'>";
+		var html_lower="<div data-role='collapsible'  data-theme='b' data-content-theme='d' data-collapsed-icon='arrow-d' data-expanded-icon='arrow-u' data-iconpos='right'>"+
+						"<h4>Lower than the average</h4><ul data-role='listview' data-divider-theme='d'>";
 		$.each(properties, function(k,prop){
 			if(k.split("extra-").length==1){ // only show origianl properties without extra properties
 				//list view
@@ -1299,52 +1293,74 @@ function showDemographicData(zipcode){
 						html_listview+="<li><h4>"+ k + "<p>" + prop + "</p></h4></li>";
 					}
 				}else{
-					html_collapsible+="<div data-role='collapsible' data-theme='c' data-content-theme='d' data-collapsed-icon='arrow-d' data-expanded-icon='arrow-u' data-iconpos='right'>" + 
-					  				 	"<h4 value='" + k + "'>"+ app.demographicData[k] + "<p>" + prop + "</p></h4>"+
-									 	"<div id='demographicChart_" + k + "' class='demographicChart'></div>" +
-									  "</div>";
+//					html_collapsible+="<div data-role='collapsible' data-theme='c' data-content-theme='d' data-collapsed-icon='arrow-d' data-expanded-icon='arrow-u' data-iconpos='right'>" + 
+//					  				 	"<h4 value='" + k + "'>"+ app.demographicData[k] + "<p>" + prop + "</p></h4>"+
+//									 	"<div id='demographicChart_" + k + "' class='demographicChart'></div>" +
+//									  "</div>";
+					
+					//classify demographic data to advantage (value >= average of CA) and disadvantage (value< average)
+					if(prop >= app.properties_average[k]){
+						html_higher+="<li><a href=# value='"+ k + "'><img src='images/1369780713_navigation-up_red.png'><h2>"+ app.demographicData[k] + "</h2><p><label>"+ prop +"</label> > " + app.properties_average[k] + "</p></a></li>";
+					}else{
+						html_lower+="<li><a href=# value='"+ k + "'><img src='images/1369780924_navigation-down_green.png'><h2>"+ app.demographicData[k] + "</h2><p><label>"+ prop +"</label> < " + app.properties_average[k] + "</p></a></li>";
+					}
 				}
 				//html+="<li><a href='#'><img src='images/1368477544_FootballPlayer_Male_Dark.png'><p>" + k + "</p><h2>" + prop + "</h2></a></li>";
 			}
 		});
-		html_listview+="<ul>"
-		html_collapsible+="</div>";
+		
+		//html for collapsible layout
+		html_higher+="</ul></div>";
+		html_lower+="</ul></div>";
+		html_collapsible=html_higher + html_lower;
+		//html_collapsible+="</div>";
+
+		//add some properties in the zipcode layer
+		var zipcodeLayerProperties=app.geocodingResult.zipcodeLayer[zipcode].feature.properties;
+		html_listview+="<li><h4>Total Customers<p>"+zipcodeLayerProperties['extra-count']+"</p></h4></li>"+
+					   "<li><h4>Total "+ app.geocodingResult.column.statistics +"<p>"+zipcodeLayerProperties['extra-'+app.geocodingResult.column.statistics+'_sum']+"</p></h4></li>"+
+					   "<ul>";
+		
 				
 		$("#businessActions_detailContent_listview").html(html_listview).listview('refresh');
 		$("#businessActions_detailContent_collapsible").html(html_collapsible).trigger('create');
 				
 		//expand events
+		$('#businessActions_detailContent_collapsible div.ui-btn-inner a').on('click', function(e,ui){
+			//show demographic layer on the map
+				if(app.layers.demographicData){
+					var demographic=app.layers.demographicData,
+						type=$(this).attr('value');
+					
+					//highlight the zipcode boundary
+					demographic.redrawStyle(type, function(f){
+						var defaultStyle=demographic.options.styles(f, type);
+					
+						if(f.properties["ZIP"]==zipcode){
+							defaultStyle.width=4;
+							defaultStyle.color="#666";
+							defaultStyle.dashArray='';
+						}
+							
+						console.log(defaultStyle)
+						return defaultStyle;
+					})
+							
+					demographic.addTo(app.map); 		
+							
+					//change legend
+					$(".leaflet-control-legend").html(demographic.getLegend(type));
+				}
+		})
+		
+		
 		$('#businessActions_detailContent_collapsible div.ui-collapsible h4').on('click', function(e,ui){
 			//do only when expand
 			if(!$(this).hasClass('ui-collapsible-heading-collapsed')){
 				var type=$(this).attr('value'),
 					domID='demographicChart_'+type;
 							
-				showDemographicChart(type, zipcode, domID);
-						
-						
-				//show demographic layer on the map
-//				if(app.layers.demographicData){
-//					var demographic=app.layers.demographicData;
-//					//highlight the zipcode boundary
-//					demographic.redrawStyle(type, function(f){
-//						var defaultStyle=demographic.options.styles(f, type);
-//						
-//						if(f.properties["ZIP"]==zipcode){
-//							defaultStyle.width=4;
-//							defaultStyle.color="#666";
-//							defaultStyle.dashArray='';
-//						}
-//							
-//						console.log(defaultStyle)
-//						return defaultStyle;
-//					})
-//							
-//					demographic.addTo(app.map); 		
-//							
-//					//change legend
-//					$(".leaflet-control-legend").html(demographic.getLegend(type));
-//				}
+				//showDemographicChart(type, zipcode, domID);
 			}
 		});
 								
