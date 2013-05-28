@@ -76,6 +76,17 @@ var app={
 	showLayers:[], //layers are shown in the map
 	dataTable:null,
 	demographicData:{
+	
+		"fam_size" : "average faimily size",
+		"income" : "median household income",
+		"age0_9" : "age 5 to 9 years",
+		"age10_19" : "age 10 to 19 years",
+		"age20_64" : "age 20 to 64 years",
+		"age65_abov" : "age 65 years and above",
+		"pop" : "population",
+		"popDen" : "population density"
+	
+	/*
 		"HC01_VC04":"Population 16 years and over",
 		"HC01_VC20":"Own children under 6 years",
 		"HC01_VC21":"All parents in family in labor force",
@@ -86,7 +97,8 @@ var app={
 		"HC01_VC86":"Mean household income",
 		"HC01_VC112":"Median family income",
 		"HC01_VC113":"Mean family income",
-		"HC01_VC115":"Per capita income"	
+		"HC01_VC115":"Per capita income"
+	*/
 	},
 	geojsonReader: new jsts.io.GeoJSONReader(),
 	mapGalleryHtml:"",
