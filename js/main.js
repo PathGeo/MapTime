@@ -301,7 +301,7 @@ function init_UI(){
 		
 		$.ajax({
 			dataType: 'json',
-			url: "retrieveAndGeocode.py", 
+			url: "python/retrieveAndGeocode.py", 
 			data: { 
 				fileName: currentFileName,
 				geoColumns: geoColumns
@@ -506,7 +506,7 @@ function showLayer(obj, isShow){
 							"<li><b>Total Sales: </b>" + parseFloat(properties["extra-"+statisticsColumn+"_sum"]).toFixed(2) + " (" + parseFloat(properties["extra-"+statisticsColumn+"_sum"] / totalColumnValue).toFixed(4)*100 + "%)</li>"+
 							"<li><div id='zipcodeChart'></div></li>"+
 							"</ul>"+
-							"<a href='#' onclick=\"showDemographicData('" + properties["ZIP"] +"');\" style='cursor:pointer;'>See more about the zipcode area.....</a></div>"
+							""//"<a href='#' onclick=\"showDemographicData('" + properties["ZIP"] +"');\" style='cursor:pointer;'>See more about the zipcode area.....</a></div>"
 						);
 						zipcodeLayer.on('click', function(e){
 							showZipcodeChart("zipcodeChart", properties["ZIP"], properties["extra-"+statisticsColumn+"_sum"], totalColumnValue);
@@ -588,17 +588,20 @@ function showLayer(obj, isShow){
 					//heatmap
 					var zoomLevel=app.map.getBoundsZoom(obj.geoJsonLayer.getBounds());
 					var getRadius = function(i){
-						return	6.25 * Math.pow(2, (17-zoomLevel+i));
+						var radius=6.25 * Math.pow(2, (17-zoomLevel+i));
+						radius=(radius >= 5000)?5000:radius;
+						radius=(radius >= 50)?radius:50;
+						return radius;
 					};
 					//app.controls.toc.removeLayer(obj.heatMapLayer);
-					obj.heatMapLayer=pathgeo.layer.heatMap(obj.json, getRadius(0));
+					obj.heatMapLayer=pathgeo.layer.heatMap(obj.json, getRadius(0), {opacity:0.55});
 					app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
 						
 					//set up heatmap slider		
 					$("#heatmap_slider").attr({
-						'min': getRadius(0),
-						'max':  getRadius(2),
-						'step': (getRadius(2) - getRadius(0))/3,
+						'min': 50,
+						'max':  5050,
+						'step': (5050-50)/20,
 						'value': getRadius(0)
 					}).on("slidestop", function(e){
 						var radius=e.currentTarget.value;
@@ -607,7 +610,7 @@ function showLayer(obj, isShow){
 						if(geocodingResult.heatMapLayer._map){app.map.removeLayer(geocodingResult.heatMapLayer);}
 						app.controls.toc.removeLayer(geocodingResult.heatMapLayer);
 							
-						geocodingResult.heatMapLayer=pathgeo.layer.heatMap(geocodingResult.json, radius);
+						geocodingResult.heatMapLayer=pathgeo.layer.heatMap(geocodingResult.json, radius, {opacity:0.55});
 						geocodingResult.heatMapLayer.addTo(app.map);
 						app.controls.toc.addOverlay(geocodingResult.heatMapLayer, "Heat Map");
 					}).slider('refresh'); 

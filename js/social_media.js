@@ -7,17 +7,17 @@ function assignSource(sr){
 }
 
 //Work in Progrss... social media viewing
-function callPython(){
-	
-	var keywordTemp = document.getElementById("socialMedia_keyword").value;
+function callPython(inputValue){
+	//var keywordTemp = document.getElementById("socialMedia_keyword").value;
+	var keywordTemp=inputValue;
 	var keywordArray = keywordTemp.split(" ");
-	keyword = keywordArray[0];
+	var keyword = keywordArray[0];
 	for(i=1; i<keywordArray.length; i++){
 		keyword =  keyword + "+" + keywordArray[i];
 	}
 	
-	var lat = document.getElementById("lat").value;
-	var lng = document.getElementById("lng").value;
+//	var lat = document.getElementById("lat").value;
+//	var lng = document.getElementById("lng").value;
 	//try to get the center latlng of the map view
 	var center=app.map.getCenter();
 		lat=center.lat;
@@ -42,7 +42,7 @@ function callPython(){
 		//Search Flickr
 		$.ajax({
 			type: "POST",
-			url: "photo_search.py",
+			url: "python/photo_search.py",
 			data: {kwd:keyword, lat:lat, lng:lng, rad:rad, ts:ts},
 			beforeSend: function(xhr){
 				if (xhr.overrideMimeType){
@@ -107,7 +107,7 @@ function callPython(){
 		//Search Twitter
 		$.ajax({
 			type: "POST",
-			url: "twitter_search.py",
+			url: "python/twitter_search.py",
 			data: {kwd:keyword, lat:lat, lng:lng, rad:rad, ts:ts},
 			beforeSend: function(xhr){
 				if (xhr.overrideMimeType){
@@ -164,6 +164,7 @@ function callPython(){
 		});
 	}
 }
+
 
 function getClusterLayerMedia(gjData) {
 	var clusterLayer = new L.MarkerClusterGroup({ 
