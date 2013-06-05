@@ -136,8 +136,8 @@
 					<label class='menu_description'>Search Social Media <Br>by keywords and locations</label><P></P><br>
 
 					<div data-role="fieldcontain" style='width:100%; margin:0.5em 0'>
-				         <label for="input_location" style='float:left; padding-top:6px;'>Keywords: </label>
-				         <input type="text" name="input_location" id="input_location" value="San Diego" onkeypress='if(event.which==13 || event.keyCode==13){searchBusinessIntelligent(this.value);return false;}else{return true;}'>
+				         <label for="input_location" style='float:left; padding-top:6px;'>Search: <img src='images/1370463075_help.png' style='width:18px;' title='You can use "@" to specify a location.' /></label>
+				         <input type="text" name="input_location" id="input_location" value="Aztecs@San Diego" onkeypress='if(event.which==13 || event.keyCode==13){searchBusinessIntelligent(this.value);return false;}else{return true;}'>
 						 <input type='button' value='Search' onclick='callPython($("#input_location").val());$("#dialog_menu").popup("close");' data-theme="" />
 				    </div>
 				</li>

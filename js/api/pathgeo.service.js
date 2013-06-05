@@ -617,7 +617,34 @@ pathgeo.service={
 			}
 		 });
 	
+	},
+	
+	
+	/**
+	 * search geonames for latitude and longitude
+	 * Note: we only use the FIRST record from geonames' results.
+	 * @param {String} geoname
+	 * @param {Function} callback(lat, lng, json)
+	 */
+	geonameLookup:function(geoname, callback){
+		if(!geoname){console.log('[ERROR] pathgeo.service.geonameLookup: no input geoname!'); return;}
+		
+		var url='http://api.geonames.org/searchJSON?formatted=true&q='+ geoname + '&maxRows=1&lang=es&username=pathgeo&style=full';
+		$.getJSON(url, function(json){
+			if(json && json.geonames && json.geonames.length>0){
+				var lat=json.geonames[0].lat,
+					lng=json.geonames[0].lng;
+				
+				if(callback){callback(lat, lng, json)}
+			}else{
+				console.log('[ERROR] pathgeo.service.geonameLookup: no results from GeoNames.org');
+			}
+		});
+		
 	}
+	
+	
+	
 	
 	
 }

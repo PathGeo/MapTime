@@ -9,160 +9,181 @@ function assignSource(sr){
 //Work in Progrss... social media viewing
 function callPython(inputValue){
 	//var keywordTemp = document.getElementById("socialMedia_keyword").value;
-	var keywordTemp=inputValue;
-	var keywordArray = keywordTemp.split(" ");
-	var keyword = keywordArray[0];
-	for(i=1; i<keywordArray.length; i++){
-		keyword =  keyword + "+" + keywordArray[i];
+	var keywordTemp='',
+		location="";
+	
+	if(inputValue.split("@").length>1){
+		keywordTemp=inputValue.split("@")[0];
+		location=inputValue.split("@")[1];
+		
+		//lookup geonames for the coordinates of the location
+		pathgeo.service.geonameLookup(location, function(lat, lng, json){
+			app.map.setView(new L.LatLng(lat, lng-0.0025), 10);
+			search();
+		});
+	}else{
+		search();
 	}
 	
-//	var lat = document.getElementById("lat").value;
-//	var lng = document.getElementById("lng").value;
-	//try to get the center latlng of the map view
-	var center=app.map.getCenter();
-		lat=center.lat;
-		lng=center.lng;
 	
 	
-	//var rad = document.getElementById("socialMedia_spatial").value;
-	var rad = 18;
-	//var ts = (Math.floor(Date.now()/1000)) - (document.getElementById("socialMedia_temporal").value);
-	var ts = (Math.floor(Date.now()/1000)) - (63072000);
-	//var source = document.getElementById("socialMedia_source").value;
-	var source = $("#socialMedia_source li img[selected=selected]").attr("value");
-	
-	
-	console.log(lat);
-	console.log(lng);
-	console.log(keyword);
-	console.log(source);
-	//source = "twitter";
-	
-	if(source == "flickr"){
-		//Search Flickr
-		$.ajax({
-			type: "POST",
-			url: "python/photo_search.py",
-			data: {kwd:keyword, lat:lat, lng:lng, rad:rad, ts:ts},
-			beforeSend: function(xhr){
-				if (xhr.overrideMimeType){
-					xhr.overrideMimeType("application/json");
+	function search(){
+		var keywordArray = keywordTemp.split(" ");
+		var keyword = keywordArray[0];
+		for(i=1; i<keywordArray.length; i++){
+			keyword =  keyword + "+" + keywordArray[i];
+		}
+		
+	//	var lat = document.getElementById("lat").value;
+	//	var lng = document.getElementById("lng").value;
+		//try to get the center latlng of the map view
+		var center=app.map.getCenter();
+			lat=center.lat;
+			lng=center.lng;
+		
+		
+		//var rad = document.getElementById("socialMedia_spatial").value;
+		var rad = 18;
+		//var ts = (Math.floor(Date.now()/1000)) - (document.getElementById("socialMedia_temporal").value);
+		var ts = (Math.floor(Date.now()/1000)) - (63072000);
+		//var source = document.getElementById("socialMedia_source").value;
+		var source = $("#socialMedia_source li img[selected=selected]").attr("value");
+		
+		
+		console.log(lat);
+		console.log(lng);
+		console.log(keyword);
+		console.log(source);
+		//source = "twitter";
+		
+		if(source == "flickr"){
+			//Search Flickr
+			$.ajax({
+				type: "POST",
+				url: "python/photo_search.py",
+				data: {kwd:keyword, lat:lat, lng:lng, rad:rad, ts:ts},
+				beforeSend: function(xhr){
+					if (xhr.overrideMimeType){
+						xhr.overrideMimeType("application/json");
+					}
 				}
-			}
-		}).success(function( contact ) {
-		console.log(contact);
-			if (curLayer && app.map.hasLayer(curLayer)) app.map.removeLayer(curLayer);
-			if (contact == 0){
-				$("#search_results").html('');
-				$('#social_results_count').html('');
-				$("#layer_selector").hide();
-				alert("No results were found");
+			}).success(function( contact ) {
+			console.log(contact);
+				if (curLayer && app.map.hasLayer(curLayer)) app.map.removeLayer(curLayer);
+				if (contact == 0){
+					$("#search_results").html('');
+					$('#social_results_count').html('');
+					$("#layer_selector").hide();
+					alert("No results were found");
+					$("#socialMedia_loading").hide();
+				}
+				
+				else{
+					var count = contact.length;
+					$("#search_results").html('');
+					$('#social_results_count').html("There are <b>" + count + "</b> results<br/>");
+					$('#social_results_search').html("Filter: <input type='text' name='filter' id='search' value=''><input type='submit' value='Filter' onClick='filterResults()'>");
+				
+					//appen source header in the listview
+					$("#search_results").append("<li data-role='list-divider'>" + source + "<span class='ui-li-count'>" + count + "</span></li>");
+					
+					for(i=0; i<count; i++){
+						var title = contact[i].properties.Title;
+						var description = contact[i].properties.Description;
+						var image = contact[i].properties.Img;
+						var date = contact[i].properties.Date;
+						var account = contact[i].properties.Account;
+					
+						var results="<li><a href='#'><img src='" + image + "'/><h2>" + $(account).html() + "</h2><p class='socialMedia_description'>" + title + "</p><p class='ui-li-aside'><strong>" + date.split(" ")[0] + "</strong></p></a>"+account+"</li>";
+						//var results = "<li><h2>" + title + "</h2><img src='" + image + "' alt='...' style='float:left; margin-right:5px'>" + account + "<br/><p>" + date + "</p><br/></li>";
+						$("#search_results").append(results);
+					}
+					
+					$('#search_results').trigger('create');
+					$('#search_results').listview('refresh');
+					//$("#layer_selector").show();
+					$("#point_media").addClass( "ui-btn-active" );
+					$("#heat_media").removeClass( "ui-btn-active" );
+					$("#cluster_media").removeClass( "ui-btn-active" );
+					
+					$("#socialMedia_result, #socialMedia_mapType").show();
+					$("#socialMedia_loading, #socialMedia_gallery").hide();
+					
+					setDataMedia(contact);
+					app.map.fitBounds(curLayer.getBounds());
+				}
+	
+			}).error(function(error) {
+				console.log(error);
+				alert("There was an error in your search. Please try again");
 				$("#socialMedia_loading").hide();
-			}
-			
-			else{
-				var count = contact.length;
-				$("#search_results").html('');
-				$('#social_results_count').html("There are <b>" + count + "</b> results<br/>");
-				$('#social_results_search').html("Filter: <input type='text' name='filter' id='search' value=''><input type='submit' value='Filter' onClick='filterResults()'>");
-			
-				//appen source header in the listview
-				$("#search_results").append("<li data-role='list-divider'>" + source + "<span class='ui-li-count'>" + count + "</span></li>");
-				
-				for(i=0; i<count; i++){
-					var title = contact[i].properties.Title;
-					var description = contact[i].properties.Description;
-					var image = contact[i].properties.Img;
-					var date = contact[i].properties.Date;
-					var account = contact[i].properties.Account;
-				
-					var results="<li><a href='#'><img src='" + image + "'/><h2>" + $(account).html() + "</h2><p class='socialMedia_description'>" + title + "</p><p class='ui-li-aside'><strong>" + date.split(" ")[0] + "</strong></p></a>"+account+"</li>";
-					//var results = "<li><h2>" + title + "</h2><img src='" + image + "' alt='...' style='float:left; margin-right:5px'>" + account + "<br/><p>" + date + "</p><br/></li>";
-					$("#search_results").append(results);
+			});
+		}
+		
+		
+		if(source == "twitter"){
+			//Search Twitter
+			$.ajax({
+				type: "POST",
+				url: "python/twitter_search.py",
+				data: {kwd:keyword, lat:lat, lng:lng, rad:rad, ts:ts},
+				beforeSend: function(xhr){
+					if (xhr.overrideMimeType){
+						xhr.overrideMimeType("application/json");
+					}
+				}
+			}).success(function( contact ) {
+				if (curLayer && app.map.hasLayer(curLayer)) app.map.removeLayer(curLayer);
+				if (!contact){
+					$("#search_results").html('');
+					$('#social_results_count').html('');
+					$("#layer_selector").hide();
+					alert("No results were found");
 				}
 				
-				$('#search_results').trigger('create');
-				$('#search_results').listview('refresh');
-				//$("#layer_selector").show();
-				$("#point_media").addClass( "ui-btn-active" );
-				$("#heat_media").removeClass( "ui-btn-active" );
-				$("#cluster_media").removeClass( "ui-btn-active" );
-				
-				$("#socialMedia_result, #socialMedia_mapType").show();
-				$("#socialMedia_loading, #socialMedia_gallery").hide();
-				
-				setDataMedia(contact);
-				app.map.fitBounds(curLayer.getBounds());
-			}
-
-		}).error(function(error) {
-			console.log(error);
-			alert("There was an error in your search. Please try again");
-			$("#socialMedia_loading").hide();
-		});
+				else{
+					var count = contact.length;
+					$("#search_results").html('');
+					$('#social_results_count').html("There are <b>" + count + "</b> results<br/>");
+					$('#social_results_search').html("Filter: <input type='text' name='filter' id='search' value=''><input type='submit' value='Filter' onClick='filterResults()'>");
+	
+					//appen source header in the listview
+					$("#search_results").append("<li data-role='list-divider'>" + source + "<span class='ui-li-count'>" + count + "</span></li>");
+	
+					for(i=0; i<count; i++){
+						var title = contact[i].properties.Title;
+						var image = contact[i].properties.Img;
+						var date = contact[i].properties.Date;
+						var account = contact[i].properties.Account;
+					
+						var results="<li><a href='#'><img src='" + image + "'/><h2>" + account + "</h2><p class='socialMedia_description'>" + title + "</p><p class='ui-li-aside'><strong>" + date.split(" ")[0] + "</strong></p></a><a href='http://twitter.com/" + account + "' target='_blank'>Go to this Tweet</a></li>";
+						//var results = "<li><h2>" + title + "</h2><img  src=" + image + " alt='...' style='float:left; margin-right:5px'><a href='http://twitter.com/" + account + "' target='_blank'>@" + account + "</a><br/><p>" + date + "</p><br/></li>";
+						$("#search_results").append(results);
+					}
+					
+					$('#search_results').trigger('create');
+					$('#search_results').listview('refresh');
+					//$("#layer_selector").show();
+					$("#point_media").addClass( "ui-btn-active" );
+					$("#heat_media").removeClass( "ui-btn-active" );
+					$("#cluster_media").removeClass( "ui-btn-active" );
+					
+					$("#socialMedia_result, #socialMedia_mapType").show();
+					$("#socialMedia_loading, #socialMedia_gallery").hide();
+					
+					setDataMedia(contact);
+					app.map.fitBounds(curLayer.getBounds());
+				}
+	
+			}).error(function(error) {
+				console.log(error);
+				alert("There was an error in your search. Please try again");
+				$("#socialMedia_loading").hide();
+			});
+		}
 	}
 	
 	
-	if(source == "twitter"){
-		//Search Twitter
-		$.ajax({
-			type: "POST",
-			url: "python/twitter_search.py",
-			data: {kwd:keyword, lat:lat, lng:lng, rad:rad, ts:ts},
-			beforeSend: function(xhr){
-				if (xhr.overrideMimeType){
-					xhr.overrideMimeType("application/json");
-				}
-			}
-		}).success(function( contact ) {
-			if (curLayer && app.map.hasLayer(curLayer)) app.map.removeLayer(curLayer);
-			if (!contact){
-				$("#search_results").html('');
-				$('#social_results_count').html('');
-				$("#layer_selector").hide();
-				alert("No results were found");
-			}
-			
-			else{
-				var count = contact.length;
-				$("#search_results").html('');
-				$('#social_results_count').html("There are <b>" + count + "</b> results<br/>");
-				$('#social_results_search').html("Filter: <input type='text' name='filter' id='search' value=''><input type='submit' value='Filter' onClick='filterResults()'>");
-
-				//appen source header in the listview
-				$("#search_results").append("<li data-role='list-divider'>" + source + "<span class='ui-li-count'>" + count + "</span></li>");
-
-				for(i=0; i<count; i++){
-					var title = contact[i].properties.Title;
-					var image = contact[i].properties.Img;
-					var date = contact[i].properties.Date;
-					var account = contact[i].properties.Account;
-				
-					var results="<li><a href='#'><img src='" + image + "'/><h2>" + account + "</h2><p class='socialMedia_description'>" + title + "</p><p class='ui-li-aside'><strong>" + date.split(" ")[0] + "</strong></p></a><a href='http://twitter.com/" + account + "' target='_blank'>Go to this Tweet</a></li>";
-					//var results = "<li><h2>" + title + "</h2><img  src=" + image + " alt='...' style='float:left; margin-right:5px'><a href='http://twitter.com/" + account + "' target='_blank'>@" + account + "</a><br/><p>" + date + "</p><br/></li>";
-					$("#search_results").append(results);
-				}
-				
-				$('#search_results').trigger('create');
-				$('#search_results').listview('refresh');
-				//$("#layer_selector").show();
-				$("#point_media").addClass( "ui-btn-active" );
-				$("#heat_media").removeClass( "ui-btn-active" );
-				$("#cluster_media").removeClass( "ui-btn-active" );
-				
-				$("#socialMedia_result, #socialMedia_mapType").show();
-				$("#socialMedia_loading, #socialMedia_gallery").hide();
-				
-				setDataMedia(contact);
-				app.map.fitBounds(curLayer.getBounds());
-			}
-
-		}).error(function(error) {
-			console.log(error);
-			alert("There was an error in your search. Please try again");
-			$("#socialMedia_loading").hide();
-		});
-	}
 }
 
 
