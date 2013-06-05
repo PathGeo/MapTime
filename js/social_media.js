@@ -17,17 +17,21 @@ function callPython(inputValue){
 		location=inputValue.split("@")[1];
 		
 		//lookup geonames for the coordinates of the location
-		pathgeo.service.geonameLookup(location, function(lat, lng, json){
-			app.map.setView(new L.LatLng(lat, lng-0.0025), 10);
+		pathgeo.service.geonameLookup(location, function(lat, lng, json,error){
+			if(error){alert("Sorry, we cannot locate to the '"+location+"'. Please search again!");return;}
+			
+			app.map.setView(new L.LatLng(lat, lng), 10);
 			search();
 		});
 	}else{
+		keywordTemp=inputValue;
 		search();
 	}
 	
 	
 	
 	function search(){
+		
 		var keywordArray = keywordTemp.split(" ");
 		var keyword = keywordArray[0];
 		for(i=1; i<keywordArray.length; i++){

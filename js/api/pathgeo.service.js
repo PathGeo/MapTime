@@ -624,7 +624,7 @@ pathgeo.service={
 	 * search geonames for latitude and longitude
 	 * Note: we only use the FIRST record from geonames' results.
 	 * @param {String} geoname
-	 * @param {Function} callback(lat, lng, json)
+	 * @param {Function} callback(lat, lng, json, error)
 	 */
 	geonameLookup:function(geoname, callback){
 		if(!geoname){console.log('[ERROR] pathgeo.service.geonameLookup: no input geoname!'); return;}
@@ -638,6 +638,7 @@ pathgeo.service={
 				if(callback){callback(lat, lng, json)}
 			}else{
 				console.log('[ERROR] pathgeo.service.geonameLookup: no results from GeoNames.org');
+				if(callback){callback(null, null, json, '[ERROR] pathgeo.service.geonameLookup: no results from GeoNames.org')}
 			}
 		});
 		

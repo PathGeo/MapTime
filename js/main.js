@@ -745,6 +745,9 @@ function switchBaseLayer(layer){
 //show pivot table
 //This first populates the table, then draws the geojson features
 function showTable(obj){
+	//hide dataPanel_intro 
+	$("#dataPanel_intro").hide();
+	
 	//clear zipcodelayer if any
 	if(app.layers.selectedZipcodeLayer && app.map.hasLayer(app.layers.selectedZipcodeLayer)){
 		app.map.removeLayer(app.layers.selectedZipcodeLayer);
