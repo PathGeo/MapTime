@@ -138,7 +138,7 @@
 					<div data-role="fieldcontain" style='width:100%; margin:0.5em 0'>
 				         <label for="input_location" style='float:left; padding-top:6px;'>Keywords: </label>
 				         <input type="text" name="input_location" id="input_location" value="San Diego" onkeypress='if(event.which==13 || event.keyCode==13){searchBusinessIntelligent(this.value);return false;}else{return true;}'>
-						 <input type='button' value='Search' onclick='callPython($("#input_location").val())' data-theme="" />
+						 <input type='button' value='Search' onclick='callPython($("#input_location").val());$("#dialog_menu").popup("close");' data-theme="" />
 				    </div>
 				</li>
 			</ul>
