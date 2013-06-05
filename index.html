@@ -489,12 +489,23 @@ COPYRIGHT © 2013 PATHGEO INC. ALL RIGHTS RESERVED. PATHGEO™, THE PATHGEO LOGO
 						<input type="hidden" id="lat" value="test">
 						<input type="hidden" id="lng" value="test">
 						
+						<!--
 						<ul id='socialMedia_source' >
 							<li title='Twitter' ><img src='images/1368984286_twitter_six_black.png' value='twitter' selected='selected' onclick="this.selected=!this.selected; $(this).attr('selected', this.selected); if(this.selected){this.src='images/1368984286_twitter_six_black.png'}else{this.src='images/1368984257_twitter_six.png'}" /></li>
 							<li title='Flickr' ><img src='images/1368984199_flickr_six_gray.png' value='flickr' selected=false onclick="this.selected=!this.selected; $(this).attr('selected', this.selected); if(this.selected){this.src='images/1368984138_flickr_six_black.png'}else{this.src='images/1368984199_flickr_six_gray.png'}" /></li>
 						</ul>
+						-->
+					
+						<fieldset data-role="controlgroup" data-type="horizontal">
+					        <input type="radio" name="socialMedia_source" id="socialMedia_source_twitter" class='socialMedia_source' value="twitter" checked="checked">
+					        <label for="socialMedia_source_twitter">Twitter</label>
+					        <input type="radio" name="socialMedia_source" id="socialMedia_source_flickr" class='socialMedia_source' value="flickr">
+					        <label for="socialMedia_source_flickr">Flickr</label>
+					    </fieldset>
 						
-						<button type='button' id='socialMedia_searchButton' onclick='callPython($("#socialMedia_keyword").val());$("#socialMedia_loading").show();' data-mini="true" data-theme="b" >Search <span><img src='images/loading.gif' id='socialMedia_loading' /></span></button>
+						<div id='socialMedia_searchButtonPanel'>
+							<button type='button' id='socialMedia_searchButton' onclick='callPython($("#socialMedia_keyword").val());$("#socialMedia_loading").show();' data-mini="true" data-theme="b" >Search <span><img src='images/loading.gif' id='socialMedia_loading' /></span></button>
+						</div>
 					</div>
 
 						<!--<select id='socialMedia_source' name='socialMedia_source' data-mini="true">
