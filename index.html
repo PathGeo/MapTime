@@ -531,20 +531,20 @@ COPYRIGHT © 2013 PATHGEO INC. ALL RIGHTS RESERVED. PATHGEO™, THE PATHGEO LOGO
 
 					<!-- change social media map type-->
 					<div id='socialMedia_mapType'>
-						<div data-role="controlgroup" data-type="horizontal" data-mini="true" >
-							 <a href="#" data-role="button"  data-theme="b" onclick='switchLayersMedia("point")'>Point Map</a>
-							 <a href="#" data-role="button"  data-theme="b" onclick='switchLayersMedia("cluster")'>Cluster Map</a>
-							 <a href="#" data-role="button"  data-theme="b" onclick='switchLayersMedia("heatmap")'>Hot Spots</a>
-						</div>
+						<fieldset data-role="controlgroup" data-type="horizontal">
+					        <input type="radio" name="socialMedia_mapType" id="socialMedia_mapType_point" class='socialMedia_mapType' value="point" checked="checked" onclick='switchLayersMedia("point")' data-theme='a'>
+					        <label for="socialMedia_mapType_point">Point Map</label>
+					        <input type="radio" name="socialMedia_mapType" id="socialMedia_mapType_cluster" class='socialMedia_mapType' value="cluter" onclick='switchLayersMedia("cluster")' data-theme='a'>
+					        <label for="socialMedia_mapType_cluster">Cluster Map</label>
+							<input type="radio" name="socialMedia_mapType" id="socialMedia_mapType_heatmap" class='socialMedia_mapType' value="heatmap" onclick='switchLayersMedia("heatmap")' data-theme='a'>
+					        <label for="socialMedia_mapType_heatmap">HotSpot Map</label>
+					    </fieldset>
 						<label>Map Type: </label>
 					</div>
 					
 					
 					<!-- social media search result-->
 					<div id='socialMedia_result'>
-						<!--<p id='social_results_count'></p>-->
-						<!--<p id='social_results_search'></p>-->
-					
 						<ul data-role="listview" data-inset="true" id="search_results" data-divider-theme="d" data-filter="true" data-filter-placeholder="Filter..."></ul>
 					</div>
 				</div>
