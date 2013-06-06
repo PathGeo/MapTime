@@ -87,7 +87,7 @@
 					<li title='Your Uploaded Data' onclick='showInfoPanel("dataPanel", this)'><img src='images/1368495654_document.png' /></li>
 					<!--<li title='Chart' onclick='showInfoPanel("chartPanel")'><img src='images/1368495559_chart_bar_up.png' /></li>-->
 					<!--<li title='Find the Best Business Actions' onclick='showInfoPanel("localInfoPanel", this);$("#businessActions_type").change()'><img src='images/1368666773_money.png' /></li>-->
-					<!--<li title='Search Social Media' onclick='showInfoPanel("socialMediaPanel", this);'><img src='images/1368666894_comment_check.png' /></li>-->
+					<li title='Search Social Media' onclick='showInfoPanel("socialMediaPanel", this);'><img src='images/1368666894_comment_check.png' /></li>
 					<!--<li title='Account Settings' onclick='showInfoPanel("userPanel", this)'><img src='images/1368496469_man.png' /></li>-->
 					<!--<li title='Main Menu' onclick='$("#uploadData_confirm").hide(); $("#uploadData_description").show(); $("#uploadData_controls").hide();$("#dialog_menu").popup("open")'><img src='images/1368496597_outbox.png' /></li>
 					<li title='Help' onclick='$("#dialog_help").popup("open")'><img src='images/1368495535_help.png' /></li>
@@ -125,20 +125,11 @@
 						<img src='images/1367841372_Drive_Upload.png'/><p></p>
 						<h1>Upload Data</h1>
 						<label class='menu_description'>Upload you data and <Br>find more patterns with demographic and social media data</label>
-					</div>					
-				</li>
-				
-				<li>
-					<div class='demo_button' onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);$("#dialog_menu").popup("close"); showDemo("SAN FRANCISCO");}}, 100)'>
-						<!--<img src='images/demo_sanFrancisco.png' class='ui-corner-all' />-->
-						<label>Try San Francisco Demo Data</label>
 					</div>
-					<div class='demo_button' onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);$("#dialog_menu").popup("close"); showDemo("SAN DIEGO");}}, 100)'>
-						<!--<img src='' class='ui-corner-all' />-->
-						<label>Try San Diego Demo Data</label>
-					</div>		
+					<P></P><br>
+					<input type='button' value='Try San Francisco Demo Data' style='' onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);$("#dialog_menu").popup("close"); showDemo("SAN FRANCISCO");}}, 100)'   />
+					<input type='button' value='Try San Diego Demo Data' style='' onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);$("#dialog_menu").popup("close"); showDemo("SAN DIEGO");}}, 100)'   />
 				</li>
-				<!--
 				<li>
 					<img src='images/map-icons.png' width='300px' height='96px' /><p></p>
 					<h1>Search Social Media</h1>
@@ -150,7 +141,6 @@
 						 <input type='button' value='Search' onclick='callPython($("#input_location").val());$("#dialog_menu").popup("close");showInfoPanel("socialMediaPanel", $("#menuToolbox li[title=\"Search Social Media\"]")[0]);$("#socialMedia_keyword").val($("#input_location").val());' data-theme="" />
 				    </div>
 				</li>
-				-->
 			</ul>
 		</div>
 		
@@ -541,20 +531,20 @@ COPYRIGHT © 2013 PATHGEO INC. ALL RIGHTS RESERVED. PATHGEO™, THE PATHGEO LOGO
 
 					<!-- change social media map type-->
 					<div id='socialMedia_mapType'>
-						<fieldset data-role="controlgroup" data-type="horizontal">
-					        <input type="radio" name="socialMedia_mapType" id="socialMedia_mapType_point" class='socialMedia_mapType' value="point" checked="checked" onclick='switchLayersMedia("point")' data-theme='a'>
-					        <label for="socialMedia_mapType_point">Point Map</label>
-					        <input type="radio" name="socialMedia_mapType" id="socialMedia_mapType_cluster" class='socialMedia_mapType' value="cluter" onclick='switchLayersMedia("cluster")' data-theme='a'>
-					        <label for="socialMedia_mapType_cluster">Cluster Map</label>
-							<input type="radio" name="socialMedia_mapType" id="socialMedia_mapType_heatmap" class='socialMedia_mapType' value="heatmap" onclick='switchLayersMedia("heatmap")' data-theme='a'>
-					        <label for="socialMedia_mapType_heatmap">HotSpot Map</label>
-					    </fieldset>
+						<div data-role="controlgroup" data-type="horizontal" data-mini="true" >
+							 <a href="#" data-role="button"  data-theme="b" onclick='switchLayersMedia("point")'>Point Map</a>
+							 <a href="#" data-role="button"  data-theme="b" onclick='switchLayersMedia("cluster")'>Cluster Map</a>
+							 <a href="#" data-role="button"  data-theme="b" onclick='switchLayersMedia("heatmap")'>Hot Spots</a>
+						</div>
 						<label>Map Type: </label>
 					</div>
 					
 					
 					<!-- social media search result-->
 					<div id='socialMedia_result'>
+						<!--<p id='social_results_count'></p>-->
+						<!--<p id='social_results_search'></p>-->
+					
 						<ul data-role="listview" data-inset="true" id="search_results" data-divider-theme="d" data-filter="true" data-filter-placeholder="Filter..."></ul>
 					</div>
 				</div>
