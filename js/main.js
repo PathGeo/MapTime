@@ -321,7 +321,10 @@ function init_UI(){
 					 json: featureCollection, 
 					 srs: "EPSG:4326",
 					 title: "Your Data",
-					 keywords: ["testing"]
+					 keywords: ["testing"],
+					 column:{
+						statistics:""
+					 }
 				 };
 				 
 				showTable(app.geocodingResult);
@@ -408,8 +411,13 @@ function showLayer(obj, isShow){
 				
 					var layers=[], 
 						zipcodes={},
-						statisticsColumn=obj.column.statistics,
+						statisticsColumn=obj.column.statistics || null,
+						totalSum=0;
+						
+					if(statisticsColumn && statisticsColumn!=''){
 						totalSum=obj.dataTable.statisticsColumn[statisticsColumn].sum;
+					}
+						
 					
 			
 					//marker layer
@@ -494,24 +502,26 @@ function showLayer(obj, isShow){
 
 					
 					//zipcodes
-					var totalColumnValue=obj.dataTable.statisticsColumn[statisticsColumn].sum;
-					$.each(zipcodes, function(i,zipcodeLayer){
-						var properties=zipcodeLayer.feature.properties;
-						
-						//bind popup on the zipcode layer
-						zipcodeLayer.bindPopup(
-							"<div class='zipcodePopup'><h3>Your customers in Zipcode: " + properties["ZIP"] + "</h3>"+
-							"<ul class='objToHtml'>"+
-							"<li><b>Total Number: </b>" + properties["extra-count"] + "</li>"+
-							"<li><b>Total Sales: </b>" + parseFloat(properties["extra-"+statisticsColumn+"_sum"]).toFixed(2) + " (" + parseFloat(properties["extra-"+statisticsColumn+"_sum"] / totalColumnValue).toFixed(4)*100 + "%)</li>"+
-							"<li><div id='zipcodeChart'></div></li>"+
-							"</ul>"+
-							""//"<a href='#' onclick=\"showDemographicData('" + properties["ZIP"] +"');\" style='cursor:pointer;'>See more about the zipcode area.....</a></div>"
-						);
-						zipcodeLayer.on('click', function(e){
-							showZipcodeChart("zipcodeChart", properties["ZIP"], properties["extra-"+statisticsColumn+"_sum"], totalColumnValue);
+					if(statisticsColumn && statisticsColumn!=''){
+						var totalColumnValue=obj.dataTable.statisticsColumn[statisticsColumn].sum;
+						$.each(zipcodes, function(i,zipcodeLayer){
+							var properties=zipcodeLayer.feature.properties;
+							
+							//bind popup on the zipcode layer
+							zipcodeLayer.bindPopup(
+								"<div class='zipcodePopup'><h3>Your customers in Zipcode: " + properties["ZIP"] + "</h3>"+
+								"<ul class='objToHtml'>"+
+								"<li><b>Total Number: </b>" + properties["extra-count"] + "</li>"+
+								"<li><b>Total Sales: </b>" + parseFloat(properties["extra-"+statisticsColumn+"_sum"]).toFixed(2) + " (" + parseFloat(properties["extra-"+statisticsColumn+"_sum"] / totalColumnValue).toFixed(4)*100 + "%)</li>"+
+								"<li><div id='zipcodeChart'></div></li>"+
+								"</ul>"+
+								""//"<a href='#' onclick=\"showDemographicData('" + properties["ZIP"] +"');\" style='cursor:pointer;'>See more about the zipcode area.....</a></div>"
+							);
+							zipcodeLayer.on('click', function(e){
+								showZipcodeChart("zipcodeChart", properties["ZIP"], properties["extra-"+statisticsColumn+"_sum"], totalColumnValue);
+							});
 						});
-					})
+					}
 					obj.zipcodeLayer=zipcodes;
 					
 					
