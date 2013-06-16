@@ -40,6 +40,8 @@ def geocodeRows(rows, locFunc):
 	#Go through each row and geocode location field.
 	for row in rows:
 		try: 
+			#convert value into string
+			row=dict((k,str(v)) for k,v in row.iteritems())
 			lat, lon = locFunc(row)
 			if lat and lon:			
 				doc = dict(type='Feature', geometry=dict(type="Point", coordinates=[lon, lat]), properties=row.copy())
