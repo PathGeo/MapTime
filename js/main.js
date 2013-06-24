@@ -126,13 +126,36 @@ pathgeo.service.demographicData({
 
 
 //init
-$(document).on("pageshow", function(){	  
+$(document).on("pageshow", function(){	 
+	init_login();
+
 	init_UI();
    
    	init_map();
 });
 
 
+
+//init login and read cookie
+function init_login(){
+	//login
+	//console.log($.cookie("SocialTime"));
+	
+	if($.cookie("MapTime")){
+		$("#header_login").attr("href", "#")
+			.click(function(){
+				$("#header_login").attr("href", "#dialog_logout");
+			})
+			.find(".ui-btn-text").html($.cookie("MapTime").split("email=")[1]);
+		
+		//show deom menu
+		setTimeout(function(){
+			$("#dialog_menu").popup("open");
+		}, 1000);
+	}else{
+		$("#dialog_login").popup("open");
+	}
+}
 
 
 
@@ -147,7 +170,7 @@ function init_map(){
     }); 
 	
 	//move the location of zoomcontrol to the bottom right
-	app.map.zoomControl.setPosition("topright");
+	app.map.zoomControl.setPosition("bottomright");
 	
 	//layers control
 	app.controls.toc=L.control.layers(app.basemaps).setPosition("topright");
@@ -201,7 +224,7 @@ function init_UI(){
 	//if directly show the main menu while initlizing the webpage, the main menu will be immediately disppeared in Chrome (noraml in the Firefo).
 	//JQM said this is the bug from webkit(Goolge chrome) https://github.com/jquery/jquery-mobile/issues/5775
 	setTimeout(function(){
-		$("#dialog_menu").popup("open");
+		//$("#dialog_menu").popup("open");
 	},1000);
 	
 	
@@ -464,6 +487,8 @@ function showLayer(obj, isShow){
 										}
 									}
 									
+								
+
 									//event
 									layer.on({
 										mouseover: function(e){
@@ -474,9 +499,16 @@ function showLayer(obj, isShow){
 											//app.map.closePopup();
 										},
 										click:function(e){
-											console.log('click');
 											//show local info
 											showLocalInfo(e.target.feature.properties._featureID, {scrollToRow:true, zoomToCenter:false});
+										},
+										dragend:function(e){
+											//console.log(e)
+											//console.log(e.target.getLatLng());
+										},
+										drag:function(e){
+											//console.log(e);
+											//console.log(e.target.getLatLng());
 										}
 									})
 								},
@@ -497,7 +529,7 @@ function showLayer(obj, isShow){
 										iconSize: [18, 18], //[26, 26],
 									   	iconAnchor: [9, 9] //[13, 13]
 									})
-									return new L.marker(latlng, {icon: icon, iconHover:iconHover, iconDefault:icon})
+									return new L.marker(latlng, {icon: icon, iconHover:iconHover, iconDefault:icon, draggable:true})
 								}
 					});
 					obj.geoJsonLayer.layers=layers;
@@ -1682,3 +1714,78 @@ function fakeLogin(){
     $("#user_login").hide();                
 }
 
+
+//login
+function login(){
+	var email=$("#email").val(),
+		password=$("#password").val();
+	
+	//loading icon
+	$("#login_msg").html("<img src='images/loading.gif' width=20px />")
+	
+	
+	//ajax to check if the email and password are valid
+	$.ajax({
+		url:"python/login.py",
+		data:{
+			email:email,
+			password:password
+		},
+		dataType:"json",
+		method:"post",
+		success:function(e){
+			//clear error msg
+			$("#login_msg").html("");
+
+			if(e.status=='ok'){
+				//close login dialog
+				$('#dialog_login').popup('close');
+				
+				//write cookie
+				$.cookie('MapTime', 'email='+ email, { expires: 7, path: '/' });
+				
+				//rewite login button
+				$("#header_login").attr("href", "#")
+				.click(function(){
+					$("#header_login").attr("href", "#dialog_logout");
+				})
+				.find(".ui-btn-text").html(email);
+				
+				//close dialog_login and open dialog_menu
+				$("#dialog_login").popup("close");
+				
+				setTimeout(function(){
+					$("#dialog_menu").popup("open");
+				},500);
+				
+			}else{
+				//show error msg
+				$("#login_msg").html(e.msg);
+			}
+			
+			
+		},
+		error: function(e){
+			console.log("[ERROR] Login ajax error!!");
+		}
+	})
+	
+}
+
+
+//log out
+function logout(){
+	//rewite login button
+	$("#header_login").attr("href", "#dialog_login")
+		.click(function(){
+			$("#header_login").attr("href", "#dialog_login");
+		})
+		.find(".ui-btn-text").html("Log in");
+	
+	//clear cookies
+	$.removeCookie('MapTime', { path: '/' });
+	//console.log("logout: "+ $.cookie("SocialTime"))
+	
+	//close popup
+	$("#dialog_logout").popup('close');
+}
