@@ -5,6 +5,7 @@ from GeocodingEngine.Geocoder import AddressGeocoder
 #Standard Libraries
 import cgi, json, re, functools
 import cgitb, os, pickle
+from os import path
 
 
 #Functions to check potential location fields (are all these functions necessary?  just pass pattern as argument!)
@@ -34,6 +35,25 @@ def getField(items, checker):
 	return None if not found else found.pop()
 
 	
+def saveDataAsExcel(data, outputFileName):
+	import xlwt
+
+	book = xlwt.Workbook()
+	sheet = book.add_sheet('Data')
+	
+	columns = data[0].keys()
+	for colIndx, column in enumerate(columns):
+		sheet.write(0, colIndx, column)
+
+	for rowIndx, row in enumerate(data):
+		for colIndx, column in enumerate(columns):
+			val = row.get(column, '')
+			sheet.write(rowIndx+1, colIndx, val)
+	
+	curDir = path.dirname(path.realpath(__file__))	
+	book.save(curDir + "\\" + outputFileName)
+		
+		
 def geocodeRows(rows, locFunc):
 	features = []
 
@@ -47,25 +67,29 @@ def geocodeRows(rows, locFunc):
 					row[k] = str(int(v))
 				else:
 					row[k] = str(v)
-				
-			#row=dict((k,str(v)) for k,v in row.iteritems())
-		
-			lat, lon = locFunc(row)
+			
+			place, (lat, lon) = locFunc(row)
+			
 			if lat and lon:			
 				doc = dict(type='Feature', geometry=dict(type="Point", coordinates=[lon, lat]), properties=row.copy())
+				zips = re.findall(r'\b[0-9]{5}\b', place)
+				if zips:
+					doc['properties']['zip_code'] = zips[-1]
+				
 				features.append(doc)
 		except Exception, e:
 			return json.dumps({ 'error': str(e) })
+
+	return features
 	
-	return json.dumps({ 'type': 'FeatureCollection', 'features': features })
 	
 def geocodeRow(row, fields=None, geocoder=None):
 	if not geocoder or not fields:
-		return None, None
+		return None, (None, None)
 	
 	place, (llat, llon) = geocoder.lookup(' '.join([row[field] for field in fields]))
 	
-	return llat, llon
+	return place, (llat, llon)
 	
 	
 cgitb.enable()
@@ -97,9 +121,9 @@ if lat and lon:
 	
 	def getByLatLon(row, latField=None, lonField=None):
 		try: 
-			return float(row[latField]), float(row[lonField])
+			return None, (float(row[latField]), float(row[lonField]))
 		except:
-			return None, None
+			return None, (None, None)
 		
 	geoFunc = functools.partial(getByLatLon, latField=lat, lonField=lon)
 	
@@ -107,9 +131,9 @@ elif geo:
 	def getByLatLon(row, geoField=None):
 		try: 
 			coords = row[geoField].split(',')
-			return float(coords[0]), float(coords[1])
+			return None, (float(coords[0]), float(coords[1]))
 		except:
-			return None, None
+			return None, (None, None)
 		
 	geoFunc = functools.partial(getByLatLon, geoField=geo)
 	
@@ -128,9 +152,11 @@ jsonRows = pickle.load(open(os.path.abspath(__file__).replace(__file__, fname + 
 
 os.remove(os.path.abspath(__file__).replace(__file__, fname + ".p"))
 
-output = geocodeRows(jsonRows, geoFunc)
+features = geocodeRows(jsonRows, geoFunc)
+featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': fname + '.xls' }
 
+saveDataAsExcel(map(lambda item: item['properties'], features), '..\\' + fname + '.xls')
 
 print ''
-print output
+print json.dumps(featureSet)
 
