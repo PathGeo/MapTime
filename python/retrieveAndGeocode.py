@@ -153,9 +153,12 @@ jsonRows = pickle.load(open(os.path.abspath(__file__).replace(__file__, fname + 
 os.remove(os.path.abspath(__file__).replace(__file__, fname + ".p"))
 
 features = geocodeRows(jsonRows, geoFunc)
-featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': fname + '.xls' }
 
-saveDataAsExcel(map(lambda item: item['properties'], features), '..\\' + fname + '.xls')
+fname = fname.lower().replace('.xlsx', '.xls')
+
+featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': './geocoded_files/' + fname }
+
+saveDataAsExcel(map(lambda item: item['properties'], features), '..\\geocoded_files\\' + fname)
 
 print ''
 print json.dumps(featureSet)
