@@ -59,7 +59,7 @@ pathgeo.service={
 		
 		//options
 		if(!options){options={}}
-		options.type=options.type || "HC01_VC04";  //if no type, default is the first one
+		options.type=options.type || "DEFAULT";  //if no type, default is the first one
 		options.featureStyle=options.featureStyle || function(feature){return options.styles(feature, options.type)};
 		options.popupHTML=options.popupHTML || function(feature){
 			return options.filter.type + ": " + feature.properties[options.filter.column] ;
@@ -67,13 +67,22 @@ pathgeo.service={
 		options.popupMaxWidth=options.popupMaxWidth || 500;
 		options.popupMaxHeight=options.poupMaxHeight || 300;
 		options.onFeatureMouseover=options.onFeatureMouseover || function(e){
-			e.target.setStyle({weight: 3, dashArray: '',fillOpacity: 0.6});
+			e.target.setStyle({weight: 3, dashArray: '', fillOpacity: 0.6});
 		};
 		options.onFeatureMouseout=options.onFeatureMouseout || function(e){
 			me.geojsonLayer.resetStyle(e.target);
 		};
 		options.onFeatureClick=options.onFeatureClick || function(e){};
 		options.attributes=options.attributes || {
+				"fam_size":{label: "average faimily size", colorSchemas: [{value: 3.71, color: "#800026"},{value: 3.45, color: "#BD0026"},{value: 3.25, color: "#E31A1C"}, {value: 3.15, color: "#FC4E2A"}, {value: 3.03, color: "#FD8D3C"}, {value: 2.94, color: "#FEB24C"}, {value: 2.74, color: "#FED976"}, {value: 1.96, color: "#FFEDA0"}]}, 
+				"income":{label: "median household income", colorSchemas: [{value: 21700, color: "#800026"},{value: 10255, color: "#BD0026"},{value: 7652, color: "#E31A1C"}, {value: 5980, color: "#FC4E2A"}, {value: 4762, color: "#FD8D3C"}, {value: 4144, color: "#FEB24C"}, {value: 3366, color: "#FED976"}, {value: 686, color: "#FFEDA0"}]}, 
+				"age0_9":{label: "age 5 to 9 years", colorSchemas: [{value: 6534, color: "#800026"},{value: 5073, color: "#BD0026"},{value: 3795, color: "#E31A1C"}, {value: 2667, color: "#FC4E2A"}, {value: 2006, color: "#FD8D3C"}, {value: 1039, color: "#FEB24C"}, {value: 149, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]}, 
+				"age10_19":{label: "age 10 to 19 years", colorSchemas: [{value: 6290, color: "#800026"},{value: 4847, color: "#BD0026"},{value: 3608, color: "#E31A1C"}, {value: 2697, color: "#FC4E2A"}, {value: 1778, color: "#FD8D3C"}, {value: 1036, color: "#FEB24C"}, {value: 209, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]}, 
+				"age20_64":{label: "age 20 to 64 years", colorSchemas: [{value: 30818, color: "#800026"},{value: 24241, color: "#BD0026"},{value: 20288, color: "#E31A1C"}, {value: 15693, color: "#FC4E2A"}, {value: 11276, color: "#FD8D3C"}, {value: 6851, color: "#FEB24C"}, {value: 1125, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]}, 
+				"age65_abov":{label: "age 65 years and above", colorSchemas: [{value: 5865, color: "#800026"},{value: 4553, color: "#BD0026"},{value: 3858, color: "#E31A1C"}, {value: 2892, color: "#FC4E2A"}, {value: 2369, color: "#FD8D3C"}, {value: 1174, color: "#FEB24C"}, {value: 209, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]}, 
+				"pop":{label: "population", colorSchemas: [{value: 49479, color: "#800026"},{value: 39032, color: "#BD0026"},{value: 30788, color: "#E31A1C"}, {value: 24754, color: "#FC4E2A"}, {value: 17984, color: "#FD8D3C"}, {value: 12191, color: "#FEB24C"}, {value: 1882, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]}, 
+				"popDen":{label: "population density", colorSchemas: [{value: 12858.14, color: "#800026"},{value: 8029.23, color: "#BD0026"},{value: 5736.2, color: "#E31A1C"}, {value: 3440.04, color: "#FC4E2A"}, {value: 2107.4, color: "#FD8D3C"}, {value: 1129.82, color: "#FEB24C"}, {value: 313.27, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]}
+			/*
 				"HC01_VC04":{label: "Population 16 years and over", colorSchemas: [{value: 94913, color: "#800026"},{value: 67795, color: "#E31A1C"},{value: 40677, color: "#FD8D3C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]}, 
 				"HC01_VC20":{label: "Own children under 6 years", colorSchemas: [{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]},
 				"HC01_VC21":{label: "All parents in family in labor force", colorSchemas: [{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]},
@@ -85,18 +94,31 @@ pathgeo.service={
 				"HC01_VC112":{label: "Median family income", colorSchemas: [{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]},
 				"HC01_VC113":{label: "Mean family income", colorSchemas: [{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]},
 				"HC01_VC115":{label: "Per capita income", colorSchemas: [{value: 94913, color: "#800026"}, {value: 81354, color: "#BD0026"},{value: 67795, color: "#E31A1C"},{value: 54236, color: "#FC4E2A"},{value: 40677, color: "#FD8D3C"},{value: 27118, color: "#FEB24C"}, {value: 13559, color: "#FED976"}, {value: 0, color: "#FFEDA0"}]}
+			*/
 		};
 		options.filter=options.filter || {type: "zipcode", value:null}
 		options.styles=options.styles || function(feature, type){
 			if(!type){type=options.type}
-			return {
+			
+			var style={
 				weight: 2,
 				opacity: 1,
 				color: 'white',
 				dashArray: '',//'3'
-				fillOpacity: 0.6,
-				fillColor: me.getColor(type, feature.properties[type])
+				fillOpacity: 0.6
 			}
+			
+			if(type=='DEFAULT'){
+				style.fillColor='transparent';
+				style.fillOpacity=0.2;
+				style.color='#ED3D86';
+				style.dashArray='3';
+				style.width=3
+			}else{
+				style.fillColor= me.getColor(type, feature.properties[type])
+			}
+	
+			return style;
 		}
 		
 		
@@ -124,7 +146,8 @@ pathgeo.service={
 		//determine url
 		switch (options.filter.type){
 			case "zipcode":
-				me.url="../../db/CA_ACS11.json";
+				//me.url="db/CA_ACS11.json";
+				me.url="db/ACS_Sanfrancisco.json";
 				options.filter.column="ZIP"
 			break;
 			case "city":
@@ -134,7 +157,8 @@ pathgeo.service={
 				
 			break;
 			default:
-				me.url="db/CA_ACS11.json";
+				//me.url="db/CA_ACS11.json";
+				me.url="db/ACS_Sanfrancisco.json";
 			break;
 		}		
 		
@@ -235,6 +259,7 @@ pathgeo.service={
 			if(options.callback){options.callback(me.geojsonLayer)}
 			
 		}//end parseJson
+		
 		
 		
 		//load data
@@ -592,7 +617,35 @@ pathgeo.service={
 			}
 		 });
 	
+	},
+	
+	
+	/**
+	 * search geonames for latitude and longitude
+	 * Note: we only use the FIRST record from geonames' results.
+	 * @param {String} geoname
+	 * @param {Function} callback(lat, lng, json, error)
+	 */
+	geonameLookup:function(geoname, callback){
+		if(!geoname){console.log('[ERROR] pathgeo.service.geonameLookup: no input geoname!'); return;}
+		
+		var url='http://api.geonames.org/searchJSON?formatted=true&q='+ geoname + '&maxRows=1&lang=es&username=pathgeo&style=full';
+		$.getJSON(url, function(json){
+			if(json && json.geonames && json.geonames.length>0){
+				var lat=json.geonames[0].lat,
+					lng=json.geonames[0].lng;
+				
+				if(callback){callback(lat, lng, json)}
+			}else{
+				console.log('[ERROR] pathgeo.service.geonameLookup: no results from GeoNames.org');
+				if(callback){callback(null, null, json, '[ERROR] pathgeo.service.geonameLookup: no results from GeoNames.org')}
+			}
+		});
+		
 	}
+	
+	
+	
 	
 	
 }
