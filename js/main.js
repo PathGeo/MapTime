@@ -15,6 +15,7 @@ var app={
 			"demographicData":null,
 			selectedZipcodeLayer:null
 	},
+	zipcodeFieldName:"zip_code",
 	geocodingResult:{
 			type:"GEOJSON",
 			url: null,
@@ -350,25 +351,21 @@ function init_UI(){
 					 }
 				 };
 				 
-				showTable(app.geocodingResult);
 				
-				$('.ui-dialog').dialog('close');
-				//For some reason, the dialog closes very slowly, 
-				//so need to delay resetting these components until it is closed
-				setTimeout(function() {
-					$("#uploadData_description").show();
-					$("#uploadData_confirm").hide();
-					$("#uploadData_controls").hide();	
-					
-					//clear checkbox
-					$("#uploadData_agreementCheck").attr('checked', false);
-					$("#uploadData_agreementCheck").checkboxradio("refresh");
-					
-					//clear file selected
-					$("#uploadData_input").val(''); //not sure this works with IE or Opera
-					$("#geocoding_loading").hide();
-				}, 100);
-	
+				//add properties in the select_sumup
+				var html="<option value='none'>Please choose..</option>"
+				$.each(featureCollection.features[0].properties, function(k, property){
+					if(typeof(property)=='number'){
+						html+="<option value='"+ k+"'>"+k+"</option>"
+					}
+				});
+				
+				//show dialog_sumup
+				$("#sumup_select").html(html).selectmenu("refresh");
+				setTimeout(function(){
+					$("#dialog_sumup").popup('open');
+				},200);
+				 
 			}, error: function (error) {
 				console.log("Error:");
 				console.log(error.responseText);
@@ -379,6 +376,37 @@ function init_UI(){
 	});
 	$("#layer_selector").hide();
 }
+
+
+
+//sum up
+function sumup(skip){
+	var value=$("#sumup_select").val();
+	
+	if(value!='none' && skip!=false){
+		app.geocodingResult.column.statistics=value;
+	}
+	
+	showTable(app.geocodingResult);
+				
+	$('.ui-dialog').dialog('close');
+	//For some reason, the dialog closes very slowly, 
+	//so need to delay resetting these components until it is closed
+	setTimeout(function() {
+		$("#uploadData_description").show();			
+		$("#uploadData_confirm, #uploadData_controls").hide();
+		$("#dialog_sumup").popup('close');
+		
+					
+		//clear checkbox
+		$("#uploadData_agreementCheck").attr('checked', false).checkboxradio("refresh");
+					
+		//clear file selected
+		$("#uploadData_input").val(''); //not sure this works with IE or Opera
+		$("#geocoding_loading").hide();
+	}, 100);
+}
+
 
 
 
@@ -462,8 +490,8 @@ function showLayer(obj, isShow){
 										layers[id]=layer;
 										
 										//if feature contains zipcode field, then calculate information in the feature attribute, e.g. how many users in the zip code, the sum of sales
-										if(feature.properties["zip"]){
-											var code=feature.properties["zip"],
+										if(feature.properties[app.zipcodeFieldName]){
+											var code=feature.properties[app.zipcodeFieldName],
 												columnValue=feature.properties[statisticsColumn];
 											
 											if(zipcodes[code]){
@@ -545,8 +573,8 @@ function showLayer(obj, isShow){
 							zipcodeLayer.bindPopup(
 								"<div class='zipcodePopup'><h3>Your customers in Zipcode: " + properties["ZIP"] + "</h3>"+
 								"<ul class='objToHtml'>"+
-								"<li><b>Total Number: </b>" + properties["extra-count"] + "</li>"+
-								"<li><b>Total Sales: </b>" + parseFloat(properties["extra-"+statisticsColumn+"_sum"]).toFixed(2) + " (" + parseFloat(properties["extra-"+statisticsColumn+"_sum"] / totalColumnValue).toFixed(4)*100 + "%)</li>"+
+								"<li><b>Total Customers: </b>" + properties["extra-count"] + "</li>"+
+								"<li><b>Total "+ statisticsColumn +": </b>" + parseFloat(properties["extra-"+statisticsColumn+"_sum"]).toFixed(2) + " (" + parseFloat(properties["extra-"+statisticsColumn+"_sum"] / totalColumnValue).toFixed(4)*100 + "%)</li>"+
 								"<li><div id='zipcodeChart'></div></li>"+
 								"</ul>"+
 								""//"<a href='#' onclick=\"showDemographicData('" + properties["ZIP"] +"');\" style='cursor:pointer;'>See more about the zipcode area.....</a></div>"
@@ -1137,12 +1165,12 @@ function showLocalInfo(fid, options){
 		
 				
 	//trigger businessActions type to directly show the first option and draw its google chart
-	$("#businessActions_type").attr("zipcode", feature.properties['zip'])
+	$("#businessActions_type").attr("zipcode", feature.properties[app.zipcodeFieldName])
 		
 		
 		
 	//highlight the zipcode boundary and show demographic data
-	highlightZipcode([feature.properties['zip']]);
+	highlightZipcode([feature.properties[app.zipcodeFieldName]]);
 	
 	
 	//show legend
@@ -1636,7 +1664,7 @@ function showDemo(demoType){
 				url: 'db/demo-SanFrancisco.json',
 				title:'[DEMO] San Francisco shoes customer',
 				column:{
-					statistics:"sales"
+					statistics:""//"sales"
 				},
 				keywords: []	
 			}
@@ -1646,7 +1674,7 @@ function showDemo(demoType){
 				url: 'db/demo-SanDiego.json',
 				title:'[DEMO] San Diego demo data',
 				column:{
-					statistics:"Connectory"
+					statistics:""//"Connectory"
 				},
 				keywords: []		
 			}
@@ -1654,11 +1682,25 @@ function showDemo(demoType){
 	}
 	
 	if(obj){
-		obj.type='GEOJSON';
-		app.geocodingResult=obj;
-		
-		//show table
-		showTable(app.geocodingResult);
+		$.getJSON(obj.url, function(json){
+			obj.geojson=json;
+			obj.type='GEOJSON';
+			app.geocodingResult=obj;
+			
+			//add properties in the select_sumup
+			var html="<option value='none'>Please choose..</option>"
+			$.each(json.features[0].properties, function(k, property){
+				if(typeof(property)=='number'){
+					html+="<option value='"+ k+"'>"+k+"</option>"
+				}
+			});
+				
+			//show dialog_sumup
+			$("#sumup_select").html(html).selectmenu( "refresh" );
+			setTimeout(function(){
+				$("#dialog_sumup").popup('open');
+			},200);
+		});
 	}
 }
 
