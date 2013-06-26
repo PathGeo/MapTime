@@ -331,6 +331,10 @@ function init_UI(){
 				geoColumns: geoColumns
 			}, success: function(featureCollection) { 	
 				console.log(featureCollection); 
+				
+				//close dialog_menu
+				$("#dialog_uploadData").popup('close');
+				
 				if (!featureCollection || featureCollection.features.length <= 0) {
 					alert("No rows could be geocoded.  Please make sure you have selected the correct location column.");
 					return;
