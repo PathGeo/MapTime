@@ -356,19 +356,7 @@ function init_UI(){
 				 };
 				 
 				
-				//add properties in the select_sumup
-				var html="<option value='none'>Please choose..</option>"
-				$.each(featureCollection.features[0].properties, function(k, property){
-					if(typeof(property)=='number'){
-						html+="<option value='"+ k+"'>"+k+"</option>"
-					}
-				});
-				
-				//show dialog_sumup
-				$("#sumup_select").html(html).selectmenu("refresh");
-				setTimeout(function(){
-					$("#dialog_sumup").popup('open');
-				},200);
+				showSumup(featureCollection)
 				 
 			}, error: function (error) {
 				console.log("Error:");
@@ -383,11 +371,31 @@ function init_UI(){
 
 
 
+function showSumup(geojson){
+	//add properties in the select_sumup
+	var html="<option value='none'>Please choose..</option>"
+	$.each(geojson.features[0].properties, function(k, property){
+		if(!isNaN(property)){
+			html+="<option value='"+ k+"'>"+k+"</option>"			
+		}
+	});
+				
+	//show dialog_sumup
+	$("#sumup_select").html(html).selectmenu("refresh");
+	setTimeout(function(){
+		$("#dialog_sumup").popup('open');
+	},200);
+}
+
+
+
+
 //sum up
 function sumup(skip){
 	var value=$("#sumup_select").val();
+	app.geocodingResult.column.statistics="";
 	
-	if(value!='none' && skip!=false){
+	if(value!='none' && skip!=true){
 		app.geocodingResult.column.statistics=value;
 	}
 	
@@ -496,7 +504,7 @@ function showLayer(obj, isShow){
 										//if feature contains zipcode field, then calculate information in the feature attribute, e.g. how many users in the zip code, the sum of sales
 										if(feature.properties[app.zipcodeFieldName]){
 											var code=feature.properties[app.zipcodeFieldName],
-												columnValue=feature.properties[statisticsColumn];
+												columnValue=parseFloat(feature.properties[statisticsColumn]);
 											
 											if(zipcodes[code]){
 												var properties=zipcodes[code].feature.properties;
@@ -584,7 +592,9 @@ function showLayer(obj, isShow){
 								""//"<a href='#' onclick=\"showDemographicData('" + properties["ZIP"] +"');\" style='cursor:pointer;'>See more about the zipcode area.....</a></div>"
 							);
 							zipcodeLayer.on('click', function(e){
-								showZipcodeChart("zipcodeChart", properties["ZIP"], properties["extra-"+statisticsColumn+"_sum"], totalColumnValue);
+								if (statisticsColumn && statisticsColumn!= '') {
+									showZipcodeChart("zipcodeChart", properties["ZIP"], properties["extra-" + statisticsColumn + "_sum"], totalColumnValue);
+								}
 							});
 						});
 					}
@@ -1691,19 +1701,7 @@ function showDemo(demoType){
 			obj.type='GEOJSON';
 			app.geocodingResult=obj;
 			
-			//add properties in the select_sumup
-			var html="<option value='none'>Please choose..</option>"
-			$.each(json.features[0].properties, function(k, property){
-				if(typeof(property)=='number'){
-					html+="<option value='"+ k+"'>"+k+"</option>"
-				}
-			});
-				
-			//show dialog_sumup
-			$("#sumup_select").html(html).selectmenu( "refresh" );
-			setTimeout(function(){
-				$("#dialog_sumup").popup('open');
-			},200);
+			showSumup(json);
 		});
 	}
 }
