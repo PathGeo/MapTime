@@ -141,17 +141,15 @@ elif geo:
 		
 	geoFunc = functools.partial(getByLatLon, geoField=geo)
 	
-elif addr and city:
+elif addr:
 	#only address and city are necessary to geocode, but check if state or zipcode are present
 	#and, if so, add them to out list of geocoding fields
-	otherFields = filter(lambda item: bool(item), [state, zip])
-	geoFunc = functools.partial(geocodeRow, fields=[addr, city] + otherFields, geocoder=geocoder)	
+	otherFields = filter(lambda item: bool(item), [city, state, zip])
+	geoFunc = functools.partial(geocodeRow, fields=[addr] + otherFields, geocoder=geocoder)	
 elif loc:
 	geoFunc = functools.partial(geocodeRow, fields=[loc], geocoder=geocoder)
-elif addr:
-	geoFunc = functools.partial(geocodeRow, fields=[addr], geocoder=geocoder)
 	
-
+	
 jsonRows = pickle.load(open(os.path.abspath(__file__).replace(__file__, fname + ".p")))
 
 os.remove(os.path.abspath(__file__).replace(__file__, fname + ".p"))
