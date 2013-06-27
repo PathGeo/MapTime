@@ -353,7 +353,7 @@ function init_UI(){
 					 column:{
 						statistics:""
 					 },
-					 downloadLink:(featureCollection["URL_xls"] && featureCollection["URL_xls"]!="")? featureCollection[URL_xls] : null 
+					 downloadLink:(featureCollection["URL_xls"] && featureCollection["URL_xls"]!="")? featureCollection["URL_xls"] : null 
 				 };
 				 
 				
