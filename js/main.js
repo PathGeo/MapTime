@@ -352,7 +352,8 @@ function init_UI(){
 					 keywords: ["testing"],
 					 column:{
 						statistics:""
-					 }
+					 },
+					 downloadLink:(featureCollection["URL_xls"] && featureCollection["URL_xls"]!="")? featureCollection[URL_xls] : null 
 				 };
 				 
 				
@@ -1018,7 +1019,7 @@ function showTable(obj){
 		//add dataTable tools and click event
 		var html = "<ul>" +
 					//"<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
-					//"<li><img src='images/1365858910_download.png' title='download'/></li>" +
+					((obj.downloadLink) ? "<li><img src='images/1365858910_download.png' title='download'/></li>" : "") +
 					//"<li><img src='images/1365858892_print.png' title='print'/></li>" +
 					"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/></li>" +
 					//"<li><img src='images/1365860337_cube.png' title='canned report'/></li>"+
@@ -1027,11 +1028,20 @@ function showTable(obj){
 					//"<li><img src='images/1365872733_sq_br_down.png' title='maximum map'/></li>"+
 					"</ul>";
 		$(".dataTable_tools").append(html).find("ul li").click(function(){
-			//show content in the infobox
-			showInfobox($(this).find("img").attr('title'), {
-				left: $(this).offset().left - 45,
-				top: $(this).offset().top - 25
-			}, this);
+			var title=$(this).find("img").attr('title');
+			
+			//download excel url
+			if(title=='download'){
+				if(obj.downloadLink){
+					window.open(obj.downloadLink);
+				}
+			}else{
+				//show content in the infobox
+				showInfobox(title, {
+					left: $(this).offset().left - 45,
+					top: $(this).offset().top - 25
+				}, this);
+			}
 		});
 		
 	
@@ -1699,6 +1709,7 @@ function showDemo(demoType){
 		$.getJSON(obj.url, function(json){
 			obj.geojson=json;
 			obj.type='GEOJSON';
+			obj.downloadLink=(json["URL_xls"] && json["URL_xls"]!="")? json["URL_xls"] : null 
 			app.geocodingResult=obj;
 			
 			showSumup(json);
