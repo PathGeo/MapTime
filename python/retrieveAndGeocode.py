@@ -144,14 +144,14 @@ elif geo:
 	geoFunc = functools.partial(getByLatLon, geoField=geo)
 	
 elif addr:
-	#only address and city are necessary to geocode, but check if state or zipcode are present
+	#only address is necessary to geocode, but check if city, state or zipcode are present
 	#and, if so, add them to out list of geocoding fields
 	otherFields = filter(lambda item: bool(item), [city, state, zip])
 	geoFunc = functools.partial(geocodeRow, fields=[addr] + otherFields, geocoder=geocoder)	
 elif loc:
 	geoFunc = functools.partial(geocodeRow, fields=[loc], geocoder=geocoder)
 	
-	
+#still just serializing the python object for excel data.  should save to DB?
 jsonRows = pickle.load(open(os.path.abspath(__file__).replace(__file__, fname + ".p")))
 
 os.remove(os.path.abspath(__file__).replace(__file__, fname + ".p"))
