@@ -65,6 +65,8 @@ def geocodeRows(rows, locFunc):
 			for k,v in row.iteritems():
 				if type(v) is float and v.is_integer():
 					row[k] = str(int(v))
+				elif type(v) is unicode:
+					row[k] = v.encode('ascii', 'ignore')
 				else:
 					row[k] = str(v)
 			
@@ -161,7 +163,7 @@ fname = fname.lower().replace('.xlsx', '.xls')
 if features:
 	saveDataAsExcel(map(lambda item: item['properties'], features), '..\\geocoded_files\\' + fname)
 
-featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': './geocoded_files/' + fname }
+featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': '' if not features else './geocoded_files/' + fname }
 
 print ''
 print json.dumps(featureSet)
