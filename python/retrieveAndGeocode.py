@@ -160,9 +160,10 @@ features = geocodeRows(jsonRows, geoFunc)
 
 fname = fname.lower().replace('.xlsx', '.xls')
 
-featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': './geocoded_files/' + fname }
+if features:
+	saveDataAsExcel(map(lambda item: item['properties'], features), '..\\geocoded_files\\' + fname)
 
-saveDataAsExcel(map(lambda item: item['properties'], features), '..\\geocoded_files\\' + fname)
+featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': './geocoded_files/' + fname }
 
 print ''
 print json.dumps(featureSet)
