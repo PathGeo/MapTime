@@ -76,7 +76,11 @@ def geocodeRows(rows, locFunc):
 				if zips:
 					doc['properties']['zip_code'] = zips[-1]
 				
+				doc['properties']['latitude'] = lat
+				doc['properties']['longitude'] = lon
+				
 				features.append(doc)
+				
 		except Exception, e:
 			return json.dumps({ 'error': str(e) })
 
