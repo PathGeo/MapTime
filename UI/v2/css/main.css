@@ -181,7 +181,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 .dataTable_tools {float:right; margin:2px 5px 2px 5px; width:auto; height:35px; padding-top:5px;}
 .dataTable_tools > div {float:right;}
 .dataTable_tools ul {list-style:none; padding:0px; margin:0px; float:right;}
-.dataTable_tools ul li {padding:0px 15px 0px 15px; cursor:pointer; float:right; border-left:1px solid #cccccc;}
+.dataTable_tools ul li {padding:0px 10px 0px 10px; cursor:pointer; float:right; border-left:1px solid #cccccc;}
 .dataTable_tools ul li:hover {background-color:#dddddd;}
 .dataTable_tools img {width:20px; padding-top:5px;}
 .dataTable_tools > div {padding:0px 15px 0px 15px;}
@@ -198,7 +198,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 .dataTable_nav li a img {width:20px;}
 
 #dataTable_length {float:right; padding-right:30px;}
-#dataTable_filter input {width:280px;height:26px;padding:0px 5px 0px 5px; -moz-border-radius:5px; -webkit-border-radius:5px;border-radius:5px;}
+#dataTable_filter input {width:275px;height:26px;padding:0px 5px 0px 5px; -moz-border-radius:5px; -webkit-border-radius:5px;border-radius:5px;}
 #dataTable_filter label {font-weight:bold; color:#ffffff;}
 #dataTable { width: 100%; }
 #dataTable_chart {width:100%; }
@@ -281,7 +281,19 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 
 
 
+/**
+ * contact us
+ */
+#dialog_contact {width:550px; height:250px;padding:20px; }
 
+
+/**
+ * sum up
+ */
+#dialog_sumup {width:400px; height:250px;padding:20px; }
+#dialog_sumup > img {float:left; width:100px; padding:20px;}
+#dialog_sumup > div {float:right}
+#dialog_sumup .ui-select {font-size:14px;}
 
 /**
  * 	help menu

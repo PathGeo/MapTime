@@ -590,7 +590,7 @@ function showLayer(obj, isShow){
 								"<li><b>Total "+ statisticsColumn +": </b>" + parseFloat(properties["extra-"+statisticsColumn+"_sum"]).toFixed(2) + " (" + parseFloat(properties["extra-"+statisticsColumn+"_sum"] / totalColumnValue).toFixed(4)*100 + "%)</li>"+
 								"<li><div id='zipcodeChart'></div></li>"+
 								"</ul>"+
-								""//"<a href='#' onclick=\"showDemographicData('" + properties["ZIP"] +"');\" style='cursor:pointer;'>See more about the zipcode area.....</a></div>"
+								"<a href='#' onclick=\"showDemographicData('" + properties["ZIP"] +"');\" style='cursor:pointer;'>See more about the zipcode area.....</a></div>"
 							);
 							zipcodeLayer.on('click', function(e){
 								if (statisticsColumn && statisticsColumn!= '') {

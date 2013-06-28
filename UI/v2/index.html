@@ -72,8 +72,9 @@
 			</h1>
 			
 			<a href="#dialog_login" id='header_login' data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="home" class="" data-mini="true" style='float:right'>Log in</a>
-	        <!--<a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>-->
-			<!--<a href="#dialog_lab" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right'>Lab</a>-->
+			<a href="#dialog_contact" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Contact us</a>
+	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>
+			<!--<a href="#dialog_sumup" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right'>test</a>-->
 			<a id='test' href="#dialog_menu" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right'>Menu</a>
 		</div>
 		
@@ -365,6 +366,39 @@
 		</div>
 		
 		
+		<!-- contact us-->
+		<div id='dialog_contact' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+			<img src='images/PathGeo-color.png' style='height:60px;' />
+          	<p>PathGeo is a spinoff of a $1.3 million San Diego State University project funded by the National Science Foundation. PathGeo's team members include marketing experts, Web GIS programmers, spatial statisticians, cartographers, social media API programmers, and natural language processing developers. The team is led by Dr. Ming-Hsiang Tsou, a renowned Internet GIS expert and SDSU Geography Professor.
+			<p>  <br>
+			If you have any questions or suggestions, please feel free to contact us
+			<p>  <br>
+			<a href="mailto:mtsou@mail.sdsu.edu" data-role="button" data-inline="true" data-theme="b" onclick='logout()'>Email us</a>
+		</div>
+		
+		
+		<!-- sum up-->
+		<div id='dialog_sumup' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+			
+			<h3>Select a field to sum up your data</h3>
+			<p>Maptime can sum up your data based a selected field into the zip code area. For example, you can select "Sales" filed to see how much sales in a zipcode. 
+			<p></p> <br>
+			<img src='images/1372289937_Pie Diagram.png' />
+			<div>
+				<div data-role="fieldcontain">
+					<label for="sumup_select">Fields: </label>
+					<select id='sumup_select'></select>
+				</div>
+
+				<P></P>
+				<p style='margin-top:30px; '>
+				    <a href="#" data-role="button" data-inline="true" data-theme="b" onclick='sumup()'>Sum up</a>
+				    <a href="#" data-role="button" data-inline="true" onclick='sumup(true)'>Skip</a>
+				</p>
+			</div>
+		</div>
 
 		
 		
