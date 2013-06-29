@@ -163,7 +163,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /** business actions */
 #localInfo_businessActions label.ui-select{font-size:110%; font-weight:bold;}
 #localInfo_businessActions {height:98%; position:relative;}
-.businessActions_tabs {height:100%; position:relative;}
+.businessActions_tabs {width:99%; height:100%; padding:20px; float:left; position:relative;}
 #businessActions_downloadReport {position:absolute; top:-5px; right:0px; cursor:pointer; width:25px;}
 #businessResult_result {height:85%;}
 #businessActions_detail {height:100%;}

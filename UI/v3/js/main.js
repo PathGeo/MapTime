@@ -611,14 +611,14 @@ function showLayer(obj, isShow){
 				
 					//give rank of the count of customers
 					$.each(array_zipcodes, function(i,layer){
-						layer.feature.properties["extra-count-rank"]=i
+						layer.feature.properties["extra-count-rank"]=i+1;
 					});
 					
 					if(statisticsColumn && statisticsColumn != '') {
 						array_zipcodes.sort(function(a,b){return b.feature.properties["extra-"+statisticsColumn+"_sum"] - a.feature.properties["extra-"+statisticsColumn+"_sum"]})
 						//give rank of the count of customers
 						$.each(array_zipcodes, function(i,layer){
-							layer.feature.properties["extra-"+statisticsColumn+"_sum-rank"]=i
+							layer.feature.properties["extra-"+statisticsColumn+"_sum-rank"]=i+1
 						});
 					}
 					
@@ -1310,16 +1310,18 @@ function highlightZipcode(zipcodes, options){
 		if(zipcodes.length==1){
 			var properties=layer.feature.properties,
 				customerCount=properties["extra-count"],
+				customerRank=properties["extra-count-rank"],
 				columnName=app.geocodingResult.column.statistics,
 				statisticsSum=properties["extra-"+columnName+"_sum"] || null,
+				statisticsRank=properties["extra-"+columnName +"_sum-rank"] || null,
 				totalStatistics=(columnName) ? app.geocodingResult.dataTable.statisticsColumn[columnName].sum : null;
 			
 			//show zipcode number
 			$("#zipcodePanel h1").html("zipcode: "+ zipcodes[0]);
-			$("#zipcode_summary").html("Total Customers: "+ customerCount);
+			$("#zipcode_summary").html("Total Customers: "+ customerCount + " <font style='color:#ff0000'>Rank #" + customerRank + "</font>");
 			
-			if(statisticsSum && totalStatistics){
-				$("#zipcode_summary").append("<br>" + "Total "+ columnName + ": " + parseFloat(statisticsSum).toFixed(2) + " (" + parseFloat((statisticsSum / totalStatistics) * 100).toFixed(2) + "%)");
+			if(statisticsSum && totalStatistics && statisticsRank){
+				$("#zipcode_summary").append("<p>" + "Total "+ columnName + ": " + parseFloat(statisticsSum).toFixed(2) + " (" + parseFloat((statisticsSum / totalStatistics) * 100).toFixed(2) + "%) <font style='color:#FF0000'>Rank#" + statisticsRank + "</font>");
 			}
 		}
 	});
@@ -1351,8 +1353,8 @@ function showBusinessAction(type){
 				containerId: "businessActions_result",
 				view:{columns:[0,1]},
 				options: {
-					width: $("#dialog_businessAction").width()-50,
-					height:$("#dialog_businessAction").height()-50,
+					width: $("#businessActions_select").width(),
+					height:$("#businessActions_select").height()-50,
 					title: "",
 					titleX: "",
 					titleY: "",
