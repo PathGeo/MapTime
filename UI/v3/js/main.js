@@ -1318,10 +1318,13 @@ function highlightZipcode(zipcodes, options){
 			
 			//show zipcode number
 			$("#zipcodePanel h1").html("zipcode: "+ zipcodes[0]);
-			$("#zipcode_summary").html("Total Customers: "+ customerCount + " <font style='color:#ff0000'>Rank #" + customerRank + "</font>");
+			$("#zipcodePanel img").click(function(){
+				showBusinessAction('top_users');
+			});
+			$("#zipcode_summary").html("Total Customers: "+ customerCount + " <font class='rank'>Rank #" + customerRank + "</font>");
 			
 			if(statisticsSum && totalStatistics && statisticsRank){
-				$("#zipcode_summary").append("<p>" + "Total "+ columnName + ": " + parseFloat(statisticsSum).toFixed(2) + " (" + parseFloat((statisticsSum / totalStatistics) * 100).toFixed(2) + "%) <font style='color:#FF0000'>Rank#" + statisticsRank + "</font>");
+				$("#zipcode_summary").append("<p>" + "Total "+ columnName + ": " + parseFloat(statisticsSum).toFixed(2) + " (" + parseFloat((statisticsSum / totalStatistics) * 100).toFixed(2) + "%) <font class='rank'>Rank#" + statisticsRank + "</font>");
 			}
 		}
 	});
@@ -1378,8 +1381,7 @@ function showBusinessAction(type){
 				showDemographicData(zipcode);
 			}
 		};
-		
-		
+
 		switch(type){
 			case "top_users":
 				dataArray = new google.visualization.DataTable();
@@ -1419,7 +1421,7 @@ function showBusinessAction(type){
 			case "top_sales":
 				var columnName=app.geocodingResult.column.statistics;
 				dataArray=[["zipcodes", "sum_"+columnName+""]];
-				$.each(zipcodeLayer, function(k,v){dataArray.push([k, v.feature.properties["extra-" + columnName +"_sum"]]);});
+				$.each(zipcodeLayer, function(k,v){dataArray.push([parseInt(k), v.feature.properties["extra-" + columnName +"_sum"]]);});
 				chartOptions.googleChartWrapperOptions.options.titleX="The sum of "+columnName;
 				chartOptions.googleChartWrapperOptions.options.titleY="Zip Codes"
 			break;
@@ -1445,7 +1447,7 @@ function showDemographicData(zipcode){
 			properties=app.layers.demographicData.zipcodes[zipcode].feature.properties;
 				
 		//show localinfor panel
-		showInfoPanel("localInfoPanel", $("#menuToolbox li[title='Find the Best Business Actions']")[0]);
+		//showInfoPanel("localInfoPanel", $("#menuToolbox li[title='Find the Best Business Actions']")[0]);
 		
 		//set zipcode attribute in the select_businessAction
 		$("#businessActions_type").attr('zipcode', zipcode).change();
@@ -1501,8 +1503,8 @@ function showDemographicData(zipcode){
 					   "<ul>";
 		
 				
-		$("#businessActions_detailContent_listview").html(html_listview).listview('refresh');
-		$("#businessActions_detailContent_collapsible").html(html_collapsible).trigger('create');
+		//$("#businessActions_detailContent_listview").html(html_listview).listview('refresh');
+		//$("#businessActions_detailContent_collapsible").html(html_collapsible).trigger('create');
 				
 		//expand events
 		$('#businessActions_detailContent_collapsible div.ui-btn-inner a').on('click', function(e,ui){
@@ -1548,8 +1550,12 @@ function showDemographicData(zipcode){
 		//app.dataTable.fnFilter(zipcode);
 
 		//show the detail of business actions
-		$(".businessActions_tabs").hide();
-		$("#businessActions_detail").show();
+		//$(".businessActions_tabs").hide();
+		//$("#businessActions_detail").show();
+		
+		
+		//close dialog_businessAction
+		$("#dialog_businessAction").popup('close');
 	
 }
 
