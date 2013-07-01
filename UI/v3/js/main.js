@@ -1,6 +1,11 @@
 //Load Google Charts and set callback
 google.load("visualization", "1", {packages:["corechart", "table"]});
 
+//load getSatisfiction help
+$.getScript("https://loader.engage.gsfn.us/loader.js", function(scipt){
+	if (typeof GSFN !== "undefined") { GSFN.loadWidget(5632,{"containerId":"getsat-widget-5632"}); }
+});
+
 //var locationY;
 //var locationX;
 
@@ -202,23 +207,11 @@ function init_map(){
 		
 		if($this.attr('title')=='Min. Map'){
 			$this.attr('title', 'Max. Map').html("Max. Map");
-			resize({height:"50%"}, {height:"50%"});
+			resizeMap({height:"47.5%"}, {height:"52.5%"});
 		}else{
 			$this.attr('title', 'Min. Map').html("Min. Map");
-			resize({height:"70%"}, {height:"30%"});
-		}
-		
-		//resize map and dataPanel
-		function resize(css_map, css_dataPanel){			
-			$("#div_map").animate(css_map, 500, function(){
-				app.map.invalidateSize(false);
-					
-				$("#dataPanel").css(css_dataPanel);
-				
-				//resize dataTable height
-				$(".dataTables_scrollBody").css({height:app.css.dataTable_height()})
-			});
-		}
+			resizeMap({height:"65%"}, {height:"35%"});
+		}		
 	});
 	
 	
@@ -417,6 +410,18 @@ function showSumup(geojson){
 }
 
 
+
+//resize map
+function resizeMap(css_map, css_dataPanel){			
+	$("#div_map").animate(css_map, 500, function(){
+		app.map.invalidateSize(false);
+					
+		$("#dataPanel").css(css_dataPanel);
+				
+		//resize dataTable height
+		$(".dataTables_scrollBody").css({height:app.css.dataTable_height()})
+	});
+}
 
 
 //sum up
@@ -963,9 +968,8 @@ function showTable(obj){
 					showDataTableChart(obj.json);
 					
 					//resize map to show the dataTable
-					$("#div_map").animate({height:"70%"}, 500, function(){
-						app.map.invalidateSize(false);
-					});
+					resizeMap({height:"65%"}, {height:"35%"});
+					
 				}, 10);
 				
 		    },
