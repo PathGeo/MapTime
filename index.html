@@ -178,15 +178,33 @@
 		
 	
 		<!-- heatmap radius window-->
-		<div id='heatmap_radius' >
-			<div id='heatmap_radiusArrow'></div>
-			<div id='heatmap_radiusContent' class='ui-corner-all'>
+		<div id='mapPopup_heatMapLayer' class='mapPopupWidget' >
+			<div class='mapPopupWidget_arrow'></div>
+			<div class='mapPopupWidget_content ui-corner-all'>
 				<form>
 				    <label for="heatmap_slider">Slider:</label>
 				    <input type="range" name="heatmap_slider" id="heatmap_slider" data-track-theme="d" data-theme="b" data-mini='true' min="0" max="100" value="50">
 				</form>
 			</div>
 		</div>
+		
+		
+		<!-- markerIcon popup window-->
+		<div id='mapPopup_geoJsonLayer' class='mapPopupWidget' >
+			<div class='mapPopupWidget_arrow'></div>
+			<div class='mapPopupWidget_content ui-corner-all'>
+				<label>Change marker icon:</label>
+				<ul>
+					<li><img src='images/1368754654_stock_draw-circle.png' markerWidth=16  markerHeight=16 /></li>
+					<li><img src='images/1367688053_pinterest-icon-circle-black.png' markerWidth=16  markerHeight=16 /></li>
+					<li><img src='images/1368477544_FootballPlayer_Male_Dark.png' markerWidth=30  markerHeight=30 /></li>
+					<li><img src='images/1367848740_MapMarker_Marker_Outside_Azure.png' markerWidth=20  markerHeight=20 /></li>
+					<li><img src='images/1368495247_andrew.png' markerWidth=20  markerHeight=20 /></li>
+				</ul>
+			</div>
+		</div>
+		
+		
 		
 		
 		<!-- dialog -->

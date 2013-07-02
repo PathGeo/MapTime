@@ -56,10 +56,9 @@ var app={
 					        		layer.addTo(app.map);
 					        		$this.css({"background-color": '#5B92C0'});
 									
-									//show heatmap radius content
-									if(value=='heatMapLayer'){
-										$("#heatmap_radius").show()
-									}
+									//show map popup window
+									$("#mapPopup_"+value).show();
+									
 					        	}
 					        });
 		        
@@ -268,11 +267,13 @@ function init_UI(){
 	 	effect: "fade"
 	 });
 	 
-
+	
+	//popup not use history to avoid the problem that the dialog cannot be closed and may be redirected to other page	$("div[data-role='popup']").popup({history:false});
+	
 	 
 	//when mouse click on otherplace, hide dataTable_menu
 	$(document).mouseup(function(e){
-		var $container=$(".dataTable_menu, #dataTable_chartControlMenu, #heatmap_radius");
+		var $container=$(".dataTable_menu, #dataTable_chartControlMenu, .mapPopupWidget");
 		if(!$container.is(e.target) && $container.has(e.target).length===0){
 			$container.hide();
 		}
@@ -287,6 +288,17 @@ function init_UI(){
 	//add close button in the infoPanel
 	$(".infoPanel").append("<a id='closeInfoPanel' href='#' data-role='button' data-theme='a' data-icon='delete' data-iconpos='notext'  style='position:absolute; right:-10px; top:-6px;z-index:500;' onclick='closeInfoPanel()'>Close</a>")
 	$(".infoPanel #closeInfoPanel").buttonMarkup("refresh");
+	
+	
+	//click event for mapPopupWidget geoJsonLayer 
+	$("#mapPopup_geoJsonLayer .mapPopupWidget_content ul li").click(function(){
+		var $img=$(this).find("img"),
+			img_src=$img.attr("src"),
+			width=$img.attr("markerWidth"),
+			height=$img.attr("markerHeight");
+			
+		changeMarkerIcon(img_src, width, height);
+	});
 	
 	
 	
@@ -456,6 +468,22 @@ function sumup(skip){
 
 
 
+//change markerIcon
+function changeMarkerIcon(img_src, width, height){
+	var icon=new L.icon({
+		iconUrl: img_src,
+		iconSize: [width, height],//[12.5, 21],
+		iconAnchor: [width/2, height/2]// [6.25, 10.5]
+	});
+	
+	$.each(app.geocodingResult.geoJsonLayer._layers, function(k, marker){
+		marker.setIcon(icon);
+		marker.options.iconDefault=icon;
+	})
+}
+
+
+
 
 //load geojson
 function showLayer(obj, isShow){
@@ -594,8 +622,8 @@ function showLayer(obj, isShow){
 								pointToLayer: function(feature, latlng){
 									var icon=new L.icon({
 											iconUrl: "images/1368754654_stock_draw-circle.png",
-											iconSize: [12, 12],//[12.5, 21],
-											iconAnchor: [6, 6]// [6.25, 10.5]
+											iconSize: [16, 16],//[12.5, 21],
+											iconAnchor: [8, 8]// [6.25, 10.5]
 									});
 									
 									var iconHover=new L.icon({
@@ -814,6 +842,11 @@ function showLayer(obj, isShow){
 			//close dialog
 			//$("#div_dialog").dialog("destroy");
 			$("#img_loading").hide();
+			
+			//show mapGallery button
+			$(".leaflet-control-mapGallery").show();
+			
+			$("#mapPopup_geoJsonLayer").show();
 		}
 }
 
@@ -1883,6 +1916,8 @@ function login(){
 				
 				//close dialog_login and open dialog_menu
 				$("#dialog_login").popup("close");
+				
+				
 				
 				setTimeout(function(){
 					$("#dialog_menu").popup("open");

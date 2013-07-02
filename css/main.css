@@ -89,18 +89,31 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 
 
 /**
+ * 	mapPopupWidget
+ */
+.mapPopupWidget {display:none; z-index:500; position:absolute;  text-shadow:0 0px 0 #fff; color:#ffffff;}
+.mapPopupWidget .ui-input-text {font-size:11px; font-weight:bold;}
+.mapPopupWidget_arrow {border-color: transparent transparent transparent rgba(0,0,0,0.7); border-style:solid; border-width:13px; height:0; width:0; right: -25px; top:20px; z-index: 0;position:absolute;  box-shadow: 0 1px 20px -7px #999;}
+.mapPopupWidget_content {width:250px; height:50px; background:rgba(0,0,0,0.7); border:1px solid #999999; padding:5px; margin:0px; }
+
+
+/**
  * heatmap radius content
  */
-#heatmap_radius {display:none; z-index:500; position:absolute; top:150px; right:60px; text-shadow:0 0px 0 #fff; color:#ffffff;}
-#heatmap_radius .ui-input-text {font-size:11px; font-weight:bold;}
-#heatmap_radiusArrow {border-color: transparent transparent transparent rgba(0,0,0,0.7); border-style:solid; border-width:13px; height:0; width:0; right: -25px; top:20px; z-index: 0;position:absolute;  box-shadow: 0 1px 20px -7px #999;}
-#heatmap_radiusContent {width:250px; height:50px; background:rgba(0,0,0,0.7); border:1px solid #999999; padding:5px; margin:0px; }
+#mapPopup_heatMapLayer {top:150px; right:60px;}
 
+
+#mapPopup_geoJsonLayer {top:50px; right:60px; }
+#mapPopup_geoJsonLayer .mapPopupWidget_content label {margin-left:10px;}
+#mapPopup_geoJsonLayer .mapPopupWidget_content ul {list-style:none; padding:0px; margin:0px; margin-top:8px;}
+#mapPopup_geoJsonLayer .mapPopupWidget_content ul li {padding:0px 10px 0px 10px; float:left; }
+#mapPopup_geoJsonLayer .mapPopupWidget_content ul li:hover {background-color:#777777; }
+#mapPopup_geoJsonLayer .mapPopupWidget_content ul li img {width:25px; height:25px; }
 
 /**
  * gallery
  */
-.leaflet-control-mapGallery {}
+.leaflet-control-mapGallery {display:none;}
 .leaflet-control-mapGallery ul {list-style:none;padding:0px; margin:0px;}
 .leaflet-control-mapGallery ul li {padding:4px; margin:10px 0px 10px 0px;  text-align:center; box-shadow: 0 1px 7px #999; background: #f8f8f9;-moz-border-radius: 8px; -webkit-border-radius: 8px;border-radius: 8px;}
 .leaflet-control-mapGallery ul li:hover {background-color:#eeeeee; cursor:pointer;}
