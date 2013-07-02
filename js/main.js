@@ -1,6 +1,11 @@
 //Load Google Charts and set callback
 google.load("visualization", "1", {packages:["corechart", "table"]});
 
+//load getSatisfiction help
+$.getScript("https://loader.engage.gsfn.us/loader.js", function(scipt){
+	if (typeof GSFN !== "undefined") { GSFN.loadWidget(5632,{"containerId":"getsat-widget-5632"}); }
+});
+
 //var locationY;
 //var locationX;
 
@@ -104,7 +109,8 @@ var app={
 	geojsonReader: new jsts.io.GeoJSONReader(),
 	mapGalleryHtml:"",
 	css:{
-		"dataTable_highlightRow":{"background-color":"#ED3D86", "color":"#ffffff"}
+		"dataTable_highlightRow":{"background-color":"#ED3D86", "color":"#ffffff"},
+		"dataTable_height": function(){return $("#dataPanel").height()-70}
 	},
 	$tr:null
 }
@@ -195,19 +201,34 @@ function init_map(){
 	})
 
 	
+	//create a button to min/max map
+	$("#div_map").append("<div id='showhideTable' title='Min. Map'>Min. Map</div>").find("#showhideTable").click(function(){
+		var $this=$(this);
+		
+		if($this.attr('title')=='Min. Map'){
+			$this.attr('title', 'Max. Map').html("Max. Map");
+			resizeMap({height:"47.5%"}, {height:"52.5%"});
+		}else{
+			$this.attr('title', 'Min. Map').html("Min. Map");
+			resizeMap({height:"65%"}, {height:"35%"});
+		}		
+	});
+	
+	
+	
 	//open popup event
 	app.map.on({
 		'popupopen':function(e){
 			//if the popup source is zipcode layer
-			if($(e.popup._content).hasClass('zipcodePopup')){
-				$(".leaflet-tile-pane").css({opacity:0.3, "z-index":6});
-			}
+//			if($(e.popup._content).hasClass('zipcodePopup')){
+//				$(".leaflet-tile-pane").css({opacity:0.3, "z-index":6});
+//			}
 		},
 		'popupclose':function(e){
 			//if the popup source is zipcode layer
-			if($(e.popup._content).hasClass('zipcodePopup')){
-				$(".leaflet-tile-pane").css({opacity:1, "z-index":2});
-			}
+//			if($(e.popup._content).hasClass('zipcodePopup')){
+//				$(".leaflet-tile-pane").css({opacity:1, "z-index":2});
+//			}
 		}
 	});
 }
@@ -233,12 +254,12 @@ function init_UI(){
 	$(".infoPanel").css({height:$("#content").height()-20, width:$("#content").width()*0.375});
 	
 	
-	
-	
 	//when window resize
 	$(window).resize(function(){
 		$("#content").height($(window).height()-$("#header").height());
 		$(".infoPanel").css({height:$("#content").height()-20, width:$("#content").width()*0.375});
+		//resize dataTable height
+		$(".dataTables_scrollBody").css({height:app.css.dataTable_height()})
 	})
 	
 	
@@ -389,6 +410,18 @@ function showSumup(geojson){
 }
 
 
+
+//resize map
+function resizeMap(css_map, css_dataPanel){			
+	$("#div_map").animate(css_map, 500, function(){
+		app.map.invalidateSize(false);
+					
+		$("#dataPanel").css(css_dataPanel);
+				
+		//resize dataTable height
+		$(".dataTables_scrollBody").css({height:app.css.dataTable_height()})
+	});
+}
 
 
 //sum up
@@ -577,28 +610,42 @@ function showLayer(obj, isShow){
 
 					
 					//zipcodes
-					if(statisticsColumn && statisticsColumn!=''){
-						var totalColumnValue=obj.dataTable.statisticsColumn[statisticsColumn].sum;
-						$.each(zipcodes, function(i,zipcodeLayer){
-							var properties=zipcodeLayer.feature.properties;
-							
-							//bind popup on the zipcode layer
-							zipcodeLayer.bindPopup(
-								"<div class='zipcodePopup'><h3>Your customers in Zipcode: " + properties["ZIP"] + "</h3>"+
-								"<ul class='objToHtml'>"+
-								"<li><b>Total Customers: </b>" + properties["extra-count"] + "</li>"+
-								"<li><b>Total "+ statisticsColumn +": </b>" + parseFloat(properties["extra-"+statisticsColumn+"_sum"]).toFixed(2) + " (" + parseFloat(properties["extra-"+statisticsColumn+"_sum"] / totalColumnValue).toFixed(4)*100 + "%)</li>"+
-								"<li><div id='zipcodeChart'></div></li>"+
-								"</ul>"+
-								"<a href='#' onclick=\"showDemographicData('" + properties["ZIP"] +"');\" style='cursor:pointer;'>See more about the zipcode area.....</a></div>"
-							);
-							zipcodeLayer.on('click', function(e){
-								if (statisticsColumn && statisticsColumn!= '') {
-									showZipcodeChart("zipcodeChart", properties["ZIP"], properties["extra-" + statisticsColumn + "_sum"], totalColumnValue);
-								}
-							});
+					//sort based on the count of customers('extra-count')
+					var array_zipcodes=$.map(zipcodes, function(v,k){return v});
+					array_zipcodes.sort(function(a,b){return b.feature.properties["extra-count"] - a.feature.properties["extra-count"]})
+				
+					//give rank of the count of customers
+					$.each(array_zipcodes, function(i,layer){
+						layer.feature.properties["extra-count-rank"]=i+1;
+					});
+					
+					if(statisticsColumn && statisticsColumn != '') {
+						array_zipcodes.sort(function(a,b){return b.feature.properties["extra-"+statisticsColumn+"_sum"] - a.feature.properties["extra-"+statisticsColumn+"_sum"]})
+						//give rank of the count of customers
+						$.each(array_zipcodes, function(i,layer){
+							layer.feature.properties["extra-"+statisticsColumn+"_sum-rank"]=i+1
 						});
 					}
+					
+					$.each(zipcodes, function(i,zipcodeLayer){
+						var properties=zipcodeLayer.feature.properties;
+							
+						//bind popup on the zipcode layer
+//						zipcodeLayer.bindPopup(
+//							"<div class='zipcodePopup'><h3>Your customers in Zipcode: " + properties["ZIP"] + "</h3>"+
+//							"<ul class='objToHtml'>"+
+//							"<li><b>Total Customers: </b>" + properties["extra-count"] + "</li>"+
+//							"<li><b>Total "+ statisticsColumn +": </b>" + parseFloat(properties["extra-"+statisticsColumn+"_sum"]).toFixed(2) + " (" + parseFloat(properties["extra-"+statisticsColumn+"_sum"] / totalColumnValue).toFixed(4)*100 + "%)</li>"+
+//							"<li><div id='zipcodeChart'></div></li>"+
+//							"</ul>"+
+//							"<a href='#' onclick=\"showDemographicData('" + properties["ZIP"] +"');\" style='cursor:pointer;'>See more about the zipcode area.....</a></div>"
+//						);
+						zipcodeLayer.on('click', function(e){
+							showBusinessAction('top_users')
+							//showZipcodeChart("zipcodeChart", properties["ZIP"], properties["extra-" + statisticsColumn + "_sum"], totalColumnValue);
+						});
+					});
+					
 					obj.zipcodeLayer=zipcodes;
 					
 					
@@ -888,7 +935,7 @@ function showTable(obj){
 			"bAutoWidth":true,
 			"bPaginate": false,
 			"sPaginationType": "two_button", //"full_numbers",    //page number 
-			"sScrollY": $("#dataPanel").height()-87,
+			"sScrollY": app.css.dataTable_height(),
 			"sScrollX": "100%",
 			//"bDeferRender": true,
 			"oLanguage": {
@@ -919,6 +966,10 @@ function showTable(obj){
 								
 					//re-draw Chart
 					showDataTableChart(obj.json);
+					
+					//resize map to show the dataTable
+					resizeMap({height:"65%"}, {height:"35%"});
+					
 				}, 10);
 				
 		    },
@@ -969,7 +1020,7 @@ function showTable(obj){
 								geojson.features.push(feature);
 								
 								//save zipcode
-								zipcode=feature.properties["zip"];
+								zipcode=feature.properties[app.zipcodeFieldName];
 								if(zipcode){
 									if(zipcodes[zipcode]){
 										zipcodes[zipcode]+=1;
@@ -981,7 +1032,7 @@ function showTable(obj){
 							
 							//convert zipcodes object to array
 							zipcodes=$.map(zipcodes, function(v,k){return k});
-							
+						
 							//overwrite app.geocodingResult.json and showlayer 
 							if (geojson.features.length > 0){
 								obj.json = geojson;
@@ -1019,9 +1070,9 @@ function showTable(obj){
 		//add dataTable tools and click event
 		var html = "<ul>" +
 					//"<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
-					((obj.downloadLink) ? "<li><img src='images/1365858910_download.png' title='download'/></li>" : "") +
+					((obj.downloadLink) ? "<li><img src='images/1365858910_download.png' title='download'/><span>Download</span></li>" : "") +
 					//"<li><img src='images/1365858892_print.png' title='print'/></li>" +
-					"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/></li>" +
+					"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/><span>Show/hide Columns</span></li>" +
 					//"<li><img src='images/1365860337_cube.png' title='canned report'/></li>"+
 					//"<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
 					//"<li><img src='images/1365978110_gallery2.png' title='map gallery'/></li>" +
@@ -1032,13 +1083,11 @@ function showTable(obj){
 			
 			//download excel url
 			if(title=='download'){
-				if(obj.downloadLink){
-					window.open(obj.downloadLink);
-				}
+				if(obj.downloadLink){window.open(obj.downloadLink);}
 			}else{
 				//show content in the infobox
 				showInfobox(title, {
-					left: $(this).offset().left - 45,
+					left: $(this).offset().left,
 					top: $(this).offset().top - 25
 				}, this);
 			}
@@ -1143,7 +1192,8 @@ function showInfobox(type, css, dom){
 //show local info
 function showLocalInfo(fid, options){
 	var layer=app.geocodingResult.geoJsonLayer.layers[fid],
-		feature=layer.feature;
+		feature=layer.feature,
+		zipcode=feature.properties[app.zipcodeFieldName];
 	
 	//options
 	if(!options){options={}}
@@ -1151,9 +1201,8 @@ function showLocalInfo(fid, options){
 	options.zoomToCenter=options.zoomToCenter || false;
 	options.showPopup=options.showPopup || false;
 
-	
 	//show dataTable panel
-	showInfoPanel("dataPanel", $("#menuToolbox li[title='Your Uploaded Data']")[0]);
+	//showInfoPanel("dataPanel", $("#menuToolbox li[title='Your Uploaded Data']")[0]);
 		
 	
 	//close popup
@@ -1189,12 +1238,11 @@ function showLocalInfo(fid, options){
 		
 				
 	//trigger businessActions type to directly show the first option and draw its google chart
-	$("#businessActions_type").attr("zipcode", feature.properties[app.zipcodeFieldName])
+	$("#businessActions_type").attr("zipcode", zipcode )
 		
-		
-		
+
 	//highlight the zipcode boundary and show demographic data
-	highlightZipcode([feature.properties[app.zipcodeFieldName]]);
+	highlightZipcode([zipcode]);
 	
 	
 	//show legend
@@ -1245,6 +1293,10 @@ function showLocalInfo(fid, options){
 	
 //highlight zipcode area and show zipcodelayer on the map
 function highlightZipcode(zipcodes, options){
+	//show zipcodePanel
+	$("#zipcodePanel").show();
+	
+	//options
 	if(!options){options={}}
 	options.zoomToBounds=options.zoomToBounds || false;
 	
@@ -1256,10 +1308,33 @@ function highlightZipcode(zipcodes, options){
 	}
 	zipcodeLayer=new L.featureGroup();
 	$.each(zipcodes, function(i,zipcode){
-		zipcodeLayer.addLayer(app.geocodingResult.zipcodeLayer[zipcode]);
+		var layer=app.geocodingResult.zipcodeLayer[zipcode];
+		zipcodeLayer.addLayer(layer);
+		
+		if(zipcodes.length==1){
+			var properties=layer.feature.properties,
+				customerCount=properties["extra-count"],
+				customerRank=properties["extra-count-rank"],
+				columnName=app.geocodingResult.column.statistics,
+				statisticsSum=properties["extra-"+columnName+"_sum"] || null,
+				statisticsRank=properties["extra-"+columnName +"_sum-rank"] || null,
+				totalStatistics=(columnName) ? app.geocodingResult.dataTable.statisticsColumn[columnName].sum : null;
+			
+			//show zipcode number
+			$("#zipcodePanel h1").html("zipcode: "+ zipcodes[0]);
+			$("#zipcodePanel img").click(function(){
+				showBusinessAction('top_users');
+			});
+			$("#zipcode_summary").html("Total Customers: "+ customerCount + " <font class='rank'>Rank #" + customerRank + "</font>");
+			
+			if(statisticsSum && totalStatistics && statisticsRank){
+				$("#zipcode_summary").append("<p>" + "Total "+ columnName + ": " + parseFloat(statisticsSum).toFixed(2) + " (" + parseFloat((statisticsSum / totalStatistics) * 100).toFixed(2) + "%) <font class='rank'>Rank#" + statisticsRank + "</font>");
+			}
+		}
 	});
 	zipcodeLayer.addTo(app.map).bringToBack();
 	app.layers.selectedZipcodeLayer=zipcodeLayer;
+	
 	
 	//zoom to bounds
 	if(options.zoomToBounds){
@@ -1285,8 +1360,8 @@ function showBusinessAction(type){
 				containerId: "businessActions_result",
 				view:{columns:[0,1]},
 				options: {
-					width: $(".infoPanel").width()-50,
-					height:$(".infoPanel").height()-80,
+					width: $("#businessActions_select").width(),
+					height:$("#businessActions_select").height()-50,
 					title: "",
 					titleX: "",
 					titleY: "",
@@ -1295,8 +1370,8 @@ function showBusinessAction(type){
 					fontSize: 11,
 					isStacked:true, 
 					series:{0:{color: '#5B92C0', visibleInLegend: true}},
-					vAxes:{0:{titleTextStyle:{color:"#ffffff"}, textStyle:{color:"#ffffff"}}},
-					hAxes:{0:{titleTextStyle:{color: "#ffffff"},textStyle:{color: "#ffffff"}}},
+					vAxes:{0:{titleTextStyle:{color:"#222222"}, textStyle:{color:"#222222"}}},
+					hAxes:{0:{titleTextStyle:{color: "#222222"},textStyle:{color: "#222222"}}},
 					backgroundColor: {fill:'transparent'},
 					tooltip: {isHtml: true},
 					is3D:true
@@ -1309,9 +1384,8 @@ function showBusinessAction(type){
 				var zipcode=e.data.getValue(e.row, 0);
 				showDemographicData(zipcode);
 			}
-		}
-		
-		
+		};
+
 		switch(type){
 			case "top_users":
 				dataArray = new google.visualization.DataTable();
@@ -1351,23 +1425,20 @@ function showBusinessAction(type){
 			case "top_sales":
 				var columnName=app.geocodingResult.column.statistics;
 				dataArray=[["zipcodes", "sum_"+columnName+""]];
-				$.each(zipcodeLayer, function(k,v){dataArray.push([k, v.feature.properties["extra-" + columnName +"_sum"]]);});
+				$.each(zipcodeLayer, function(k,v){dataArray.push([parseInt(k), v.feature.properties["extra-" + columnName +"_sum"]]);});
 				chartOptions.googleChartWrapperOptions.options.titleX="The sum of "+columnName;
 				chartOptions.googleChartWrapperOptions.options.titleY="Zip Codes"
-			break;
-			case "avg_income_from_users":
-				
-			break;
-			case "most_language_from_users":
-				
-			break;
-			case "potential_market":
-				
 			break;
 		}
 		
 		
+		//draw google chart
 		pathgeo.service.drawGoogleChart(dataArray, [chartOptions], null, null, {sort:sort}); //sort, but the sequence of the chart data will be different with the geojson		
+		
+		
+		//show businessAction dialog
+		$("#dialog_businessAction").popup('open');
+		
 }
 
 
@@ -1380,7 +1451,7 @@ function showDemographicData(zipcode){
 			properties=app.layers.demographicData.zipcodes[zipcode].feature.properties;
 				
 		//show localinfor panel
-		showInfoPanel("localInfoPanel", $("#menuToolbox li[title='Find the Best Business Actions']")[0]);
+		//showInfoPanel("localInfoPanel", $("#menuToolbox li[title='Find the Best Business Actions']")[0]);
 		
 		//set zipcode attribute in the select_businessAction
 		$("#businessActions_type").attr('zipcode', zipcode).change();
@@ -1436,8 +1507,8 @@ function showDemographicData(zipcode){
 					   "<ul>";
 		
 				
-		$("#businessActions_detailContent_listview").html(html_listview).listview('refresh');
-		$("#businessActions_detailContent_collapsible").html(html_collapsible).trigger('create');
+		//$("#businessActions_detailContent_listview").html(html_listview).listview('refresh');
+		//$("#businessActions_detailContent_collapsible").html(html_collapsible).trigger('create');
 				
 		//expand events
 		$('#businessActions_detailContent_collapsible div.ui-btn-inner a').on('click', function(e,ui){
@@ -1483,8 +1554,12 @@ function showDemographicData(zipcode){
 		//app.dataTable.fnFilter(zipcode);
 
 		//show the detail of business actions
-		$(".businessActions_tabs").hide();
-		$("#businessActions_detail").show();
+		//$(".businessActions_tabs").hide();
+		//$("#businessActions_detail").show();
+		
+		
+		//close dialog_businessAction
+		$("#dialog_businessAction").popup('close');
 	
 }
 
@@ -1736,7 +1811,7 @@ function showInfoPanel(domID, obj){
 	
 	//resize map
 	var width=($("#content").width() - $(".infoPanel").width() - $("#menuToolbox").width() - 20) / $("#content").width() * 100;
-	$("#div_map").css({width:width+"%"});
+	//$("#div_map").css({width:width+"%"});
 	app.map.invalidateSize(false);
 }
 

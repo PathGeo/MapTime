@@ -175,7 +175,7 @@ pathgeo.service={
 			me.geojsonLayer=new L.GeoJSON(json, {
 				onEachFeature: function(jsonFeature, layer){
 					//popup html
-					layer.bindPopup(options.popupHTML(jsonFeature),{maxWidth:options.popupMaxWidth, maxHeight:options.popupMaxHeight});
+					//layer.bindPopup(options.popupHTML(jsonFeature),{maxWidth:options.popupMaxWidth, maxHeight:options.popupMaxHeight});
 					
 					
 					//test: insert each layer in to zipcodes array

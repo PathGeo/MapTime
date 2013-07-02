@@ -10,11 +10,32 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /**
  * map
  */
-#div_map {width:100%; height:100%; float:right; padding:0px; margin:0px; position:relative; box-shadow:0 4px 10px #777777; -moz-box-shadow:0 4px 10px #777777; -webkit-box-shadow:0 4px 10px #777777;}
+#div_map {width:100%; height:100%; padding:0px; margin:0px; position:relative; box-shadow:0 4px 10px #777777; -moz-box-shadow:0 4px 10px #777777; -webkit-box-shadow:0 4px 10px #777777;}
 #showhideTable {position:absolute; bottom:0px;left:43%; color:#cccccc; font-weight:bold; text-align:center; text-shadow:0 0px 0 #fff; margin:0 auto; z-index:500; background:rgba(0,0,0,0.3); width:150px; height:18px; -moz-border-radius:2px; -webkit-border-radius:2px;border-radius:2px;}
 #showhideTable:hover {background:rgba(0,0,0,0.7);cursor:pointer;color:#ffffff;}
 #map_overlay {display:none; background:rgba(0,0,0,0.6);width:100%; height:100%; z-index:100; position:absolute;}
 .leaflet-tile-pane {opacity:1}
+
+
+/**
+ * zipcodePanel
+ */
+#zipcodePanel {position:absolute; z-index:500; color:#ffffff; width:215px; max-height:100px; padding:10px; display:none;}
+#zipcodePanel .rank {font-weight:bold; color:#FE4702; float:right}
+#zipcodePanel img {position:absolute; top:26px; right:10px; width:25px; }
+#zipcodePanel img:hover {cursor:pointer;}
+
+.panelBackground {
+	-moz-border-radius:2px; -webkit-border-radius:2px;border-radius:2px;
+	text-shadow:0 0px 0 #fff;
+	box-shadow:0 4px 10px #777777; -moz-box-shadow:0 4px 10px #777777; -webkit-box-shadow:0 4px 10px #777777;
+	background-image:-webkit-gradient(linear,left top,left bottom,from( rgba(60,60,60,0.75) ),to( rgba(17,16,0,0.75) ));
+	background-image:-webkit-linear-gradient( rgba(60,60,60,0.75),rgba(17,16,0,0.75) );
+	background-image:-moz-linear-gradient( rgba(60,60,60,0.75),rgba(17,16,0,0.75) );
+	background-image:-ms-linear-gradient( rgba(60,60,60,0.75),rgba(17,16,0,0.75) );
+	background-image:-o-linear-gradient( rgba(60,60,60,0.75),rgba(17,16,0,0.75) );
+	background-image:linear-gradient( rgba(60,60,60,0.75),rgba(17,16,0,0.75) )
+}
 
 /**
  * 	content
@@ -27,6 +48,9 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
  */
 #user_login label.ui-input-text {font-size:14px;}
 #dialog_login-screen {position:fixed}
+
+
+
 
 
 /**
@@ -67,7 +91,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /**
  * heatmap radius content
  */
-#heatmap_radius {display:none; z-index:500; position:absolute; top:210px; right:60px; text-shadow:0 0px 0 #fff; color:#ffffff;}
+#heatmap_radius {display:none; z-index:500; position:absolute; top:150px; right:60px; text-shadow:0 0px 0 #fff; color:#ffffff;}
 #heatmap_radius .ui-input-text {font-size:11px; font-weight:bold;}
 #heatmap_radiusArrow {border-color: transparent transparent transparent rgba(0,0,0,0.7); border-style:solid; border-width:13px; height:0; width:0; right: -25px; top:20px; z-index: 0;position:absolute;  box-shadow: 0 1px 20px -7px #999;}
 #heatmap_radiusContent {width:250px; height:50px; background:rgba(0,0,0,0.7); border:1px solid #999999; padding:5px; margin:0px; }
@@ -87,7 +111,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /**
  * 	legend
  */
-.leaflet-control-legend { box-shadow: 0 1px 7px #999; background: rgba(230,230,230,0.7); -moz-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px; padding:15px; min-height:0px; max-width:200px; min-width:0px;}
+.leaflet-control-legend {display:none; box-shadow: 0 1px 7px #999; background: rgba(230,230,230,0.7); -moz-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px; padding:15px; min-height:0px; max-width:200px; min-width:0px;}
 .leaflet-control-legend ul {list-style:none; padding:5px; margin:0px; background: rgba(240,240,240,1); -moz-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px;}
 .leaflet-control-legend ul li {padding:2px; font-weight:bold; }
 .leaflet-control-legend ul li #legend_image {}
@@ -141,7 +165,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /** business actions */
 #localInfo_businessActions label.ui-select{font-size:110%; font-weight:bold;}
 #localInfo_businessActions {height:98%; position:relative;}
-.businessActions_tabs {height:100%; position:relative;}
+.businessActions_tabs {width:99%; height:100%; padding:20px; float:left; position:relative;}
 #businessActions_downloadReport {position:absolute; top:-5px; right:0px; cursor:pointer; width:25px;}
 #businessResult_result {height:85%;}
 #businessActions_detail {height:100%;}
@@ -165,31 +189,32 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /**
  * dataTable
  */
-#dataPanel {text-shadow: 0 0px 0 #fff;}
+#dataPanel {text-shadow: 0 0px 0 #fff; height:30%;}
 #dataPanel_introUploadData {text-align:center; color:#ffffff; margin-top:30px; padding:20px; cursor:pointer;}
 #dataPanel_introUploadData:hover {border:1px solid #777777 !important;}
-#dataTable {font-size:13px; background-color:#ffffff;}
+#dataTable {font-size:12px; background-color:#ffffff;}
 #dataTable tr:hover{background-color:#5e87b0; color:#000000; cursor:pointer;}
 
 .dataTable tr:first-child {background-color:#ffffff;}
-#dataTable th, #dataTable td {white-space: nowrap; padding:15px 10px 15px 10px; }
+#dataTable th, #dataTable td {white-space: nowrap; padding:6px 10px 6px 10px; }
 
 
 #dataTable_control {height:35px; border-bottom:0px solid #cccccc; margin-bottom:10px; }
-#dataTable_wrapper {height:92%; overflow:auto; margin-top:20px;}
+#dataTable_wrapper {height:100%; overflow:auto; margin-top:10px;}
 
 .dataTable_tools {float:right; margin:2px 5px 2px 5px; width:auto; height:35px; padding-top:5px;}
 .dataTable_tools > div {float:right;}
-.dataTable_tools ul {list-style:none; padding:0px; margin:0px; float:right;}
+.dataTable_tools ul {list-style:none; padding:0px; margin:0px; float:right; margin-right:10px;}
 .dataTable_tools ul li {padding:0px 10px 0px 10px; cursor:pointer; float:right; border-left:1px solid #cccccc;}
 .dataTable_tools ul li:hover {background-color:#dddddd;}
+.dataTable_tools ul li span {margin-left:10px; position:relative; top:-4px;}
 .dataTable_tools img {width:20px; padding-top:5px;}
 .dataTable_tools > div {padding:0px 15px 0px 15px;}
 .dataTable_tools > div:first-child {padding:0px ;}
 
 .dataTable_menu {display:none;height:150px; width:200px; top:15px; position:absolute; z-index:1000; }
 .dataTable_menu .infobox_triangle {border-color: transparent transparent #ffffff transparent; border-style:solid; border-width:13px; height:0; width:0; left: 10px; top:0px; z-index: 0;position:relative; left:10px; top:1px; box-shadow: 0 1px 20px -7px #999;}
-.dataTable_menu .infobox {height:150px; min-width:240px; overflow-y:auto; padding:15px; background-color:#ffffff; border:1px solid #cccccc; box-shadow: 0 1px 7px #999;}
+.dataTable_menu .infobox {height:120px; min-width:240px; overflow-y:auto; padding:15px; background-color:#ffffff; border:1px solid #cccccc; box-shadow: 0 1px 7px #999;}
 .dataTable_menu .infobox ul {list-style:none; padding:0px; margin:0px}
 .dataTable_menu .infobox ul li {padding:1px; font-weight:bold; }
 
@@ -198,10 +223,12 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 .dataTable_nav li a img {width:20px;}
 
 #dataTable_length {float:right; padding-right:30px;}
-#dataTable_filter input {width:275px;height:26px;padding:0px 5px 0px 5px; -moz-border-radius:5px; -webkit-border-radius:5px;border-radius:5px;}
+#dataTable_filter input {width:350px;height:26px;padding:0px 5px 0px 5px; -moz-border-radius:5px; -webkit-border-radius:5px;border-radius:5px;}
 #dataTable_filter label {font-weight:bold; color:#ffffff;}
 #dataTable { width: 100%; }
 #dataTable_chart {width:100%; }
+
+.dataTables_info{display:none;}
 
 
 /**
@@ -236,12 +263,14 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #uploadData_controls .ui-checkbox {float:left; width:30%; }
 #uploadData_controls div.ui-btn:nth-child(2) {position:absolute; float:left; margin-left:30%; width:60%;}
 
+
 /**
  * lab
  */
 #dialog_lab {width:900px; height:550px; text-shadow:0 0px 0 #fff; padding:20px;text-align:center;}
 #slider_wrapper {width:90%; height:90%;margin:0 auto;margin-top:20px;text-align:left;}
 .nivo-caption {font-weight:bold; font-size:16px; padding:10px; text-align:right;}
+
 
 /**
  * header
@@ -272,6 +301,11 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #dialog_login {width:400px; height:250px;padding:50px; }
 
 
+/**
+ * businessAction
+ */
+#dialog_businessAction {width:850px; height:450px; padding:50px;}
+#dialog_businessAction-screen {position:fixed;}
 
 
 /**
