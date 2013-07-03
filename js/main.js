@@ -1104,7 +1104,7 @@ function showTable(obj){
 		var html = "<ul>" +
 					//"<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
 					((obj.downloadLink) ? "<li><img src='images/1365858910_download.png' title='download'/><span>Download</span></li>" : "") +
-					//"<li><img src='images/1365858892_print.png' title='print'/></li>" +
+					"<li><img src='images/1365858892_print.png' title='print'/><span>Print</span></li>" +
 					"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/><span>Show/hide Columns</span></li>" +
 					//"<li><img src='images/1365860337_cube.png' title='canned report'/></li>"+
 					//"<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
@@ -1115,15 +1115,23 @@ function showTable(obj){
 			var title=$(this).find("img").attr('title');
 			
 			//download excel url
-			if(title=='download'){
-				if(obj.downloadLink){window.open(obj.downloadLink);}
-			}else{
-				//show content in the infobox
-				showInfobox(title, {
-					left: $(this).offset().left,
-					top: $(this).offset().top - 25
-				}, this);
+			switch (title){
+				case "download":
+					if(obj.downloadLink){window.open(obj.downloadLink);}
+				break;
+				case "print":
+					//window.open("print.html", "Map Time", "width=800, height=500, status=no, toolbar=no, fullscreen=yes, channelmode=yes, location=no, menubar=no, titlebar=no")
+					print();
+				break;
+				case "show / hide columns":
+					//show content in the infobox
+					showInfobox(title, {
+						left: $(this).offset().left,
+						top: $(this).offset().top - 25
+					}, this);
+				break;
 			}
+		
 		});
 		
 	
@@ -1953,4 +1961,28 @@ function logout(){
 	
 	//close popup
 	$("#dialog_logout").popup('close');
+}
+
+
+
+//print the map
+function print(){
+	var html = '<html><head>' +
+               '<link rel="stylesheet"  href="js/leaflet/leaflet.css" />' +
+               '<link rel="stylesheet"  href="css/main.css" />' +
+               '<link rel="stylesheet"  href="css/jquery.dataTables.css" />' +
+               '<style type="text/css">.leaflet-top {display:none;} .leaflet-right {display:none;} #showhideTable {display:none;} } </style>' +
+               '</head>'+
+               '<body style="background:#ffffff;">' +
+               $("#div_map")[0].innerHTML +
+               '</body>'+
+               '</html>';
+	
+	//create a window
+	var WindowObject = window.open("", "MapTime", "width=800,height=600,top=0,left=0,toolbar=yes,scrollbars=yes,status=yes,resizable=yes");
+    WindowObject.document.writeln(html);
+    WindowObject.document.close();
+    WindowObject.focus();
+    WindowObject.print();
+    
 }
