@@ -74,6 +74,8 @@ def geocodeRows(rows, locFunc):
 			
 			if lat and lon:			
 				doc = dict(type='Feature', geometry=dict(type="Point", coordinates=[lon, lat]), properties=row.copy())
+				
+				#for some reason, the condition is being met, even when 'place' == None (why????)
 				if place and type(place) is str:
 					zips = re.findall(r'\b[0-9]{5}\b', place)
 					if zips:
