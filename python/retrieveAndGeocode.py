@@ -74,9 +74,10 @@ def geocodeRows(rows, locFunc):
 			
 			if lat and lon:			
 				doc = dict(type='Feature', geometry=dict(type="Point", coordinates=[lon, lat]), properties=row.copy())
-				zips = re.findall(r'\b[0-9]{5}\b', place)
-				if zips:
-					doc['properties']['zip_code'] = zips[-1]
+				if place and type(place) is str:
+					zips = re.findall(r'\b[0-9]{5}\b', place)
+					if zips:
+						doc['properties']['zip_code'] = zips[-1]
 				
 				doc['properties']['latitude'] = lat
 				doc['properties']['longitude'] = lon
@@ -84,7 +85,7 @@ def geocodeRows(rows, locFunc):
 				features.append(doc)
 				
 		except Exception, e:
-			return json.dumps({ 'error': str(e) })
+			return json.dumps({ 'error': str(e), 'row': str(row) })
 
 	return features
 	
