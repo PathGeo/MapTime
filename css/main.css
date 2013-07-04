@@ -43,11 +43,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #content {position:relative;}
 
 
-/**
- * log in 
- */
-#user_login label.ui-input-text {font-size:14px;}
-#dialog_login-screen {position:fixed}
+
 
 
 
@@ -311,7 +307,17 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /**
  * user log in
  */
-#dialog_login {width:400px; height:250px;padding:50px; }
+#dialog_login {width:750px; height:400px;padding:40px; }
+#dialog_login > div {float:left; width:44%; padding:20px; position:relative;}
+#dialog_login label.ui-input-text {font-size:14px;}
+#dialog_login-screen {position:fixed}
+#dialog_login .ui-checkbox {width:60%; margin-top:15px;}
+#dialog_login .ui-btn-text {font-size:14px; }
+#dialog_login .msg {text-align:right; margin-top:20px;  color:#ff0000; border-top:0px solid #cccccc; position:absolute; right:20px; }
+
+#user_login .ui-submit {float:right; top:-50px; }
+
+#user_signup .ui-submit {float:right;}
 
 
 /**

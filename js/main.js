@@ -1888,8 +1888,8 @@ function fakeLogin(){
 
 //login
 function login(){
-	var email=$("#email").val(),
-		password=$("#password").val();
+	var email=$("#user_login #email").val(),
+		password=$("#user_login #password").val();
 	
 	//loading icon
 	$("#login_msg").html("<img src='images/loading.gif' width=20px />")
@@ -1913,7 +1913,10 @@ function login(){
 				$('#dialog_login').popup('close');
 				
 				//write cookie
-				$.cookie('MapTime', 'email='+ email, { expires: 7, path: '/' });
+				if($("#login_cookie").is(":checked")){
+					$.cookie('MapTime', 'email='+ email, { expires: 7, path: '/' });
+				}
+				
 				
 				//rewite login button
 				$("#header_login").attr("href", "#")
@@ -1961,6 +1964,34 @@ function logout(){
 	
 	//close popup
 	$("#dialog_logout").popup('close');
+}
+
+
+
+//sign up 
+function signup(){
+	var username=$("#user_signup #username").val(),
+		password=$("#user_signup #password").val(),
+		confirmPassword=$("#user_signup #confirmPassword").val(),
+		email=$("#user_signup #email").val();
+		
+	//clear msg
+	$("#signup_msg").html("")
+		
+	//validate
+	if(username=="" | password=="" | confirmPassword=="" || email==""){showMsg("Please fill up all fields."); return;}
+	if(password!=confirmPassword){showMsg("Password is not matched. Please check again."); return;}
+	var validateEmail=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if(validateEmail.test(email)==false){showMsg("You have entered an invalid email address! <br>Please check again"); return;}
+
+	
+	
+	
+	
+	
+	function showMsg(msg){
+		$("#signup_msg").html(msg);
+	}
 }
 
 

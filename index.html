@@ -461,8 +461,10 @@
 		<div id='dialog_login' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
              <!--<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>-->
 			 
-			 <h3></h3><p></p>
-			 <fieldset id='user_login' style=''>
+			 <!-- login-->
+			 <div>
+			 	<h2>Member login</h2>
+				<fieldset id='user_login' style=''>
                                <!-- <asp:Literal runat="server" ID="litMessage"></asp:Literal>-->
 
                                 <label for="email">Username / Email:</label>
@@ -470,17 +472,41 @@
 
                                 <label for="password">Password:</label>
                                 <input type="password" id="password" onkeypress="if(event.keyCode==13){login();}"></input>
-
-                                <input id="Submit1" type="submit" value="Login" data-role="button" data-inline="true" data-theme="b" onclick="login();" />
-
-                                <hr/>
 								
-								<div style='text-align:right'>
-									Don't have a login? Please <a href="mailto:mtsou@mail.sdsu.edu">contact us</a>
-								</div>
-								
-								<div id='login_msg' style='text-align:right; margin-top:10px;  color:#ff0000'></div>
-            </fieldset> 
+								<label for='login_cookie'>Remember me</label>
+								<input type='checkbox' id='login_cookie' />
+                                
+								<input id="btn_login" type="submit" value="Login" data-role="button" data-inline="true" data-theme="b" onclick="login();" />
+
+								<div id='login_msg' class='msg'></div>
+            	</fieldset> 
+				
+			 </div>
+			 
+			 
+			 <!-- sign up -->
+			 <div style='float:right;border-left:1px solid #cccccc;'>
+			 	<h2>Not a memember yet? Sign Up!</h2>
+				<fieldset id='user_signup' style=''>
+					<label for="username">Username:</label>
+                    <input type="email" id="username"></input>   
+
+                   	<label for="password">Password:</label>
+                    <input type="password" id="password"></input>
+					
+					<label for="confirmPassword">Confirm Password:</label>
+                    <input type="password" id="confirmPassword"></input>
+					
+					<label for="email">Email:</label>
+                    <input type="email" id="email"></input> 
+															
+                    <input id="btn_signup" type="submit" value="Sign Up" data-role="button" data-inline="true" data-theme="b" onclick="signup();" />
+					
+					<div id='signup_msg'  class='msg' style='margin-top:50px;'></div>
+            	</fieldset> 
+			 </div>
+			 <h3></h3><p></p>
+			 
 		</div>
 		
 		
