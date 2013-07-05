@@ -1988,7 +1988,6 @@ function signup(){
 		method:"post",
 		url:"python/signup.py", 
 		data:{
-			username:username,
 			password:password,
 			email:email
 		},
