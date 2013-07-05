@@ -1970,8 +1970,7 @@ function logout(){
 
 //sign up 
 function signup(){
-	var username=$("#user_signup #username").val(),
-		password=$("#user_signup #password").val(),
+	var	password=$("#user_signup #password").val(),
 		confirmPassword=$("#user_signup #confirmPassword").val(),
 		email=$("#user_signup #email").val();
 		
@@ -1979,16 +1978,50 @@ function signup(){
 	$("#signup_msg").html("")
 		
 	//validate
-	if(username=="" | password=="" | confirmPassword=="" || email==""){showMsg("Please fill up all fields."); return;}
+	if(password=="" | confirmPassword=="" || email==""){showMsg("Please fill up all fields."); return;}
 	if(password!=confirmPassword){showMsg("Password is not matched. Please check again."); return;}
 	var validateEmail=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if(validateEmail.test(email)==false){showMsg("You have entered an invalid email address! <br>Please check again"); return;}
 
 	
+	$.ajax({
+		method:"post",
+		url:"python/signup.py", 
+		data:{
+			username:username,
+			password:password,
+			email:email
+		},
+		dataType:"json",
+		success:function(json){
+			if(json.status && json.status=='ok'){
+				//close login dialog
+				$('#dialog_login').popup('close');				
+				
+				//rewite login button
+				$("#header_login").attr("href", "#")
+				.click(function(){
+					$("#header_login").attr("href", "#dialog_logout");
+				})
+				.find(".ui-btn-text").html(email);
+							
+				setTimeout(function(){
+					$("#dialog_menu").popup("open");
+				},500);
+				
+			}else{
+				showMsg(json.msg);
+				return;
+			}
+		},
+		error: function(e){
+			console.log(e);
+		}
+	});
 	
 	
 	
-	
+	//show msg
 	function showMsg(msg){
 		$("#signup_msg").html(msg);
 	}
