@@ -1000,6 +1000,9 @@ function showTable(obj){
 					//re-draw Chart
 					showDataTableChart(obj.json);
 					
+					//show show/hide table button
+					$("#showhideTable").show();
+					
 					//resize map to show the dataTable
 					resizeMap({height:"65%"}, {height:"35%"});
 					

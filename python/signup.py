@@ -3,7 +3,8 @@
 import cgi #import cgi library to get url parameters from users
 import json as simplejson  #import libaray to use json
 from pymongo import MongoClient
-import smtplib #send email by using smtp 
+import smtplib #send email by using smtp
+import datetime
 
 
 print "Content-Type: text/html \n"
@@ -104,7 +105,8 @@ obj={
     "username":username,
     "password":password,
     "emailSent":False,
-    "emailVerified": False
+    "emailVerified": False,
+    "dateRegister": datetime.datetime.now()
 }
 
 

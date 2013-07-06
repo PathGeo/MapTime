@@ -11,32 +11,47 @@ app={
     "parameter":cgi.FieldStorage()
 }
 
+exception={
+    "pathgeodemo":"demo@42",
+    "maptime":"maptimedemo"
+}
+
 
 #queyr db to verify the login info.-------------------------------------------------------------------
 def checkLogin(email, password):
-    db=MongoClient()["maptime"]
-    collection=db["user"]
-
-    #check if email exists
-    if(collection.find({"email": email}).count()>0):
-        #check password
-        pw=collection.find_one({"email": email})["password"]
-      
-        if(pw==password):
-            return {
-                "status":"ok",
-                "msg": "login succesfully"
-            }
-        else:
-            return {
-                "status":"error",
-                "msg":"password is not correct! Please check again"
-            }
-    else:
-        return {
-            "status":"error",
-            "msg":"Email is not validated. Please try again or not a member yet? Please sign up first!"
+    def returnMsg(type):
+        msg={
+            "success": {"status":"ok","msg": "login succesfully"},
+            "error.password": {"status":"error","msg":"password is not correct! Please check again"},
+            "error.email":{ "status":"error","msg":"Email is not validated. Please try again. Or not a member yet? Please sign up first!"}
         }
+        return msg[type]
+
+    
+    #exception
+    if email in exception:
+        if (password==exception[email]):
+            return returnMsg("success")
+        else:
+            return returnMsg("error.email")
+    else:
+        db=MongoClient()["maptime"]
+        collection=db["user"]
+
+        #check if email exists
+        if(collection.find({"email": email}).count()>0):
+            #check password
+            pw=collection.find_one({"email": email})["password"]
+          
+            if(pw==password):
+                return returnMsg("success")
+            else:
+                return returnMsg("error.password")
+        else:
+            return returnMsg("error.email")
+
+
+    
 #---------------------------------------------------------------------------------------
 
 
