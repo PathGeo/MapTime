@@ -33,8 +33,8 @@ def checkLogin(email, password):
 
     accountInfo={
         "Email": "",
-        "Email Verified": True,
-        "Signup Date":"2013/07/01"
+        "Email_Verified": True,
+        "Signup_Date":"2013/07/01"
     }
     
     #exception
@@ -50,19 +50,19 @@ def checkLogin(email, password):
         user=collection.find_one({"email": email})
 
         #check if email exists
-        if(user!="null"):
+        if(user is not None):
             #check password
             pw=user["password"]
             
             if(pw==password):
                 accountInfo["Email"]=user["email"]
-                accountInfo["Email Verified"]=user["emailVerified"]
-                accountInfo["Signup Date"]=user["dateRegister"]
+                accountInfo["Email_Verified"]=user["emailVerified"]
+                accountInfo["Signup_Date"]=user["dateRegister"]
                 return returnMsg("success", accountInfo)
             else:
-                return returnMsg("error.password")
+                return returnMsg("error.password", None)
         else:
-            return returnMsg("error.email")
+            return returnMsg("error.email", None)
 
 
     

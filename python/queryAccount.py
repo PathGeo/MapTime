@@ -24,8 +24,8 @@ def getAccountInfo(email):
         "msg": "query succesfully",
         "account":{
             "Email": "",
-            "Email Verified": True,
-            "Signup Date":"2013/07/01"
+            "Email_Verified": True,
+            "Signup_Date":"2013/07/01"
         }
     }
 
@@ -37,13 +37,13 @@ def getAccountInfo(email):
     else:
         db=MongoClient()["maptime"]
         collection=db["user"]
+        user=collection.find_one({"email": email})
 
         #check if email exists
-        if(collection.find({"email": email}).count()>0):
-           account=collection.find({"email": email})
-           msg["account"]["Email"]=account["email"]
-           msg["account"]["Email Verified"]=account["emailVerified"]
-           msg["account"]["Signup Date"]=account["dateRegister"]
+        if(user is not None):
+           msg["account"]["Email"]=user["email"]
+           msg["account"]["Email_Verified"]=user["emailVerified"]
+           msg["account"]["Signup_Date"]=user["dateRegister"]
 
            return msg
         else:

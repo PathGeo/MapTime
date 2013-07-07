@@ -34,10 +34,10 @@ def changePassword(email, oldPW, newPW):
     else:
         db=MongoClient()["maptime"]
         collection=db["user"]
-        user=collection.find({"email": email})
+        user=collection.find_one({"email": email})
 
         #check if email exists
-        if(user.count()>0):
+        if(user is not None):
             if(user["password"]==oldPW):
                 user["password"]=newPW
                 return returnMsg("success")

@@ -37,9 +37,10 @@ def getParameterValue(name):
 def register(obj):
     client=MongoClient()
     collection=client[app["dbName"]][app["dbCollection"]]
-
+    user=collection.find_one({"email":obj["email"]})
+    
     #determine whether email is already registered
-    if (collection.find({"email":obj["email"]}).count()>0):
+    if (user is not None):
         return {
             "status":"error",
             "msg":"The email address is already existed. Please use other email to sign up"
