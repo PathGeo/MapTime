@@ -81,7 +81,6 @@ var app={
 	showLayers:[], //layers are shown in the map
 	dataTable:null,
 	demographicData:{
-	
 		"fam_size" : "average faimily size",
 		"income" : "median household income",
 		"age0_9" : "age 5 to 9 years",
@@ -111,7 +110,11 @@ var app={
 		"dataTable_highlightRow":{"background-color":"#ED3D86", "color":"#ffffff"},
 		"dataTable_height": function(){return $("#dataPanel").height()-70}
 	},
-	$tr:null
+	$tr:null,
+	userInfo:{
+		email:null
+	}
+	
 }
 
 
@@ -148,20 +151,50 @@ function init_login(){
 	//console.log($.cookie("SocialTime"));
 	
 	if($.cookie("MapTime")){
+		var email=app.userInfo.email=$.cookie("MapTime").split("email=")[1];
+		
+		//change login button 
 		$("#header_login").attr("href", "#")
 			.click(function(){
-				$("#header_login").attr("href", "#dialog_logout");
+				$("#header_login").attr("href", "#dialog_userMenu");
 			})
-			.find(".ui-btn-text").html($.cookie("MapTime").split("email=")[1]);
+			.find(".ui-btn-text").html(email);
 		
-		//show deom menu
+		//show upload data button
+		$("#header a[href='#dialog_menu']").show();
+		
+		//show demo menu
 		setTimeout(function(){
 			$("#dialog_menu").popup("open");
 		}, 1000);
+		
+		//get user account info
+		$.ajax({
+			url:"python/queryAccount.py",
+			data:{
+				email:email
+			},
+			dataType:"json",
+			success: function(json){
+				//load account info
+				html='<ul>';
+				$.each(json.account, function(k,v){
+					html+="<li><label>"+k+"</label>: "+v+"</li>";
+				})
+				html+="</ul>";
+				$("#accountDetail").html(html);
+			},
+			error: function(e){
+				console.log(e);
+			}
+		});
+		
+		
 	}else{
 		$("#dialog_login").popup("open");
 	}
 }
+
 
 
 
@@ -298,6 +331,22 @@ function init_UI(){
 			height=$img.attr("markerHeight");
 			
 		changeMarkerIcon(img_src, width, height);
+	});
+	
+	
+	//click event for userMenuContent
+	$("#userMenu_button ul li").click(function(){
+		var $this=$(this),
+			target=$this.attr("target"),
+			$target=$("#"+target);
+		
+		//add active class on the click button
+		$this.addClass("userMenu_buttonActive").siblings().removeClass("userMenu_buttonActive");
+		
+		$(".userMenuContent").hide();
+		$target.show();
+		
+		
 	});
 	
 	
@@ -1882,12 +1931,6 @@ function showDialog(dom_id){
 }
 
 
-//fake function for login
-function fakeLogin(){
-	$("#usermenu_list").show();
-    $("#user_login").hide();                
-}
-
 
 //login
 function login(){
@@ -1912,31 +1955,12 @@ function login(){
 			$("#login_msg").html("");
 
 			if(e.status=='ok'){
-				//close login dialog
-				$('#dialog_login').popup('close');
-				
 				//write cookie
 				if($("#login_cookie").is(":checked")){
 					$.cookie('MapTime', 'email='+ email, { expires: 7, path: '/' });
 				}
 				
-				
-				//rewite login button
-				$("#header_login").attr("href", "#")
-				.click(function(){
-					$("#header_login").attr("href", "#dialog_logout");
-				})
-				.find(".ui-btn-text").html(email);
-				
-				//close dialog_login and open dialog_menu
-				$("#dialog_login").popup("close");
-				
-				
-				
-				setTimeout(function(){
-					$("#dialog_menu").popup("open");
-				},500);
-				
+				afterLogin(e);
 			}else{
 				//show error msg
 				$("#login_msg").html(e.msg);
@@ -1964,6 +1988,9 @@ function logout(){
 	//clear cookies
 	$.removeCookie('MapTime', { path: '/' });
 	//console.log("logout: "+ $.cookie("SocialTime"))
+	
+	//hide uploda data  button
+	$("#header a[href='#dialog_menu']").hide();
 	
 	//close popup
 	$("#dialog_logout").popup('close');
@@ -1997,20 +2024,7 @@ function signup(){
 		dataType:"json",
 		success:function(json){
 			if(json.status && json.status=='ok'){
-				//close login dialog
-				$('#dialog_login').popup('close');				
-				
-				//rewite login button
-				$("#header_login").attr("href", "#")
-				.click(function(){
-					$("#header_login").attr("href", "#dialog_logout");
-				})
-				.find(".ui-btn-text").html(email);
-							
-				setTimeout(function(){
-					$("#dialog_menu").popup("open");
-				},500);
-				
+				afterLogin(json);
 			}else{
 				showMsg(json.msg);
 				return;
@@ -2027,6 +2041,83 @@ function signup(){
 	function showMsg(msg){
 		$("#signup_msg").html(msg);
 	}
+}
+
+
+
+//after login
+function afterLogin(json){
+	//close login dialog
+	$('#dialog_login').popup('close');				
+				
+	//rewite login button
+	$("#header_login").attr("href", "#")
+		.click(function(){
+			$("#header_login").attr("href", "#dialog_userMenu");
+		})
+		.find(".ui-btn-text").html(json.account.Email);
+				
+	//show upload data button
+	$("#header a[href='#dialog_menu']").show();
+	
+	//load account info
+	html='<ul>';
+	$.each(json.account, function(k,v){
+		html+="<li><label>"+k+"</label>: "+v+"</li>";
+	});
+	html+="</ul>";
+	$("#accountDetail").html(html);
+	
+	
+	//give email to the global variable
+	app.userInfo.email=json.account.Email;
+							
+	setTimeout(function(){
+		$("#dialog_menu").popup("open");
+	},500);
+}
+
+
+
+//change password
+function changePW(){
+	var oldPW=$("#oldPW").val(),
+		newPW=$("#newPW").val(),
+		confirmNewPW=$("#confirmNewPW").val();
+	
+	
+	//if password is not matched
+	if(newPW!=confirmNewPW){
+		showMsg("The new password is not matched. Please check again."); return;
+	}
+	
+	
+	//change password
+	$.ajax({
+		url:"python/changePassword.py",
+		data:{
+			email: app.userInfo.email,
+			oldPW: oldPW,
+			newPW: newPW
+		},
+		dataType:"json",
+		success:function(json){
+			if(json.status=='error'){
+				showMsg(json.msg);
+			}
+		},
+		error:function(e){
+			console.log(e)
+		}
+	})
+	
+	
+	
+	
+	function showMsg(msg){
+		$("#changePW_msg").html(msg);
+	}
+	
 }
 
 

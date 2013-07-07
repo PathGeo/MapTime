@@ -96,21 +96,26 @@ def sendEmail(email, id):
 #main
 email=getParameterValue("email")
 password=getParameterValue("password")
-username=getParameterValue("username")
 
 
-#user obj
-obj={
-    "email":email,
-    "username":username,
-    "password":password,
-    "emailSent":False,
-    "emailVerified": False,
-    "dateRegister": datetime.datetime.now()
+msg={
+    "status":"error",
+    "msg":"email or password is not correct! Please check again"
 }
 
+if(email!='null' and password!='null'):
+    #sign up
+    #user obj
+    obj={
+        "email":email,
+        "password":password,
+        "emailSent":False,
+        "emailVerified": False,
+        "dateRegister": datetime.datetime.now()
+    }
 
-#resiter a user account and print result
-print simplejson.dumps(register(obj))
+    #resiter a user account and print result
+    msg=register(obj)
+   
 
-
+print simplejson.dumps(msg)

@@ -320,6 +320,31 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #user_signup .ui-submit {float:right;}
 
 
+
+/** 
+ * 	dialog user_menu
+ */
+#dialog_userMenu {width:850px; height:450px;padding:30px; }
+#dialog_userMenu > div {float:left; height:100%;}
+#userMenu_button {width:15%; border:1px solid #efefef;}
+.userMenu_buttonActive {background-color:#dddddd; color:#000000;}
+#userMenu_button ul {list-style:none; padding:0px; margin:0px;}
+#userMenu_button ul li {padding:10px;position:relative;border-bottom:1px solid #cccccc;}
+#userMenu_button ul li:hover {background-color:#cccccc; cursor:pointer;}
+#userMenu_button ul li img {width:30px;}
+#userMenu_button ul li label {margin-left:5px; color:#444444;position:absolute; top:20px; font-weight:bold; font-size:12px;}
+#userMenu_content {width:82%;padding-left:20px; border:1px solid #efefef;}
+#userMenu_content .userMenuContent{display:none; width:100%; height:100%; overflow-y:auto; padding:20px; }
+
+
+#accountDetail ul {list-style:none; padding:0px; margin:0px; }
+#accountDetail ul li {padding:10px; }
+#accountDetail ul li label {font-weight:bold;}
+
+
+#changePassword {margin-top:50px; border-top:1px solid #cccccc;}
+#changePassword .ui-input-text {font-size:12px; width:70%;}
+#changePassword #changePW_msg {text-align:right; color:#ff0000;}
 /**
  * businessAction
  */

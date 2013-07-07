@@ -72,10 +72,10 @@
 			</h1>
 			
 			<a href="#dialog_login" id='header_login' data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="home" class="" data-mini="true" style='float:right'>Log in</a>
-			<a href="#dialog_contact" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Contact us</a>
-	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>
+			<!--<a href="#dialog_contact" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Contact us</a>
+	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>-->
 			<!--<a href="#dialog_sumup" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right'>test</a>-->
-			<a href="#dialog_menu" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right'>Menu</a>
+			<a href="#dialog_menu" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right; display:none'>Upload Data</a>
 		</div>
 		
 
@@ -297,6 +297,7 @@
 		</div>
 		
 		
+		
 		<!-- upload data -->
 		<div id='dialog_uploadData' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false" style=''>
 			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
@@ -434,12 +435,6 @@
 		
 		
 		
-		<!--help-->
-		<div id='dialog_help' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false" style=''>
-				<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
-				<div id="getsat-widget-5632"></div>
-		</div>
-		
 		
 		<!--lab-->
 		<div id='dialog_lab' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true" style=''>
@@ -507,38 +502,101 @@
 		</div>
 		
 		
-		<!--user log out-->
-		<div id='dialog_logout' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
-             <!--<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>-->
-			<h3>Are you sure?</h3>
-			
-			<p style='margin-top:30px; '>
-			    <a href="#" data-role="button" data-inline="true" data-theme="b" onclick='logout()'>Log out</a>
-			    <a href="#" data-role="button" data-inline="true" onclick='$("#dialog_logout").popup("close");'>Cancel</a>
-			</p>
-		</div>
 		
 		
 		<!-- dialog user-->
-		<div id='dialog_user' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
+		<div id='dialog_userMenu' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
 			
+			<!---userMenu button-->
+			<div id='userMenu_button'>
+				<ul>
+					<li title='Account Info.' target="userMenuContent_accountInfo" class='userMenu_buttonActive'><img src='images/1359925009_twitter_02.png'/><label>Account Info.</label></li>
+					<li title='Upgrade your' target="userMenuContent_upgrade"><img src='images/1359925009_twitter_02.png'/><label>Upgrade</label></li>
+					<li title='Help' target="userMenuContent_help"><img src='images/1359925009_twitter_02.png'/><label>Help</label></li>
+					<li title='Contact' target="userMenuContent_contact"><img src='images/1359925009_twitter_02.png'/><label>Contact us</label></li>
+					<li title='Log Out' target="userMenuContent_logout"><img src='images/1359925009_twitter_02.png'/><label>Log Out</label></li>
+				</ul>
+			</div>
 			
+			<!-- userMenu content-->
+			<div id='userMenu_content'>
+				<!-- account info-->
+				<div id='userMenuContent_accountInfo' class='userMenuContent' style='display:block'>
+					<div id='accountDetail'></div>
+					
+					<div id='changePassword'>
+						<h3>Change Password:</h3>
+						<fieldset id='user_signup' style=''>
+							<label for="oldPW">Old Password:</label>
+		                    <input type="password" id="oldPW"></input> 
+		
+		                   	<label for="newPW">New Password:</label>
+		                    <input type="password" id="newPW"></input>
+							
+							<label for="confirmNewPW">Confirm New Password:</label>
+		                    <input type="password" id="confirmNewPW"></input>
+																
+		                    <input id="btn_changePW" type="submit" value="Sign Up" data-role="button" data-inline="true" data-theme="b" onclick="changePW();" />
+							
+							<div id='changePW_msg'  class='msg' style='margin-top:60px;'></div>
+		            	</fieldset> 
+					</div>
+				</div>
+				
+				<!--upgrade-->
+				<div id='userMenuContent_upgrade' class='userMenuContent'>
+					<h3>Upgrade Account</h3>
+					<p>
+						<form  target="_blank" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+							<input type="hidden" name="cmd" value="_s-xclick">
+							<input type="hidden" name="hosted_button_id" value="9T9WRJH6ECWUS">
+							<table>
+								<tr><td><input type="hidden" name="on0" value="MapTime Services">MapTime Services</td></tr><tr><td><select name="os0">
+									<option value="Basic">Basic $99.00 USD</option>
+									<option value="Standard">Standard $449.00 USD</option>
+									<option value="Premium">Premium $499.00 USD</option>
+								</select> </td></tr>
+							</table>
+							<input type="hidden" name="currency_code" value="USD">
+							<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+							<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+						</form>
+					</p>
+				</div>
+				
+				
+				<!--help-->
+				<div id='userMenuContent_help' class='userMenuContent'>
+					<div id="getsat-widget-5632"></div>
+				</div>
+				
+				<!--contact us-->
+				<div id='userMenuContent_contact' class='userMenuContent'>
+					<img src='images/PathGeo-color.png' style='height:60px;' />
+		          	<p>PathGeo is a spinoff of a $1.3 million San Diego State University project funded by the National Science Foundation. PathGeo's team members include marketing experts, Web GIS programmers, spatial statisticians, cartographers, social media API programmers, and natural language processing developers. The team is led by Dr. Ming-Hsiang Tsou, a renowned Internet GIS expert and SDSU Geography Professor.
+					<p>  <br>
+					If you have any questions or suggestions, please feel free to contact us
+					<p>  <br>
+					<a href="mailto:info@pathgeo.com" data-role="button" data-inline="true" data-theme="b" onclick='logout()'>Email us</a>
+				</div>
+				
+				
+				<!--logout-->
+				<div id='userMenuContent_logout' class='userMenuContent'>
+					<h3>Are you sure?</h3>
+			
+					<p style='margin-top:30px; '>
+					    <a href="#" data-role="button" data-inline="true" data-theme="b" onclick='logout()'>Log out</a>
+					    <a href="#" data-role="button" data-inline="true" onclick='$("#dialog_logout").popup("close");'>Cancel</a>
+					</p>
+				</div>
+			</div>
 		</div>
 		
 		
-		<!-- contact us-->
-		<div id='dialog_contact' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
-            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
-			<img src='images/PathGeo-color.png' style='height:60px;' />
-          	<p>PathGeo is a spinoff of a $1.3 million San Diego State University project funded by the National Science Foundation. PathGeo's team members include marketing experts, Web GIS programmers, spatial statisticians, cartographers, social media API programmers, and natural language processing developers. The team is led by Dr. Ming-Hsiang Tsou, a renowned Internet GIS expert and SDSU Geography Professor.
-			<p>  <br>
-			If you have any questions or suggestions, please feel free to contact us
-			<p>  <br>
-			<a href="mailto:info@pathgeo.com" data-role="button" data-inline="true" data-theme="b" onclick='logout()'>Email us</a>
-		</div>
 		
-		
+
 		<!-- sum up-->
 		<div id='dialog_sumup' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
@@ -562,16 +620,7 @@
 		</div>
 
 
-	
-		<!-- localInfoPanel-->
-		<div id='localInfoPanel' class='infoPanel'>
-			<div id='localInfo' >
-				
-				
-					
-			</div>
-		</div>
-		
+
 		
 		
 		<!-- social media Panel-->
@@ -661,55 +710,7 @@
 		</div>
 		
 		
-		
-		
-		<!-- userPanel -->
-		<div id='userPanel' class='infoPanel'>
-			 				
-                            <div id='usermenu_list' style='display:none'>
-                            	<div data-role="collapsible-set" data-theme="b" data-content-theme="d">
-	                                <div data-role="collapsible" data-theme="d" data-content-theme="d" data-inset="true" data-mini="true"  data-iconpos="right" data-collapsed-icon="arrow-d" data-expanded-icon="arrow-u">
-									    <h3>Upgrade Account</h3>
-									   	<p>
-											<form  target="_blank" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-											<input type="hidden" name="cmd" value="_s-xclick">
-											<input type="hidden" name="hosted_button_id" value="9T9WRJH6ECWUS">
-											<table>
-											<tr><td><input type="hidden" name="on0" value="MapTime Services">MapTime Services</td></tr><tr><td><select name="os0">
-												<option value="Basic">Basic $99.00 USD</option>
-												<option value="Standard">Standard $449.00 USD</option>
-												<option value="Premium">Premium $499.00 USD</option>
-											</select> </td></tr>
-											</table>
-											<input type="hidden" name="currency_code" value="USD">
-											<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-											<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
-											</form>
-									   	</p>
-									</div>
-									
-									<div data-role="collapsible" data-theme="d" data-content-theme="d" data-inset="true"  data-mini="true"  data-iconpos="right" data-collapsed-icon="arrow-d" data-expanded-icon="arrow-u">
-									    <h3>History</h3>
-									</div>
-									
-									<div data-role="collapsible" data-theme="d" data-content-theme="d" data-inset="true"  data-mini="true"  data-iconpos="right" data-collapsed-icon="arrow-d" data-expanded-icon="arrow-u">
-									    <h3>Settings</h3>
-									</div>
-									
-									<div data-role="collapsible" data-theme="d" data-content-theme="d" data-inset="true"  data-mini="true"  data-iconpos="right" data-collapsed-icon="arrow-d" data-expanded-icon="arrow-u">
-									    <h3>Log out</h3>
-									</div>
-								</div>
-								<!--
-								<ul data-role="listview" data-inset="true" style="min-width:210px;" data-theme="d">
-                                    <li><a href="#">Upgrade Account</a></li>
-                                    <li><a href="#">History</a></li>
-                                    <li><a href="#">Settings</a></li>
-                                    <li><a href="#">Log out</a></li>
-                                </ul>-->
-                                
-                           </div>
-		</div>
+	
 
 		
 	</div><!-- end pageMap-->
