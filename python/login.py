@@ -57,7 +57,7 @@ def checkLogin(email, password):
             if(pw==password):
                 accountInfo["Email"]=user["email"]
                 accountInfo["Email_Verified"]=user["emailVerified"]
-                accountInfo["Signup_Date"]=user["dateRegister"]
+                accountInfo["Signup_Date"]=user["dateRegister"].strftime("%Y-%m-%d %H:%M:%S %Z")
                 return returnMsg("success", accountInfo)
             else:
                 return returnMsg("error.password", None)

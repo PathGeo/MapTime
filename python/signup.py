@@ -58,7 +58,7 @@ def register(obj):
             "account":{
                 "Email":obj["email"],
                 "EmailVerified": obj["emailVerified"],
-                "SignupDate": obj["dateRegister"]
+                "SignupDate": obj["dateRegister"].strftime("%Y-%m-%d %H:%M:%S %Z")
             }
         }
 #----------------------------------------------------------------------------

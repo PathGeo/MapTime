@@ -43,7 +43,7 @@ def getAccountInfo(email):
         if(user is not None):
            msg["account"]["Email"]=user["email"]
            msg["account"]["Email_Verified"]=user["emailVerified"]
-           msg["account"]["Signup_Date"]=user["dateRegister"]
+           msg["account"]["Signup_Date"]=user["dateRegister"].strftime("%Y-%m-%d %H:%M:%S %Z")
 
            return msg
         else:
