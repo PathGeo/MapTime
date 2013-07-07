@@ -47,13 +47,13 @@ def checkLogin(email, password):
     else:
         db=MongoClient()["maptime"]
         collection=db["user"]
-        user=collection.find({"email": email})
+        user=collection.find_one({"email": email})
 
         #check if email exists
-        if(user.count()>0):
+        if(user!="null"):
             #check password
             pw=user["password"]
-          
+            
             if(pw==password):
                 accountInfo["Email"]=user["email"]
                 accountInfo["Email Verified"]=user["emailVerified"]
