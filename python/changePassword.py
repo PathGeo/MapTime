@@ -39,7 +39,9 @@ def changePassword(email, oldPW, newPW):
         #check if email exists
         if(user is not None):
             if(user["password"]==oldPW):
-                user["password"]=newPW
+                #update password
+                collection.update({"email": email}, {"$set":{"password", newPW}},upsert=False)
+                
                 return returnMsg("success")
             else:
                 return returnMsg("error.notMatch");
