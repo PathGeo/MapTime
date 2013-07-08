@@ -72,8 +72,8 @@
 			</h1>
 			
 			<a href="#dialog_login" id='header_login' data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="home" class="" data-mini="true" style='float:right'>Log in</a>
-			<!--<a href="#dialog_contact" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Contact us</a>
-	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>-->
+			<a href="#dialog_contact" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="check" class="" data-mini="true" style='float:right'>Contact us</a>
+	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>
 			<!--<a href="#dialog_sumup" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right'>test</a>-->
 			<a href="#dialog_menu" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right; display:none'>Upload Data</a>
 		</div>
@@ -452,6 +452,24 @@
 		</div>
 		
 		
+		<!--help-->
+		<div id='dialog_help' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true" style=''>
+			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+			<div id="getsat-widget-5632"></div>
+		</div>
+		
+		
+		<!--contact us-->
+		<div id='dialog_contact' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true" style=''>
+			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+			<img src='images/PathGeo-color.png' style='height:60px;' />
+		    <p>PathGeo is a spinoff of a $1.3 million San Diego State University project funded by the National Science Foundation. PathGeo's team members include marketing experts, Web GIS programmers, spatial statisticians, cartographers, social media API programmers, and natural language processing developers. The team is led by Dr. Ming-Hsiang Tsou, a renowned Internet GIS expert and SDSU Geography Professor.
+			<p>  <br>
+			If you have any questions or suggestions, please feel free to contact us
+			<p>  <br>
+			<a href="mailto:info@pathgeo.com" data-role="button" data-inline="true" data-theme="b" onclick='logout()'>Email us</a>
+		</div>
+		
 		<!--user log in-->
 		<div id='dialog_login' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
              <!--<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>-->
@@ -512,9 +530,9 @@
 			<div id='userMenu_button'>
 				<ul>
 					<li title='Account Info.' target="userMenuContent_accountInfo" class='userMenu_buttonActive'><img src='images/1359925009_twitter_02.png'/><label>Account Info.</label></li>
-					<li title='Upgrade your' target="userMenuContent_upgrade"><img src='images/1359925009_twitter_02.png'/><label>Upgrade</label></li>
-					<li title='Help' target="userMenuContent_help"><img src='images/1359925009_twitter_02.png'/><label>Help</label></li>
-					<li title='Contact' target="userMenuContent_contact"><img src='images/1359925009_twitter_02.png'/><label>Contact us</label></li>
+					<li title='Upgrade your account' target="userMenuContent_upgrade"><img src='images/1359925009_twitter_02.png'/><label>Upgrade</label></li>
+					<!--<li title='Help' target="userMenuContent_help"><img src='images/1359925009_twitter_02.png'/><label>Help</label></li>
+					<li title='Contact' target="userMenuContent_contact"><img src='images/1359925009_twitter_02.png'/><label>Contact us</label></li>-->
 					<li title='Log Out' target="userMenuContent_logout"><img src='images/1359925009_twitter_02.png'/><label>Log Out</label></li>
 				</ul>
 			</div>
@@ -537,7 +555,7 @@
 							<label for="confirmNewPW">Confirm New Password:</label>
 		                    <input type="password" id="confirmNewPW"></input>
 																
-		                    <input id="btn_changePW" type="submit" value="Sign Up" data-role="button" data-inline="true" data-theme="b" onclick="changePW();" />
+		                    <input id="btn_changePW" type="submit" value="Save" data-role="button" data-inline="true" data-theme="b" onclick="changePW();" />
 							
 							<div id='changePW_msg'  class='msg' style='margin-top:60px;'></div>
 		            	</fieldset> 
@@ -568,17 +586,12 @@
 				
 				<!--help-->
 				<div id='userMenuContent_help' class='userMenuContent'>
-					<div id="getsat-widget-5632"></div>
+					
 				</div>
 				
 				<!--contact us-->
 				<div id='userMenuContent_contact' class='userMenuContent'>
-					<img src='images/PathGeo-color.png' style='height:60px;' />
-		          	<p>PathGeo is a spinoff of a $1.3 million San Diego State University project funded by the National Science Foundation. PathGeo's team members include marketing experts, Web GIS programmers, spatial statisticians, cartographers, social media API programmers, and natural language processing developers. The team is led by Dr. Ming-Hsiang Tsou, a renowned Internet GIS expert and SDSU Geography Professor.
-					<p>  <br>
-					If you have any questions or suggestions, please feel free to contact us
-					<p>  <br>
-					<a href="mailto:info@pathgeo.com" data-role="button" data-inline="true" data-theme="b" onclick='logout()'>Email us</a>
+					
 				</div>
 				
 				

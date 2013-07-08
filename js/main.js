@@ -1993,7 +1993,7 @@ function logout(){
 	$("#header a[href='#dialog_menu']").hide();
 	
 	//close popup
-	$("#dialog_logout").popup('close');
+	$("#dialog_userMenu").popup('close');
 }
 
 

@@ -40,7 +40,7 @@ def changePassword(email, oldPW, newPW):
         if(user is not None):
             if(user["password"]==oldPW):
                 #update password
-                collection.update({"email": email}, {"$set":{"password", newPW}},upsert=False)
+                collection.update({"_id": user["_id"]}, {"$set":{"password": newPW}},upsert=False)
                 
                 return returnMsg("success")
             else:
