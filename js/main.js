@@ -137,9 +137,9 @@ pathgeo.service.demographicData({
 //init
 $(document).on("pageshow", function(){	 
 	init_login();
-
+	
 	init_UI();
-   
+
    	init_map();
 });
 
@@ -188,8 +188,6 @@ function init_login(){
 				console.log(e);
 			}
 		});
-		
-		
 	}else{
 		$("#dialog_login").popup("open");
 	}
@@ -2091,6 +2089,8 @@ function changePW(){
 		showMsg("The new password is not matched. Please check again."); return;
 	}
 	
+	//show loading 
+	$("#changePassword #changePassword_loading").show();
 	
 	//change password
 	$.ajax({
@@ -2102,9 +2102,10 @@ function changePW(){
 		},
 		dataType:"json",
 		success:function(json){
-			if(json.status=='error'){
-				showMsg(json.msg);
-			}
+			//hide loading image
+			$("#changePassword #changePassword_loading").hide();
+			
+			showMsg(json.msg);
 		},
 		error:function(e){
 			console.log(e)

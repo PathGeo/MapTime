@@ -336,7 +336,6 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #userMenu_content {width:82%;padding-left:20px; border:1px solid #efefef;}
 #userMenu_content .userMenuContent{display:none; width:100%; height:100%; overflow-y:auto; padding:20px; }
 
-
 #accountDetail ul {list-style:none; padding:0px; margin:0px; }
 #accountDetail ul li {padding:10px; }
 #accountDetail ul li label {font-weight:bold;}
@@ -345,6 +344,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #changePassword {margin-top:50px; border-top:1px solid #cccccc;}
 #changePassword .ui-input-text {font-size:12px; width:70%;}
 #changePassword #changePW_msg {text-align:right; color:#ff0000;}
+#changePassword #changePassword_loading {position:absolute; right:120px; bottom:50px; display:none; }
 /**
  * businessAction
  */
