@@ -324,17 +324,24 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /** 
  * 	dialog user_menu
  */
-#dialog_userMenu {width:850px; height:450px;padding:30px; }
-#dialog_userMenu > div {float:left; height:100%;}
-#userMenu_button {width:15%; border:1px solid #efefef;}
+#dialog_userMenu {width:850px; height:550px;padding:30px; }
+
+
+#userMenu_button {width:100%; border:1px solid #efefef;}
+#userMenu_button ul li {position:relative;width:33%;}
+#userMenu_button ul li label {margin-left:15px; color:#444444; font-weight:bold; font-size:12px; position:relative; top:-8px;}
+
+/**
 .userMenu_buttonActive {background-color:#dddddd; color:#000000;}
 #userMenu_button ul {list-style:none; padding:0px; margin:0px;}
-#userMenu_button ul li {padding:10px;position:relative;border-bottom:1px solid #cccccc;}
+
 #userMenu_button ul li:hover {background-color:#cccccc; cursor:pointer;}
 #userMenu_button ul li img {width:30px;}
-#userMenu_button ul li label {margin-left:5px; color:#444444;position:absolute; top:20px; font-weight:bold; font-size:12px;}
-#userMenu_content {width:82%;padding-left:20px; border:1px solid #efefef;}
-#userMenu_content .userMenuContent{display:none; width:100%; height:100%; overflow-y:auto; padding:20px; }
+
+*/
+
+#userMenu_content {width:99%; height:90%; border:1px solid #cccccc; border-top:0px; overflow-y:auto; overflow-x:hidden; }
+#userMenu_content .userMenuContent{display:none; width:98%; height:90%;  padding:20px; }
 
 #accountDetail ul {list-style:none; padding:0px; margin:0px; }
 #accountDetail ul li {padding:10px; }
