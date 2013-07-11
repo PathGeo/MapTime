@@ -2009,7 +2009,9 @@ function signup(){
 	if(password!=confirmPassword){showMsg("Password is not matched. Please check again."); return;}
 	var validateEmail=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     if(validateEmail.test(email)==false){showMsg("You have entered an invalid email address! <br>Please check again"); return;}
-
+	
+	//show loading image
+	$("#signup_loading").show();
 	
 	$.ajax({
 		method:"post",
@@ -2020,6 +2022,9 @@ function signup(){
 		},
 		dataType:"json",
 		success:function(json){
+			//hide loading image
+			$("#signup_loading").hide();
+			
 			if(json.status && json.status=='ok'){
 				afterLogin(json);
 			}else{
@@ -2029,6 +2034,9 @@ function signup(){
 		},
 		error: function(e){
 			console.log(e);
+			
+			//hide loading image
+			$("#signup_loading").hide();
 		}
 	});
 	
