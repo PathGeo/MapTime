@@ -231,20 +231,6 @@ function init_map(){
 	})
 
 	
-	//create a button to min/max map
-	$("#div_map").append("<div id='showhideTable' title='Min. Map'>Min. Map</div>").find("#showhideTable").click(function(){
-		var $this=$(this);
-		
-		if($this.attr('title')=='Min. Map'){
-			$this.attr('title', 'Max. Map').html("Max. Map");
-			resizeMap({height:"47.5%"}, {height:"52.5%"});
-		}else{
-			$this.attr('title', 'Min. Map').html("Min. Map");
-			resizeMap({height:"65%"}, {height:"35%"});
-		}		
-	});
-	
-	
 	
 	//open popup event
 	app.map.on({
@@ -1156,13 +1142,16 @@ function showTable(obj){
 					((obj.downloadLink) ? "<li><img src='images/1365858910_download.png' title='download'/><span>Download</span></li>" : "") +
 					"<li><img src='images/1365858892_print.png' title='print'/><span>Print</span></li>" +
 					"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/><span>Show/hide Columns</span></li>" +
-					//"<li><img src='images/1365860337_cube.png' title='canned report'/></li>"+
+					"<li><img src='images/1373466683_cursor_H_split.png' title='Min. Map'/><span>Min. Map</span></li>"+
 					//"<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
 					//"<li><img src='images/1365978110_gallery2.png' title='map gallery'/></li>" +
 					//"<li><img src='images/1365872733_sq_br_down.png' title='maximum map'/></li>"+
 					"</ul>";
 		$(".dataTable_tools").append(html).find("ul li").click(function(){
-			var title=$(this).find("img").attr('title');
+			var $this=$(this),
+				$img=$this.find("img"),
+				$span=$this.find("span"),
+				title=$img.attr('title');
 			
 			//download excel url
 			switch (title){
@@ -1179,6 +1168,16 @@ function showTable(obj){
 						left: $(this).offset().left,
 						top: $(this).offset().top - 25
 					}, this);
+				break;
+				case "Min. Map":
+					$img.attr('title', 'Max. Map');
+					$span.html("Max. Map");
+					resizeMap({height:"47.5%"}, {height:"52.5%"});
+				break;
+				case "Max. Map":
+					$img.attr('title', 'Min. Map');
+					$span.html("Min. Map");
+					resizeMap({height:"65%"}, {height:"35%"});
 				break;
 			}
 		
@@ -2144,3 +2143,11 @@ function print(){
     WindowObject.print();
     
 }
+
+
+//purchase
+function purchase(price){
+	console.log(price)
+}
+
+

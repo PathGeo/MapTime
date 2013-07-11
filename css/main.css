@@ -343,6 +343,15 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #userMenu_content {width:99%; height:90%; border:1px solid #cccccc; border-top:0px; overflow-y:auto; overflow-x:hidden; }
 #userMenu_content .userMenuContent{display:none; width:98%; height:90%;  padding:20px; }
 
+
+#userMenuContent_upgrade table {border-collapse:collapse; width:100%;}
+#userMenuContent_upgrade table tr:first-child {font-weight:bold; background-color:#eeeeee; }
+#userMenuContent_upgrade table td:first-child {font-weight:bold; background-color:#eeeeee; text-align:right; }
+#userMenuContent_upgrade table td {border:1px solid #cccccc; padding:15px; }
+
+
+
+
 #accountDetail ul {list-style:none; padding:0px; margin:0px; }
 #accountDetail ul li {padding:10px; }
 #accountDetail ul li label {font-weight:bold;}
@@ -352,6 +361,11 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #changePassword .ui-input-text {font-size:12px; width:70%;}
 #changePassword #changePW_msg {text-align:right; color:#ff0000;}
 #changePassword #changePassword_loading {position:absolute; right:120px; bottom:50px; display:none; }
+
+
+
+
+
 /**
  * businessAction
  */
