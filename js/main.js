@@ -178,30 +178,13 @@ function init_login(){
 		}, 1000);
 		
 		//get user account info
-		$.ajax({
-			url:"python/queryAccount.py",
-			data:{
-				email:email
-			},
-			dataType:"json",
-			success: function(json){
-				//load account info
-				html='<h3>Account Information: </h3><ul>';
-				$.each(json.account, function(k,v){
-					html+="<li><label>"+k.replace("_", " ")+"</label>: "+v+"</li>";
-				})
-				html+="</ul>";
-				$("#accountDetail").html(html);
-			},
-			error: function(e){
-				console.log(e);
-			}
-		});
+		getAccountInfo(email);
+		
 	}else{
 		//$("#dialog_login").popup("open");
 		var interval=setInterval(function(){
 			if($("#dialog_login-popup").css("top")!="-99999px"){
-				clearInterval(interval)
+				clearInterval(interval);
 			}else{
 				$("#dialog_login").popup("open");
 			}
@@ -2082,13 +2065,7 @@ function afterLogin(json){
 	$("#header a[href='#dialog_menu']").show();
 	
 	//load account info
-	html='<h3>Account Information: </h3><ul>';
-	$.each(json.account, function(k,v){
-		html+="<li><label>"+k.replace("_"," ")+"</label>: "+v+"</li>";
-	});
-	html+="</ul>";
-	$("#accountDetail").html(html);
-	
+	writeAccountInfo(json.account)
 	
 	//give email to the global variable
 	app.userInfo.email=json.account.Email;
@@ -2096,6 +2073,39 @@ function afterLogin(json){
 	setTimeout(function(){
 		$("#dialog_menu").popup("open");
 	},500);
+}
+
+
+
+
+//get Account info
+function getAccountInfo(email){
+	$.ajax({
+		url:"python/queryAccount.py",
+		data:{
+			email:email
+		},
+		dataType:"json",
+		success: function(json){
+			writeAccountInfo(json.account)
+		},
+		error: function(e){
+			console.log(e);
+		}
+	});
+}
+
+
+
+//write account info into div#accountDetail
+function writeAccountInfo(account){
+	//load account info
+	html='<h3>Account Information: </h3><ul>';
+	$.each(account, function(k,v){
+		html+="<li><label>"+k.replace("_", " ")+"</label>: "+v+"</li>";
+	})
+	html+="</ul>";
+	$("#accountDetail").html(html);
 }
 
 
