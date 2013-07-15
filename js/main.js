@@ -2084,7 +2084,7 @@ function afterLogin(json){
 	//load account info
 	html='<h3>Account Information: </h3><ul>';
 	$.each(json.account, function(k,v){
-		html+="<li><label>"+str(k).replace("_"," ")+"</label>: "+v+"</li>";
+		html+="<li><label>"+k.replace("_"," ")+"</label>: "+v+"</li>";
 	});
 	html+="</ul>";
 	$("#accountDetail").html(html);

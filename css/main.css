@@ -328,7 +328,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #dialog_userMenu {width:800px; height:550px;padding:30px; }
 
 
-#userMenu_button {width:100%; border:1px solid #efefef;}
+#userMenu_button {width:100%; border:0px solid #efefef;}
 #userMenu_button ul li {position:relative;width:33%;}
 #userMenu_button ul li label {margin-left:15px; color:#444444; font-weight:bold; font-size:12px; position:relative; top:-8px;}
 
