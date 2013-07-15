@@ -218,33 +218,22 @@
 					<div onclick='$("#dialog_menu").popup("close"); setTimeout(function(){$("#dialog_uploadData").popup("open");}, 200);'>
 						<img src='images/1367841372_Drive_Upload.png'/><p></p>
 						<h1>Upload Data</h1>
-						<label class='menu_description'>Upload you data and <Br>find more patterns with demographic and social media data</label>
+						<label class='menu_description'>Upload and map you data</label>
 					</div>					
 				</li>
 				
-				<li>
+				<li style='padding-top:60px; padding-bottom:40px; '>
+					
 					<div class='demo_button' onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);$("#dialog_menu").popup("close"); showDemo("SAN FRANCISCO");}}, 100)'>
-						<!--<img src='images/demo_sanFrancisco.png' class='ui-corner-all' />-->
-						<label>Try San Francisco Demo Data</label>
+						<img src='images/sanfrancisco.jpg' class='ui-corner-all' />
+						<label>San Francisco</label>
 					</div>
 					<div class='demo_button' onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);$("#dialog_menu").popup("close"); showDemo("SAN DIEGO");}}, 100)'>
-						<!--<img src='' class='ui-corner-all' />-->
-						<label>Try San Diego Demo Data</label>
+						<img src='images/sandiego.jpg' class='ui-corner-all' />
+						<label>San Diego</label>
 					</div>		
+					<center><h1>Try Sample Data</h1></center>
 				</li>
-				<!--
-				<li>
-					<img src='images/map-icons.png' width='300px' height='96px' /><p></p>
-					<h1>Search Social Media</h1>
-					<label class='menu_description'>Search Social Media <Br>by keywords and locations</label><P></P><br>
-
-					<div data-role="fieldcontain" style='width:100%; margin:0.5em 0'>
-				         <label for="input_location" style='float:left; padding-top:6px;'>Search: <img src='images/1370463075_help.png' style='width:18px;' title='You can use "@" to specify a location.' /></label>
-				         <input type="text" name="input_location" id="input_location" value="Aztecs@San Diego" onkeypress='if(event.which==13 || event.keyCode==13){searchBusinessIntelligent(this.value);return false;}else{return true;}'>
-						 <input type='button' value='Search' onclick='callPython($("#input_location").val());$("#dialog_menu").popup("close");showInfoPanel("socialMediaPanel", $("#menuToolbox li[title=\"Search Social Media\"]")[0]);$("#socialMedia_keyword").val($("#input_location").val());' data-theme="" />
-				    </div>
-				</li>
-				-->
 			</ul>
 		</div>
 		
@@ -472,7 +461,7 @@
 		
 		<!--user log in-->
 		<div id='dialog_login' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
-             <!--<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>-->
+             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
 			 
 			 <!-- login-->
 			 <div>
@@ -530,7 +519,7 @@
 			<!---userMenu button-->
 			<div id='userMenu_button' data-role="navbar" data-grid="c" >
 				<ul>
-					<li title='Account Info.' target="userMenuContent_accountInfo" class='userMenu_buttonActive'><a href="#" class="ui-btn-active"><img src='images/1373370694_user.png'/><label>Account Info.</label></a></li>
+					<li title='Account Info.' target="userMenuContent_accountInfo" class='userMenu_buttonActive'><a href="#" class="ui-btn-active"><img src='images/1373370694_user.png'/><label>Account</label></a></li>
 					<li title='Upgrade your account' target="userMenuContent_upgrade"><a href="#" ><img src='images/1373370620_special-offer.png'/><label>Upgrade</label></a></li>
 					<!--<li title='Help' target="userMenuContent_help"><img src='images/1359925009_twitter_02.png'/><label>Help</label></li>
 					<li title='Contact' target="userMenuContent_contact"><img src='images/1359925009_twitter_02.png'/><label>Contact us</label></li>-->
@@ -562,28 +551,31 @@
 							<div id='changePW_msg'  class='msg' style='margin-top:60px;'></div>
 		            	</fieldset> 
 					</div>
+					
+					
 				</div>
+				
 				
 				<!--upgrade-->
 				<div id='userMenuContent_upgrade' class='userMenuContent'>
 					
 					<div style='margin:0 auto; width:90%;'>
-						<h3>Upgrade Account</h3>
+						<h3>Upgrade Packages</h3>
 						<P></P>
 						
 						<table>
-							<tr><td></td><td>FREE</td><TD>Plus</TD><TD>Pro</TD></tr>
-							<tr><td>Mapping data points</td><td>2,500 / day</td><TD>Based on the credit you buy</TD><TD>100,000 / day</TD></tr>
+							<tr><td></td><td>FREE</td><TD style='background-color:'>Plus<img src='images/1373902698_label_blue_hot.png'/></TD><TD>Pro</TD></tr>
+							<tr><td>Mapping data points</td><td>3,000 / day</td><TD>Based on the credit you buy</TD><TD>100,000 / day</TD></tr>
 							<tr><td>Speed</td><td>1 location/second</td><TD>10 locations/second</TD><TD>10 locations/second</TD></tr>
 							<tr><td>Overlay zipcode area</td><td>No</td><TD>Yes</TD><TD>Yes</TD></tr>
 							<tr><td>Support</td><td>No</td><TD>Yes</TD><TD>Yes</TD></tr>
-							<tr><td>Price</td><td>FREE</td><TD><input type='button' value='5000 credit / 10USD' onclick='purchase(10)' /><br><input type='button' value='25000 credit / 50USD' onclick='purchase(50)' /></TD><TD><input type='button' value='99 USD / month' onclick='purchase(99)' /></TD></tr>
-						
+							<tr><td>Price</td><td>FREE</td><TD><b>Select your options:</b><p></p>10,000 credit / 10 USD<p></p>50,000 / 50 USD</TD><TD>99 USD / Month</TD></tr>
+							<tr><td>Upgrade</td><td></td><TD><input  data-theme='b' type='button' value='Upgrade to Plus' onclick='purchase(10)' /></TD><TD><input type='button' data-theme='b' value='Upgrade to Pro' onclick='purchase(99)' /></TD></tr>
 						</table>
 						
 						
 					</div>
-					<!--
+					<!-- paypal 
 					<h3>Upgrade Account</h3>
 					<p>
 						<form  target="_blank" action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
@@ -605,24 +597,12 @@
 				</div>
 				
 				
-				<!--help-->
-				<div id='userMenuContent_help' class='userMenuContent'>
-					
-				</div>
-				
-				<!--contact us-->
-				<div id='userMenuContent_contact' class='userMenuContent'>
-					
-				</div>
-				
-				
-				<!--logout-->
+				<!-- log out-->
 				<div id='userMenuContent_logout' class='userMenuContent'>
-					<h3>Are you sure?</h3>
-			
+					<h3>Log Out:</h3>
 					<p style='margin-top:30px; '>
-					    <a href="#" data-role="button" data-inline="true" data-theme="b" onclick='logout()'>Log out</a>
-					    <a href="#" data-role="button" data-inline="true" onclick='$("#dialog_logout").popup("close");'>Cancel</a>
+						<a href="#" data-role="button" data-inline="true" data-theme="b" onclick='logout()'>Log out</a>
+						<a href="#" data-role="button" data-inline="true" onclick='$("#dialog_logout").popup("close");'>Cancel</a>
 					</p>
 				</div>
 			</div>
@@ -635,8 +615,8 @@
 		<div id='dialog_sumup' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
 			
-			<h3>Select a field to sum up your data</h3>
-			<p>Maptime can sum up your data based a selected field into the zip code area. For example, you can select "Sales" filed to see how much sales in a zipcode. 
+			<h3>Select a field to map your data</h3>
+			<p>Maptime can map and sum up your data based on the zip-code area. <br> <br>For example, you will know how many sales in 94107 zip-code area if "sales" field is selected in your data. 
 			<p></p> <br>
 			<img src='images/1372289937_Pie Diagram.png' />
 			<div>

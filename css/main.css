@@ -294,14 +294,15 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /**
  * 	main menu
  */
-#dialog_menu {width:900px; height:500px; text-shadow:0 0px 0 #fff; padding:10px; text-align:center}
+#dialog_menu {width:750px; height:450px; text-shadow:0 0px 0 #fff; padding:10px; text-align:center}
 #dialog_menu ul {list-style:none; padding:0px; margin:0px; width:100%; height:100%;}
-#dialog_menu ul li {margin:20px; padding-top:100px; float:left; width:45%; height:65%; text-align:center; border:1px solid #cccccc; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
+#dialog_menu ul li {margin:20px; padding-top:100px; float:left; width:44%; height:58%; text-align:center; border:1px solid #cccccc; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
 #dialog_menu ul li:hover {background-color:#eeeeee; cursor:pointer;}
 #dialog_menu .menu_description {color:#777777; font-size:100%; margin-top:50px;}
 #dialog_menu-screen {height:100%;position:fixed}
-#dialog_menu .demo_button {text-align:center; height:60px; line-height:60px; font-size:14px; font-weight:bold; border:1px solid #cccccc; margin:20px; -moz-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px;}
+#dialog_menu .demo_button {text-align:center; height:70px; line-height:70px; font-size:14px; font-weight:bold; border:1px solid #cccccc; margin:20px; -moz-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px;}
 #dialog_menu .demo_button:hover {background-color:#649ECA; color:#ffffff; cursor:pointer;}
+#dialog_menu .demo_button img {width:70px; height:70px; margin-right:10px; float:left; }
 
 
 /**
@@ -324,7 +325,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /** 
  * 	dialog user_menu
  */
-#dialog_userMenu {width:850px; height:550px;padding:30px; }
+#dialog_userMenu {width:800px; height:550px;padding:30px; }
 
 
 #userMenu_button {width:100%; border:1px solid #efefef;}
@@ -344,24 +345,27 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #userMenu_content .userMenuContent{display:none; width:98%; height:90%;  padding:20px; }
 
 
-#userMenuContent_upgrade table {border-collapse:collapse; width:100%;}
+#userMenuContent_upgrade table {border-collapse:collapse; width:100%; }
 #userMenuContent_upgrade table tr:first-child {font-weight:bold; background-color:#eeeeee; }
+#userMenuContent_upgrade table tr:first-child td {position:relative}
+#userMenuContent_upgrade table tr:first-child td img {width:45px; height:45px; position:absolute; right:20px; top:0px; }
 #userMenuContent_upgrade table td:first-child {font-weight:bold; background-color:#eeeeee; text-align:right; }
 #userMenuContent_upgrade table td {border:1px solid #cccccc; padding:15px; }
 
-
+#userMenuContent_accountInfo > div {margin-top:30px; }
 
 
 #accountDetail ul {list-style:none; padding:0px; margin:0px; }
-#accountDetail ul li {padding:10px; }
-#accountDetail ul li label {font-weight:bold;}
+#accountDetail ul li {padding:10px; padding-left:20px;  }
+#accountDetail ul li label {font-weight:bold; font-size:13px; }
 
 
 #changePassword {margin-top:50px; border-top:1px solid #cccccc;}
 #changePassword .ui-input-text {font-size:12px; width:70%;}
 #changePassword #changePW_msg {text-align:right; color:#ff0000;}
 #changePassword #changePassword_loading {position:absolute; right:120px; bottom:50px; display:none; }
-
+#changePassword fieldset {padding-left:20px; }
+#changePassword .ui-submit {margin-right:210px; }
 
 
 

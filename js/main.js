@@ -134,13 +134,22 @@ pathgeo.service.demographicData({
 
 
 
-//init
-$(document).on("pageshow", function(){	 
-	init_login();
-	
-	init_UI();
 
-   	init_map();
+
+//init
+$(document).on({
+	"pageshow": function(){	 
+		init_login();
+		
+		init_UI();
+	
+	   	init_map();
+
+	},
+	"pageinit": function(){
+		//popup not use history to avoid the problem that the dialog cannot be closed and may be redirected to other page
+		$("div[data-role='popup']").popup({history:false});
+	}
 });
 
 
@@ -177,9 +186,9 @@ function init_login(){
 			dataType:"json",
 			success: function(json){
 				//load account info
-				html='<ul>';
+				html='<h3>Account Information: </h3><ul>';
 				$.each(json.account, function(k,v){
-					html+="<li><label>"+k+"</label>: "+v+"</li>";
+					html+="<li><label>"+k.replace("_", " ")+"</label>: "+v+"</li>";
 				})
 				html+="</ul>";
 				$("#accountDetail").html(html);
@@ -189,7 +198,14 @@ function init_login(){
 			}
 		});
 	}else{
-		$("#dialog_login").popup("open");
+		//$("#dialog_login").popup("open");
+		var interval=setInterval(function(){
+			if($("#dialog_login-popup").css("top")!="-99999px"){
+				clearInterval(interval)
+			}else{
+				$("#dialog_login").popup("open");
+			}
+		}, 500);
 	}
 }
 
@@ -285,7 +301,7 @@ function init_UI(){
 	 });
 	 
 	
-	//popup not use history to avoid the problem that the dialog cannot be closed and may be redirected to other page	$("div[data-role='popup']").popup({history:false});
+	
 	
 	 
 	//when mouse click on otherplace, hide dataTable_menu
@@ -1010,8 +1026,8 @@ function showTable(obj){
 			"iDisplayLength": 1000,
 			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"f><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rtiS<>>', //DOM
 			"fnInitComplete": function(oSettings, json) {
-				$("#" + oSettings.sTableId+"_filter input").val("Filter your data....").focus(function(){
-					if($(this).val()=="Filter your data...."){
+				$("#" + oSettings.sTableId+"_filter input").val("Filter your data (i.e. 94107)").focus(function(){
+					if($(this).val()=="Filter your data (i.e. 94107)"){
 						$(this).val("");
 					}
 				});
@@ -2066,9 +2082,9 @@ function afterLogin(json){
 	$("#header a[href='#dialog_menu']").show();
 	
 	//load account info
-	html='<ul>';
+	html='<h3>Account Information: </h3><ul>';
 	$.each(json.account, function(k,v){
-		html+="<li><label>"+k+"</label>: "+v+"</li>";
+		html+="<li><label>"+str(k).replace("_"," ")+"</label>: "+v+"</li>";
 	});
 	html+="</ul>";
 	$("#accountDetail").html(html);
