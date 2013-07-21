@@ -2182,6 +2182,39 @@ function print(){
 //purchase
 function purchase(price){
 	console.log(price)
+	
+	var loginID='WSP-PATHG-@Y0NhAAO8g',
+		timestamp=Date.now(),
+		sequence=123,
+		url="python/hashCalculator.py?login="+loginID +"&sequence=" + sequence + "&timestamp=" + timestamp + "&amount=" +price;
+
+	
+	//set parameter of form 
+	$form=$("#paymentForm");
+	$form.find("input[name='x_fp_sequence']").val(sequence);
+	$form.find("input[name='x_fp_timestamp']").val(timestamp);
+	$form.find("input[name='x_amount']").val(price);
+
+	
+	//get hashcode
+	$.getJSON(url, function(json){
+		if(json && json.status && json.status=='ok'){
+			//set hashcode parameter
+			$form.find("input[name='x_fp_hash']").val(json.hashcode);
+			
+			//submit the payment form
+			$form[0].submit();
+			//show payment dialog
+			$("#dialog_userMenu").popup("close");			setTimeout(function(){
+				$("#dialog_payment").popup("open");
+			}, 500);
+			
+		}else{
+			console.log("[ERROR]HashCalculator: error");
+		}
+	})
+	
+	
 }
 
 

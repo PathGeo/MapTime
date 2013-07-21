@@ -735,6 +735,22 @@
 		</div>
 		
 		
+		<!-- dialog_payment-->
+		<div id='dialog_payment' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+			<iframe id='iframe_payment' name='iframe_payment'></iframe>
+		</div>
+		
+		
+		<!--PAYMENT FORM-->
+		<form id='paymentForm' action="https://checkout.globalgatewaye4.firstdata.com/payment" target="iframe_payment" method="post" style=''> 
+		  <input name="x_login" value="WSP-PATHG-@Y0NhAAO8g" type="hidden"> 
+		  <input name="x_amount" value="" type="hidden"> 
+		  <input name="x_fp_sequence" value="" type="hidden"> 
+		  <input name="x_fp_timestamp" value="" type="hidden"> 
+		  <input name="x_fp_hash" value="" type="hidden"> 
+		  <input name="x_show_form" value="PAYMENT_FORM" type="hidden"> 
+		</form>
 	
 
 		
