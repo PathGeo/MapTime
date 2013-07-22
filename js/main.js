@@ -112,7 +112,9 @@ var app={
 	},
 	$tr:null,
 	userInfo:{
-		email:null
+		email:null,
+		city:null,
+		country:null
 	}
 	
 }
@@ -144,7 +146,8 @@ $(document).on({
 		init_UI();
 	
 	   	init_map();
-
+		
+		getClientGeo();
 	},
 	"pageinit": function(){
 		//popup not use history to avoid the problem that the dialog cannot be closed and may be redirected to other page
@@ -225,6 +228,7 @@ function init_map(){
 	
 	//change leaflet attribution
 	$(".leaflet-control-attribution a:first-child").attr("href", "http://www.pathgeo.com").html("PathGeo");
+	$(".leaflet-control-attribution").append(" and <a href='http://www.maxmind.com/en/javascript'>GeoIP2 JavaScript from MaxMind</a>")
 	app.map.on("baselayerchange", function(e){
 		$(".leaflet-control-attribution a:first-child").attr("href", "http://www.pathgeo.com").html("PathGeo");
 	})
@@ -388,6 +392,9 @@ function init_UI(){
 		//show geocoding loading icon
 		$("#geocoding_loading").css({top:"460px"}).show();
 		
+		//process time
+		var startTime=Date.now();
+		
 		$.ajax({
 			dataType: 'json',
 			url: "python/retrieveAndGeocode.py", 
@@ -395,7 +402,23 @@ function init_UI(){
 				fileName: currentFileName,
 				geoColumns: geoColumns
 			}, success: function(featureCollection) { 	
-				console.log(featureCollection); 
+				//console.log(featureCollection); 
+				
+				//end time and track ProcessTime event
+				var endTime=Date.now(),
+					processTime=(endTime-startTime)/1000;
+				if(app.userInfo.city && app.userInfo.country){
+					_gaq.push(['_trackEvent', 'ProcessTime', app.userInfo.country, app.userInfo.city, processTime]);
+				}
+				
+				//track data event
+				var filePath=$("#uploadData_input").val(),
+					fileNames=filePath.split("."),
+					extName=fileNames[fileNames.length-1];
+				if(extName && extName!=''){
+					_gaq.push(['_trackEvent', 'Data', "Format-"+ extName, app.userInfo.email]);
+				}
+				
 				
 				//close dialog_menu
 				$("#dialog_uploadData").popup('close');
@@ -904,6 +927,9 @@ function switchVisualization(types){
 			break;
 		}
 		app.showLayers.push(layer);
+		
+		//google anlytics tracking event
+		_gaq.push(['_trackEvent', 'Visualization', type, app.userInfo.email]);
 	});
 	
 }
@@ -1180,6 +1206,8 @@ function showTable(obj){
 				break;
 			}
 		
+			//google anlytics tracking event
+			_gaq.push(['_trackEvent', 'Tools_dataTable', title, app.userInfo.email]);
 		});
 		
 	
@@ -1879,6 +1907,9 @@ function showDemo(demoType){
 			showSumup(json);
 		});
 	}
+	
+	//google anlytics and track event
+	_gaq.push(['_trackEvent', 'Data', "Sample-"+demoType, app.userInfo.email]);
 }
 
 
@@ -1962,7 +1993,8 @@ function login(){
 				$("#login_msg").html(e.msg);
 			}
 			
-			
+			//google anlytics tracking event
+			_gaq.push(['_trackEvent', 'Account', 'Login', email]);
 		},
 		error: function(e){
 			console.log("[ERROR] Login ajax error!!");
@@ -2030,6 +2062,9 @@ function signup(){
 				showMsg(json.msg);
 				return;
 			}
+			
+			//google anlytics tracking event
+			_gaq.push(['_trackEvent', 'Account', 'Sign up', email]);
 		},
 		error: function(e){
 			console.log(e);
@@ -2214,7 +2249,24 @@ function purchase(price){
 		}
 	})
 	
-	
+	//google anlytics tracking event
+	if(price==99){
+		_gaq.push(['_trackEvent', 'Account', 'Pro', email]);
+	}else{
+		if(price>0 && price<99){
+			_gaq.push(['_trackEvent', 'Account', 'Plus', email]);
+		}
+	}
 }
 
 
+//get client ip and location
+function getClientGeo(){
+	//get user's city
+	geoip2.city(function(jsonSuccess){
+		app.userInfo.city=jsonSuccess.city.names["en"];
+		app.userInfo.country=jsonSuccess.country["iso_code"];
+	},function(jsonError){
+		console.log("[ERROR]getClientGeo: "+jsonError.code +"="+jsonError.error)
+	})
+}
