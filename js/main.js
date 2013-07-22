@@ -183,6 +183,8 @@ function init_login(){
 		//get user account info
 		getAccountInfo(email);
 		
+		//google anlytics tracking event
+		_gaq.push(['_trackEvent', 'Account', 'Login', email]);
 	}else{
 		//$("#dialog_login").popup("open");
 		var interval=setInterval(function(){
