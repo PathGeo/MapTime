@@ -41,27 +41,43 @@ var app={
        
 		         //click map gallery event
 		        $(container).html(html)
-		        			.find("ul li").click(function(){
-					        	var $this=$(this),
-					        		value=$this.attr("layer"),
-					        		layer=app.geocodingResult[value];
-					        	
-					        	//if this layer is already shown on the map, hide the layer and change the color
-					        	if(layer._map){
-									//if(value=='heatMapLayer') alert(value);
-									//document.getElementById('slider').style.opacity = "0";
-					        		app.map.removeLayer(layer);
-					        		$this.css({"background-color": ''});
-					        	}else{
-					        		layer.addTo(app.map);
-					        		$this.css({"background-color": '#5B92C0'});
+		        			.find("ul li")
+							.on({
+								click: function(){
+						        	var $this=$(this),
+						        		value=$this.attr("layer"),
+						        		layer=app.geocodingResult[value];
+						        	
+						        	//if this layer is already shown on the map, hide the layer and change the color
+						        	if(layer._map){
+										//if(value=='heatMapLayer') alert(value);
+										//document.getElementById('slider').style.opacity = "0";
+						        		app.map.removeLayer(layer);
+						        		$this.css({"background-color": ''});
+						        	}else{
+						        		layer.addTo(app.map);
+						        		$this.css({"background-color": '#5B92C0'});
+										
+										//show map popup window
+										$("#mapPopup_" + value).show();
+						        	}
+						        },
+								mouseover: function(){
+									$(".mapPopupWidget").hide();
+									var $this = $(this), 
+										value = $this.attr("layer"),
+										layer=app.geocodingResult[value];
+										
+									//only the layer is activated
+									if (layer._map){
+										//show map popup window
+										$("#mapPopup_" + value).show();
+									}
+								},
+								mouseleave: function(){
 									
-									//show map popup window
-									$("#mapPopup_"+value).show();
-									
-					        	}
-					        });
-		        
+								}
+		        			});
 		        return container
 		    }
 		}),
@@ -290,6 +306,16 @@ function init_UI(){
 	 });
 	 
 	
+	
+	//mapPopupWidget
+	$(".mapPopupWidget").on({
+		mouseover:function(){
+			
+		},
+		mouseleave:function(){
+			$(".mapPopupWidget").hide();
+		}
+	})
 	
 	
 	 
