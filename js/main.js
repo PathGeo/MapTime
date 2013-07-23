@@ -533,9 +533,23 @@ function changeMarkerIcon(img_src, width, height){
 		iconAnchor: [width/2, height/2]// [6.25, 10.5]
 	});
 	
+	var iconHover=new L.icon({
+		iconUrl: (function(){
+			if(img_src.split("bullet").length>1){
+				return "images/1374590745_bullet-red.png"
+			}else{
+				return "images/1374595382_marker_rounded_red.png"
+			}
+		})(),
+		iconSize: [width, height],//[12.5, 21],
+		iconAnchor: [width/2, height/2]// [6.25, 10.5]
+	});
+	
+
 	$.each(app.geocodingResult.geoJsonLayer._layers, function(k, marker){
 		marker.setIcon(icon);
 		marker.options.iconDefault=icon;
+		marker.options.iconHover=iconHover;
 	})
 }
 
@@ -678,13 +692,13 @@ function showLayer(obj, isShow){
 								//pointToLayer to change layers' icon
 								pointToLayer: function(feature, latlng){
 									var icon=new L.icon({
-											iconUrl: "images/1368754654_stock_draw-circle.png",
+											iconUrl: "images/1374596320_marker_rounded_light_blue.png",
 											iconSize: [16, 16],//[12.5, 21],
 											iconAnchor: [8, 8]// [6.25, 10.5]
 									});
 									
 									var iconHover=new L.icon({
-										iconUrl: "images/1368754953_Red Ball.png",
+										iconUrl: "images/1374595382_marker_rounded_red.png",
 										iconSize: [18, 18], //[26, 26],
 									   	iconAnchor: [9, 9] //[13, 13]
 									})
@@ -2221,7 +2235,7 @@ function purchase(price){
 	console.log(price)
 	
 	var loginID='WSP-PATHG-@Y0NhAAO8g',
-		timestamp=Date.now(),
+		timestamp=Date.now()/1000, //time need to be seconds.
 		sequence=123,
 		url="python/hashCalculator.py?login="+loginID +"&sequence=" + sequence + "&timestamp=" + timestamp + "&amount=" +price;
 
@@ -2240,7 +2254,8 @@ function purchase(price){
 			$form.find("input[name='x_fp_hash']").val(json.hashcode);
 			
 			//submit the payment form
-			$form[0].submit();
+			$form[0].submit();
+
 			//show payment dialog
 			$("#dialog_userMenu").popup("close");			setTimeout(function(){
 				$("#dialog_payment").popup("open");
