@@ -434,7 +434,7 @@ function init_UI(){
 				
 				//end time and track ProcessTime event
 				var endTime=Date.now(),
-					processTime=(endTime-startTime)/1000;
+					processTime=Math.round((endTime-startTime)/1000);
 				if(app.userInfo.city && app.userInfo.country){
 					_gaq.push(['_trackEvent', 'ProcessTime', app.userInfo.country, app.userInfo.city, processTime]);
 				}
