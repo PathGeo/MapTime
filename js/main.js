@@ -1103,6 +1103,9 @@ function showTable(obj){
 					//show show/hide table button
 					$("#showhideTable").show();
 					
+					//enforce adjusting the position of table header. Sometime the location will be to the end of the table
+					$(".dataTables_scrollHeadInner table").css({top:"0px"})
+					
 					//resize map to show the dataTable
 					resizeMap({height:"65%"}, {height:"35%"});
 					
@@ -1922,7 +1925,7 @@ function showDemo(demoType){
 				url: 'db/demo-SanFrancisco.json',
 				title:'[DEMO] San Francisco shoes customer',
 				column:{
-					statistics:""//"sales"
+					statistics:"sales"
 				},
 				keywords: []	
 			}
@@ -1932,7 +1935,7 @@ function showDemo(demoType){
 				url: 'db/demo-SanDiego.json',
 				title:'[DEMO] San Diego demo data',
 				column:{
-					statistics:""//"Connectory"
+					statistics:"Connectory"
 				},
 				keywords: []		
 			}
@@ -1946,7 +1949,8 @@ function showDemo(demoType){
 			obj.downloadLink=(json["URL_xls"] && json["URL_xls"]!="")? json["URL_xls"] : null 
 			app.geocodingResult=obj;
 			
-			showSumup(json);
+			//showSumup(json);
+			showTable(app.geocodingResult);
 		});
 	}
 	
