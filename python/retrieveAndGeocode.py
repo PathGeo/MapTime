@@ -38,7 +38,7 @@ def getField(items, checker):
 def saveDataAsExcel(data, outputFileName):
 	import xlwt
 
-	book = xlwt.Workbook()
+	book = xlwt.Workbook(encoding="UTF-8")
 	sheet = book.add_sheet('Data')
 	
 	columns = data[0].keys()
@@ -66,9 +66,12 @@ def geocodeRows(rows, locFunc):
 				if type(v) is float and v.is_integer():
 					row[k] = str(int(v))
 				elif type(v) is unicode:
-					row[k] = str(v.encode('utf8').encode('ascii', 'ignore'))
+					row[k] = v.encode('ascii', 'ignore')
 				else:
 					row[k] = str(v)
+						
+			if '' in row:
+				del row['']
 			
 			place, (lat, lon) = locFunc(row)
 			
