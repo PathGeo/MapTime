@@ -66,7 +66,7 @@ def geocodeRows(rows, locFunc):
 				if type(v) is float and v.is_integer():
 					row[k] = str(int(v))
 				elif type(v) is unicode:
-					row[k] = v.encode('ascii', 'ignore')
+					row[k] = str(v.encode('ascii', 'ignore'))
 				else:
 					row[k] = str(v)
 			
