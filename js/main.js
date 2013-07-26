@@ -12,11 +12,11 @@ $.getScript("https://loader.engage.gsfn.us/loader.js", function(scipt){
 var app={
 	map:null,
 	basemaps:{
-			"Light map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-jwxvdo36/{z}/{x}/{y}.png?updated=1374825292888",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>"}),
-			"Terrain map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-9p1ubd74/{z}/{x}/{y}.png?updated=1374825095067",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>"}),
-			"Night map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-jkiqueqj/{z}/{x}/{y}.png?updated=1374825942470",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>"}),
-			"Cloudmade": L.tileLayer("http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png", {styleId: 22677, attribution:"Map Provided by <a href='http://cloudmade.com/' target='_blank'>Cloudmade</a>"}),
-			"OpenStreetMap": L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {attribution:"Map Provided by <a href='http://www.openstreetmap.org/' target='_blank'>Open Street Map</a>"})
+			"Light map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-jwxvdo36/{z}/{x}/{y}.png?updated=1374825292888",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>", title:"Light Map"}),
+			"Terrain map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-9p1ubd74/{z}/{x}/{y}.png?updated=1374825095067",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>", title:"Terrain Map"}),
+			"Night map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-jkiqueqj/{z}/{x}/{y}.png?updated=1374825942470",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>", title:"Night Map"}),
+			"Cloudmade": L.tileLayer("http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png", {styleId: 22677, attribution:"Map Provided by <a href='http://cloudmade.com/' target='_blank'>Cloudmade</a>", title:"Cloudmade"}),
+			"OpenStreetMap": L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {attribution:"Map Provided by <a href='http://www.openstreetmap.org/' target='_blank'>Open Street Map</a>", title:"Open Street Map"})
 			//"Google Streetmap":L.tileLayer("https://mts{s}.googleapis.com/vt?lyrs=m@207265067&src=apiv3&hl=zh-TW&x={x}&y={y}&z={z}&s=Ga&style=api%7Csmartmaps",{subdomains:"123", attribution:"Map Source from Google"})
 	},
 	layers: {
@@ -269,6 +269,12 @@ function init_map(){
 //			if($(e.popup._content).hasClass('zipcodePopup')){
 //				$(".leaflet-tile-pane").css({opacity:1, "z-index":2});
 //			}
+		},
+		'baselayerchange': function(e){
+			var name = e.layer.options.title;
+			if(name && name!="" && app.userInfo.email && app.userInfo.email!=''){
+				_gaq.push(['_trackEvent', 'BaseMap', name, app.userInfo.email]);	
+			}
 		}
 	});
 }
