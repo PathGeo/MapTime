@@ -12,9 +12,9 @@ $.getScript("https://loader.engage.gsfn.us/loader.js", function(scipt){
 var app={
 	map:null,
 	basemaps:{
-			"Light map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-jwxvdo36/{z}/{x}/{y}.png?updated=1374825292888",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>", title:"Light Map"}),
-			"Terrain map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-9p1ubd74/{z}/{x}/{y}.png?updated=1374825095067",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>", title:"Terrain Map"}),
-			"Night map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-jkiqueqj/{z}/{x}/{y}.png?updated=1374825942470",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>", title:"Night Map"}),
+			//"Light map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-jwxvdo36/{z}/{x}/{y}.png?updated=1374825292888",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>", title:"Light Map"}),
+			//"Terrain map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-9p1ubd74/{z}/{x}/{y}.png?updated=1374825095067",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>", title:"Terrain Map"}),
+			//"Night map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-jkiqueqj/{z}/{x}/{y}.png?updated=1374825942470",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>", title:"Night Map"}),
 			"Cloudmade": L.tileLayer("http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png", {styleId: 22677, attribution:"Map Provided by <a href='http://cloudmade.com/' target='_blank'>Cloudmade</a>", title:"Cloudmade"}),
 			"OpenStreetMap": L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {attribution:"Map Provided by <a href='http://www.openstreetmap.org/' target='_blank'>Open Street Map</a>", title:"Open Street Map"})
 			//"Google Streetmap":L.tileLayer("https://mts{s}.googleapis.com/vt?lyrs=m@207265067&src=apiv3&hl=zh-TW&x={x}&y={y}&z={z}&s=Ga&style=api%7Csmartmaps",{subdomains:"123", attribution:"Map Source from Google"})
@@ -224,7 +224,7 @@ function init_map(){
 	app.map = L.map("div_map", {
         center: app.initCenterLatLng,
 		zoom: app.initCenterZoom,
-		layers:[app.basemaps["Terrain map"]],
+		layers:[app.basemaps["Cloudmade"]],
 		attributionControl:true,
 		trackResize:true
     }); 
@@ -738,6 +738,18 @@ function showLayer(obj, isShow){
 									   	iconAnchor: [9, 9] //[13, 13]
 									})
 									return new L.marker(latlng, {icon: icon, iconHover:iconHover, iconDefault:icon, draggable:true})
+								},
+								
+								//filter
+								filter:function(feature){
+									var coordinates=feature.geometry.coordinates;
+									
+									//filter out the lat and lng = 0,0  or -1,-1
+									if((coordinates[0]!=0 && coordinates[1]!=0) || (coordinates[0]!=-1 && coordinates[1]!=-1)){
+										return true;
+									}else{
+										return false;
+									}
 								}
 					});
 					obj.geoJsonLayer.layers=layers;
