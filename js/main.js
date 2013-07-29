@@ -745,7 +745,7 @@ function showLayer(obj, isShow){
 									var coordinates=feature.geometry.coordinates;
 									
 									//filter out the lat and lng = 0,0  or -1,-1
-									if((coordinates[0]!=0 && coordinates[1]!=0) || (coordinates[0]!=-1 && coordinates[1]!=-1)){
+									if((coordinates[0]!=0 && coordinates[1]!=0) && (coordinates[0]!=-1 && coordinates[1]!=-1)){
 										return true;
 									}else{
 										return false;
