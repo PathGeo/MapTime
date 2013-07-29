@@ -1374,65 +1374,73 @@ function showInfobox(type, css, dom){
 
 //show local info
 function showLocalInfo(fid, options){
-	var layer=app.geocodingResult.geoJsonLayer.layers[fid],
-		feature=layer.feature,
-		zipcode=feature.properties[app.zipcodeFieldName];
+	var layer=app.geocodingResult.geoJsonLayer.layers[fid];
 	
-	//options
-	if(!options){options={}}
-	options.scrollToRow=options.scrollToRow || false;
-	options.zoomToCenter=options.zoomToCenter || false;
-	options.showPopup=options.showPopup || false;
-
-	//show dataTable panel
-	//showInfoPanel("dataPanel", $("#menuToolbox li[title='Your Uploaded Data']")[0]);
+	if(layer){
+		var feature = layer.feature, 
+			zipcode = feature.properties[app.zipcodeFieldName];
 		
-	
-	//close popup
-	app.map.closePopup();
-	
-	//scroll to the selected row
-	if(options.scrollToRow){
-		var rid=feature.properties["_rowID"];
-		app.dataTable.fnSettings().oScroller.fnScrollToRow(rid, false);
-	}
-	
-	
-	//zoom to the layer, shift lng a little bit to east
-	if(options.zoomToCenter){
-		var latlng=layer._latlng;
-		app.map.setView(new L.LatLng(latlng.lat, latlng.lng-0.0025), 14)
-	}
-	
-	
-	//open popup
-	if(options.showPopup){
-		layer.openPopup();
-	}
-	
-	
-	//highlight the tr in the dataTable
-	$.each(app.css["dataTable_highlightRow"], function(k,v){app.$tr.css(k,"");});
-	app.$tr.closest("[_featureID=" + fid +"]").css(app.css["dataTable_highlightRow"]);
-	
-	
-	//change marker icon
-	layer.setIcon(layer.options.iconHover);
+		//options
+		if (!options) {
+			options = {}
+		}
+		options.scrollToRow = options.scrollToRow || false;
+		options.zoomToCenter = options.zoomToCenter || false;
+		options.showPopup = options.showPopup || false;
 		
-				
-	//trigger businessActions type to directly show the first option and draw its google chart
-	$("#businessActions_type").attr("zipcode", zipcode )
+		//show dataTable panel
+		//showInfoPanel("dataPanel", $("#menuToolbox li[title='Your Uploaded Data']")[0]);
 		
-
-	//highlight the zipcode boundary and show demographic data
-	highlightZipcode([zipcode]);
-	
-	
-	//show legend
-	var defaultType=$("#demographic_type div[data-role='collapsible'] h3").attr("value");
-	//$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
-				
-					
+		
+		//close popup
+		app.map.closePopup();
+		
+		//scroll to the selected row
+		if (options.scrollToRow) {
+			var rid = feature.properties["_rowID"];
+			app.dataTable.fnSettings().oScroller.fnScrollToRow(rid, false);
+		}
+		
+		
+		//zoom to the layer, shift lng a little bit to east
+		if (options.zoomToCenter) {
+			var latlng = layer._latlng;
+			app.map.setView(new L.LatLng(latlng.lat, latlng.lng - 0.0025), 14)
+		}
+		
+		
+		//open popup
+		if (options.showPopup) {
+			layer.openPopup();
+		}
+		
+		
+		//highlight the tr in the dataTable
+		$.each(app.css["dataTable_highlightRow"], function(k, v){
+			app.$tr.css(k, "");
+		});
+		app.$tr.closest("[_featureID=" + fid + "]").css(app.css["dataTable_highlightRow"]);
+		
+		
+		//change marker icon
+		layer.setIcon(layer.options.iconHover);
+		
+		
+		//trigger businessActions type to directly show the first option and draw its google chart
+		$("#businessActions_type").attr("zipcode", zipcode)
+		
+		
+		//highlight the zipcode boundary and show demographic data
+		highlightZipcode([zipcode]);
+		
+		
+		//show legend
+		var defaultType = $("#demographic_type div[data-role='collapsible'] h3").attr("value");
+		//$(".leaflet-control-legend").html(app.layers.demographicData.getLegend(defaultType)).show();
+	}else{
+		alert("The coordinates (-1, -1) is not correct. Please select other data. ");
+		return;
+	}			
 		
 	//select options for social media
 	//$select_media
