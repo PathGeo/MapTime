@@ -108,24 +108,17 @@ def geocodeRow(row, fields=None, geocoder=None):
 
 def saveDatainMongo(geojson, fileName, username):
         client=MongoClient()
-        collection=client["maptime"]["user"]
-        user=collection.find_one({"email":username})
+        collection=client["maptime"]["uploadData"]
         timestamp=str(int(time.mktime(time.gmtime()))) #using gmt timeStamp as dataID
-        
-        if(user is not None):
-                if(user["uploadData"]is None):
-                        user["uploadData"]={}
-                
-                user["uploadData"][timestamp]={
-                        "name": fileName,
-                        "geojson": geojson
-                }
+        obj={
+                "email":username,
+                "timestamp": timestamp,
+                "geojson": geojson
+        }
 
-                collection.save(user)
-                
-                return timestamp
-        else:
-                return None
+        collection.insert(obj)
+        
+        return timestamp
 
 
 	
