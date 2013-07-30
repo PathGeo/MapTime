@@ -110,7 +110,7 @@ def saveDatainMongo(geojson, fileName, username):
         client=MongoClient()
         collection=client["maptime"]["user"]
         user=collection.find_one({"email":username})
-        timestamp=str(time.mktime(time.gmtime())) #using gmt timeStamp as dataID
+        timestamp=str(int(time.mktime(time.gmtime()))) #using gmt timeStamp as dataID
         
         if(user is not None):
                 if(user["uploadData"]is None):
