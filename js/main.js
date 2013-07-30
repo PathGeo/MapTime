@@ -437,9 +437,10 @@ function init_UI(){
 			url: "python/retrieveAndGeocode.py", 
 			data: { 
 				fileName: currentFileName,
-				geoColumns: geoColumns
+				geoColumns: geoColumns,
+				username:app.userInfo.email
 			}, success: function(featureCollection) { 	
-				//console.log(featureCollection); 
+				console.log(featureCollection); 
 				
 				//end time and track ProcessTime event
 				var endTime=Date.now(),

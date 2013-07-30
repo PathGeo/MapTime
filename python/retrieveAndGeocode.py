@@ -4,8 +4,9 @@ from GeocodingEngine.Geocoder import AddressGeocoder
 
 #Standard Libraries
 import cgi, json, re, functools
-import cgitb, os, pickle
+import cgitb, os, pickle, time
 from os import path
+from pymongo import MongoClient
 
 
 #Functions to check potential location fields (are all these functions necessary?  just pass pattern as argument!)
@@ -102,13 +103,34 @@ def geocodeRow(row, fields=None, geocoder=None):
 	place, (llat, llon) = geocoder.lookup(' '.join([row[field] for field in fields]))
 	
 	return place, (llat, llon)
-	
+
+
+
+def saveDatainMongo(geojson, fileName, username):
+        client=MongoClient()
+        collection=client["maptime"]["user"]
+        user=collection.find_one({"email":username})
+        time=time.mktime(time.gmtime()) #using gmt timeStamp as dataID
+        
+        if(user is not None):
+                user["uploadData"]={
+                        time : {
+                                "name": fileName,
+                                "geojson": geojson
+                        }
+                }
+                return time
+        else:
+                return None
+
+
 	
 cgitb.enable()
 
 
 form = cgi.FieldStorage()
 fname = form['fileName'].value
+username = form['username'].value
 geoColumns = form.getlist("geoColumns[]")
 geoColumns = map(lambda item: item.replace(' ', '_'), geoColumns)
 
@@ -164,12 +186,15 @@ os.remove(os.path.abspath(__file__).replace(__file__, fname + ".p"))
 
 features = geocodeRows(jsonRows, geoFunc)
 
+#save geocoded result in the Mongo DB
+dataID=saveDatainMongo(features, fname, username)
+
 fname = fname.lower().replace('.xlsx', '.xls')
 
 if features:
 	saveDataAsExcel(map(lambda item: item['properties'], features), '..\\geocoded_files\\' + fname)
 
-featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': '' if not features else './geocoded_files/' + fname }
+featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': '' if not features else './geocoded_files/' + fname, 'dataID': dataID }
 
 print ''
 print json.dumps(featureSet)

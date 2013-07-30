@@ -32,7 +32,7 @@ def getParameterValue(name):
     return value
 #--------------------------------------------------------------------------
 
-
+    
 #register user to db-------------------------------------------------------
 def register(obj):
     client=MongoClient()

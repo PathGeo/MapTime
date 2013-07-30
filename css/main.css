@@ -237,7 +237,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #dataTable { width: 100%; }
 #dataTable_chart {width:100%; }
 
-.dataTables_info{display:none;}
+.dataTables_info{}
 
 
 /**
