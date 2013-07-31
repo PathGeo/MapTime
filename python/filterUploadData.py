@@ -64,8 +64,8 @@ if(username is not None and rows is not None and tableID is not None and term is
    if(table is not None):
         results=map(lambda row: table["geojson"][int(row)], rows)
         if results:
-            saveDataAsExcel(map(lambda item: item['properties'], results), '..\\geocoded_files\\' + table["name"] + '_' + term)
+            saveDataAsExcel(map(lambda item: item['properties'], results), '..\\geocoded_files\\' + table["name"] + '_' + term +'.xls')
 
-        msg={'type': 'FeatureCollection', 'features': results, 'URL_xls': '' if not results else './geocoded_files/' + table["name"] + '_' + term }
+        msg={'type': 'FeatureCollection', 'features': results, 'URL_xls': '' if not results else './geocoded_files/' + table["name"] + '_' + term + '.xls' }
 
 print simplejson.dumps(msg)
