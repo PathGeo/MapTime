@@ -440,9 +440,6 @@ function init_UI(){
 				geoColumns: geoColumns,
 				username:app.userInfo.email
 			}, success: function(featureCollection) { 	
-				//save dataID
-				app.geocodingResult.dataID=featureCollection.dataID
-				
 				//end time and track ProcessTime event
 				var endTime=Date.now(),
 					processTime=Math.round((endTime-startTime)/1000);
@@ -480,7 +477,8 @@ function init_UI(){
 					 column:{
 						statistics:""
 					 },
-					 downloadLink:(featureCollection["URL_xls"] && featureCollection["URL_xls"]!="")? featureCollection["URL_xls"] : null 
+					 downloadLink:(featureCollection["URL_xls"] && featureCollection["URL_xls"]!="")? featureCollection["URL_xls"] : null ,
+					 dataID:featureCollection.dataID
 				 };
 				 
 				
@@ -1197,7 +1195,7 @@ function showTable(obj){
 							});
 							
 							//save filterRowID into app.geocodingResult
-							app.geocodingResult.filterRowID=filterRowIDs.join(",");
+							obj.filterRowID=filterRowIDs.join(",");
 							
 							
 							//convert zipcodes object to array
