@@ -111,6 +111,7 @@ def saveDatainMongo(geojson, fileName, username):
         collection=client["maptime"]["uploadData"]
         timestamp=str(int(time.mktime(time.gmtime()))) #using gmt timeStamp as dataID
         obj={
+                "name":fileName,
                 "email":username,
                 "timestamp": timestamp,
                 "geojson": geojson

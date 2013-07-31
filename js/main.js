@@ -1196,7 +1196,7 @@ function showTable(obj){
 							
 							//save filterRowID into app.geocodingResult
 							obj.filterRowID=filterRowIDs.join(",");
-							
+							obj.filterTerm=$(".dataTables_filter input").val();
 							
 							//convert zipcodes object to array
 							zipcodes=$.map(zipcodes, function(v,k){return k});
@@ -1281,8 +1281,8 @@ function showTable(obj){
 				break;
 				case "download selected data":
 					//if user filter some data
-					if(app.geocodingResult.filterRowID && app.geocodingResult.dataID){
-						filterUploadData(app.userInfo.email, app.geocodingResult.dataID, app.geocodingResult.filterRowID);
+					if(app.geocodingResult.filterRowID && app.geocodingResult.dataID && app.geocodingResult.filterTerm){
+						filterUploadData(app.userInfo.email, app.geocodingResult.dataID, app.geocodingResult.filterRowID, app.geocodingResult.filterTerm);
 					}
 				break;
 			}
@@ -2364,8 +2364,8 @@ function getClientGeo(){
 
 
 //filter upload Data
-function filterUploadData(username, tableID, rows){	
-	var url="python/filterUploadData.py?username="+username+"&table="+tableID+"&rows="+rows;
+function filterUploadData(username, tableID, rows, filterTerm){	
+	var url="python/filterUploadData.py?username="+username+"&table="+tableID+"&rows="+rows+"&term="+filterTerm;
 	
 	$.getJSON(url, function(json){
 		console.log(json);
