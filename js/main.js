@@ -1273,7 +1273,9 @@ function showTable(obj){
 					resizeMap({height:"65%"}, {height:"35%"});
 				break;
 				case "download selected data":
-					filterUploadData("","","");
+					//not finished here!!!!!!!!
+					filterUploadData(app.userInfo.email,"tableID(timestamp)","rows(0,1,2,3,4,5)");
+					
 				break;
 			}
 		
