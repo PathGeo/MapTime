@@ -1232,6 +1232,7 @@ function showTable(obj){
 		var html = "<ul>" +
 					//"<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
 					((obj.downloadLink) ? "<li><img src='images/1365858910_download.png' title='download'/><span>Download</span></li>" : "") +
+					"<li><img src='images/1365858910_download.png' title='download selected data'/><span>Download Selected Data</span></li>" +
 					"<li><img src='images/1365858892_print.png' title='print'/><span>Print</span></li>" +
 					"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/><span>Show/hide Columns</span></li>" +
 					"<li><img src='images/1373466683_cursor_H_split.png' title='Min. Map'/><span>Min. Map</span></li>"+
@@ -1270,6 +1271,9 @@ function showTable(obj){
 					$img.attr('title', 'Min. Map');
 					$span.html("Min. Map");
 					resizeMap({height:"65%"}, {height:"35%"});
+				break;
+				case "download selected data":
+					filterUploadData("","","");
 				break;
 			}
 		
@@ -2346,4 +2350,23 @@ function getClientGeo(){
 	},function(jsonError){
 		console.log("[ERROR]getClientGeo: "+jsonError.code +"="+jsonError.error)
 	})
+}
+
+
+//filter upload Data
+function filterUploadData(username, tableID, rows){
+	//test--------------------------------
+	var username="123@123.com",
+		tableID="1375244316",
+		rows="0,1,2,3,4";
+	//------------------------------------
+	
+	var url="python/filterUploadData.py?username="+username+"&table="+tableID+"&rows="+rows;
+	
+	$.getJSON(url, function(json){
+		console.log(json);
+		// if(json&&json.features.length>0){
+// 			
+		// }
+	});
 }
