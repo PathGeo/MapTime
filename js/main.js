@@ -440,7 +440,8 @@ function init_UI(){
 				geoColumns: geoColumns,
 				username:app.userInfo.email
 			}, success: function(featureCollection) { 	
-				console.log(featureCollection); 
+				//save dataID
+				app.geocodingResult.dataID=featureCollection.dataID
 				
 				//end time and track ProcessTime event
 				var endTime=Date.now(),
@@ -1174,11 +1175,15 @@ function showTable(obj){
 					setTimeout(function(){
 						if (me.$('tr', {"filter": "applied"}).length == $selectedData.length) {
 							//read selected layers
-							var zipcodes={}, zipcode=''
+							var zipcodes={}, zipcode='', filterRowIDs=[];
 							me.$('tr', {"filter": "applied"}).each(function(i,tr){
+								
 								feature = features[this._DT_RowIndex];
 								feature.properties["_rowID"]=i;
 								geojson.features.push(feature);
+								
+								//push row id into filterRowIDs for downloading selected rows in the server side
+								filterRowIDs.push(this._DT_RowIndex);
 								
 								//save zipcode
 								zipcode=feature.properties[app.zipcodeFieldName];
@@ -1190,6 +1195,10 @@ function showTable(obj){
 									}
 								}
 							});
+							
+							//save filterRowID into app.geocodingResult
+							app.geocodingResult.filterRowID=filterRowIDs.join(",");
+							
 							
 							//convert zipcodes object to array
 							zipcodes=$.map(zipcodes, function(v,k){return k});
@@ -1273,9 +1282,10 @@ function showTable(obj){
 					resizeMap({height:"65%"}, {height:"35%"});
 				break;
 				case "download selected data":
-					//not finished here!!!!!!!!
-					filterUploadData(app.userInfo.email,"tableID(timestamp)","rows(0,1,2,3,4,5)");
-					
+					//if user filter some data
+					if(app.geocodingResult.filterRowID && app.geocodingResult.dataID){
+						filterUploadData(app.userInfo.email, app.geocodingResult.dataID, app.geocodingResult.filterRowID);
+					}
 				break;
 			}
 		
@@ -2356,13 +2366,7 @@ function getClientGeo(){
 
 
 //filter upload Data
-function filterUploadData(username, tableID, rows){
-	//test--------------------------------
-	var username="123@123.com",
-		tableID="1375244316",
-		rows="0,1,2,3,4";
-	//------------------------------------
-	
+function filterUploadData(username, tableID, rows){	
 	var url="python/filterUploadData.py?username="+username+"&table="+tableID+"&rows="+rows;
 	
 	$.getJSON(url, function(json){
