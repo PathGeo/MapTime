@@ -1239,7 +1239,7 @@ function showTable(obj){
 		var html = "<ul>" +
 					//"<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
 					((obj.downloadLink) ? "<li><img src='images/1365858910_download.png' title='download'/><span>Download</span></li>" : "") +
-					"<li><img src='images/1365858910_download.png' title='download selected data'/><span>Download Selected Data</span></li>" +
+					//"<li><img src='images/1365858910_download.png' title='download selected data'/><span>Download Selected Data</span></li>" +
 					"<li><img src='images/1365858892_print.png' title='print'/><span>Print</span></li>" +
 					"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/><span>Show/hide Columns</span></li>" +
 					"<li><img src='images/1373466683_cursor_H_split.png' title='Min. Map'/><span>Min. Map</span></li>"+
@@ -1256,7 +1256,13 @@ function showTable(obj){
 			//download excel url
 			switch (title){
 				case "download":
-					if(obj.downloadLink){window.open(obj.downloadLink);}
+					//check if user filter some data
+					if(app.geocodingResult.filterRowID && app.geocodingResult.filterTerm){
+						//enable selected_download button
+						$("#downloadType_selected").removeAttr('disabled');
+						$("#dialog_download .ui-controlgroup-controls .ui-disabled").removeClass("ui-disabled");
+					}
+					$("#dialog_download").popup('open');
 				break;
 				case "print":
 					//window.open("print.html", "Map Time", "width=800, height=500, status=no, toolbar=no, fullscreen=yes, channelmode=yes, location=no, menubar=no, titlebar=no")
@@ -1280,12 +1286,7 @@ function showTable(obj){
 					resizeMap({height:"65%"}, {height:"35%"});
 				break;
 				case "download selected data":
-					//check if user filter some data
-					if(app.geocodingResult.filterRowID && app.geocodingResult.filterTerm){
-						//enable selected_download button
-						$("#downloadType_selected").removeAttr('disabled');
-						$("#dialog_download .ui-controlgroup-controls .ui-disabled").removeClass("ui-disabled");
-					}					$("#dialog_download").popup('open');
+					
 				break;
 			}
 		
