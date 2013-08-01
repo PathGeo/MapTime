@@ -1280,10 +1280,12 @@ function showTable(obj){
 					resizeMap({height:"65%"}, {height:"35%"});
 				break;
 				case "download selected data":
-					//if user filter some data
-					if(app.geocodingResult.filterRowID && app.geocodingResult.dataID && app.geocodingResult.filterTerm){
-						filterUploadData(app.userInfo.email, app.geocodingResult.dataID, app.geocodingResult.filterRowID, app.geocodingResult.filterTerm);
-					}
+					//check if user filter some data
+					if(app.geocodingResult.filterRowID && app.geocodingResult.filterTerm){
+						//enable selected_download button
+						$("#downloadType_selected").removeAttr('disabled');
+						$("#dialog_download .ui-controlgroup-controls .ui-disabled").removeClass("ui-disabled");
+					}					$("#dialog_download").popup('open');
 				break;
 			}
 		
@@ -1990,7 +1992,6 @@ function showDemo(demoType){
 		$.getJSON(obj.url, function(json){
 			obj.geojson=json;
 			obj.type='GEOJSON';
-			obj.downloadLink=(json["URL_xls"] && json["URL_xls"]!="")? json["URL_xls"] : null 
 			app.geocodingResult=obj;
 			
 			//showSumup(json);
@@ -2364,13 +2365,28 @@ function getClientGeo(){
 
 
 //filter upload Data
-function filterUploadData(username, tableID, rows, filterTerm){	
-	var url="python/filterUploadData.py?username="+username+"&table="+tableID+"&rows="+rows+"&term="+filterTerm;
+function download(){	
+	var downloadType=$("#dialog_download input[name=\"downloadType\"]:checked").val();
 	
-	$.getJSON(url, function(json){
-		console.log(json);
-		// if(json&&json.features.length>0){
-// 			
-		// }
-	});
+	switch (downloadType){
+		case "all":
+			window.open(app.geocodingResult.downloadLink);
+		break;
+		case "selected":
+			var obj=app.geocodingResult;
+			if(obj.filterRowID && obj.dataID && obj.filterTerm){
+				var url="python/filterUploadData.py?username="+app.userInfo.email+"&table="+obj.dataID+"&rows="+obj.filterRowID+"&term="+obj.filterTerm;
+				
+				$.getJSON(url, function(json){
+					if(json && json.URL_xls && json.URL_xls!=''){
+						window.open(json.URL_xls)	
+					}
+				});
+			}else{
+				console.log("There is no filterTerm ("+ obj.filterTerm +"), filterRows (" + obj.filterRowID + "), or dataID (" + obj.dataID +")");
+			}
+		break;
+	}
+	
+	$("#dialog_download").popup("close");
 }

@@ -404,6 +404,14 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #dialog_help {width:900px; padding:10px}
 
 
+
+/**
+ * 	dialot download
+ */
+#dialog_download {width:400px; height:250px;padding:20px;}
+
+
+
 /**
  * 	payment dialog
  */

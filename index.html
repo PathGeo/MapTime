@@ -763,6 +763,22 @@
 		</div>
 		
 		
+		<!-- dialog_download-->
+		<div id='dialog_download' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+            
+            <fieldset data-role="controlgroup">
+		        <input type="radio" name="downloadType" id="downloadType_all" value="all" checked="checked">
+		        <label for="downloadType_all">All</label>
+		        <input type="radio" name="downloadType" id="downloadType_selected" value="selected" disabled>
+		        <label for="downloadType_selected">Selected</label>
+		    </fieldset>
+			
+			<p></p>
+			<input type='button' value='Download' onclick='download()'/>
+		</div>
+		
+		
 		<!-- dialog_payment-->
 		<div id='dialog_payment' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
