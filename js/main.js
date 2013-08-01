@@ -15,8 +15,8 @@ var app={
 			//"Light map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-jwxvdo36/{z}/{x}/{y}.png?updated=1374825292888",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>", title:"Light Map"}),
 			//"Terrain map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-9p1ubd74/{z}/{x}/{y}.png?updated=1374825095067",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>", title:"Terrain Map"}),
 			//"Night map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-jkiqueqj/{z}/{x}/{y}.png?updated=1374825942470",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>", title:"Night Map"}),
-			"Cloudmade": L.tileLayer("http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png", {styleId: 22677, attribution:"Map Provided by <a href='http://cloudmade.com/' target='_blank'>Cloudmade</a>", title:"Cloudmade"}),
-			"OpenStreetMap": L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {attribution:"Map Provided by <a href='http://www.openstreetmap.org/' target='_blank'>Open Street Map</a>", title:"Open Street Map"})
+			"Gray map": L.tileLayer("http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png", {styleId: 22677, attribution:"Map Provided by <a href='http://cloudmade.com/' target='_blank'>Cloudmade</a>", title:"Cloudmade"}),
+			"Stret map": L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {attribution:"Map Provided by <a href='http://www.openstreetmap.org/' target='_blank'>Open Street Map</a>", title:"Open Street Map"})
 			//"Google Streetmap":L.tileLayer("https://mts{s}.googleapis.com/vt?lyrs=m@207265067&src=apiv3&hl=zh-TW&x={x}&y={y}&z={z}&s=Ga&style=api%7Csmartmaps",{subdomains:"123", attribution:"Map Source from Google"})
 	},
 	layers: {
@@ -224,7 +224,7 @@ function init_map(){
 	app.map = L.map("div_map", {
         center: app.initCenterLatLng,
 		zoom: app.initCenterZoom,
-		layers:[app.basemaps["Cloudmade"]],
+		layers:[app.basemaps["Gray map"]],
 		attributionControl:true,
 		trackResize:true
     }); 
@@ -1096,9 +1096,9 @@ function showTable(obj){
 		      "sSearch": ""
 		    },
 			"iDisplayLength": 1000,
-			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"f><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rtiS<>>', //DOM
+			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"if><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rtS<>>', //DOM
 			"fnInitComplete": function(oSettings, json) {
-				$("#" + oSettings.sTableId+"_filter input").val("Filter your data (i.e. 94107)").focus(function(){
+				$("#" + oSettings.sTableId+"_filter input").val("Filter your data (i.e. 94107)").attr("title", "Filter your data (i.e. 94107)").focus(function(){
 					if($(this).val()=="Filter your data (i.e. 94107)"){
 						$(this).val("");
 					}
@@ -1128,7 +1128,7 @@ function showTable(obj){
 					$(".dataTables_scrollHeadInner table").css({top:"0px"})
 					
 					//resize map to show the dataTable
-					resizeMap({height:"65%"}, {height:"35%"});
+					resizeMap({height:"75%"}, {height:"25%"});
 					
 				}, 10);
 				
@@ -1240,9 +1240,9 @@ function showTable(obj){
 					//"<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
 					((obj.downloadLink) ? "<li><img src='images/1365858910_download.png' title='download'/><span>Download</span></li>" : "") +
 					//"<li><img src='images/1365858910_download.png' title='download selected data'/><span>Download Selected Data</span></li>" +
-					"<li><img src='images/1365858892_print.png' title='print'/><span>Print</span></li>" +
+					//"<li><img src='images/1365858892_print.png' title='print'/><span>Print</span></li>" +
 					"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/><span>Show/hide Columns</span></li>" +
-					"<li><img src='images/1373466683_cursor_H_split.png' title='Min. Map'/><span>Min. Map</span></li>"+
+					"<li><img src='images/1373466683_cursor_H_split.png' title='Show Table'/><span>Show Table</span></li>"+
 					//"<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
 					//"<li><img src='images/1365978110_gallery2.png' title='map gallery'/></li>" +
 					//"<li><img src='images/1365872733_sq_br_down.png' title='maximum map'/></li>"+
@@ -1275,15 +1275,15 @@ function showTable(obj){
 						top: $(this).offset().top - 25
 					}, this);
 				break;
-				case "Min. Map":
-					$img.attr('title', 'Max. Map');
-					$span.html("Max. Map");
+				case "Show Table":
+					$img.attr('title', 'Hide Table');
+					$span.html("Hide Table");
 					resizeMap({height:"47.5%"}, {height:"52.5%"});
 				break;
-				case "Max. Map":
-					$img.attr('title', 'Min. Map');
-					$span.html("Min. Map");
-					resizeMap({height:"65%"}, {height:"35%"});
+				case "Hide Table":
+					$img.attr('title', 'Show Table');
+					$span.html("Show Table");
+					resizeMap({height:"75%"}, {height:"25%"});
 				break;
 				case "download selected data":
 					
@@ -1993,6 +1993,7 @@ function showDemo(demoType){
 		$.getJSON(obj.url, function(json){
 			obj.geojson=json;
 			obj.type='GEOJSON';
+			//obj.downloadLink='test';
 			app.geocodingResult=obj;
 			
 			//showSumup(json);

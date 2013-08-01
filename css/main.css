@@ -232,12 +232,13 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 .dataTable_nav li a img {width:20px;}
 
 #dataTable_length {float:right; padding-right:30px;}
-#dataTable_filter input {width:350px;height:26px;padding:0px 5px 0px 5px; -moz-border-radius:5px; -webkit-border-radius:5px;border-radius:5px;}
+#dataTable_filter {padding:0px 0px 0px 15px; }
+#dataTable_filter input {width:275px;height:26px;padding:0px 5px 0px 5px; -moz-border-radius:5px; -webkit-border-radius:5px;border-radius:5px;}
 #dataTable_filter label {font-weight:bold; color:#ffffff;}
 #dataTable { width: 100%; }
 #dataTable_chart {width:100%; }
 
-.dataTables_info{}
+.dataTables_info{position:absolute; left:5px; margin-top:13px; }
 
 
 /**
@@ -408,7 +409,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /**
  * 	dialot download
  */
-#dialog_download {width:400px; height:250px;padding:20px;}
+#dialog_download {width:400px; height:230px;padding:20px;}
 
 
 
