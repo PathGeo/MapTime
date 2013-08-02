@@ -334,6 +334,7 @@
 				<fieldset>
 				
 					<input type="file" name="photo" id="uploadData_input" size="70%">
+					<input type='hidden' id='uploadData_username' name='username' value=''/>
 					
 					<!-- upload content -->
 					<!-- NOTE: STILL WORKING ON LAYOUT -->
@@ -342,8 +343,11 @@
 						<div id='uploadData_description' >
 							<h3>Upload and Map Your Data:</h3><br>
 							MapTime only support XLS format for this beta version. <P></P>
-							We will support more data formats in the near future.	
+							We will support more data formats in the near future.
 						</div>
+						
+						<!-- uploadData error msg-->
+						<div id='uploadData_error'></div>	
 						
 						<div id='uploadData_confirm' style='display:none'>
 							<!--<img id='img_loading' src="images/loading.gif" width=15px  />-->

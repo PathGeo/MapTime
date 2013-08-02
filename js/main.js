@@ -16,7 +16,7 @@ var app={
 			//"Terrain map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-9p1ubd74/{z}/{x}/{y}.png?updated=1374825095067",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>", title:"Terrain Map"}),
 			//"Night map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-jkiqueqj/{z}/{x}/{y}.png?updated=1374825942470",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>", title:"Night Map"}),
 			"Gray map": L.tileLayer("http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png", {styleId: 22677, attribution:"Map Provided by <a href='http://cloudmade.com/' target='_blank'>Cloudmade</a>", title:"Cloudmade"}),
-			"Stret map": L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {attribution:"Map Provided by <a href='http://www.openstreetmap.org/' target='_blank'>Open Street Map</a>", title:"Open Street Map"})
+			"Street map": L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {attribution:"Map Provided by <a href='http://www.openstreetmap.org/' target='_blank'>Open Street Map</a>", title:"Open Street Map"})
 			//"Google Streetmap":L.tileLayer("https://mts{s}.googleapis.com/vt?lyrs=m@207265067&src=apiv3&hl=zh-TW&x={x}&y={y}&z={z}&s=Ga&style=api%7Csmartmaps",{subdomains:"123", attribution:"Map Source from Google"})
 	},
 	layers: {
@@ -388,10 +388,19 @@ function init_UI(){
 	//The reponse is a list of column names, which are used to populate the drop-down menu
 	$("#uploadData_input").change(function() { 
 		$("#geocoding_loading").css({position:"absolute", top:"45px", right:"40px"}).show();
+		$("#uploadData_error").html('');
+		
 		
 		$("#uploadData_form").ajaxSubmit({
 			dataType: 'json',		
 			success: function (tableInfo) {
+				//if user's credit is not enough, a error msg will return back.
+				if(tableInfo && tableInfo.status && tableInfo.status=='error'){
+					$("#uploadData_error").html(tableInfo.msg);
+					return
+				}
+				
+				
 				//remove old options 
 				$("#uploadData_geocodingFields").html("");
 				
@@ -1217,7 +1226,7 @@ function showTable(obj){
 											app.layers.selectedZipcodeLayer.clearLayers();
 										}
 									}else{
-										highlightZipcode(zipcodes);
+										//highlightZipcode(zipcodes);
 									}
 									
 								}
@@ -1449,7 +1458,7 @@ function showLocalInfo(fid, options){
 		
 		
 		//highlight the zipcode boundary and show demographic data
-		highlightZipcode([zipcode]);
+		//highlightZipcode([zipcode]);
 		
 		
 		//show legend
@@ -1979,12 +1988,14 @@ function showDemo(demoType){
 		break;
 		case "SAN DIEGO":
 			obj = {
-				url: 'db/demo-SanDiego.json',
-				title:'[DEMO] San Diego demo data',
+				url: 'db/demo-SDcrime.json',
+				title:'[DEMO] San Diego Crime data',
 				column:{
-					statistics:"Connectory"
+					statistics:"type"
 				},
-				keywords: []		
+				downloadLink: './geocoded_files/incidents-2013-small.csv',
+				keywords: [],
+				dataID:"1375413042"
 			}
 		break;
 	}
@@ -2197,7 +2208,10 @@ function afterLogin(json){
 	
 	//give email to the global variable
 	app.userInfo.email=json.account.Email;
-							
+	
+	//write username into uploadData form
+	$("#uploadData_username").val(app.userInfo.email)
+			
 	setTimeout(function(){
 		$("#dialog_menu").popup("open");
 	},500);

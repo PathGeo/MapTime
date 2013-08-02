@@ -117,7 +117,9 @@ if(email!='null' and password!='null'):
         "password":password,
         "emailSent":False,
         "emailVerified": False,
-        "dateRegister": datetime.datetime.now()
+        "dateRegister": datetime.datetime.now(),
+        "accountType": "free",
+        "credit": 3000
     }
 
     #resiter a user account and print result

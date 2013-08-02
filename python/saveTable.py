@@ -6,6 +6,10 @@ from DataFactory.DataTable import DataTableFactory
 import cgi, json, pickle
 import cgitb, os
 
+#pymongo Library
+from pymongo import MongoClient
+client=MongoClient()
+
 cgitb.enable()
 
 NORTH = 50.000
@@ -56,21 +60,46 @@ def findLonLatColumns(rows):
 	
 	return (bestLon, bestLat)
 
+#get users' credit
+def getUserCredit(username):
+        collection=client["maptime"]["user"]
+        user=collection.find_one({"email":username})
+
+        if(user is not None):
+                return user["credit"]
+        else:
+                return None
+
+
 
 form = cgi.FieldStorage()
 file = form['photo'].file.file
 name = form['photo'].filename
+username=form['username'].value
 
-#Get DataTable object, and convert rows to JSON
-table = DataTableFactory.getDataTable(fileStream=file, fileName=name)
-jsonRows = table.getRowsAsJSON()
+msg={
+        "status":"error",
+        "msg":"no username or no such username"
+}
 
+if(username is not None):
+        #get user's credit
+        credit=getUserCredit(username)
 
+        #Get DataTable object, and convert rows to JSON
+        table = DataTableFactory.getDataTable(fileStream=file, fileName=name)
+        jsonRows = table.getRowsAsJSON()
 
+        #if credit is not a number
+        if(credit is not None):
+                #if credit is enough
+                if(credit>=len(jsonRows)):
+                        pickle.dump(jsonRows, open(os.path.abspath(__file__).replace(__file__, name + ".p"), "w"))
+                        msg={'columns': [col for col in table.getColumnNames() if col], 'fileName': name}
+                else:
+                        msg["msg"]="Your credit is not enough to geocode at this time ("+ credit+" < "+len(jsonRows)+"). Please buy some credit first. Thank you."
+	else:
+                msg["msg"]="The account,'" + username + "', does not have credit field"
 
-
-
-pickle.dump(jsonRows, open(os.path.abspath(__file__).replace(__file__, name + ".p"), "w"))
-	
 print ''
-print json.dumps({'columns': [col for col in table.getColumnNames() if col], 'fileName': name})
+print json.dumps(msg)
