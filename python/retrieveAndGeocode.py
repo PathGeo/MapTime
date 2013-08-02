@@ -128,7 +128,7 @@ def deductUserCredit(username, usedCredit):
 
         if(user is not None):
                 if(user["credit"] is not None):
-                        if(credit >= usedCredit):
+                        if(user["credit"] >= usedCredit):
                                 user["credit"]=user["credit"] - usedCredit
                                 collection.save(user)
                                 return "succeed"
