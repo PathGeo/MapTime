@@ -8,6 +8,8 @@ import cgitb, os, pickle, time
 from os import path
 from pymongo import MongoClient
 
+client=MongoClient()
+
 
 #Functions to check potential location fields (are all these functions necessary?  just pass pattern as argument!)
 IS_LAT = lambda text: bool(re.compile(r'(?:^|\s|_)\d*lat\d*(?:\s|_|$)|latitude', re.I).search(text))
@@ -107,7 +109,6 @@ def geocodeRow(row, fields=None, geocoder=None):
 
 
 def saveDatainMongo(geojson, fileName, username):
-        client=MongoClient()
         collection=client["maptime"]["uploadData"]
         timestamp=str(int(time.mktime(time.gmtime()))) #using gmt timeStamp as dataID
         obj={
@@ -122,7 +123,24 @@ def saveDatainMongo(geojson, fileName, username):
         return timestamp
 
 
-	
+def deductUserCredit(username, usedCredit):
+        user=client["maptime"]["user"].find_one({"email":username})
+
+        if(user is not None):
+                if(user["credit"] is not None):
+                        if(credit >= usedCredit):
+                                user["credit"]=user["credit"] - usedCredit
+                                collection.save(user)
+                                return "succeed"
+                        else:
+                                return "no enough credit"
+                else:
+                        return "no credit field"
+        else:
+                return "no such user"
+
+
+
 cgitb.enable()
 
 
@@ -194,6 +212,17 @@ if features:
 
 featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': '' if not features else './geocoded_files/' + fname, 'dataID': dataID }
 
+
+#deduct users' credit
+outcome=deductUserCredit(username, len(features))
+
 print ''
-print json.dumps(featureSet)
+if(outcome=='succeed'):
+        print json.dumps(featureSet)
+else:
+        print {
+                "status":"error",
+                "msg":outcome
+        }
+
 

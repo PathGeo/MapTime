@@ -464,7 +464,13 @@ function init_UI(){
 				fileName: currentFileName,
 				geoColumns: geoColumns,
 				username:app.userInfo.email
-			}, success: function(featureCollection) { 	
+			}, success: function(featureCollection) { 
+				//error handler
+				if(featureCollection && featureCollection.status && featureCollections.status=='error'){
+					console.log(featureCollection.msg)
+					return;
+				}
+			
 				//end time and track ProcessTime event
 				var endTime=Date.now(),
 					processTime=Math.round((endTime-startTime)/1000);
