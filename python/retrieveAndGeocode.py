@@ -124,7 +124,8 @@ def saveDatainMongo(geojson, fileName, username):
 
 
 def deductUserCredit(username, usedCredit):
-        user=client["maptime"]["user"].find_one({"email":username})
+        collection=client["maptime"]["user"]
+        user=collection.find_one({"email":username})
 
         if(user is not None):
                 if(user["credit"] is not None):
