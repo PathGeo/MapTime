@@ -194,6 +194,9 @@ function init_login(){
 		//show upload data button
 		$("#header a[href='#dialog_menu']").show();
 		
+		//write username into uploadData form
+		$("#uploadData_username").attr("value", app.userInfo.email)
+		
 		//show demo menu
 		setTimeout(function(){
 			$("#dialog_menu").popup("open");
