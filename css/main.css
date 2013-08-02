@@ -274,6 +274,8 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #img_loading {display:none;}
 #uploadData_controls .ui-checkbox {float:left; width:30%; }
 #uploadData_controls div.ui-btn:nth-child(2) {position:absolute; float:left; margin-left:30%; width:60%;}
+#uploadData_error {background-color:#FD4500; color:#ffffff; padding:20px; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
+
 
 
 /**

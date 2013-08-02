@@ -399,7 +399,18 @@ function init_UI(){
 			success: function (tableInfo) {
 				//if user's credit is not enough, a error msg will return back.
 				if(tableInfo && tableInfo.status && tableInfo.status=='error'){
-					$("#uploadData_error").html(tableInfo.msg);
+					$("#uploadData_content").hide();
+					
+					//style the error msg
+					var html="";
+					$.each(tableInfo.msg.split("<br>"), function(i, msg){
+						if(i==0){
+							html+="<h3>"+msg+"</h3>"
+						}else{
+							html+=msg+"<p></p>";
+						}
+					})
+					$("#uploadData_error").html(html).show();
 					return
 				}
 				
@@ -416,8 +427,8 @@ function init_UI(){
 					$("#uploadData_geocodingFields").append("<input type='checkbox' id='" + column + "'/>" + column + " <br>");
 				}	
 								
-				$("#uploadData_description, #geocoding_loading").hide();
-				$("#uploadData_confirm, #uploadData_controls").show();	
+				$("#uploadData_description, #geocoding_loading, #uploadData_error").hide();
+				$("#uploadData_content, #uploadData_confirm, #uploadData_controls").show();	
 			}, error: function (error) {
 				console.log(error.responseText);
 			}
