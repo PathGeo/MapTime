@@ -392,6 +392,8 @@ function init_UI(){
 	$("#uploadData_input").change(function() { 
 		$("#geocoding_loading").css({position:"absolute", top:"45px", right:"40px"}).show();
 		$("#uploadData_error").html('');
+		$("#uploadData_error, #uploadData_confirm").hide();
+		$("#uploadData_content, #uploadData_description").show();	
 		
 		
 		$("#uploadData_form").ajaxSubmit({
@@ -399,7 +401,7 @@ function init_UI(){
 			success: function (tableInfo) {
 				//if user's credit is not enough, a error msg will return back.
 				if(tableInfo && tableInfo.status && tableInfo.status=='error'){
-					$("#uploadData_content").hide();
+					$("#uploadData_content, #geocoding_loading").hide();
 					
 					//style the error msg
 					var html="";
