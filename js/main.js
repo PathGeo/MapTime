@@ -2210,7 +2210,7 @@ function afterLogin(json){
 	app.userInfo.email=json.account.Email;
 	
 	//write username into uploadData form
-	$("#uploadData_username").val(app.userInfo.email)
+	$("#uploadData_username").attr("value", app.userInfo.email)
 			
 	setTimeout(function(){
 		$("#dialog_menu").popup("open");
