@@ -97,7 +97,7 @@ if(username is not None):
                         pickle.dump(jsonRows, open(os.path.abspath(__file__).replace(__file__, name + ".p"), "w"))
                         msg={'columns': [col for col in table.getColumnNames() if col], 'fileName': name}
                 else:
-                        msg["msg"]="Your credit is not enough to geocode at this time ("+ str(credit)+" < "+str(len(jsonRows))+"). Please buy some credit first. Thank you."
+                        msg["msg"]="Your credit is not enough to geocode at this time. <br>Total needed credit: "+ str(len(jsonRows))+"<br>Your credit: "+ str(credit)+"<br>Needed credit: "+ str(len(jsonRows)-credit)+"<br>Please buy some credit first. Thank you."
 	else:
                 msg["msg"]="The account,'" + username + "', does not have credit field"
 
