@@ -107,14 +107,14 @@ card_expiryDate=getParameterValue("card_expiryDate")
 
 msg={
     "status":"error",
-    "msg":"email or password is not correct! <br>Please check again"
+    "msg":"username, amount, card_name, card_number, card_authNumber, or card_expiryDate is not correct! <br>Please check again"
 }
 
 if(username!='null' and amount!='null' and card_name!='null' and card_number!='null' and card_authNumber!='null' and card_expiryDate!='null'):
     amount=int(amount)
     if(amount>0):
         #generate hashcode
-        hashcode=calculateHashcode(username, sequence, timestamp, amount, '')
+        #hashcode=calculateHashcode(username, sequence, timestamp, amount, '')
 
         #connect to the BOA payment service
         outcome=purchase(card_name, card_number, card_authNumber, card_expiryDate, amount)
