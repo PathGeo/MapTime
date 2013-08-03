@@ -72,6 +72,26 @@ def addCredit(username, credit):
     
 #send data to FirstData,our BOA payment service, to pay
 def purchase(cardholder_name, cardholder_number, cardholder_authNumber, cardholder_expiryDate, amount):
+    import urllib2, base64
+
+    request=urllib2.Request("https://api.globalgatewaye4.firstdata.com/transaction/v12")
+    base64string=base64.b64encode("A76868-01:4t72hkjv")
+    request.add_header("Authorization", base64string)
+    request.add_data(simplejson.dumps({
+        "gateway_id":"A76868-01",
+        "password":"4t72hkjv",
+        "transaction_type":"00",
+        "amount": amount,
+        "cardholder_name": cardholder_name,
+        "cc_number": cardholder_number,
+        "Authorization_Num": cardholder_authNumber,
+        "cc_expiry": cardholder_expiryDate
+    }))
+    result=urllib2.urlopen(request)
+
+    return result
+
+    '''
     http=httplib2.Http()
     url="https://api.globalgatewaye4.firstdata.com/transaction/v12"
     header={"Content-Type":"application/json", "accept": "application/json", "User-Agent":"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)"}
@@ -92,6 +112,7 @@ def purchase(cardholder_name, cardholder_number, cardholder_authNumber, cardhold
     print response
 
     return response
+    '''
 #--------------------------------------------------------------------------
 
 
@@ -107,7 +128,7 @@ card_expiryDate=getParameterValue("card_expiryDate")
 
 msg={
     "status":"error",
-    "msg":"username, amount, card_name, card_number, card_authNumber, or card_expiryDate is not correct! <br>Please check again"
+    "msg":"email or password is not correct! <br>Please check again"
 }
 
 if(username!='null' and amount!='null' and card_name!='null' and card_number!='null' and card_authNumber!='null' and card_expiryDate!='null'):
