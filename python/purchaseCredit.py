@@ -82,7 +82,7 @@ def purchase(cardholder_name, cardholder_number, cardholder_authNumber, cardhold
         "amount": amount,
         "cardholder_name": cardholder_name,
         "cc_number": cardholder_number,
-        "Authorization_Num", cardholder_authNumber,
+        "Authorization_Num": cardholder_authNumber,
         "cc_expiry": cardholder_expiryDate
     }
     
@@ -98,7 +98,7 @@ def purchase(cardholder_name, cardholder_number, cardholder_authNumber, cardhold
 
 
 #main
-username=getParameterValue("login")
+username=getParameterValue("username")
 amount=int(getParameterValue("amount"))
 card_name=getParameterValue("card_name")
 card_number=getParameterValue("card_number")
