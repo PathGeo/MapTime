@@ -135,7 +135,7 @@ def deductUserCredit(username, usedCredit, filename):
                                 collection.save(user)
 
                                 #transaction
-                                transactions.insert({
+                                transaction.insert({
                                         "email": username,
                                         "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S %Z"),
                                         "description": "[Geocode] " + filename,
