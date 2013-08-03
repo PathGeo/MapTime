@@ -1,4 +1,4 @@
-import hmac, hashlib, cgi, json as simplejson
+import hmac, hashlib, cgi, json as simplejson, httplib2
 from pymongo import MongoClient
 
 print "Content-Type: text/html \n"
@@ -68,40 +68,70 @@ def addCredit(username, credit):
             return "no credit field"
     else:
         return "no such user"
+#--------------------------------------------------------------------------
     
+#send data to FirstData,our BOA payment service, to pay
+def purchase(cardholder_name, cardholder_number, cardholder_authNumber, cardholder_expiryDate, amount):
+    http=httplib2.Http()
+    url="https://api.globalgatewaye4.firstdata.com/transaction/v12"
+    header={"Content-Type":"application/json", "accept": "application/json", "User-Agent":"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)"}
+    data={
+        "gateway_id":"A76868-01",
+        "password":"4t72hkjv",
+        "transaction_type":"00",
+        "amount": amount,
+        "cardholder_name": cardholder_name,
+        "cc_number": cardholder_number,
+        "Authorization_Num", cardholder_authNumber,
+        "cc_expiry": cardholder_expiryDate
+    }
+    
+    response, send=http.request(url, "POST", headers=header, body=data)
+
+    print send
+    print response
+
+    return response
+#--------------------------------------------------------------------------
 
 
 
 
 #main
 username=getParameterValue("login")
-sequence=getParameterValue("sequence")
-timestamp=getParameterValue("timestamp")
 amount=int(getParameterValue("amount"))
+card_name=getParameterValue("card_name")
+card_number=getParameterValue("card_number")
+card_authNumber=getParameterValue("card_authNumber")
+card_expiryDate=getParameterValue("card_expiryDate")
+
 msg={
     "status":"error",
     "msg":"email or password is not correct! <br>Please check again"
 }
 
-if(login!='null' and sequence!='null' and timestamp!='null' and amount!='null'):
+if(username!='null' and sequence!='null' and timestamp!='null' and amount!='null'):
     if(amount>0):
         #generate hashcode
         hashcode=calculateHashcode(username, sequence, timestamp, amount, '')
 
-        #connect to the BOA payment service (not Finish!)
-        
+        #connect to the BOA payment service
+        outcome=purchase(card_name, card_number, card_authNumber, card_expiryDate, amount)
 
-        
-        #add credit
-        result=addCredit(username, amount)
+        if(outcome==''):
+            #add credit
+            result=addCredit(username, amount)
 
-        if(result!="succeed"):
-            msg["msg"]=result
+            if(result!="succeed"):
+                msg["msg"]=result
+            else:
+                msg={
+                    "status":"ok",
+                    "msg":"add credit succeed"
+                }
         else:
-            msg={
-                "status":"ok",
-                "msg":"add credit succeed"
-            }
+            msg["msg"]=outcome
+        
     else:
         msg["msg"]="Transaction failed: amount <=0."
 
