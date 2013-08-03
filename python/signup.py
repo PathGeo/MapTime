@@ -58,7 +58,7 @@ def register(obj):
             "account":{
                 "Email":obj["email"],
                 "EmailVerified": obj["emailVerified"],
-                "SignupDate": obj["dateRegister"].strftime("%Y-%m-%d %H:%M:%S %Z")
+                "SignupDate": obj["dateRegister"]
             }
         }
 #----------------------------------------------------------------------------
@@ -117,7 +117,7 @@ if(email!='null' and password!='null'):
         "password":password,
         "emailSent":False,
         "emailVerified": False,
-        "dateRegister": datetime.datetime.now(),
+        "dateRegister": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S %Z"),
         "accountType": "free",
         "credit": 3000
     }

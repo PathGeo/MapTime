@@ -4,7 +4,7 @@ from GeocodingEngine.Geocoder import AddressGeocoder
 
 #Standard Libraries
 import cgi, json, re, functools
-import cgitb, os, pickle, time
+import cgitb, os, pickle, time, datetime
 from os import path
 from pymongo import MongoClient
 
@@ -123,8 +123,9 @@ def saveDatainMongo(geojson, fileName, username):
         return timestamp
 
 
-def deductUserCredit(username, usedCredit):
+def deductUserCredit(username, usedCredit, filename):
         collection=client["maptime"]["user"]
+        transaction=client["maptime"]["transaction"]
         user=collection.find_one({"email":username})
 
         if(user is not None):
@@ -132,6 +133,15 @@ def deductUserCredit(username, usedCredit):
                         if(user["credit"] >= usedCredit):
                                 user["credit"]=user["credit"] - usedCredit
                                 collection.save(user)
+
+                                #transaction
+                                transactions.insert({
+                                        "email": username,
+                                        "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S %Z"),
+                                        "description": "[Geocode] " + filename,
+                                        "transaction": usedCredit * -1,
+                                        "balance": user["credit"]
+                                })
                                 return "succeed"
                         else:
                                 return "no enough credit"
@@ -215,7 +225,7 @@ featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': '' i
 
 
 #deduct users' credit
-outcome=deductUserCredit(username, len(features))
+outcome=deductUserCredit(username, len(features), fname)
 
 print ''
 if(outcome=='succeed'):
