@@ -99,7 +99,7 @@ def purchase(cardholder_name, cardholder_number, cardholder_authNumber, cardhold
 
 #main
 username=getParameterValue("username")
-amount=int(getParameterValue("amount"))
+amount=getParameterValue("amount")
 card_name=getParameterValue("card_name")
 card_number=getParameterValue("card_number")
 card_authNumber=getParameterValue("card_authNumber")
@@ -110,7 +110,8 @@ msg={
     "msg":"email or password is not correct! <br>Please check again"
 }
 
-if(username!='null' and sequence!='null' and timestamp!='null' and amount!='null'):
+if(username!='null' and amount!='null' and card_name!='null' and card_number!='null' and card_authNumber!='null' and card_expiryDate!='null'):
+    amount=int(amount)
     if(amount>0):
         #generate hashcode
         hashcode=calculateHashcode(username, sequence, timestamp, amount, '')
