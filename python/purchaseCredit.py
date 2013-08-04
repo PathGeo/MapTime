@@ -1,13 +1,13 @@
-import hmac, hashlib, cgi, json as simplejson, httplib2
+import hmac, hashlib, cgi, json as simplejson
 from pymongo import MongoClient
 
 print "Content-Type: text/html \n"
 
-
 #global variable
 client=MongoClient()
+transaction=client["maptime"]["transaction"]
+userCollection=client["maptime"]["user"]
 urlParameter=cgi.FieldStorage()
-
 
 
 #get value from URL parameter--------------------------------------------
@@ -19,6 +19,17 @@ def getParameterValue(name):
 
     return value
 #--------------------------------------------------------------------------
+
+
+
+username=getParameterValue("username")
+amount=getParameterValue("amount")
+card_name=getParameterValue("card_name")
+card_number=getParameterValue("card_number")
+card_authNumber=getParameterValue("card_authNumber")
+card_expiryDate=getParameterValue("card_expiryDate")
+
+
 
 
 #calculate hascode------------------------------------------------------------
@@ -44,9 +55,7 @@ def calculateHashcode(x_login, x_fp_sequence, x_fp_timestamp, x_amount, x_curren
 
 
 #add credit and record transaction
-def addCredit(username, credit):
-    transaction=client["maptime"]["transaction"]
-    userCollection=client["maptime"]["user"]
+def addCredit(credit):
     user=userCollection.find_one(username)
     credit=int(credit)
     
@@ -69,63 +78,69 @@ def addCredit(username, credit):
     else:
         return "no such user"
 #--------------------------------------------------------------------------
-    
+
 #send data to FirstData,our BOA payment service, to pay
 def purchase(cardholder_name, cardholder_number, cardholder_authNumber, cardholder_expiryDate, amount):
-    import urllib2, base64
+    import urllib2, base64, requests
 
-    request=urllib2.Request("https://api.globalgatewaye4.firstdata.com/transaction/v12")
-    base64string=base64.b64encode("A76868-01:4t72hkjv")
-    request.add_header("Authorization", base64string)
-    request.add_data(simplejson.dumps({
+    url="https://api.globalgatewayE4.firstdata.com/transaction/v11"
+    header={"Content-Type":"application/json", "accept": "application/json"}
+    data=simplejson.dumps({
         "gateway_id":"A76868-01",
         "password":"4t72hkjv",
         "transaction_type":"00",
-        "amount": amount,
-        "cardholder_name": cardholder_name,
-        "cc_number": cardholder_number,
-        "Authorization_Num": cardholder_authNumber,
-        "cc_expiry": cardholder_expiryDate
-    }))
-    result=urllib2.urlopen(request)
+        "amount": str(amount),
+        "cardholder_name": str(cardholder_name),
+        "cc_number": str(cardholder_number),
+        "Authorization_Num": str(cardholder_authNumber),
+        "cc_expiry": str(cardholder_expiryDate)
+    })
+  
+    r=requests.post(url, headers=header, data=data, verify=False)
 
-    return result
-
-    '''
-    http=httplib2.Http()
-    url="https://api.globalgatewaye4.firstdata.com/transaction/v12"
-    header={"Content-Type":"application/json", "accept": "application/json", "User-Agent":"Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)"}
-    data={
-        "gateway_id":"A76868-01",
-        "password":"4t72hkjv",
-        "transaction_type":"00",
-        "amount": amount,
-        "cardholder_name": cardholder_name,
-        "cc_number": cardholder_number,
-        "Authorization_Num": cardholder_authNumber,
-        "cc_expiry": cardholder_expiryDate
-    }
     
-    response, send=http.request(url, "POST", headers=header, body=data)
-
-    print send
-    print response
-
-    return response
-    '''
+    #determine r.text is string(fail) or json(success)
+    try:
+        json = simplejson.loads(r.text)
+    except ValueError, e:
+        return {"errorMsg": r.text}
+    else:
+        return r.json()
+    
 #--------------------------------------------------------------------------
+
+#record error msg in the transaction log
+def recordError(error_msg):
+    user=userCollection.find_one({"email":username})
+
+    if(user is not None):
+        userCredit=user["credit"]
+
+        if(userCredit is not None):
+            userCredit=int(userCredit)
+            errorLog={
+                "email": username,
+                "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S %Z"),
+                "description": None,
+                "transaction": None,
+                "balance": userCredit
+            }
+
+            #record log
+            errorLog["decription"]=error_msg
+            transaction.insert(errorLog)
+
+            return "[log error]: log success"
+        else:
+            return "[log error]: no credit field"
+    else:
+        return "[log error]: no such user"
+#----------------------------------------------------------------------------
 
 
 
 
 #main
-username=getParameterValue("username")
-amount=getParameterValue("amount")
-card_name=getParameterValue("card_name")
-card_number=getParameterValue("card_number")
-card_authNumber=getParameterValue("card_authNumber")
-card_expiryDate=getParameterValue("card_expiryDate")
-
 msg={
     "status":"error",
     "msg":"email or password is not correct! <br>Please check again"
@@ -134,15 +149,13 @@ msg={
 if(username!='null' and amount!='null' and card_name!='null' and card_number!='null' and card_authNumber!='null' and card_expiryDate!='null'):
     amount=int(amount)
     if(amount>0):
-        #generate hashcode
-        #hashcode=calculateHashcode(username, sequence, timestamp, amount, '')
 
         #connect to the BOA payment service
         outcome=purchase(card_name, card_number, card_authNumber, card_expiryDate, amount)
-
-        if(outcome==''):
+        
+        if(outcome.get("errorMsg") is None and outcome["success"] is not None):
             #add credit
-            result=addCredit(username, amount)
+            result=addCredit(amount)
 
             if(result!="succeed"):
                 msg["msg"]=result
@@ -152,8 +165,16 @@ if(username!='null' and amount!='null' and card_name!='null' and card_number!='n
                     "msg":"add credit succeed"
                 }
         else:
-            msg["msg"]=outcome
-        
+            #transaction failed
+            if(outcome.get("errorMsg") is not None):
+                msg["msg"]=outcome["errorMsg"]
+            else:
+                msg["msg"]=outcome["ctr"]
+            
+            #error log
+            r=recordError(msg["msg"])
+            if(r!="[log error]: log success"):
+                msg["msg"]=r
     else:
         msg["msg"]="Transaction failed: amount <=0."
 
