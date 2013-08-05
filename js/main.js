@@ -515,7 +515,7 @@ function init_UI(){
 				 };
 				 
 				
-				showSumup(featureCollection)
+				//showSumup(featureCollection)
 				 
 			}, error: function (error) {
 				console.log("Error:");
