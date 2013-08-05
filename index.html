@@ -103,7 +103,7 @@
 			<a href="#dialog_contact" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="check" class="" data-mini="true" style='float:right'>Contact us</a>
 	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>
 			<!--<a href="#dialog_sumup" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right'>test</a>-->
-			<a href="#dialog_menu" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right; display:none'>Upload Data</a>
+			<a href="#dialog_uploadData" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right; display:none'>Upload Data</a>
 		</div>
 		
 
@@ -359,32 +359,32 @@
 							MapTime only support XLS and CSV formats for this beta version. <P></P>
 							We will support more data formats in the near future.
 						
-							
-							<hr style='margin-top:50px; '>
-							<h2>Or Try Sample Data First</h2>
-							<ul data-role="listview" data-inset="true">
-							    <li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);$("#dialog_menu").popup("close"); showDemo("SAN DIEGO");}}, 100)'>
-							        <img src="images/sandiego.jpg">
-							        <h2>San Diego Crime Rate</h2>
-							        <p>Some crime sample data in 2012 Jan Crime.<Br>Downloaded from 'San Diego Regional Data Library'</p></a>
-							    </li>
-							    <li><a href="#">
-							        <img src="images/sanfrancisco.JPG">
-							        <h2>San Francisco Shoe's Customer</h2>
-							        <p></p></a>
-							    </li>
-							</ul>
-						
+							<!--sample data-->
+							<div id='uploadData_sampleData'>
+								<h2>Or Try Some Sample Data</h2>
+								<ul data-role="listview" data-inset="true">
+								    <li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);$("#dialog_uploadData").popup("close"); showDemo("SAN DIEGO");}}, 100)'>
+								        <img src="images/sandiego.jpg">
+								        <h2>San Diego Crime Rate</h2>
+								        <p>2012/01 Crime Sample Data from 'San Diego Regional Data Library'</p></a>
+								    </li>
+								    <li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);$("#dialog_uploadData").popup("close"); showDemo("SAN FRANCISCO");}}, 100)'>
+								        <img src="images/sanfrancisco.JPG">
+								        <h2>San Francisco Shoe's Customer</h2>
+								        <p>Sample Data</p></a>
+								    </li>
+								</ul>
+							</div>
 						</div>
 						
 						<div id='uploadData_confirm' style='display:none'>
 							<!--<img id='img_loading' src="images/loading.gif" width=15px  />-->
 							
 							<div data-role="fieldcontain">
-								<label for="uploadData_geocodingField">Select geocoding column: </label>
+								<label for="uploadData_geocodingField"><b>Select geocoding column: </b></label>
 								
 								<!--<select id='uploadData_geocodingField' name='uploadData_geocodingField' data-mini='true'> </select>-->
-								<div id="uploadData_geocodingFields" style="height: 100px; background-color: white; color: black; padding-top: 10px; overflow: auto;"></div>
+								<div id="uploadData_geocodingFields" style="height: 125px; background-color: white; color: black; padding-top: 10px; overflow: auto;"></div>
 							</div>
 							
 							<div id='uploadData_agreement'></div>
@@ -445,7 +445,10 @@
 		<!--user log in-->
 		<div id='dialog_login' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
              <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
-			 
+			 <center><h2>
+			 	<img src='images/PathGeo-color.png' height=35px onclick='window.open("http://www.pathgeo.com")'/>
+				<label>MapTime is a web-based mapping tool that allows you to geocode<br>and geo-analyze their data (with street addresses) into maps.</label>
+			</h2></center>
 			 <!-- login-->
 			 <div>
 			 	<h2>Member login</h2>

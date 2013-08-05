@@ -192,14 +192,14 @@ function init_login(){
 			.find(".ui-btn-text").html(email);
 		
 		//show upload data button
-		$("#header a[href='#dialog_menu']").show();
+		$("#header a[href='#dialog_uploadData']").show();
 		
 		//write username into uploadData form
 		$("#uploadData_username").attr("value", app.userInfo.email)
 		
 		//show demo menu
 		setTimeout(function(){
-			$("#dialog_menu").popup("open");
+			$("#dialog_uploadData").popup("open");
 		}, 1000);
 		
 		//get user account info
@@ -295,7 +295,7 @@ function init_UI(){
 	//if directly show the main menu while initlizing the webpage, the main menu will be immediately disppeared in Chrome (noraml in the Firefo).
 	//JQM said this is the bug from webkit(Goolge chrome) https://github.com/jquery/jquery-mobile/issues/5775
 	setTimeout(function(){
-		//$("#dialog_menu").popup("open");
+		//$("#dialog_uploadData").popup("open");
 	},1000);
 	
 	
@@ -2156,7 +2156,7 @@ function logout(){
 	//console.log("logout: "+ $.cookie("SocialTime"))
 	
 	//hide uploda data  button
-	$("#header a[href='#dialog_menu']").hide();
+	$("#header a[href='#dialog_uploadData']").hide();
 	
 	//close popup
 	$("#dialog_userMenu").popup('close');
@@ -2235,7 +2235,7 @@ function afterLogin(json){
 		.find(".ui-btn-text").html(json.account.Email);
 				
 	//show upload data button
-	$("#header a[href='#dialog_menu']").show();
+	$("#header a[href='#dialog_uploadData']").show();
 	
 	//load account info
 	writeAccountInfo(json.account)
@@ -2247,7 +2247,7 @@ function afterLogin(json){
 	$("#uploadData_username").attr("value", app.userInfo.email)
 			
 	setTimeout(function(){
-		$("#dialog_menu").popup("open");
+		$("#dialog_uploadData").popup("open");
 	},500);
 }
 
