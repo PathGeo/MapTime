@@ -329,6 +329,10 @@ function init_UI(){
 		}
 	})
 	
+	//setup agreement
+	if(_agreement){
+		$("#uploadData_agreement").html(_agreement)
+	}
 	
 	 
 	//when mouse click on otherplace, hide dataTable_menu
@@ -372,8 +376,6 @@ function init_UI(){
 		
 		$(".userMenuContent").hide();
 		$target.show();
-		
-		
 	});
 	
 	
