@@ -454,7 +454,7 @@ function init_UI(){
 		}
 		
 		//show geocoding loading icon
-		$("#geocoding_loading").css({top:"460px"}).show();
+		$("#geocoding_loading").css({top:"440px", right:"5px"}).show();
 		
 		//process time
 		var startTime=Date.now();
@@ -1990,6 +1990,9 @@ function searchBusinessIntelligent(geoname){
 function showDemo(demoType){
 	var obj=null;
 	
+	//show loading image
+	$("#uploadData_loading").show();
+		
 	//clear all layers
 	if(app.geocodingResult.layers){
 		var layerNames=["geoJsonLayer", "markerClusterLayer", "heatMapLayer"];
@@ -2040,6 +2043,10 @@ function showDemo(demoType){
 			obj.type='GEOJSON';
 			//obj.downloadLink='test';
 			app.geocodingResult=obj;
+			
+			//close dialog_uploadData and stop loading img
+			$("#uploadData_loading").hide();
+			$("#dialog_uploadData").popup("close"); 
 			
 			//showSumup(json);
 			showTable(app.geocodingResult);

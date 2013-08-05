@@ -278,7 +278,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #uploadData_sampleData {position:absolute; width:86%; margin-top:50px; color:#333333;  }
 #uploadData_sampleData .ui-li-thumb {margin-left:5px; margin-top:9px; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
 #uploadData_input {font-size:14px;}
-
+#uploadData_loading {position:absolute; right:-30px; display:none;}
 
 /**
  * lab

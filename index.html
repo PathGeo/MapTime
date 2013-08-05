@@ -355,25 +355,27 @@
 					
 					<div id='uploadData_content'>
 						<div id='uploadData_description' >
-							<h2>Upload and Map Your Data:</h2><br>
-							MapTime only support XLS and CSV formats for this beta version. <P></P>
-							We will support more data formats in the near future.
+							<h2>Upload and Map Your Data:</h2>
+							MapTime allows you to geocode and geo-analyze their data (with street addresses) into maps.<p></p>
+							In the beta version, MapTime supports XLS, XLSX, or CSV file format. <br>
+							MapTime will keep supporting more file formats in the near future.
 						
 							<!--sample data-->
 							<div id='uploadData_sampleData'>
 								<h2>Or Try Some Sample Data</h2>
 								<ul data-role="listview" data-inset="true">
-								    <li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);$("#dialog_uploadData").popup("close"); showDemo("SAN DIEGO");}}, 100)'>
+								    <li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);showDemo("SAN DIEGO");}}, 100)'>
 								        <img src="images/sandiego.jpg">
 								        <h2>San Diego Crime Rate</h2>
 								        <p>2012/01 Crime Sample Data from 'San Diego Regional Data Library'</p></a>
 								    </li>
-								    <li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);$("#dialog_uploadData").popup("close"); showDemo("SAN FRANCISCO");}}, 100)'>
+								    <li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);showDemo("SAN FRANCISCO");}}, 100)'>
 								        <img src="images/sanfrancisco.JPG">
 								        <h2>San Francisco Shoe's Customer</h2>
 								        <p>Sample Data</p></a>
 								    </li>
 								</ul>
+								<img id='uploadData_loading' src='images/loading.gif' />
 							</div>
 						</div>
 						
