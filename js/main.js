@@ -924,6 +924,9 @@ function showLayer(obj, isShow){
 						geocodingResult.heatMapLayer=pathgeo.layer.heatMap(geocodingResult.json, radius, {opacity:0.55});
 						geocodingResult.heatMapLayer.addTo(app.map);
 						app.controls.toc.addOverlay(geocodingResult.heatMapLayer, "Heat Map");
+					}).keypress(function(e){
+						//disable any actions
+						return false;
 					}).slider('refresh'); 
 					$("#heatmap_radius .ui-input-text").html("Change Hot Spot's Radius (unit: Feet)");
 					
@@ -1273,7 +1276,7 @@ function showTable(obj){
 					//"<li><img src='images/1365858910_download.png' title='download selected data'/><span>Download Selected Data</span></li>" +
 					//"<li><img src='images/1365858892_print.png' title='print'/><span>Print</span></li>" +
 					"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/><span>Show/hide Columns</span></li>" +
-					"<li><img src='images/1373466683_cursor_H_split.png' title='Show Table'/><span>Show Table</span></li>"+
+					"<li><img src='images/1375655879_br_up.png' title='More Table'/><span>More Table</span></li>"+
 					//"<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
 					//"<li><img src='images/1365978110_gallery2.png' title='map gallery'/></li>" +
 					//"<li><img src='images/1365872733_sq_br_down.png' title='maximum map'/></li>"+
@@ -1306,14 +1309,21 @@ function showTable(obj){
 						top: $(this).offset().top - 25
 					}, this);
 				break;
-				case "Show Table":
-					$img.attr('title', 'Hide Table');
-					$span.html("Hide Table");
+				case "More Table":
+					$img.attr({
+						'title': 'Less Table',
+						'src': 'images/1375655890_br_down.png'
+					});
+					$span.html("Less Table");
 					resizeMap({height:"47.5%"}, {height:"52.5%"});
 				break;
-				case "Hide Table":
-					$img.attr('title', 'Show Table');
-					$span.html("Show Table");
+				case "Less Table":
+					$img.attr({
+						'title': 'More Table',
+						'src': 'images/1375655879_br_up.png'
+					});
+					$span.html("More Table");
+					
 					resizeMap({height:"75%"}, {height:"25%"});
 				break;
 				case "download selected data":
