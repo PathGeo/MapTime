@@ -294,7 +294,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #header {padding:0px !important}
 #header h1 {padding-left:7px;}
 #header h1 img {float:left; cursor:pointer;}
-#header h1 div {position:absolute; padding:10px 150px}
+#header h1 div {position:absolute; padding:10px; margin-left:140px; }
 #header .ui-btn-inner {font-size:12px;}
 
 
@@ -319,7 +319,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #dialog_login {width:750px; height:400px;padding:40px; }
 #dialog_login h2 {margin-bottom:10px; }
 #dialog_login h2 img {float:left; cursor:pointer; height:40px; margin-left:20px; }
-#dialog_login h2 label {float:right; text-align:left; margin-right:10px;  color:#333333;}
+#dialog_login h2 label {float:right; text-align:left; margin-right:10px;  color:#999999;}
 #dialog_login > div {float:left; width:44%; padding:20px; position:relative; margin-top:30px; }
 #dialog_login label.ui-input-text {font-size:14px;}
 #dialog_login-screen {position:fixed}
