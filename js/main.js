@@ -2468,11 +2468,19 @@ function purchase(){
 						card_authNumber:card_authNumber
 					},
 					method:"post",
+					dataType:"json",
 					success:function(result){
-						console.log(result)
-						showPaymentMsg(result.msg);
 						//hide loading image
 						$("#payment_loading").hide();
+						
+						console.log(result);
+						//if error
+						if(result.status && result.status=='error'){
+							showPaymentMsg(result.msg);
+							return; 
+						}
+						
+						
 					},
 					error:function(error){
 						console.log(error);
