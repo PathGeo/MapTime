@@ -133,7 +133,8 @@ var app={
 	userInfo:{
 		email:null,
 		city:null,
-		country:null
+		country:null,
+		valideCreditcard:false
 	}
 	
 }
@@ -298,6 +299,9 @@ function init_UI(){
 		//$("#dialog_uploadData").popup("open");
 	},1000);
 	
+	
+	//validate credit card number
+	$("#payment_cardNumber").validateCreditCard(validateCreditCard);
 	
 	//adjust infoPanel height
 	$(".infoPanel").css({height:$("#content").height()-20, width:$("#content").width()*0.375});
@@ -2362,42 +2366,36 @@ function print(){
 }
 
 
-//purchase
-function purchase(price){
-	console.log(price)
+//show payment
+function showPayment(plan){	
+	var price, credit;
 	
-	var loginID='WSP-PATHG-@Y0NhAAO8g',
-		timestamp=Date.now()/1000, //time need to be seconds.
-		sequence=123,
-		url="python/hashCalculator.py?login="+loginID +"&sequence=" + sequence + "&timestamp=" + timestamp + "&amount=" +price;
+	switch(plan){
+		case "plusA":
+			price=10;
+			credit=3000;
+		break;
+		case "plusB":
+			price=50;
+			credit=5000;
+		break;
+		case "pro":
+			price=99;
+			credit="Unlimited";
+		break;
+	}
+	//set up payment amount infcrmation
+	$("#payment_amount").html("$"+price+" USD");
+	$("#payment_credit").html(credit+" Credits");
+	$("#payment_button").attr("name", plan)
+	
+	
+	//show payment dialog
+	$("#dialog_userMenu").popup("close");	setTimeout(function(){
+		$("#dialog_payment").popup("open");
+	}, 300);
+		
 
-	
-	//set parameter of form 
-	$form=$("#paymentForm");
-	$form.find("input[name='x_fp_sequence']").val(sequence);
-	$form.find("input[name='x_fp_timestamp']").val(timestamp);
-	$form.find("input[name='x_amount']").val(price);
-
-	
-	//get hashcode
-	$.getJSON(url, function(json){
-		if(json && json.status && json.status=='ok'){
-			//set hashcode parameter
-			$form.find("input[name='x_fp_hash']").val(json.hashcode);
-			
-			//submit the payment form
-			$form[0].submit();
-
-			//show payment dialog
-			$("#dialog_userMenu").popup("close");			setTimeout(function(){
-				$("#dialog_payment").popup("open");
-			}, 500);
-			
-		}else{
-			console.log("[ERROR]HashCalculator: error");
-		}
-	})
-	
 	//google anlytics tracking event
 	if(price==99){
 		_gaq.push(['_trackEvent', 'Account', 'Pro', email]);
@@ -2407,6 +2405,94 @@ function purchase(price){
 		}
 	}
 }
+
+
+
+//purchase
+function purchase(){
+	//validate
+
+	//show loading image
+	var position=$("#dialog_payment > div.ui-btn").offset();
+	$("#payment_loading").css({top:position.top-5, left:position.left-39}).show();
+	
+	var plan=$("#payment_button").attr("name") || null,
+		card_name=$("#payment_cardName").val() || null,
+		card_number=$("#payment_cardNumber").val() || null,
+		card_expiryMonth=$("#payment_expiryDate_month").val() || null,
+		card_expiryYear=$("#payment_expiryDate_year").val() || null,
+		card_authNumber=$("#payment_authNumber").val() || null;
+		
+		
+	if(plan && card_name && card_number && card_expiryMonth && card_expiryYear && card_authNumber){
+		//if cardNumber or expiryMonth is not a number
+		if(isNaN(card_number) || isNaN(card_expiryMonth) || isNaN(card_expiryYear) || isNaN(card_authNumber)){
+			showPaymentMsg('Card Number, expiry Date, or Security code is not a number. Please check and input a valid number.');
+			return ;
+		}else{
+			card_expiryYear=card_expiryYear.substr(card_expiryYear.length-2);
+			
+		}
+	}else{
+		showPaymentMsg('Cardholder name, number, expiryMonth, or security code is blank. Please check it again.');
+	}
+
+	
+}
+
+//show payment msg
+function showPaymentMsg(msg){
+	$("#payment_msg").html(msg).show();
+	//hide loading image
+	$("#payment_loading").hide();
+}
+
+
+//validate credit card number
+function validateCreditCard(result){
+	app.userInfo.valideCreditcard=false;
+	
+	if(result.card_type!=null){
+		var name=result.card_type.name;
+		
+		//change credit card image to bw
+		$(".creditCardImage").each(function(){
+			var src=$(this).attr("src"),
+				bw_file=src.split("_bw.gif")[0]+"_bw.gif";
+			$(this).attr("src",bw_file);
+			console.log(bw_file)
+		});
+		
+		var id="",src='',filename='', $obj=null;
+		switch(name){
+			case "visa":
+			case "visa_electron":
+				id="creditCardImage_visa";
+			break;
+			case "amex":
+				id='creditCardImage_amex'
+			break;
+			case "mastercard":
+				id='creditCardImage_master'
+			break;		
+		}
+		
+		$obj=$("#"+id);
+		src=$obj.attr("src")
+		filename=src.split("_bw.gif")[0]+".gif";
+		$obj.attr("src", filename);
+	}
+	
+	//validate credit card length
+	if(!result.luhn_valid){
+		showPaymentMsg("Please input the correct credit card number.");	
+		return;
+	}else{
+		$("#payment_msg").hide();
+		app.userInfo.valideCreditcard=true;
+	}
+}
+
 
 
 //get client ip and location

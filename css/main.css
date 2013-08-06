@@ -426,8 +426,42 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /**
  * 	payment dialog
  */
-#dialog_payment {width:750px; height:500px; padding:20px; }
+#dialog_payment {width:800px; height:500px; padding:20px; }
 #dialog_payment iframe {width:100%; height:100%; border:0px; overflow-y:auto; }
+#dialog_payment > ul {list-style:none; padding:0px; margin:0px; margin-top:100px; padding-left:25px; height:250px;  }
+#dialog_payment > ul > li {float:left; padding:10px; position:relative }
+
+#dialog_payment > ul > li:nth-child(1) {width:50%;}
+#dialog_payment > ul > li:nth-child(2) {width:40%;padding:20px; }
+/** credit card images */
+#dialog_payment > ul > li:nth-child(1) img {position:absolute; top:115px; height:25px; }
+
+#dialog_payment > ul > li ul {list-style:none; padding:0px; margin:0px; }
+#dialog_payment > ul > li ul li {position:relative; }
+#dialog_payment > ul > li ul li:nth-child(1) {width:35%; float:left;}
+#dialog_payment > ul > li ul li:nth-child(1) div{float:left;margin-top:2px; }
+#dialog_payment > ul > li ul li:nth-child(1) div:nth-child(2){width:28px; }
+#dialog_payment > ul > li ul li:nth-child(1) div:nth-child(3){width:38px; }
+#dialog_payment > ul > li ul li:nth-child(2) {width:55%; float:right;}
+/** security code image */
+#dialog_payment > ul > li ul li:nth-child(2) img {height:40px; top:26px; right:5px; position:absolute; } 
+
+#payment_amountDiv {margin:0 auto; width:98%; font-size:20px; text-align:center; margin-top:35px;}
+#payment_amountDiv label {font-size:20px; }
+#payment_amountDiv div {width:70%; margin:0 auto; }
+#payment_credit {color:#999999;}
+#payment_amount {font-size:60px !important; color:#666666; font-family: 'Courgette', cursive; }
+
+/** payment button */
+#dialog_payment > div {margin:0 auto; width:40%; margin-top:35px; }
+
+/** payment msg */
+#payment_msg {margin:0px !important; margin-left:35px !important; width:89% !important; color:#ff0000; }
+
+/**payment loading img*/
+#payment_loading {position:absolute; display:none;}
+
+
 
 
 /** google chart tooltip */
