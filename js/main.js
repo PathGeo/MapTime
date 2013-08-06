@@ -2470,7 +2470,7 @@ function purchase(){
 					method:"post",
 					success:function(result){
 						console.log(result)
-						//showPaymentMsg()
+						showPaymentMsg(result.msg);
 						//hide loading image
 						$("#payment_loading").hide();
 					},
