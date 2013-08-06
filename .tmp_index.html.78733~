@@ -745,9 +745,9 @@
 					
 					<label for="payment_cardNumber">Card Number:</label>
 					<input type="text" name="payment_cardNumber" id="payment_cardNumber" value="">
-					<img src='images/visa.gif' src_color='images/visa.gif' src_bw='images/visa_bw.gif' id='creditCardImage_visa' class='creditCardImage' style='right:101px;'/>
-					<img src='images/master.gif' src_color='images/master.gif' src_bw='images/master_bw.gif' id='creditCardImage_master' class='creditCardImage' style='right:58px;'/>
-					<img src='images/amex.gif' src_color='images/amex.gif' src_bw='images/amex_bw.gif' id='creditCardImage_amex' class='creditCardImage' style='right:15px;'/>
+					<img src='images/visa.gif' id='creditCardImage_visa' class='creditCardImage' style='right:101px;'/>
+					<img src='images/master.gif' id='creditCardImage_master' class='creditCardImage' style='right:58px;'/>
+					<img src='images/amex.gif' id='creditCardImage_amex' class='creditCardImage' style='right:15px;'/>
 					
 					<ul>
 						<li>
@@ -758,7 +758,7 @@
 						
 						<li>
 							<label for="payment_authNumber">Security Code:</label>
-							<input type="text" name="payment_authNumber" id="payment_authNumber" value="" maxlength="4">
+							<input type="text" name="payment_authNumber" id="payment_authNumber" value="">
 							<img src='images/1375793366_credit_card blue.png' />
 						</li>
 					</ul>

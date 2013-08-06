@@ -23,7 +23,7 @@ def getParameterValue(name):
 
 
 username=getParameterValue("username")
-amount=getParameterValue("amount")
+plan=getParameterValue("plan")
 card_name=getParameterValue("card_name")
 card_number=getParameterValue("card_number")
 card_authNumber=getParameterValue("card_authNumber")
@@ -146,10 +146,19 @@ msg={
     "msg":"email or password is not correct! <br>Please check again"
 }
 
-if(username!='null' and amount!='null' and card_name!='null' and card_number!='null' and card_authNumber!='null' and card_expiryDate!='null'):
-    amount=int(amount)
-    if(amount>0):
 
+if(username!='null' and plan!='null' and card_name!='null' and card_number!='null' and card_authNumber!='null' and card_expiryDate!='null'):
+    #determine amonunt by plan
+    plans={
+        "plusA":30,
+        "plusB":50,
+        "pro":99
+    }
+    if(plans[plan] is None):
+        msg["msg"]="plan is not correct. Only 'plusA', 'plusB' and 'pro' are accepted."
+    else:
+        amount=int(plans[plan])
+        
         #connect to the BOA payment service
         outcome=purchase(card_name, card_number, card_authNumber, card_expiryDate, amount)
         
@@ -175,8 +184,7 @@ if(username!='null' and amount!='null' and card_name!='null' and card_number!='n
             r=recordError(msg["msg"])
             if(r!="[log error]: log success"):
                 msg["msg"]=r
-    else:
-        msg["msg"]="Transaction failed: amount <=0."
 
-    
+
+
 print simplejson.dumps(msg)

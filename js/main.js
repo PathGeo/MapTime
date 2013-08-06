@@ -2410,18 +2410,14 @@ function showPayment(plan){
 
 //purchase
 function purchase(){
-	//validate
-
-	//show loading image
-	var position=$("#dialog_payment > div.ui-btn").offset();
-	$("#payment_loading").css({top:position.top-5, left:position.left-39}).show();
-	
+	//validate	
 	var plan=$("#payment_button").attr("name") || null,
 		card_name=$("#payment_cardName").val() || null,
 		card_number=$("#payment_cardNumber").val() || null,
 		card_expiryMonth=$("#payment_expiryDate_month").val() || null,
 		card_expiryYear=$("#payment_expiryDate_year").val() || null,
-		card_authNumber=$("#payment_authNumber").val() || null;
+		card_authNumber=$("#payment_authNumber").val() || null,
+		expiryDate='';
 		
 		
 	if(plan && card_name && card_number && card_expiryMonth && card_expiryYear && card_authNumber){
@@ -2430,7 +2426,69 @@ function purchase(){
 			showPaymentMsg('Card Number, expiry Date, or Security code is not a number. Please check and input a valid number.');
 			return ;
 		}else{
+			//check expiry date
+			if(card_expiryYear.length==2){
+				showPaymentMsg('Expiry year should be 4 digits, such as 2013. Please check again');
+				$('#payment_expiryDate_year').focus();
+				return; 
+			}
+			
+			var year=parseInt(card_expiryYear), month=parseInt(card_expiryMonth), nowYear=new Date().getFullYear();
+			if(year<nowYear || year >=2100){
+				showPaymentMsg('Expiry Date is not correct. Please check again.');
+				$('#payment_expiryDate_year').focus();
+				return; 
+			}
+			if(month<=0 || month>=13){
+				showPaymentMsg('Expiry Date is not correct. Please check again.');
+				$('#payment_expiryDate_month').focus();
+				return; 
+			}
+			
 			card_expiryYear=card_expiryYear.substr(card_expiryYear.length-2);
+			
+			//if only one digit for the month, add 0 to the month
+			if(card_expiryMonth.length==1){card_expiryMonth="0"+card_expiryMonth}
+			expiryDate=card_expiryMonth+card_expiryYear;
+			
+			
+			if(app.userInfo.valideCreditcard){
+				//show loading image
+				$("#payment_loading").show();
+				
+				//send request to the purchase service
+				$.ajax({
+					url:"python/purchaseCredit.py",
+					data:{
+						username:app.userInfo.email,
+						plan:plan,
+						card_name:card_name,
+						card_number:card_number,
+						card_expiryDate:expiryDate,
+						card_authNumber:card_authNumber
+					},
+					method:"post",
+					success:function(result){
+						console.log(result)
+						//showPaymentMsg()
+						//hide loading image
+						$("#payment_loading").hide();
+					},
+					error:function(error){
+						console.log(error);
+						
+						//hide loading image
+						$("#payment_loading").hide();
+					}
+				})
+				
+			}else{
+				showPaymentMsg('Please input the correct credit card number.');
+				$('#payment_cardNumber').focus();
+				return;
+			}
+			
+			
 			
 		}
 	}else{
@@ -2442,7 +2500,7 @@ function purchase(){
 
 //show payment msg
 function showPaymentMsg(msg){
-	$("#payment_msg").html(msg).show();
+	$("#payment_msg").html(msg);
 	//hide loading image
 	$("#payment_loading").hide();
 }
@@ -2450,6 +2508,17 @@ function showPaymentMsg(msg){
 
 //validate credit card number
 function validateCreditCard(result){
+	//if creditCard number does not input anything
+	var $number=$('#payment_cardNumber');
+	if($number.val()==''){
+		//image change back to color one
+		$('.creditCardImage').each(function(){
+			$(this).attr('src', $(this).attr('src_color'));
+		})
+		$("#payment_msg").html('');
+		return;
+	}
+	
 	app.userInfo.valideCreditcard=false;
 	
 	if(result.card_type!=null){
@@ -2457,11 +2526,9 @@ function validateCreditCard(result){
 		
 		//change credit card image to bw
 		$(".creditCardImage").each(function(){
-			var src=$(this).attr("src"),
-				bw_file=src.split("_bw.gif")[0]+"_bw.gif";
-			$(this).attr("src",bw_file);
-			console.log(bw_file)
-		});
+			var src_bw=$(this).attr('src_bw');
+			$(this).attr('src', src_bw);
+		})
 		
 		var id="",src='',filename='', $obj=null;
 		switch(name){
@@ -2488,7 +2555,7 @@ function validateCreditCard(result){
 		showPaymentMsg("Please input the correct credit card number.");	
 		return;
 	}else{
-		$("#payment_msg").hide();
+		$("#payment_msg").html('');
 		app.userInfo.valideCreditcard=true;
 	}
 }
