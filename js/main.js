@@ -350,7 +350,7 @@ function init_UI(){
 	 
 	//when mouse click on otherplace, hide dataTable_menu
 	$(document).mouseup(function(e){
-		var $container=$(".dataTable_menu, #dataTable_chartControlMenu, .mapPopupWidget");
+		var $container=$(".dataTable_menu, #dataTable_chartControlMenu, .mapPopupWidget, #userPopupMenu");
 		if(!$container.is(e.target) && $container.has(e.target).length===0){
 			$container.hide();
 		}
