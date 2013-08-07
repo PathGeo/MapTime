@@ -2321,7 +2321,7 @@ function writeAccountInfo(account){
 	var obj={
 		"userPopupMenu_username": app.userInfo.email,
 		"userPopupMenu_credit": "Credit:" + app.userInfo.credit,
-		"userPopupMenu_accountType": app.userInfo.accountType
+		"userPopupMenu_accountType": app.userInfo.accountType.toUpperCase()
 	}
 	$.each(obj, function(k,v){
 		$("#"+k).html(v);
