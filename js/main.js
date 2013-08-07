@@ -2310,7 +2310,7 @@ function writeAccountInfo(account){
 	$.each(account, function(k,v){
 		html+="<li><label>"+k.replace("_", " ")+"</label>: "+v+"</li>";
 		
-		if(app.userInfo[k]){
+		if(k in app.userInfo){
 			app.userInfo[k]=v
 		}
 	})
