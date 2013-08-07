@@ -14,7 +14,7 @@ client=MongoClient()
 geocoder = CityGeocoder()
 
 cgitb.enable()
-
+'''
 #bounds of US (roughly)
 NORTH = 50.000
 SOUTH = 24.000
@@ -116,7 +116,7 @@ def findLonLatColumns(rows):
 	fourPartAddrCandidate = mostCommon([perm for row in rows for perm in fourKeyCombos if isMultipartAddress(perm)])
 
 	return (bestLon, bestLat)
-
+'''
 
 #get users' credit
 def getUserCredit(username):
