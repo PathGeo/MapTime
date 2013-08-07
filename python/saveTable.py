@@ -40,7 +40,7 @@ def isFloat(val):
 	except:
 		return False
 
-def isLonAndLat(val):
+def isLonLat(val):
 	if type(val) not in (str, unicode):
 		return False
 	
@@ -50,7 +50,7 @@ def isLonAndLat(val):
 	except:
 		return False	
 		
-def isLatLonCombined(val):
+def isLatLon(val):
 	if type(val) not in (str, unicode):
 		return False
 	
@@ -59,7 +59,6 @@ def isLatLonCombined(val):
 		return isLat(a) and isLon(b)
 	except:
 		return False
-		
 		
 def isLat(val):
 	return isFloat(val) and WEST <= float(val) <= EAST
@@ -80,6 +79,13 @@ def isState(val):
 def isZip(val):
 	return bool(re.findall(r'[0-9]{5}', val))
 		
+def mostCommon(l):
+	if not l:
+		return None, None
+		
+	val = max(set(l), key=l.count)
+	return (val, l.count(val))
+		
 def findLonLatColumns(rows):	
 	'''
 		This function finds candidate lon/lat columns.
@@ -93,25 +99,19 @@ def findLonLatColumns(rows):
 		for col in row.keys():
 			colValues[col].append(row[col])
 	 	
-	oneKeyCombos = columns
 	twoKeyCombos = list(itertools.permutations(columns), 2))
 	threeKeyCombos = list(itertools.permutations(columns), 3))
 	fourKeyCombos = list(itertools.permutations(columns), 4))
 	
 	
-	coordCandidates = [(len(filter(lambda x, y: isLat(x) and isLon(y), colValues[col])), col) for col in colValues.keys() if any(map(isLat, colValues[col]))
-	
-	latCandidates = [(len(filter(lambda x: isLat(x), colValues[col])), col) for col in colValues.keys() if any(map(isLat, colValues[col]))]
-	lonCandidates = [(len(filter(lambda x: isLon(x), colValues[col])), col) for col in colValues.keys() if any(map(isLon, colValues[col]))]
+	latLonCombinedCandidate = mostCommon([key for row in rows for key in columns if isLatLon(row[key])])
+	lonLatCombinedCandidate = mostCommon([key for row in rows for key in columns if isLatLon(row[key])])
+	latLonCandidate = mostCommon([pair for row in rows for pair in twoKeyCombos if isLat(row[pair[0]]) and isLon(row[pair[1]])])
+	addrCandidate = mostCommon([key for row in rows for key in columns if isFullAddress(row[key])])
+	threePartAddrCandidate = mostCommon([perm for row in rows for perm in fourKeyCombos if isAddr(row[perm[0]]) and isCity(row[perm[1]]) and 
+	fourPartAddrCandidate = mostCommon([perm for row in rows for perm in fourKeyCombos if isAddr(row[perm[0]]) and isCity(row[perm[1]]) and 
+	isState(row[perm[2]]) and isZip(row[perm[3]])])
 
-	
-	
-	latCandidates = sorted(latCandidates, key=lambda x: x[0], reverse=True)
-	lonCandidates = sorted(lonCandidates, key=lambda x: x[0], reverse=True)
-	
-	bestLat = None if not latCandidates else latCandidates[0][1]
-	bestLon = None if not lonCandidates else lonCandidates[0][1]
-	
 	return (bestLon, bestLat)
 	'''
 	pass
