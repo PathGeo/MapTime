@@ -20,19 +20,19 @@ NORTH = 50.000
 SOUTH = 24.000
 WEST = -125.000
 EAST = -66.000
-
+'''
 STATE_ABBRVS = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
     "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
     "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
     "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC",
     "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"]
-	
+
 STATE_NAMES = ['ALABAMA', 'ALASKA', 'ARIZONA', 'ARKANSAS', 'CALIFORNIA', 'COLORADO', 'CONNECTICUT', 'WASHINGTON D.C.', 'WASHINGTON DC', 
 	'DELEWARE', 'FLORIDA', 'GEORGIA', 'IDAHO', 'ILLINOIS', 'ILL', 'INDIANA', 'IOWA', 'KANSAS', 'KENTUCKY', 'LOUISIANA', 'MAINE', 'MARYLAND', 
 	'MASSACHUSETTS', 'MICHIGAN', 'MINNESOTA', 'MONTANA', 'NEBRASKA', 'NEVADA', 'NEW HAMPSHIRE', 'NEW JERSEY', 'NEW MEXICO', 'NEW YORK', 
 	'NORTH CAROLINA', 'NORTH DAKOTA', 'OHIO', 'OKLAHOMA', 'OREGON', 'PENNSYLVANIA', 'RHODE ISLAND', 'SOUTH CAROLINA', 'SOUTH DAKOTA', 
 	'TENNESSEE', 'TEXAS', 'UTAH', 'VERMONT', 'VIRGINIA', 'WASHINGTON', 'WEST VIRGINIA', 'WISCONSIN', 'WYOMING']
-
+'''
 '''
 def isFloat(val):
 	try:
@@ -98,11 +98,6 @@ def mostCommon(l):
 	return (val, l.count(val))
 '''
 def findLonLatColumns(rows):	
-	'''
-		This function finds candidate lon/lat columns.
-		Returns tuple of (lon_column, lat_column)
-	'''
-
 	'''
 	columns = rows[0].keys() 	
 	twoKeyCombos = list(itertools.permutations(columns), 2))
