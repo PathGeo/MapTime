@@ -2296,7 +2296,7 @@ function getAccountInfo(email){
 			writeAccountInfo(json.account)
 		},
 		error: function(e){
-			console.log(e);
+			console.log("[ERROR]getAccountInfo: "+ e.responseText);
 		}
 	});
 }
@@ -2309,14 +2309,23 @@ function writeAccountInfo(account){
 	html='<h3>Account Information: </h3><ul>';
 	$.each(account, function(k,v){
 		html+="<li><label>"+k.replace("_", " ")+"</label>: "+v+"</li>";
+		
+		if(app.userInfo[k]){
+			app.userInfo[k]=v
+		}
 	})
 	html+="</ul>";
 	$("#accountDetail").html(html);
 	
 	//write user info into userPopupMenu
-	$("#userPopupMenu_username").html(app.userInfo.email);
-	$("#userPopupMenu_credit").html("Credit: "+ '300');
-	$("#userPopupMenu_accountType").html('FREE');
+	var obj={
+		"userPopupMenu_username": app.userInfo.email,
+		"userPopupMenu_credit": "Credit:" + app.userInfo.credit,
+		"userPopupMenu_accountType": app.userInfo.accountType
+	}
+	$.each(obj, function(k,v){
+		$("#"+k).html(v);
+	})
 }
 
 
