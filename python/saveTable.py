@@ -14,7 +14,7 @@ client=MongoClient()
 geocoder = CityGeocoder()
 
 cgitb.enable()
-'''
+
 #bounds of US (roughly)
 NORTH = 50.000
 SOUTH = 24.000
@@ -33,7 +33,7 @@ STATE_NAMES = ['ALABAMA', 'ALASKA', 'ARIZONA', 'ARKANSAS', 'CALIFORNIA', 'COLORA
 	'NORTH CAROLINA', 'NORTH DAKOTA', 'OHIO', 'OKLAHOMA', 'OREGON', 'PENNSYLVANIA', 'RHODE ISLAND', 'SOUTH CAROLINA', 'SOUTH DAKOTA', 
 	'TENNESSEE', 'TEXAS', 'UTAH', 'VERMONT', 'VIRGINIA', 'WASHINGTON', 'WEST VIRGINIA', 'WISCONSIN', 'WYOMING']
 
-
+'''
 def isFloat(val):
 	try:
 		return bool(float(val))
@@ -96,13 +96,14 @@ def mostCommon(l):
 		
 	val = max(set(l), key=l.count)
 	return (val, l.count(val))
-		
+'''
 def findLonLatColumns(rows):	
 	'''
 		This function finds candidate lon/lat columns.
 		Returns tuple of (lon_column, lat_column)
 	'''
 
+	'''
 	columns = rows[0].keys() 	
 	twoKeyCombos = list(itertools.permutations(columns), 2))
 	threeKeyCombos = list(itertools.permutations(columns), 3))
@@ -116,7 +117,9 @@ def findLonLatColumns(rows):
 	fourPartAddrCandidate = mostCommon([perm for row in rows for perm in fourKeyCombos if isMultipartAddress(perm)])
 
 	return (bestLon, bestLat)
-'''
+	'''
+	pass
+
 
 #get users' credit
 def getUserCredit(username):
