@@ -134,7 +134,9 @@ var app={
 		email:null,
 		city:null,
 		country:null,
-		valideCreditcard:false
+		valideCreditcard:false,
+		accountType:null,
+		credit:null
 	}
 	
 }
@@ -188,7 +190,14 @@ function init_login(){
 		//change login button 
 		$("#header_login").attr("href", "#")
 			.click(function(){
-				$("#header_login").attr("href", "#dialog_userMenu");
+				//$("#header_login").attr("href", "#dialog_userMenu");
+				//show user popup menu
+				$userPopupMenu=$("#userPopupMenu")
+				if($userPopupMenu.is(":visible")){
+					$("#userPopupMenu").hide()
+				}else{
+					$("#userPopupMenu").show()
+				}
 			})
 			.find(".ui-btn-text").html(email);
 		
@@ -2157,9 +2166,10 @@ function login(){
 function logout(){
 	//rewite login button
 	$("#header_login").attr("href", "#dialog_login")
-		.click(function(){
-			$("#header_login").attr("href", "#dialog_login");
-		})
+		.off('click') //disable click event
+		// .click(function(){
+			// //$("#header_login").attr("href", "#dialog_login");
+		// })
 		.find(".ui-btn-text").html("Log in");
 	
 	//clear cookies
@@ -2167,10 +2177,11 @@ function logout(){
 	//console.log("logout: "+ $.cookie("SocialTime"))
 	
 	//hide uploda data  button
-	$("#header a[href='#dialog_uploadData']").hide();
+	$("#header a[href='#dialog_uploadData'], #userPopupMenu").hide();
 	
 	//close popup
 	$("#dialog_userMenu").popup('close');
+	$("#dialog_logout").popup('close');
 }
 
 
@@ -2241,7 +2252,15 @@ function afterLogin(json){
 	//rewite login button
 	$("#header_login").attr("href", "#")
 		.click(function(){
-			$("#header_login").attr("href", "#dialog_userMenu");
+			//$("#header_login").attr("href", "#dialog_userMenu");
+			
+			//show user popup menu
+			$userPopupMenu=$("#userPopupMenu")
+			if($userPopupMenu.is(":visible")){
+				$("#userPopupMenu").hide()
+			}else{
+				$("#userPopupMenu").show()
+			}
 		})
 		.find(".ui-btn-text").html(json.account.Email);
 				
@@ -2293,6 +2312,11 @@ function writeAccountInfo(account){
 	})
 	html+="</ul>";
 	$("#accountDetail").html(html);
+	
+	//write user info into userPopupMenu
+	$("#userPopupMenu_username").html(app.userInfo.email);
+	$("#userPopupMenu_credit").html("Credit: "+ '300');
+	$("#userPopupMenu_accountType").html('FREE');
 }
 
 
