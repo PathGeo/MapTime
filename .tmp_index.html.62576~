@@ -11,7 +11,7 @@
 	<link rel="stylesheet" href="js/leaflet/MarkerCluster.Default.css" />
 	<link rel="stylesheet" href="css/jquery.dataTables.css" />
 	<link rel="stylesheet" href="css/slider/nivo-slider.css" />
-	<link href='http://fonts.googleapis.com/css?family=Courgette' rel='stylesheet' type='text/css'>
+	<link href='css/font_courgette.css' rel='stylesheet' type='text/css'>
 	<!--[if lte IE 8]><link rel="stylesheet" href="js/leaflet/MarkerCluster.Default.ie.css" /><![endif]-->
 	<!--[if IE]><link type="text/css" href='css/main_ie.css' rel="stylesheet" /><![endif]-->
 	<!--[if !IE]><!--><link type="text/css" href='css/main.css' rel="stylesheet" /><!--<![endif]-->
@@ -731,11 +731,12 @@
 		</div>
 		
 		
+		
 		<!-- dialog_payment-->
 		<div id='dialog_payment' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
 			
-			<center><h1>Upgrage to MapTime Plus / Pro</h1></center>
+			<center><h1>Upgrade to MapTime Plus / Pro</h1></center>
 			
 			<ul>
 				<li>
@@ -745,9 +746,9 @@
 					
 					<label for="payment_cardNumber">Card Number:</label>
 					<input type="text" name="payment_cardNumber" id="payment_cardNumber" value="">
-					<img src='images/visa.gif' id='creditCardImage_visa' class='creditCardImage' style='right:101px;'/>
-					<img src='images/master.gif' id='creditCardImage_master' class='creditCardImage' style='right:58px;'/>
-					<img src='images/amex.gif' id='creditCardImage_amex' class='creditCardImage' style='right:15px;'/>
+					<img src='images/visa.gif' src_color='images/visa.gif' src_bw='images/visa_bw.gif' id='creditCardImage_visa' class='creditCardImage' style='right:101px;'/>
+					<img src='images/master.gif' src_color='images/master.gif' src_bw='images/master_bw.gif' id='creditCardImage_master' class='creditCardImage' style='right:58px;'/>
+					<img src='images/amex.gif' src_color='images/amex.gif' src_bw='images/amex_bw.gif' id='creditCardImage_amex' class='creditCardImage' style='right:15px;'/>
 					
 					<ul>
 						<li>
@@ -758,7 +759,7 @@
 						
 						<li>
 							<label for="payment_authNumber">Security Code:</label>
-							<input type="text" name="payment_authNumber" id="payment_authNumber" value="">
+							<input type="text" name="payment_authNumber" id="payment_authNumber" value="" maxlength="4">
 							<img src='images/1375793366_credit_card blue.png' />
 						</li>
 					</ul>
@@ -790,7 +791,42 @@
 		</div>
 		
 		
+		<!--dialog logout-->
+		<div id='dialog_logout' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
+			<h3 style='margin-top:10px;'>Are you sure? </h3>
+			<p style='margin-top:30px; '>
+				<a href="#" data-role="button" data-inline="true" data-theme="b" onclick='logout()'>Log out</a>
+				<a href="#" data-role="button" data-inline="true" onclick='$("#dialog_logout").popup("close");'>Cancel</a>
+			</p>
+		</div>
+		
+		
+		
+		<!-- user popup menu-->
+		<div id='userPopupMenu'>
+			<ul>
+				<!--username and credit -->
+				<li>
+					<div id='userPopupMenu_username'>username</div>
+					<div id='userPopupMenu_credit'>credit</div>
+				</li>
+				
+				<!-- account type and profile-->
+				<li>
+					<div id='userPopupMenu_accountType'>account type</div>
+				</li>
+			</ul>
+			
+			
+			<div id='userPopupMenu_button'>
+				<a id='link_profile' href='#' onclick='$("#dialog_userMenu").popup("open")'>Profile</a>
+				<a id='link_logout' href='#' onclick='$("#dialog_logout").popup("open")'>Log out</a>
+			</div>
+		</div>
+		
+		
 		<!--PAYMENT FORM by using BOA payment service-->
+		<!---
 		<form id='paymentForm' action="https://checkout.globalgatewaye4.firstdata.com/payment" target="iframe_payment" method="post" style=''> 
 		  <input name="x_login" value="WSP-PATHG-@Y0NhAAO8g" type="hidden"> 
 		  <input name="x_amount" value="" type="hidden"> 
@@ -799,7 +835,7 @@
 		  <input name="x_fp_hash" value="" type="hidden"> 
 		  <input name="x_show_form" value="PAYMENT_FORM" type="hidden"> 
 		</form>
-	
+		-->
 
 		
 	</div><!-- end pageMap-->

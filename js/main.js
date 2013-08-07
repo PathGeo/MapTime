@@ -2128,7 +2128,7 @@ function login(){
 	
 	//ajax to check if the email and password are valid
 	$.ajax({
-		url:"python/login.py",
+		url:"common/ws/login.py",
 		data:{
 			email:email,
 			password:password
@@ -2206,7 +2206,7 @@ function signup(){
 	
 	$.ajax({
 		method:"post",
-		url:"python/signup.py", 
+		url:"common/ws/signup.py", 
 		data:{
 			password:password,
 			email:email
@@ -2287,7 +2287,7 @@ function afterLogin(json){
 //get Account info
 function getAccountInfo(email){
 	$.ajax({
-		url:"python/queryAccount.py",
+		url:"common/ws/queryAccount.py",
 		data:{
 			email:email
 		},
@@ -2338,7 +2338,7 @@ function changePW(){
 	
 	//change password
 	$.ajax({
-		url:"python/changePassword.py",
+		url:"common/ws/changePassword.py",
 		data:{
 			email: app.userInfo.email,
 			oldPW: oldPW,
@@ -2482,7 +2482,7 @@ function purchase(){
 				
 				//send request to the purchase service
 				$.ajax({
-					url:"python/purchaseCredit.py",
+					url:"common/ws/purchaseCredit.py",
 					data:{
 						username:app.userInfo.email,
 						plan:plan,

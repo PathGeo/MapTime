@@ -56,9 +56,9 @@ def register(obj):
             "status":"ok",
             "msg":"signup succesfully",
             "account":{
-                "Email":obj["email"],
-                "EmailVerified": obj["emailVerified"],
-                "SignupDate": obj["dateRegister"]
+                "email":obj["email"],
+                "emailVerified": obj["emailVerified"],
+                "signupDate": obj["dateRegister"]
             }
         }
 #----------------------------------------------------------------------------
