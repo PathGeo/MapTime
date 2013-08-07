@@ -66,8 +66,19 @@ def isLat(val):
 def isLon(val):
 	return isFloat(val) and SOUTH <= float(val) <= NORTH
 
+def isMultiPartAddress(parts):
+	if len(parts) == 4:
+		return isAddress(parts[0]) and isCity(parts[1]) and isState(parts[2]) and isZip(parts[3])
+	elif len(parts) == 3:
+		return isAddress(parts[0]) and isCity(parts[1]) and isState(parts[2])
+	else:
+		return False
+	
+def isFullAddress(val):
+	return bool(re.findall(r'\d{1,4}( \w+){1,3}(,)? (\w+){1,3}(,)? [A-Z]{2}', val))
+
 def isAddress(val):
-	return bool(re.findall(r'[0-9]{1,4}( \w+){1,3}'))
+	return bool(re.findall(r'[0-9]{1,4}( \w+){1,3}', val))
 	
 def isCity(val):
 	place, (lat, lon) = geocoder.lookup(val.encode('ascii', 'ignore'))
@@ -91,30 +102,21 @@ def findLonLatColumns(rows):
 		This function finds candidate lon/lat columns.
 		Returns tuple of (lon_column, lat_column)
 	'''
-	'''
-	columns = rows[0].keys()
-	
-	colValues = dict((c, []) for c in columns)
-	for row in rows:
-		for col in row.keys():
-			colValues[col].append(row[col])
-	 	
+
+	columns = rows[0].keys() 	
 	twoKeyCombos = list(itertools.permutations(columns), 2))
 	threeKeyCombos = list(itertools.permutations(columns), 3))
 	fourKeyCombos = list(itertools.permutations(columns), 4))
-	
 	
 	latLonCombinedCandidate = mostCommon([key for row in rows for key in columns if isLatLon(row[key])])
 	lonLatCombinedCandidate = mostCommon([key for row in rows for key in columns if isLatLon(row[key])])
 	latLonCandidate = mostCommon([pair for row in rows for pair in twoKeyCombos if isLat(row[pair[0]]) and isLon(row[pair[1]])])
 	addrCandidate = mostCommon([key for row in rows for key in columns if isFullAddress(row[key])])
-	threePartAddrCandidate = mostCommon([perm for row in rows for perm in fourKeyCombos if isAddr(row[perm[0]]) and isCity(row[perm[1]]) and 
-	fourPartAddrCandidate = mostCommon([perm for row in rows for perm in fourKeyCombos if isAddr(row[perm[0]]) and isCity(row[perm[1]]) and 
-	isState(row[perm[2]]) and isZip(row[perm[3]])])
+	threePartAddrCandidate = mostCommon([perm for row in rows for perm in fourKeyCombos if isMultiPartAddress(perm)])
+	fourPartAddrCandidate = mostCommon([perm for row in rows for perm in fourKeyCombos if isMultipartAddress(perm)])
 
 	return (bestLon, bestLat)
-	'''
-	pass
+
 
 #get users' credit
 def getUserCredit(username):
