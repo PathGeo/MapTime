@@ -2323,6 +2323,9 @@ function writeAccountInfo(account){
 	$.each(obj, function(k,v){
 		$("#"+k).html(v);
 	})
+	
+	//set up account management iframe
+	$("#userMenu_iframe").attr('src', 'common/accountManagement.html?email='+ app.userInfo.email)
 }
 
 
