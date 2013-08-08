@@ -524,7 +524,7 @@ function init_UI(){
 					 dataID:featureCollection.dataID
 				 };
 				 
-				
+				showTable(app.geocodingResult);
 				//showSumup(featureCollection)
 				 
 			}, error: function (error) {
