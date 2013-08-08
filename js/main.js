@@ -724,7 +724,7 @@ function showLayer(obj, isShow){
 												properties["extra-"+statisticsColumn+"_sum"]+= columnValue;
 											}else{
 												//assign zipcode layer in the demographic layer to the zipcodes array
-												if(app.layers.demographicData.zipcodes[code]){
+												if(app.layers.demographicData && app.layers.demographicData.zipcodes[code]){
 													var zipcodeLayer=app.layers.demographicData.zipcodes[code],
 													properties=zipcodeLayer.feature.properties;
 													
