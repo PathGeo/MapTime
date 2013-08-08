@@ -356,12 +356,6 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #userMenu_content .userMenuContent{display:none; width:98%; height:90%;  padding:20px; }
 
 
-#userMenuContent_upgrade table {border-collapse:collapse; width:100%; }
-#userMenuContent_upgrade table tr:first-child {font-weight:bold; background-color:#eeeeee; }
-#userMenuContent_upgrade table tr:first-child td {position:relative}
-#userMenuContent_upgrade table tr:first-child td img {width:45px; height:45px; position:absolute; right:20px; top:0px; }
-#userMenuContent_upgrade table td:first-child {font-weight:bold; background-color:#eeeeee; text-align:right; }
-#userMenuContent_upgrade table td {border:1px solid #cccccc; padding:15px; }
 
 #userMenuContent_accountInfo > div {margin-top:30px; }
 

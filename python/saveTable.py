@@ -118,7 +118,7 @@ def findLonLatColumns(rows):
 
 #get users' credit
 def getUserCredit(username):
-        collection=client["maptime"]["user"]
+        collection=client["pathgeo"]["user"]
         user=collection.find_one({"email":username})
 
         if(user is not None):

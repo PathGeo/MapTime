@@ -1,10 +1,7 @@
 //Load Google Charts and set callback
 google.load("visualization", "1", {packages:["corechart", "table"]});
 
-//load getSatisfiction help
-$.getScript("https://loader.engage.gsfn.us/loader.js", function(scipt){
-	if (typeof GSFN !== "undefined") { GSFN.loadWidget(5632,{"containerId":"getsat-widget-5632"}); }
-});
+
 
 //var locationY;
 //var locationX;
@@ -2320,7 +2317,7 @@ function writeAccountInfo(account){
 	//write user info into userPopupMenu
 	var obj={
 		"userPopupMenu_username": app.userInfo.email,
-		"userPopupMenu_credit": "Credit:" + app.userInfo.credit,
+		"userPopupMenu_credit": "Credit: " + app.userInfo.credit,
 		"userPopupMenu_accountType": app.userInfo.accountType.toUpperCase()
 	}
 	$.each(obj, function(k,v){
