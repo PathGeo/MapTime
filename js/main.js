@@ -182,36 +182,8 @@ $(document).on({
 
 //init login and read cookie
 function init_login(){
-	//login
-	//console.log($.cookie("SocialTime"));
-	
 	if($.cookie("MapTime")){
 		var email=app.userInfo.email=$.cookie("MapTime").split("email=")[1];
-		
-		//change login button 
-		$("#header_login").attr("href", "#")
-			.click(function(){
-				//$("#header_login").attr("href", "#dialog_userMenu");
-				//show user popup menu
-				$userPopupMenu=$("#userPopupMenu")
-				if($userPopupMenu.is(":visible")){
-					$("#userPopupMenu").hide()
-				}else{
-					$("#userPopupMenu").show()
-				}
-			})
-			.find(".ui-btn-text").html(email);
-		
-		//show upload data button
-		$("#header a[href='#dialog_uploadData']").show();
-		
-		//write username into uploadData form
-		$("#uploadData_username").attr("value", app.userInfo.email)
-		
-		//show demo menu
-		setTimeout(function(){
-			$("#dialog_uploadData").popup("open");
-		}, 1000);
 		
 		//get user account info
 		getAccountInfo(email);
@@ -2136,20 +2108,20 @@ function login(){
 		},
 		dataType:"json",
 		method:"post",
-		success:function(e){
+		success:function(json){
 			//clear error msg
 			$("#login_msg").html("");
 
-			if(e.status=='ok'){
+			if(json.status=='ok' && json.account){
 				//write cookie
 				if($("#login_cookie").is(":checked")){
 					$.cookie('MapTime', 'email='+ email, { expires: 7, path: '/' });
 				}
 				
-				afterLogin(e);
+				writeAccountInfo(json.account);
 			}else{
 				//show error msg
-				$("#login_msg").html(e.msg);
+				$("#login_msg").html(json.msg);
 			}
 			
 			//google anlytics tracking event
@@ -2217,8 +2189,8 @@ function signup(){
 			//hide loading image
 			$("#signup_loading").hide();
 			
-			if(json.status && json.status=='ok'){
-				afterLogin(json);
+			if(json.status && json.status=='ok' && json.account){
+				writeAccountInfo(json.account);
 			}else{
 				showMsg(json.msg);
 				return;
@@ -2246,7 +2218,7 @@ function signup(){
 
 
 //after login
-function afterLogin(json){
+function afterLogin(email){
 	//close login dialog
 	$('#dialog_login').popup('close');				
 				
@@ -2263,19 +2235,13 @@ function afterLogin(json){
 				$("#userPopupMenu").show()
 			}
 		})
-		.find(".ui-btn-text").html(json.account.Email);
+		.find(".ui-btn-text").html(email);
 				
 	//show upload data button
 	$("#header a[href='#dialog_uploadData']").show();
-	
-	//load account info
-	writeAccountInfo(json.account)
-	
-	//give email to the global variable
-	app.userInfo.email=json.account.Email;
-	
+		
 	//write username into uploadData form
-	$("#uploadData_username").attr("value", app.userInfo.email)
+	$("#uploadData_username").attr("value", email)
 			
 	setTimeout(function(){
 		$("#dialog_uploadData").popup("open");
@@ -2294,7 +2260,9 @@ function getAccountInfo(email){
 		},
 		dataType:"json",
 		success: function(json){
-			writeAccountInfo(json.account)
+			if(json && json.status && json.status=='ok' && json.account){
+				writeAccountInfo(json.account)
+			}
 		},
 		error: function(e){
 			console.log("[ERROR]getAccountInfo: "+ e.responseText);
@@ -2328,6 +2296,9 @@ function writeAccountInfo(account){
 		$("#"+k).html(v);
 	})
 	
+	
+	//after login
+	afterLogin(app.userInfo.email);
 	
 	//set up account management iframe
 	$("#userMenu_iframe").attr("src", 'common/accountManagement.html?email='+ app.userInfo.email)
