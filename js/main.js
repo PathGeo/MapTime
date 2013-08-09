@@ -155,6 +155,10 @@ pathgeo.service.demographicData({
 
 
 
+//load getSatisfiction help
+$.getScript("https://loader.engage.gsfn.us/loader.js", function(scipt){
+	if (typeof GSFN !== "undefined") { GSFN.loadWidget(5632,{"containerId":"getsat-widget-5632"}); }
+});
 
 
 //init
@@ -2324,8 +2328,9 @@ function writeAccountInfo(account){
 		$("#"+k).html(v);
 	})
 	
+	
 	//set up account management iframe
-	$("#userMenu_iframe").attr('src', 'common/accountManagement.html?email='+ app.userInfo.email)
+	$("#userMenu_iframe").attr("src", 'common/accountManagement.html?email='+ app.userInfo.email)
 }
 
 
