@@ -501,6 +501,9 @@ function init_UI(){
 				 
 				showTable(app.geocodingResult);
 				//showSumup(featureCollection)
+				
+				//update user account info
+				updateAccountInfo(app.userInfo.email)
 				 
 			}, error: function (error) {
 				console.log("Error:");
@@ -2251,7 +2254,7 @@ function afterLogin(email){
 
 
 //get Account info
-function getAccountInfo(email){
+function getAccountInfo(email, update){
 	$.ajax({
 		url:"common/ws/queryAccount.py",
 		data:{
@@ -2260,7 +2263,7 @@ function getAccountInfo(email){
 		dataType:"json",
 		success: function(json){
 			if(json && json.status && json.status=='ok' && json.account){
-				writeAccountInfo(json.account)
+				writeAccountInfo(json.account, update)
 			}
 		},
 		error: function(e){
@@ -2271,20 +2274,37 @@ function getAccountInfo(email){
 
 
 
-//write account info into div#accountDetail
-function writeAccountInfo(account){
+//write account info 
+function writeAccountInfo(account, update){
 	//load account info
-	html='<h3>Account Information: </h3><ul>';
 	$.each(account, function(k,v){
-		html+="<li><label>"+k.replace("_", " ")+"</label>: "+v+"</li>";
-		
 		if(k in app.userInfo){
 			app.userInfo[k]=v
 		}
 	})
-	html+="</ul>";
-	$("#accountDetail").html(html);
 	
+	//after login 
+	if(!update){
+		afterLogin(app.userInfo.email);
+		
+		//set up account management iframe
+		$("#userMenu_iframe").attr("src", 'common/accountManagement.html?email='+ app.userInfo.email)
+	}
+	
+	//refresh account info
+	refreshAccountInfo();
+}
+
+
+
+//update account info
+function updateAccountInfo(email){
+	getAccountInfo(email,true);
+}
+
+
+//refreshAccountInfo
+function refreshAccountInfo(){
 	//write user info into userPopupMenu
 	var obj={
 		"userPopupMenu_username": app.userInfo.email,
@@ -2294,13 +2314,6 @@ function writeAccountInfo(account){
 	$.each(obj, function(k,v){
 		$("#"+k).html(v);
 	})
-	
-	
-	//after login
-	afterLogin(app.userInfo.email);
-	
-	//set up account management iframe
-	$("#userMenu_iframe").attr("src", 'common/accountManagement.html?email='+ app.userInfo.email)
 }
 
 
