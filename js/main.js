@@ -134,8 +134,8 @@ var app={
 		valideCreditcard:false,
 		accountType:null,
 		credit:null
-	}
-	
+	},
+	oauthWindow:null
 }
 
 
@@ -2370,11 +2370,12 @@ function showOauth(provider){
 	$("#dialog_login").popup('close');
 	
 	if(provider=="google" || provider=='facebook'){
-		$("#oauth_iframe").attr("src","common/ws/oauth.py?provider="+provider)
+		app.oauthWindow=window.open("common/ws/oauth.py?provider="+provider, provider, "width=550,height=300,left=150,top=200,toolbar=1,status=1")
+		//$("#oauth_iframe").attr("src",)
 		
 		//open oauth dialog
 		setTimeout(function(){
-			$("#dialog_oauth").popup('open')
+			//$("#dialog_oauth").popup('open')
 		}, 300)
 	}
 	
