@@ -2373,10 +2373,8 @@ function showOauth(provider){
 		app.oauthWindow=window.open("common/ws/oauth.py?provider="+provider, provider, "width=550,height=300,left=150,top=200,toolbar=1,status=1")
 		//$("#oauth_iframe").attr("src",)
 		
-		//open oauth dialog
-		setTimeout(function(){
-			//$("#dialog_oauth").popup('open')
-		}, 300)
+		//close window
+		app.oauthWindow.close();
 	}
 	
 	
