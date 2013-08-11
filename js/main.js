@@ -2458,3 +2458,10 @@ function download(){
 	
 	$("#dialog_download").popup("close");
 }
+
+
+//oath callback
+function oauth_callback(accountInfo){
+	$("#dialog_oauth").popup('close');
+	writeAccountInfo(accountInfo);
+}
