@@ -2364,6 +2364,29 @@ function changePW(){
 
 
 
+//showOauth
+function showOauth(provider){
+	//close login dialog
+	$("#dialog_login").popup('close');
+	
+	if(provider=="google" || provider=='facebook'){
+		$("#oauth_iframe").attr("src","common/ws/oauth.py?provider="+provider)
+		
+		//open oauth dialog
+		setTimeout(function(){
+			$("#dialog_oauth").popup('open')
+		}, 300)
+	}
+	
+	
+	
+	
+	
+	
+}
+
+
+
 //print the map
 function print(){
 	var html = '<html><head>' +

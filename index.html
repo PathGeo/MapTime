@@ -476,7 +476,7 @@
 			 
 			 <!-- sign up -->
 			 <div style='float:right;border-left:1px solid #cccccc;'>
-			 	<h2>Not a memember yet? Sign Up!</h2>
+			 	<h2>Not a member yet? Sign Up!</h2>
 				<fieldset id='user_signup' style=''>
 					<label for="email">Email:</label>
                     <input type="email" id="email"></input> 
@@ -493,11 +493,24 @@
 					<div id='signup_msg'  class='msg' style='margin-top:50px;'></div>
             	</fieldset> 
 			 </div>
-			 <h3></h3><p></p>
+			 
+			 <!-- oauth -->
+			 <p></p>
+			 <div id='oauth'>
+			 	<img src='images/sign-in-with-google.png' value='google' onclick='showOauth("google");'/>
+			 </div>
 			 
 		</div>
 		
 		
+		
+		
+		<!--dialog oauth-->
+		<div id='dialog_oauth' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+			
+			<iframe id='oauth_iframe'></iframe>
+		</div>
 		
 		
 		<!-- dialog user-->
@@ -640,65 +653,7 @@
 			<input type='button' value='Download' data-theme='b'  onclick='download()'/>
 		</div>
 		
-		
-		
-		<!-- dialog_payment-->
-		<div id='dialog_payment' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
-            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
-			
-			<center><h1>Upgrade to MapTime Plus / Pro</h1></center>
-			
-			<ul>
-				<li>
-					<!--credit card information-->
-					<label for="payment_cardName">Cardholder Name:</label>
-					<input type="text" name="payment_cardName" id="payment_cardName" value="">
-					
-					<label for="payment_cardNumber">Card Number:</label>
-					<input type="text" name="payment_cardNumber" id="payment_cardNumber" value="">
-					<img src='images/visa.gif' src_color='images/visa.gif' src_bw='images/visa_bw.gif' id='creditCardImage_visa' class='creditCardImage' style='right:101px;'/>
-					<img src='images/master.gif' src_color='images/master.gif' src_bw='images/master_bw.gif' id='creditCardImage_master' class='creditCardImage' style='right:58px;'/>
-					<img src='images/amex.gif' src_color='images/amex.gif' src_bw='images/amex_bw.gif' id='creditCardImage_amex' class='creditCardImage' style='right:15px;'/>
-					
-					<ul>
-						<li>
-							<label for="payment_expiryDate_month">Expiry Date:</label>
-							<input type="text" name="payment_expiryDate_month" id="payment_expiryDate_month" placeholder="MM" value=""  maxlength="2">
-							<input type="text" name="" id="payment_expiryDate_year" placeholder="YYYY" value=""  maxlength="4">
-						</li>
-						
-						<li>
-							<label for="payment_authNumber">Security Code:</label>
-							<input type="text" name="payment_authNumber" id="payment_authNumber" value="" maxlength="4">
-							<img src='images/1375793366_credit_card blue.png' />
-						</li>
-					</ul>
 
-				</li>
-				
-				
-				<li>
-					<!--amount-->
-					<div id='payment_amountDiv'>
-						<label id='payment_amount'>$10 USD</label><br>
-						<label id='payment_credit'>3000 Credits</label><p></p>
-						<input type='button' value='Change other plan' onclick='$("#dialog_payment").popup("close"); setTimeout(function(){$("#dialog_userMenu").popup("open");}, 300);'/>
-					</div>
-				</li>
-			</ul>
-				
-			<!--payment msg-->
-			<div id='payment_msg'></div>
-			
-			<!--payment button-->
-			<input type='button' data-theme='b' id='payment_button'  value='Upgrade now' onclick='purchase()' ></input>
-			
-			<img id="payment_loading" src="images/loading.gif" />
-			
-			
-			<!-- using iframe to connect to the payment page provided by BOA
-			<!--<iframe id='iframe_payment' name='iframe_payment'></iframe>-->
-		</div>
 		
 		
 		<!--dialog logout-->
