@@ -2401,7 +2401,7 @@ function download(){
 		case "selected":
 			var obj=app.geocodingResult;
 			if(obj.filterRowID && obj.dataID && obj.filterTerm){
-				var url="python/filterUploadData.py?username="+app.userInfo.email+"&table="+obj.dataID+"&rows="+obj.filterRowID+"&term="+obj.filterTerm;
+				var url="python/filterUploadData.py?username="+app.userInfo.email+"&oauth="+app.userInfo.oauth+"&table="+obj.dataID+"&rows="+obj.filterRowID+"&term="+obj.filterTerm;
 				
 				$.getJSON(url, function(json){
 					if(json && json.URL_xls && json.URL_xls!=''){

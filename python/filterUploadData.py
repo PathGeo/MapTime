@@ -9,7 +9,7 @@ print "Content-Type: text/html \n"
 
 #get value from URL parameter--------------------------------------------
 def getParameterValue(name):
-    value="null"
+    value=None
     
     if(name in urlParameter and urlParameter[name].value!=""):
         value=urlParameter.getvalue(name)
@@ -50,6 +50,7 @@ username=getParameterValue("username")
 rows=getParameterValue("rows").split(",")
 tableID=getParameterValue("table")
 term=getParameterValue("term")
+oauth=getParameterValue("oauth")
 
 
 msg={
@@ -59,7 +60,7 @@ msg={
 
 
 if(username is not None and rows is not None and tableID is not None and term is not None):
-   table=collection.find_one({"email":username, "timestamp":tableID})
+   table=collection.find_one({"email":username, "timestamp":tableID, "oauth": oauth})
 
    if(table is not None):
         results=map(lambda row: table["geojson"][int(row)], rows)
