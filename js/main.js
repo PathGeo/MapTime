@@ -2290,7 +2290,7 @@ function writeAccountInfo(account, update){
 		afterLogin(app.userInfo.email);
 		
 		//set up account management iframe
-		$("#userMenu_iframe").attr("src", 'common/accountManagement.html?email='+ app.userInfo.email)
+		$("#userMenu_iframe").attr("src", 'common/accountManagement.html?email='+ app.userInfo.email +"&oauth="+app.userInfo.oauth)
 	}
 	
 	//refresh account info
