@@ -20,7 +20,7 @@ NORTH = 50.000
 SOUTH = 24.000
 WEST = -125.000
 EAST = -66.000
-'''
+
 STATE_ABBRVS = ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
     "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD",
     "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ",
@@ -32,7 +32,7 @@ STATE_NAMES = ['ALABAMA', 'ALASKA', 'ARIZONA', 'ARKANSAS', 'CALIFORNIA', 'COLORA
 	'MASSACHUSETTS', 'MICHIGAN', 'MINNESOTA', 'MONTANA', 'NEBRASKA', 'NEVADA', 'NEW HAMPSHIRE', 'NEW JERSEY', 'NEW MEXICO', 'NEW YORK', 
 	'NORTH CAROLINA', 'NORTH DAKOTA', 'OHIO', 'OKLAHOMA', 'OREGON', 'PENNSYLVANIA', 'RHODE ISLAND', 'SOUTH CAROLINA', 'SOUTH DAKOTA', 
 	'TENNESSEE', 'TEXAS', 'UTAH', 'VERMONT', 'VIRGINIA', 'WASHINGTON', 'WEST VIRGINIA', 'WISCONSIN', 'WYOMING']
-'''
+
 '''
 def isFloat(val):
 	try:
@@ -65,7 +65,8 @@ def isLat(val):
 	
 def isLon(val):
 	return isFloat(val) and SOUTH <= float(val) <= NORTH
-
+'''
+'''
 def isMultiPartAddress(parts):
 	if len(parts) == 4:
 		return isAddress(parts[0]) and isCity(parts[1]) and isState(parts[2]) and isZip(parts[3])
@@ -97,8 +98,9 @@ def mostCommon(l):
 	val = max(set(l), key=l.count)
 	return (val, l.count(val))
 '''
-def findLonLatColumns(rows):	
-	'''
+'''
+def findLocColumns(rows):	
+	
 	columns = rows[0].keys() 	
 	twoKeyCombos = list(itertools.permutations(columns), 2))
 	threeKeyCombos = list(itertools.permutations(columns), 3))
@@ -107,14 +109,22 @@ def findLonLatColumns(rows):
 	latLonCombinedCandidate = mostCommon([key for row in rows for key in columns if isLatLon(row[key])])
 	lonLatCombinedCandidate = mostCommon([key for row in rows for key in columns if isLatLon(row[key])])
 	latLonCandidate = mostCommon([pair for row in rows for pair in twoKeyCombos if isLat(row[pair[0]]) and isLon(row[pair[1]])])
-	addrCandidate = mostCommon([key for row in rows for key in columns if isFullAddress(row[key])])
-	threePartAddrCandidate = mostCommon([perm for row in rows for perm in fourKeyCombos if isMultiPartAddress(perm)])
-	fourPartAddrCandidate = mostCommon([perm for row in rows for perm in fourKeyCombos if isMultipartAddress(perm)])
+	
+	
+	#addrCandidate = mostCommon([key for row in rows for key in columns if isFullAddress(row[key])])
+	#threePartAddrCandidate = mostCommon([perm for row in rows for perm in fourKeyCombos if isMultiPartAddress(perm)])
+	#fourPartAddrCandidate = mostCommon([perm for row in rows for perm in fourKeyCombos if isMultipartAddress(perm)])
 
-	return (bestLon, bestLat)
-	'''
-	pass
-
+	if latLonCombinedCandidate[1] > lonLatCombinedCandidate[1] and latLonCombinedCandidate[1] > latLonCandidate[1]:
+		return [ { 'type': 'latitude, longitude', 'column': latLonCombinedCandidate[0] } ]
+	elif lonLatCombinedCandidate[1] > latLonCandidate[1]:
+		return [ { 'type': 'longitude, latitude', 'column': lonLatCombinedCandidate[0] } ]
+	elif latLonCandidate[1] > 0:
+		lat, lon = latLonCandidate[0]
+		return [ { 'type': 'longitude', 'column': lon }, { 'type': 'latitude', 'column': lat } ]
+	
+	return []	
+'''
 
 #get users' credit
 def getUserCredit(username, oauth):
@@ -152,7 +162,7 @@ if(username is not None):
                 #if credit is enough
                 if(credit>=len(jsonRows)):
                         pickle.dump(jsonRows, open(os.path.abspath(__file__).replace(__file__, name + ".p"), "w"))
-                        msg={'columns': [col for col in table.getColumnNames() if col], 'fileName': name}
+                        msg={'columns': [col for col in table.getColumnNames() if col], 'fileName': name, 'recommendedLocColumns': findLocColumns(jsonRows[:20])}
                 else:
                         msg["msg"]="Your credit is not enough at this time. <br>Total needed credit: "+ str(len(jsonRows))+"<br>Your credit: "+ str(credit)+"<br>Needed credit: "+ str(len(jsonRows)-credit)+"<br>Please buy some credit first. Thank you."
         else:
