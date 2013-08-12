@@ -133,7 +133,8 @@ var app={
 		country:null,
 		valideCreditcard:false,
 		accountType:null,
-		credit:null
+		credit:null,
+		oauth:null
 	},
 	oauthWindow:null
 }
@@ -2258,7 +2259,8 @@ function getAccountInfo(email, update){
 	$.ajax({
 		url:"common/ws/queryAccount.py",
 		data:{
-			email:email
+			email:email,
+			oauth:app.userInfo.oauth
 		},
 		dataType:"json",
 		success: function(json){
