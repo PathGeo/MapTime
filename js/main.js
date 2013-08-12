@@ -2412,7 +2412,7 @@ function print(){
 //show profile
 function showProfile(){
 	//redirect url
-	$("#userMenu_iframe").attr("src", "common/accountManagement.html?email="+ app.userInfo.email + "&tab=account");
+	$("#userMenu_iframe").attr("src", "common/accountManagement.html?email="+ app.userInfo.email + "&oauth="+app.userInfo.oauth+"&tab=account");
 	$("#dialog_userMenu").popup("open");
 }
 
