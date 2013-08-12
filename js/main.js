@@ -2320,49 +2320,7 @@ function refreshAccountInfo(){
 
 
 
-//change password
-function changePW(){
-	var oldPW=$("#oldPW").val(),
-		newPW=$("#newPW").val(),
-		confirmNewPW=$("#confirmNewPW").val();
-	
-	
-	//if password is not matched
-	if(newPW!=confirmNewPW){
-		showMsg("The new password is not matched. Please check again."); return;
-	}
-	
-	//show loading 
-	$("#changePassword #changePassword_loading").show();
-	
-	//change password
-	$.ajax({
-		url:"common/ws/changePassword.py",
-		data:{
-			email: app.userInfo.email,
-			oldPW: oldPW,
-			newPW: newPW
-		},
-		dataType:"json",
-		success:function(json){
-			//hide loading image
-			$("#changePassword #changePassword_loading").hide();
-			
-			showMsg(json.msg);
-		},
-		error:function(e){
-			console.log(e)
-		}
-	})
-	
-	
-	
-	
-	function showMsg(msg){
-		$("#changePW_msg").html(msg);
-	}
-	
-}
+
 
 
 
