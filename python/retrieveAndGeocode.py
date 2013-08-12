@@ -108,14 +108,15 @@ def geocodeRow(row, fields=None, geocoder=None):
 
 
 
-def saveDatainMongo(geojson, fileName, username):
+def saveDatainMongo(geojson, fileName, username, oauth):
         collection=client["maptime"]["uploadData"]
         timestamp=str(int(time.mktime(time.gmtime()))) #using gmt timeStamp as dataID
         obj={
                 "name":fileName,
                 "email":username,
                 "timestamp": timestamp,
-                "geojson": geojson
+                "geojson": geojson,
+                "oauth":oauth
         }
 
         collection.insert(obj)
@@ -123,10 +124,10 @@ def saveDatainMongo(geojson, fileName, username):
         return timestamp
 
 
-def deductUserCredit(username, usedCredit, filename):
+def deductUserCredit(username, oauth, usedCredit, filename):
         collection=client["pathgeo"]["user"]
         transaction=client["pathgeo"]["transaction"]
-        user=collection.find_one({"email":username})
+        user=collection.find_one({"email":username, "oauth": oauth})
 
         if(user is not None):
                 if(user["credit"] is not None):
@@ -137,6 +138,7 @@ def deductUserCredit(username, usedCredit, filename):
                                 #transaction
                                 transaction.insert({
                                         "email": username,
+                                        "oauth": oauth, 
                                         "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S %Z"),
                                         "description": "[Geocode] " + filename,
                                         "transaction": usedCredit * -1,
@@ -158,6 +160,7 @@ cgitb.enable()
 form = cgi.FieldStorage()
 fname = form['fileName'].value
 username = form['username'].value
+oauth=form['oauth'].value
 geoColumns = form.getlist("geoColumns[]")
 geoColumns = map(lambda item: item.replace(' ', '_'), geoColumns)
 
@@ -214,7 +217,7 @@ os.remove(os.path.abspath(__file__).replace(__file__, fname + ".p"))
 features = geocodeRows(jsonRows, geoFunc)
 
 #save geocoded result in the Mongo DB
-dataID=saveDatainMongo(features, fname, username)
+dataID=saveDatainMongo(features, fname, username, oauth)
 
 fname = fname.lower().replace('.xlsx', '.xls')
 
@@ -225,7 +228,7 @@ featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': '' i
 
 
 #deduct users' credit
-outcome=deductUserCredit(username, len(features), fname)
+outcome=deductUserCredit(username, oauth, len(features), fname)
 
 print ''
 if(outcome=='succeed'):

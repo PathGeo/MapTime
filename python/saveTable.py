@@ -117,9 +117,9 @@ def findLonLatColumns(rows):
 
 
 #get users' credit
-def getUserCredit(username):
+def getUserCredit(username, oauth):
         collection=client["pathgeo"]["user"]
-        user=collection.find_one({"email":username})
+        user=collection.find_one({"email":username, "oauth": oauth})
 
         if(user is not None):
                 return user["credit"]
@@ -132,6 +132,7 @@ form = cgi.FieldStorage()
 file = form['photo'].file.file
 name = form['photo'].filename
 username=form['username'].value
+oauth=form['oauth'].value
 
 msg={
         "status":"error",
@@ -140,7 +141,7 @@ msg={
 
 if(username is not None):
         #get user's credit
-        credit=getUserCredit(username)
+        credit=getUserCredit(username, oauth)
 
         #Get DataTable object, and convert rows to JSON
         table = DataTableFactory.getDataTable(fileStream=file, fileName=name)
@@ -154,7 +155,7 @@ if(username is not None):
                         msg={'columns': [col for col in table.getColumnNames() if col], 'fileName': name}
                 else:
                         msg["msg"]="Your credit is not enough at this time. <br>Total needed credit: "+ str(len(jsonRows))+"<br>Your credit: "+ str(credit)+"<br>Needed credit: "+ str(len(jsonRows)-credit)+"<br>Please buy some credit first. Thank you."
-	else:
+        else:
                 msg["msg"]="The account,'" + username + "', does not have credit field"
 
 print ''

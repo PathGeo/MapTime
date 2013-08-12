@@ -451,7 +451,8 @@ function init_UI(){
 			data: { 
 				fileName: currentFileName,
 				geoColumns: geoColumns,
-				username:app.userInfo.email
+				username:app.userInfo.email,
+				oauth:app.userInfo.oauth
 			}, success: function(featureCollection) { 
 				//error handler
 				if(featureCollection && featureCollection.status && featureCollections.status=='error'){
@@ -2245,6 +2246,7 @@ function afterLogin(email){
 		
 	//write username into uploadData form
 	$("#uploadData_username").attr("value", email)
+	$("#uploadData_oauth").attr("value", app.userInfo.oauth)
 			
 	setTimeout(function(){
 		$("#dialog_uploadData").popup("open");
