@@ -164,6 +164,9 @@ $.getScript("https://loader.engage.gsfn.us/loader.js", function(scipt){
 
 //init
 $(document).on({
+	"ready": function(){
+		
+	},
 	"pageshow": function(){	 
 		init_login();
 		
