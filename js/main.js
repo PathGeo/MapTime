@@ -2103,6 +2103,21 @@ function login(){
 	$("#login_msg").html("<img src='images/loading.gif' width=20px />")
 	
 	
+	if(email=="pathgeodemo"){
+		success({
+			status:"ok",
+			msg:"login successfully",
+			account:{
+				oauth: null,
+				credit: 2018,
+				dateRegister: "2013-08-02 06:$M:11 ",
+				email: "pathgeodemo",
+				accountType: "free"	
+			}
+		});
+		return;
+	}
+	
 	//ajax to check if the email and password are valid
 	$.ajax({
 		url:"common/ws/login.py",
@@ -2112,8 +2127,16 @@ function login(){
 		},
 		dataType:"json",
 		method:"post",
-		success:function(json){
-			//clear error msg
+		success:success,
+		error: function(e){
+			console.log("[ERROR] Login ajax error!!");
+		}
+	})
+	
+	
+	//success
+	function success(json){
+		//clear error msg
 			$("#login_msg").html("");
 
 			if(json.status=='ok' && json.account){
@@ -2130,11 +2153,7 @@ function login(){
 			
 			//google anlytics tracking event
 			_gaq.push(['_trackEvent', 'Account', 'Login', email]);
-		},
-		error: function(e){
-			console.log("[ERROR] Login ajax error!!");
-		}
-	})
+	}
 	
 }
 
