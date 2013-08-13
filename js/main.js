@@ -2246,7 +2246,7 @@ function showOauth(provider){
 	$("#dialog_login").popup('close');
 	
 	if(provider=="google" || provider=='facebook'){
-		app.oauthWindow=window.open("common/ws/oauth.py?provider="+provider, provider, "width=600,height=350,left=150,top=200,toolbar=1,status=1")
+		app.oauthWindow=window.open("ws/oauth.py?provider="+provider, provider, "width=600,height=350,left=150,top=200,toolbar=1,status=1")
 		//$("#oauth_iframe").attr("src",)
 	}
 
