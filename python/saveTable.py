@@ -33,7 +33,7 @@ STATE_NAMES = ['ALABAMA', 'ALASKA', 'ARIZONA', 'ARKANSAS', 'CALIFORNIA', 'COLORA
 	'NORTH CAROLINA', 'NORTH DAKOTA', 'OHIO', 'OKLAHOMA', 'OREGON', 'PENNSYLVANIA', 'RHODE ISLAND', 'SOUTH CAROLINA', 'SOUTH DAKOTA', 
 	'TENNESSEE', 'TEXAS', 'UTAH', 'VERMONT', 'VIRGINIA', 'WASHINGTON', 'WEST VIRGINIA', 'WISCONSIN', 'WYOMING']
 
-'''
+
 def isFloat(val):
 	try:
 		return bool(float(val))
@@ -65,7 +65,7 @@ def isLat(val):
 	
 def isLon(val):
 	return isFloat(val) and SOUTH <= float(val) <= NORTH
-'''
+
 '''
 def isMultiPartAddress(parts):
 	if len(parts) == 4:
@@ -90,31 +90,30 @@ def isState(val):
 	
 def isZip(val):
 	return bool(re.findall(r'[0-9]{5}', val))
-		
+'''
 def mostCommon(l):
 	if not l:
 		return None, None
 		
 	val = max(set(l), key=l.count)
 	return (val, l.count(val))
-'''
-'''
+
 def findLocColumns(rows):	
 	
 	columns = rows[0].keys() 	
-	twoKeyCombos = list(itertools.permutations(columns), 2))
-	threeKeyCombos = list(itertools.permutations(columns), 3))
-	fourKeyCombos = list(itertools.permutations(columns), 4))
+	twoKeyCombos = list(itertools.permutations(columns, 2))
+	threeKeyCombos = list(itertools.permutations(columns, 3))
+	fourKeyCombos = list(itertools.permutations(columns, 4))
 	
 	latLonCombinedCandidate = mostCommon([key for row in rows for key in columns if isLatLon(row[key])])
-	lonLatCombinedCandidate = mostCommon([key for row in rows for key in columns if isLatLon(row[key])])
+	lonLatCombinedCandidate = mostCommon([key for row in rows for key in columns if isLonLat(row[key])])
 	latLonCandidate = mostCommon([pair for row in rows for pair in twoKeyCombos if isLat(row[pair[0]]) and isLon(row[pair[1]])])
 	
 	
 	#addrCandidate = mostCommon([key for row in rows for key in columns if isFullAddress(row[key])])
 	#threePartAddrCandidate = mostCommon([perm for row in rows for perm in fourKeyCombos if isMultiPartAddress(perm)])
 	#fourPartAddrCandidate = mostCommon([perm for row in rows for perm in fourKeyCombos if isMultipartAddress(perm)])
-
+	
 	if latLonCombinedCandidate[1] > lonLatCombinedCandidate[1] and latLonCombinedCandidate[1] > latLonCandidate[1]:
 		return [ { 'type': 'latitude, longitude', 'column': latLonCombinedCandidate[0] } ]
 	elif lonLatCombinedCandidate[1] > latLonCandidate[1]:
@@ -124,7 +123,7 @@ def findLocColumns(rows):
 		return [ { 'type': 'longitude', 'column': lon }, { 'type': 'latitude', 'column': lat } ]
 	
 	return []	
-'''
+
 
 #get users' credit
 def getUserCredit(username, oauth):
@@ -162,12 +161,27 @@ if(username is not None):
         table = DataTableFactory.getDataTable(fileStream=file, fileName=name)
         jsonRows = table.getRowsAsJSON()
 
+        cols = [col for col in table.getColumnNames() if col]
+        locs = findLocColumns(jsonRows[:20])
+		
+        jsonCols = []
+        for c in cols:
+            if c in [l['column'] for l in locs]:
+                target = filter(lambda item: item['column'] == c, locs)[0]
+                jsonCols.append({'name': c, 'suggested': target['type']})
+            else:
+			    jsonCols.append({'name': c})
+		
+				
+		
+		
+		
         #if credit is not a number
         if(credit is not None):
                 #if credit is enough
                 if(credit>=len(jsonRows)):
                         pickle.dump(jsonRows, open(os.path.abspath(__file__).replace(__file__, name + ".p"), "w"))
-                        msg={'columns': [col for col in table.getColumnNames() if col], 'fileName': name, 'recommendedLocColumns': findLocColumns(jsonRows[:20])}
+                        msg={'columns': [col for col in table.getColumnNames() if col], 'fileName': name, 'jsonCols': jsonCols }
                 else:
                         msg["msg"]="Your credit is not enough at this time. <br>Total needed credit: "+ str(len(jsonRows))+"<br>Your credit: "+ str(credit)+"<br>Needed credit: "+ str(len(jsonRows)-credit)+"<br>Please buy some credit first. Thank you."
         else:

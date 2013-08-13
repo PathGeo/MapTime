@@ -411,13 +411,19 @@ function init_UI(){
 				//remove old options 
 				$("#uploadData_geocodingFields").html("");
 				
-				var columns = tableInfo.columns;
+				//var columns = tableInfo.columns;
+				var columns = tableInfo.jsonCols;
 				currentFileName = tableInfo.fileName;
 				
 				//set new options according to the returned value names
 				for (var indx = 0; indx < columns.length; indx++) {
-					var column = columns[indx];
-					$("#uploadData_geocodingFields").append("<input type='checkbox' id='" + column + "'/>" + column + " <br>");
+					var column = columns[indx].name;
+
+					if (columns[indx].suggested) {
+						column += "   <span style='color: red;'>[Suggested field: " + columns[indx].suggested + "]</span>";
+					} 
+					var text = "<input type='checkbox' id='" + columns[indx].name + "'/>" + column + " <br>";
+					$("#uploadData_geocodingFields").append(text);
 				}	
 								
 				$("#uploadData_description, #geocoding_loading, #uploadData_error").hide();
