@@ -450,59 +450,8 @@
 		<!--user log in-->
 		<div id='dialog_login' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
              <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
-			 <center><h2>
-			 	<img src='images/PathGeo-color.png' height=35px onclick='window.open("http://www.pathgeo.com")'/>
-				<label>MapTime is a web-based mapping tool that allows you to geocode<br>and geo-analyze their data (with street addresses) into maps.</label>
-			</h2></center>
-			 <!-- login-->
-			 <div>
-			 	<h2>Member login</h2>
-				<fieldset id='user_login' style=''>
-                               <!-- <asp:Literal runat="server" ID="litMessage"></asp:Literal>-->
-
-                                <label for="email">Email:</label>
-                                <input type="email" id="email"></input>   
-
-                                <label for="password">Password:</label>
-                                <input type="password" id="password" onkeypress="if(event.keyCode==13){login();}"></input>
-								
-								<label for='login_cookie'>Remember me</label>
-								<input type='checkbox' id='login_cookie' />
-                                
-								<input id="btn_login" type="submit" value="Login" data-role="button" data-inline="true" data-theme="b" onclick="login();" />
-
-								<div id='login_msg' class='msg'></div>
-            	</fieldset> 
-				
-			 </div>
 			 
-			 
-			 <!-- sign up -->
-			 <div style='float:right;border-left:1px solid #cccccc;'>
-			 	<h2>Not a member yet? Sign Up!</h2>
-				<fieldset id='user_signup' style=''>
-					<label for="email">Email:</label>
-                    <input type="email" id="email"></input> 
-
-                   	<label for="password">Password:</label>
-                    <input type="password" id="password"></input>
-					
-					<label for="confirmPassword">Confirm Password:</label>
-                    <input type="password" id="confirmPassword"></input>
-														
-                    <input id="btn_signup" type="submit" value="Sign Up" data-role="button" data-inline="true" data-theme="b" onclick="signup();" />
-					<img id='signup_loading' src='images/loading.gif'/>
-					
-					<div id='signup_msg'  class='msg' style='margin-top:50px;'></div>
-            	</fieldset> 
-			 </div>
-			 
-			 <!-- oauth -->
-			 <p></p>
-			 <div id='oauth'>
-			 	<img src='images/sign-in-with-google.png' value='google' onclick='showOauth("google");'/>
-			 </div>
-			 
+			 <iframe id='oauth_login' src='common/login.html'></iframe>
 		</div>
 		
 		

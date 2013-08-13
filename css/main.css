@@ -316,28 +316,9 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /**
  * user log in
  */
-#dialog_login {width:750px; height:400px;padding:40px; }
-#dialog_login h2 {margin-bottom:10px; }
-#dialog_login h2 img {float:left; cursor:pointer; height:40px; margin-left:20px; }
-#dialog_login h2 label {float:right; text-align:left; margin-right:10px;  color:#999999;}
-#dialog_login > div {float:left; width:44%; padding:20px; position:relative; margin-top:30px; }
-#dialog_login label.ui-input-text {font-size:14px;}
-#dialog_login-screen {position:fixed}
-#dialog_login .ui-checkbox {width:60%; margin-top:15px;}
-#dialog_login .ui-btn-text {font-size:14px; }
-#dialog_login .msg {text-align:right; margin-top:20px;  color:#ff0000; border-top:0px solid #cccccc; position:absolute; right:20px; }
+#dialog_login {width:750px; height:420px;padding:40px; }
+#dialog_login iframe {width:100%; height:100%; border:0px; }
 
-#user_login .ui-submit {float:right; top:-50px; }
-
-#user_signup .ui-submit {float:right;}
-#user_signup #signup_loading {float:right; margin-top:10px; margin-right:20px; display:none}
-
-#oauth {position:absolute !important; right:30px;  text-align:right}
-#oauth img {height:40px; cursor:pointer; }
-
-/** dialog oauth */
-#dialog_oauth {width:650px; height:350px;padding:40px; }
-#dialog_oauth iframe {width:100%; height:100%; border:0px; }
 
 
 /** 

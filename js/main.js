@@ -183,8 +183,8 @@ $(document).on({
 
 //init login and read cookie
 function init_login(){
-	if($.cookie("MapTime")){
-		var email=app.userInfo.email=$.cookie("MapTime").split("email=")[1];
+	if($.cookie("PathGeo")){
+		var email=app.userInfo.email=$.cookie("PathGeo").split("email=")[1];
 		
 		//get user account info
 		getAccountInfo(email);
@@ -2094,68 +2094,6 @@ function showDialog(dom_id){
 
 
 
-//login
-function login(){
-	var email=$("#user_login #email").val(),
-		password=$("#user_login #password").val();
-	
-	//loading icon
-	$("#login_msg").html("<img src='images/loading.gif' width=20px />")
-	
-	
-	if(email=="pathgeodemo"){
-		success({
-			status:"ok",
-			msg:"login successfully",
-			account:{
-				oauth: null,
-				credit: 2018,
-				dateRegister: "2013-08-02 06:$M:11 ",
-				email: "pathgeodemo",
-				accountType: "free"	
-			}
-		});
-		return;
-	}
-	
-	//ajax to check if the email and password are valid
-	$.ajax({
-		url:"common/ws/login.py",
-		data:{
-			email:email,
-			password:password
-		},
-		dataType:"json",
-		method:"post",
-		success:success,
-		error: function(e){
-			console.log("[ERROR] Login ajax error!!");
-		}
-	})
-	
-	
-	//success
-	function success(json){
-		//clear error msg
-			$("#login_msg").html("");
-
-			if(json.status=='ok' && json.account){
-				//write cookie
-				if($("#login_cookie").is(":checked")){
-					$.cookie('MapTime', 'email='+ email, { expires: 7, path: '/' });
-				}
-				
-				writeAccountInfo(json.account);
-			}else{
-				//show error msg
-				$("#login_msg").html(json.msg);
-			}
-			
-			//google anlytics tracking event
-			_gaq.push(['_trackEvent', 'Account', 'Login', email]);
-	}
-	
-}
 
 
 //log out
@@ -2169,8 +2107,8 @@ function logout(){
 		.find(".ui-btn-text").html("Log in");
 	
 	//clear cookies
-	$.removeCookie('MapTime', { path: '/' });
-	//console.log("logout: "+ $.cookie("SocialTime"))
+	$.removeCookie('PathGeo', { path: '/' });
+
 	
 	//hide uploda data  button
 	$("#header a[href='#dialog_uploadData'], #userPopupMenu").hide();
@@ -2181,62 +2119,6 @@ function logout(){
 }
 
 
-
-//sign up 
-function signup(){
-	var	password=$("#user_signup #password").val(),
-		confirmPassword=$("#user_signup #confirmPassword").val(),
-		email=$("#user_signup #email").val();
-		
-	//clear msg
-	$("#signup_msg").html("")
-		
-	//validate
-	if(password=="" | confirmPassword=="" || email==""){showMsg("Please fill up all fields."); return;}
-	if(password!=confirmPassword){showMsg("Password is not matched. Please check again."); return;}
-	var validateEmail=/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if(validateEmail.test(email)==false){showMsg("You have entered an invalid email address! <br>Please check again"); return;}
-	
-	//show loading image
-	$("#signup_loading").show();
-	
-	$.ajax({
-		method:"post",
-		url:"common/ws/signup.py", 
-		data:{
-			password:password,
-			email:email
-		},
-		dataType:"json",
-		success:function(json){
-			//hide loading image
-			$("#signup_loading").hide();
-			
-			if(json.status && json.status=='ok' && json.account){
-				writeAccountInfo(json.account);
-			}else{
-				showMsg(json.msg);
-				return;
-			}
-			
-			//google anlytics tracking event
-			_gaq.push(['_trackEvent', 'Account', 'Sign up', email]);
-		},
-		error: function(e){
-			console.log(e);
-			
-			//hide loading image
-			$("#signup_loading").hide();
-		}
-	});
-	
-	
-	
-	//show msg
-	function showMsg(msg){
-		$("#signup_msg").html(msg);
-	}
-}
 
 
 
@@ -2354,12 +2236,7 @@ function showOauth(provider){
 		app.oauthWindow=window.open("common/ws/oauth.py?provider="+provider, provider, "width=600,height=350,left=150,top=200,toolbar=1,status=1")
 		//$("#oauth_iframe").attr("src",)
 	}
-	
-	
-	
-	
-	
-	
+
 }
 
 
