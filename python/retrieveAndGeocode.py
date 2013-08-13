@@ -164,6 +164,9 @@ oauth=form['oauth'].value
 geoColumns = form.getlist("geoColumns[]")
 geoColumns = map(lambda item: item.replace(' ', '_'), geoColumns)
 
+if oauth=='':
+        oauth=None
+
 lat = getField(geoColumns, IS_LAT)
 lon = getField(geoColumns, IS_LON)
 addr = getField(geoColumns, IS_ADDR)

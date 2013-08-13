@@ -144,6 +144,11 @@ name = form['photo'].filename
 username=form['username'].value
 oauth=form['oauth'].value
 
+if oauth=='':
+        oauth=None
+
+
+
 msg={
         "status":"error",
         "msg":"no username or no such username"
