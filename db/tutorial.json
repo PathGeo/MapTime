@@ -1,0 +1,27 @@
+[
+  {
+    "element": "#header_uploadData",
+    "intro": "Upload and Map your Data. Or try some sample data",
+	"position": "bottom"
+  },
+  {
+    "element": ".leaflet-control-mapGallery",
+    "intro": "Change visualizations of your data on the map",
+    "position": "left"
+  },
+   {
+	"element": ".leaflet-control-layers",
+	"intro": "Change base maps",
+    "position": "left"
+  },
+  {
+    "element": ".dataTables_filter",
+    "intro": "You can input any keyword to filter your data",
+    "position": "top"
+  },
+  {
+	"element": ".dataTable_tools ul",
+	"intro": "<b>1. More/Less Table:</b><br>Want more or less space to show data. <p></p><b>2. Show/Hide Columns: </b><br>Choose essential columns to show.<p></p><b>3. Download: </b><br>Download your data with latitude and longitude",
+    "position": "top"
+  }
+]

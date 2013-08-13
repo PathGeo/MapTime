@@ -136,7 +136,9 @@ var app={
 		credit:null,
 		oauth:null
 	},
-	oauthWindow:null
+	oauthWindow:null,
+	tutorial:null,
+	introJS:null
 }
 
 
@@ -175,6 +177,8 @@ $(document).on({
 	   	init_map();
 		
 		getClientGeo();
+		
+		readTutorial();
 	},
 	"pageinit": function(){
 		//popup not use history to avoid the problem that the dialog cannot be closed and may be redirected to other page
@@ -2330,3 +2334,34 @@ function oauth_callback(accountInfo){
 	
 	writeAccountInfo(accountInfo);
 }
+
+
+
+
+//read tutorial
+function readTutorial(){
+	//get Tutorial json
+	$.getJSON('db/tutorial.json', function(json){
+		app.tutorial=json;
+		app.introJS=introJs("#pageMap");
+		app.introJS
+			.setOptions({steps:json})
+			.onchange(function(target){
+				//console.log(target)
+			})
+			.oncomplete(function(){
+				console.log('complete')
+			});
+
+	});
+}
+
+//show Tutorial
+function showTutorial(){
+	if(app.tutorial){
+		app.introJS.start();
+	}else{
+		console.log("[ERROR] showTutorial: something wrong when read the tutorial json")
+	}
+}
+
