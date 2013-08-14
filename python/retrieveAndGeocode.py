@@ -171,7 +171,7 @@ oauth= None if 'oauth' not in form else form['oauth'].value
 geoColumns = form.getlist("geoColumns[]")
 geoColumns = map(lambda item: item.replace(' ', '_'), geoColumns)
 
-if oauth=='':
+if (oauth is not None and (oauth=='' or oauth.upper()=='NULL')):
         oauth=None
 
 lat = getField(geoColumns, IS_LAT)

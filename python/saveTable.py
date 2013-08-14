@@ -143,7 +143,7 @@ name = form['photo'].filename
 username=form['username'].value
 oauth=form['oauth'].value
 
-if oauth=='':
+if (oauth is not None and (oauth=='' or oauth.upper()=='NULL')):
         oauth=None
 
 
