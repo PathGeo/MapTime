@@ -2380,16 +2380,17 @@ function readTutorial(){
 			.oncomplete(function(){
 				console.log('tutorial complete')
 			});
-
+		console.log(app.introJS)
 	});
 }
 
 //show Tutorial
 function showTutorial(){
-	if(app.tutorial){
-		app.introJS.start();
+	if(app.dataTable){
+		app.introJS.start()
+		console.log(app.introJS);
 	}else{
-		console.log("[ERROR] showTutorial: something wrong when read the tutorial json")
+		showDemo('SAN DIEGO');
 	}
 }
 
