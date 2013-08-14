@@ -56,6 +56,12 @@ def saveDataAsExcel(data, outputFileName):
 	curDir = path.dirname(path.realpath(__file__))	
 	book.save(curDir + "\\" + outputFileName)
 		
+def geomask(val):
+	import random
+	val = round(val, 4)
+	r = random.randint(-9, 9) * 1/100000.0
+	
+	return val + r
 		
 def geocodeRows(rows, locFunc):
 	features = []
@@ -80,6 +86,7 @@ def geocodeRows(rows, locFunc):
 			
 			if lat and lon:			
 				doc = dict(type='Feature', geometry=dict(type="Point", coordinates=[lon, lat]), properties=row.copy())
+				doc['geomasked_geometry'] = dict(type="Point", coordinates=[geomask(lon), geomask(lat)])
 				
 				#for some reason, the condition is being met, even when 'place' == None (why????)
 				if place and type(place) in (str, unicode):
@@ -160,7 +167,7 @@ cgitb.enable()
 form = cgi.FieldStorage()
 fname = form['fileName'].value
 username = form['username'].value
-oauth=form['oauth'].value
+oauth= None if 'oauth' not in form else form['oauth'].value
 geoColumns = form.getlist("geoColumns[]")
 geoColumns = map(lambda item: item.replace(' ', '_'), geoColumns)
 

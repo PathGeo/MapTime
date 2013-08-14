@@ -467,6 +467,7 @@ function init_UI(){
 				username:app.userInfo.email,
 				oauth:app.userInfo.oauth
 			}, success: function(featureCollection) { 
+				console.log(featureCollection);
 				//error handler
 				if(featureCollection && featureCollection.status && featureCollections.status=='error'){
 					console.log(featureCollection.msg)
