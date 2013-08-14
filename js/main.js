@@ -12,8 +12,8 @@ var app={
 			//"Light map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-jwxvdo36/{z}/{x}/{y}.png?updated=1374825292888",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>", title:"Light Map"}),
 			//"Terrain map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-9p1ubd74/{z}/{x}/{y}.png?updated=1374825095067",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>", title:"Terrain Map"}),
 			//"Night map": L.tileLayer("https://tiles.mapbox.com/v3/pathgeo.map-jkiqueqj/{z}/{x}/{y}.png?updated=1374825942470",{attribution:"Map Provided by <a href='http://www.mapbox.com/' target='_blank'>MapBox</a>", title:"Night Map"}),
-			"Gray map": L.tileLayer("http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png", {styleId: 22677, attribution:"Map Provided by <a href='http://cloudmade.com/' target='_blank'>Cloudmade</a>", title:"Cloudmade"}),
-			"Street map": L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {attribution:"Map Provided by <a href='http://www.openstreetmap.org/' target='_blank'>Open Street Map</a>", title:"Open Street Map"})
+			"Light Gray Background Map": L.tileLayer("http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/{styleId}/256/{z}/{x}/{y}.png", {styleId: 22677, attribution:"Map Provided by <a href='http://cloudmade.com/' target='_blank'>Cloudmade</a>", title:"Cloudmade"}),
+			"OpenStreet Map": L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {attribution:"Map Provided by <a href='http://www.openstreetmap.org/' target='_blank'>Open Street Map</a>", title:"Open Street Map"})
 			//"Google Streetmap":L.tileLayer("https://mts{s}.googleapis.com/vt?lyrs=m@207265067&src=apiv3&hl=zh-TW&x={x}&y={y}&z={z}&s=Ga&style=api%7Csmartmaps",{subdomains:"123", attribution:"Map Source from Google"})
 	},
 	layers: {
@@ -37,7 +37,7 @@ var app={
 		    onAdd: function (map) {
 	        	// create the control container with a particular class name
 		        var container=L.DomUtil.create('div', 'leaflet-control-mapGallery');
-		        var html="<ul><li title='Marker map' layer='geoJsonLayer' style='background-color:#5B92C0'><img src='images/marker-icon.png' /></li><li title='Cluster map' layer='markerClusterLayer'><img src='images/gallery-cluster.png' /></li><li title='Heat map' layer='heatMapLayer'><img src='images/gallery-heatmap.png' /></li></ul>";
+		        var html="<ul><li title='Showing markers' layer='geoJsonLayer' style='background-color:#5B92C0'><img src='images/marker-icon.png' /></li><li title='Cluster Map' layer='markerClusterLayer'><img src='images/gallery-cluster.png' /></li><li title='Hotspots' layer='heatMapLayer'><img src='images/gallery-heatmap.png' /></li></ul>";
        
 		         //click map gallery event
 		        $(container).html(html)
@@ -219,7 +219,7 @@ function init_map(){
 	app.map = L.map("div_map", {
         center: app.initCenterLatLng,
 		zoom: app.initCenterZoom,
-		layers:[app.basemaps["Gray map"]],
+		layers:[app.basemaps["Light Gray Background Map"]],
 		attributionControl:true,
 		trackResize:true
     }); 
@@ -291,8 +291,7 @@ function init_UI(){
 	},1000);
 	
 	
-	
-	
+
 	//adjust infoPanel height
 	$(".infoPanel").css({height:$("#content").height()-20, width:$("#content").width()*0.375});
 	
@@ -507,7 +506,7 @@ function init_UI(){
 					 type: "GEOJSON",
 					 json: featureCollection, 
 					 srs: "EPSG:4326",
-					 title: "Your Data",
+					 title: currentFileName,
 					 keywords: ["testing"],
 					 column:{
 						statistics:""
@@ -1010,6 +1009,11 @@ function showLayer(obj, options){
 				if(options.zoomToExtent){
 					app.map.fitBounds(obj.geoJsonLayer.getBounds());
 				}
+				
+				//callback function when all features are shown on the map
+				if(options.callback){
+					options.callback();
+				}
 			}
 
 			//close dialog
@@ -1087,7 +1091,11 @@ function switchBaseLayer(layer){
 
 //show pivot table
 //This first populates the table, then draws the geojson features
-function showTable(obj){
+function showTable(obj, options){
+	//options
+	if(!options){options={}}
+	options.callback=options.callback || null
+	
 	//hide dataPanel_intro 
 	$("#dataPanel_intro").hide();
 	
@@ -1171,7 +1179,7 @@ function showTable(obj){
 					app.$tr=$(".dataTable tr");
 					
 					//draw layers on the map
-					showLayer(obj, {isShow:true});
+					showLayer(obj, {isShow:true, callback:options.callback});
 								
 					//re-draw Chart
 					showDataTableChart(obj.json);
@@ -2070,7 +2078,9 @@ function showDemo(demoType){
 			$("#dialog_uploadData").popup("close"); 
 			
 			//showSumup(json);
-			showTable(app.geocodingResult);
+			showTable(app.geocodingResult, {callback:function(){
+				setTimeout(showTutorial, 1000);
+			}});
 		});
 	}
 	
@@ -2173,8 +2183,8 @@ function afterLogin(email){
 		})
 		.find(".ui-btn-text").html(email);
 				
-	//show upload data button
-	$("#header a[href='#dialog_uploadData']").show();
+	//show upload data and tutorial button
+	$("#header a[href='#dialog_uploadData'], #header_tutorial").show();
 		
 	//write username into uploadData form
 	$("#uploadData_username").attr("value", email)
@@ -2368,7 +2378,7 @@ function readTutorial(){
 				//console.log(target)
 			})
 			.oncomplete(function(){
-				console.log('complete')
+				console.log('tutorial complete')
 			});
 
 	});

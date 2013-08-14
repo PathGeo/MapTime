@@ -104,7 +104,7 @@
 			<a href="#dialog_login" id='header_login' data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="home" class="" data-mini="true" style='float:right'>Log in</a>
 			<a href="#dialog_contact" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="check" class="" data-mini="true" style='float:right'>Contact us</a>
 	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>
-			<a href="#" data-rel='' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right' onclick='showTutorial()'>Tutorial</a>
+			<a href="#" data-rel='' id='header_tutorial' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="edit" class="" data-mini="true" style='float:right; display:none;' onclick='showTutorial()'>Tutorial</a>
 			<!--<a href="#dialog_sumup" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right'>test</a>-->
 			<a href="#dialog_uploadData" id='header_uploadData' data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right; display:none'>Map Data</a>
 		</div>
@@ -214,7 +214,7 @@
 			<div class='mapPopupWidget_content ui-corner-all'>
 				<form>
 				    <label for="heatmap_slider">Radius (unit: meter)</label>
-				    <input type="range" name="heatmap_slider" id="heatmap_slider" data-track-theme="d" data-theme="b" data-mini='true' min="0" max="100" value="50">
+				    <input type="range" name="heatmap_slider" id="heatmap_slider" data-track-theme="d" data-theme="b" data-mini='true' min="0" max="100" value="50" READONLY>
 				</form>
 			</div>
 		</div>
@@ -366,11 +366,11 @@
 						
 							<!--sample data-->
 							<div id='uploadData_sampleData'>
-								<h2>Or Try Some Sample Data</h2>
+								<h2>Or See a tutorial to know how to use MapTime</h2>
 								<ul data-role="listview" data-inset="true">
 								    <li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);showDemo("SAN DIEGO");}}, 100)'>
 								        <img src="images/sandiego.jpg">
-								        <h2>San Diego Crime Rate</h2>
+								        <h2>Tutorial: San Diego Crime Rate</h2>
 								        <p>2012/01 Crime Sample Data from 'San Diego Regional Data Library'</p></a>
 								    </li>
 									<!--
@@ -447,7 +447,7 @@
 			<p>  <br>
 			If you have any questions or suggestions, please feel free to contact us
 			<p>  <br>
-			<a href="mailto:info@pathgeo.com" data-role="button" data-inline="true" data-theme="b" onclick='logout()'>Email us</a>
+			<a href="mailto:info@pathgeo.com" data-role="button" data-inline="true" data-theme="b" >Email us</a>
 		</div>
 		
 		<!--user log in-->
