@@ -138,7 +138,8 @@ var app={
 	},
 	oauthWindow:null,
 	tutorial:null,
-	introJS:null
+	introJS:null,
+	geomask:true
 }
 
 
@@ -763,6 +764,15 @@ function showLayer(obj, isShow){
 								
 								//pointToLayer to change layers' icon
 								pointToLayer: function(feature, latlng){
+									//geomasking 
+									if(app.geomask && feature["geomasked_geometry"]){
+										console.log("geomask");
+										console.log(feature)
+										coords=feature["geomasked_geometry"].coorinates
+										latlng=new L.LatLng(coords[1], coords[0]);
+									}
+									
+									
 									var icon=new L.icon({
 											iconUrl: "images/1374596320_marker_rounded_light_blue.png",
 											iconSize: [16, 16],//[12.5, 21],

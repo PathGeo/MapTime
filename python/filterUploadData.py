@@ -14,6 +14,9 @@ def getParameterValue(name):
     if(name in urlParameter and urlParameter[name].value!=""):
         value=urlParameter.getvalue(name)
 
+    if(value is not None and value.upper()=='NULL'):
+        value=None
+    
     return value
 #--------------------------------------------------------------------------
 
