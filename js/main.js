@@ -2150,13 +2150,15 @@ function logout(){
 	//clear cookies
 	$.removeCookie('PathGeo', { path: '/' });
 
+	//refresh webpage
+	location.reload();
 	
-	//hide uploda data  button
-	$("#header a[href='#dialog_uploadData'], #userPopupMenu").hide();
-	
-	//close popup
-	$("#dialog_userMenu").popup('close');
-	$("#dialog_logout").popup('close');
+//	//hide uploda data  button
+//	$("#header a[href='#dialog_uploadData'], #userPopupMenu").hide();
+//	
+//	//close popup
+//	$("#dialog_userMenu").popup('close');
+//	$("#dialog_logout").popup('close');
 }
 
 
