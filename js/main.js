@@ -513,7 +513,8 @@ function init_UI(){
 						statistics:""
 					 },
 					 downloadLink:(featureCollection["URL_xls"] && featureCollection["URL_xls"]!="")? featureCollection["URL_xls"] : null ,
-					 dataID:featureCollection.dataID
+					 dataID:featureCollection.dataID,
+					 hasGeomask: (featureCollection.features[0].geomasked_geometry)? true : false
 				 };
 				 
 				showTable(app.geocodingResult);
@@ -630,7 +631,12 @@ function changeMarkerIcon(img_src, width, height){
 
 
 //load geojson
-function showLayer(obj, isShow){
+function showLayer(obj, options){
+		//options
+		if(!options){options={}}
+		options.isShow=(typeof options.isShow==='undefined')? false : options.isShow;
+		options.zoomToExtent=(typeof options.zoomToExtent==='undefined')? true : options.zoomToExtent;
+		
 		//show title
 		if(obj.title){$("#lbl_dataName").html(obj.title);}
 		
@@ -995,14 +1001,15 @@ function showLayer(obj, isShow){
 		
 		//add layer
 		function addLayer(obj){
-			if(isShow){
+			if(options.isShow){
 				$.each(obj.layers, function(i,layer){
 					layer.addTo(app.map);
 					app.showLayers.push(layer);
 				})
 				
-				app.map.fitBounds(obj.geoJsonLayer.getBounds());
-	
+				if(options.zoomToExtent){
+					app.map.fitBounds(obj.geoJsonLayer.getBounds());
+				}
 			}
 
 			//close dialog
@@ -1164,7 +1171,7 @@ function showTable(obj){
 					app.$tr=$(".dataTable tr");
 					
 					//draw layers on the map
-					showLayer(obj, true);
+					showLayer(obj, {isShow:true});
 								
 					//re-draw Chart
 					showDataTableChart(obj.json);
@@ -1252,7 +1259,7 @@ function showTable(obj){
 							//overwrite app.geocodingResult.json and showlayer 
 							if (geojson.features.length > 0){
 								obj.json = geojson;
-								showLayer(obj, true);
+								showLayer(obj, {isShow:true});
 								
 								//re-draw Chart
 								showDataTableChart(obj.json);
@@ -1290,6 +1297,7 @@ function showTable(obj){
 					//"<li><img src='images/1365858910_download.png' title='download selected data'/><span>Download Selected Data</span></li>" +
 					//"<li><img src='images/1365858892_print.png' title='print'/><span>Print</span></li>" +
 					"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/><span>Show/hide Columns</span></li>" +
+					((obj.hasGeomask) ? "<li><img src='images/1376481601_Security.png' title='geomask'/><span>GeoMask</span></li>" : "")+
 					"<li><img src='images/1375655879_br_up.png' title='More Table'/><span>More Table</span></li>"+
 					//"<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
 					//"<li><img src='images/1365978110_gallery2.png' title='map gallery'/></li>" +
@@ -1340,8 +1348,8 @@ function showTable(obj){
 					
 					resizeMap({height:"75%"}, {height:"25%"});
 				break;
-				case "download selected data":
-					
+				case "geomask":
+					$("#dialog_geomask").popup('open');
 				break;
 			}
 		
@@ -2053,7 +2061,8 @@ function showDemo(demoType){
 		$.getJSON(obj.url, function(json){
 			obj.geojson=json;
 			obj.type='GEOJSON';
-			//obj.downloadLink='test';
+			obj.hasGeomask=(json.features[0].geomasked_geometry)? true : false
+
 			app.geocodingResult=obj;
 			
 			//close dialog_uploadData and stop loading img
@@ -2374,3 +2383,14 @@ function showTutorial(){
 	}
 }
 
+
+
+//geomask
+function geomask(){
+	var geomaskType=$("#dialog_geomask input[name='geomaskType']:checked").val();
+	
+	app.geomask=false;
+	if(geomaskType=='geomask'){app.geomask=true;}
+	
+	showLayer(app.geocodingResult, {isShow:true, zoomToExtent:false})
+}

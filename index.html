@@ -377,7 +377,7 @@
 								    <li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);showDemo("SAN FRANCISCO");}}, 100)'>
 								        <img src="images/sanfrancisco.JPG">
 								        <h2>San Francisco Shoe's Customer</h2>
-								        <p>Sample Data</p></a>
+								        <p>Test GeoMask</p></a>
 								    </li>
 									-->
 								</ul>
@@ -609,6 +609,21 @@
 		</div>
 		
 
+		<!-- dialog_geomask-->
+		<div id='dialog_geomask' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+            <h2>GeoMask: </h2>
+			
+            <fieldset data-role="controlgroup">
+            	<legend></legend>
+		        <input type="radio" name="geomaskType" id="geomask_default" value="default" checked="checked" onclick='geomask()'>
+		        <label for="geomask_default">Default<br><font size=1>Original coodinates</font></label>
+		        <input type="radio" name="geomaskType" id="geomask_geomask" value="geomask" onclick='geomask()'>
+		        <label for="geomask_geomask">GeoMask<br><font size=1>MapTime will mask coordinates into 100 meter accuracy to protect customers' privacy.</font></label>
+		    </fieldset>
+			
+			<p></p>
+		</div>
 		
 		
 		<!--dialog logout-->
