@@ -3,7 +3,7 @@
 from GeocodingEngine.Geocoder import AddressGeocoder
 
 #Standard Libraries
-import cgi, json, re, functools
+import cgi, json, re, functools, random
 import cgitb, os, pickle, time, datetime
 from os import path
 from pymongo import MongoClient
@@ -57,7 +57,6 @@ def saveDataAsExcel(data, outputFileName):
 	book.save(curDir + "\\" + outputFileName)
 		
 def geomask(val):
-	import random
 	val = round(val, 4)
 	r = random.randint(-9, 9) * 1/100000.0
 	
