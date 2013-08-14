@@ -139,7 +139,7 @@ var app={
 	oauthWindow:null,
 	tutorial:null,
 	introJS:null,
-	geomask:true
+	geomask:false
 }
 
 
@@ -764,11 +764,9 @@ function showLayer(obj, isShow){
 								
 								//pointToLayer to change layers' icon
 								pointToLayer: function(feature, latlng){
-									//geomasking 
+									//geomask
 									if(app.geomask && feature["geomasked_geometry"]){
-										console.log("geomask");
-										console.log(feature)
-										coords=feature["geomasked_geometry"].coorinates
+										coords=feature["geomasked_geometry"].coordinates;
 										latlng=new L.LatLng(coords[1], coords[0]);
 									}
 									
