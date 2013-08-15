@@ -408,9 +408,17 @@ function init_UI(){
 						}
 					})
 					$("#uploadData_error").html(html).show();
-					return
+					return;
 				}
 				
+				//check if geocodeCount < rowCount, show msg to say that only geocodeCount will be geocoded
+				var rowCount=tableInfo.rowCount,
+					geocodeCount=tableInfo.geocodeCount;
+					
+				if(geocodeCount < rowCount){
+					var html="Your Credit is not enough!<p></p> <b>Your Credit: "+ geocodeCount + "<p></p>Needed Credit: "+ rowCount +"</b><p></p>Would you like to use your remaining credit to geocode top " + geocodeCount + " data?";
+					$("#uploadData_error").html(html).show();
+				}
 				
 				//remove old options 
 				$("#uploadData_geocodingFields").html("");
@@ -1161,9 +1169,12 @@ function showTable(obj, options){
 			"iDisplayLength": 1000,
 			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"if><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rtS<>>', //DOM
 			"fnInitComplete": function(oSettings, json) {
-				$("#" + oSettings.sTableId+"_filter input").val("Filter data results by keyword").attr("title", "Filter data results by keyword").focus(function(){
-					if($(this).val()=="Filter data results by keyword"){
-						$(this).val("");
+				$("#" + oSettings.sTableId+"_filter input").val("Filter data results by keyword").attr("title", "Filter data results by keyword").on({
+					focus: function(){
+						if ($(this).val() == "Filter data results by keyword") {$(this).val("");}
+					},
+					blur: function(){
+						if($(this).val()==""){$(this).val("Filter data results by keyword");}
 					}
 				});
 				

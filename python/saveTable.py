@@ -170,18 +170,21 @@ if(username is not None):
                 target = filter(lambda item: item['column'] == c, locs)[0]
                 jsonCols.append({'name': c, 'suggested': target['type']})
             else:
-			    jsonCols.append({'name': c})
+                jsonCols.append({'name': c})
 		
 				
 		
 		
 		
-        #if credit is not a number
+        #if credit is not None
         if(credit is not None):
                 #if credit is enough
-                if(credit>=len(jsonRows)):
+                if(credit>0):
                         pickle.dump(jsonRows, open(os.path.abspath(__file__).replace(__file__, name + ".p"), "w"))
-                        msg={'columns': [col for col in table.getColumnNames() if col], 'fileName': name, 'jsonCols': jsonCols }
+                        msg={'columns': [col for col in table.getColumnNames() if col], 'fileName': name, 'jsonCols': jsonCols, 'rowCount': len(jsonRows), 'geocodeCount': len(jsonRows) }
+
+                        if(credit < len(jsonRows)):
+                                msg["geocodeCount"]=len(jsonRows) - credit;
                 else:
                         msg["msg"]="Your credit is not enough at this time. <br>Total needed credit: "+ str(len(jsonRows))+"<br>Your credit: "+ str(credit)+"<br>Needed credit: "+ str(len(jsonRows)-credit)+"<br>Please buy some credit first. Thank you."
         else:
