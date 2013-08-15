@@ -113,6 +113,23 @@ def geocodeRow(row, fields=None, geocoder=None):
 	return place, (llat, llon)
 
 
+def getStatesFromZips(rows, zipCol):
+	zipsCol = MongoClient().test.zip_codes
+	
+	results = []
+	
+	for row in rows:
+		doc = row.copy()
+		out = zipsCol.find_one({'code': row[zipCol]})
+		if out:
+			doc['state'] = out['state']
+	
+		results.append(doc)
+		
+	return results
+	
+	
+	
 
 def saveDatainMongo(geojson, fileName, username, oauth):
         collection=client["maptime"]["uploadData"]
@@ -190,6 +207,11 @@ geocoder = AddressGeocoder(username='PathGeo2', password='PGGe0C0der')
 
 geoFunc = None
 
+#still just serializing the python object for excel data.  should save to DB?
+jsonRows = pickle.load(open(os.path.abspath(__file__).replace(__file__, fname + ".p")))
+os.remove(os.path.abspath(__file__).replace(__file__, fname + ".p"))
+
+
 if lat and lon:
 	
 	def getByLatLon(row, latField=None, lonField=None):
@@ -210,19 +232,18 @@ elif geo:
 		
 	geoFunc = functools.partial(getByLatLon, geoField=geo)
 	
-elif addr:
+elif addr and city and (state or zip):
 	#only address is necessary to geocode, but check if city, state or zipcode are present
 	#and, if so, add them to out list of geocoding fields
-	otherFields = filter(lambda item: bool(item), [city, state, zip])
+	if not state and zip:
+		jsonRows = getStatesFromZips(jsonRows, zip)
+		otherFields = filter(lambda item: bool(item), [city, 'state', zip])
+	else:
+		otherFields = filter(lambda item: bool(item), [city, state, zip])
 	geoFunc = functools.partial(geocodeRow, fields=[addr] + otherFields, geocoder=geocoder)	
 elif loc:
 	geoFunc = functools.partial(geocodeRow, fields=[loc], geocoder=geocoder)
 	
-#still just serializing the python object for excel data.  should save to DB?
-jsonRows = pickle.load(open(os.path.abspath(__file__).replace(__file__, fname + ".p")))
-
-os.remove(os.path.abspath(__file__).replace(__file__, fname + ".p"))
-
 features = geocodeRows(jsonRows, geoFunc)
 
 #save geocoded result in the Mongo DB
