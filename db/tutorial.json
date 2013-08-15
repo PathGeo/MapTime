@@ -21,7 +21,7 @@
   },
   {
 	"element": ".dataTable_tools ul",
-	"intro": "<b>1. More/Less Table:</b><br>Want more or less space to show data. <p></p><b>2. GeoMask: </b><br>Mask customers' locations. MapTime provides intelligent way to mask customers' locations without loosing any precision.<p><b>3. Show/Hide Columns: </b><br>Choose essential columns to show.<p></p><b>4. Download: </b><br>Download your data with latitude and longitude",
+	"intro": "<b>1. More/Less Table:</b><br>Show more or less data. <p></p><b>2. GeoMask: </b><br>Mask customers' locations. MapTime provides intelligent way to mask customers' locations without loosing any precision.<p><b>3. Show/Hide Columns: </b><br>Choose essential columns to show.<p></p><b>4. Download: </b><br>Download your data with latitude and longitude",
     "position": "top"
   },
   {

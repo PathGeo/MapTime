@@ -1161,8 +1161,8 @@ function showTable(obj, options){
 			"iDisplayLength": 1000,
 			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"if><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rtS<>>', //DOM
 			"fnInitComplete": function(oSettings, json) {
-				$("#" + oSettings.sTableId+"_filter input").val("Filter your data (i.e. 94107)").attr("title", "Filter your data (i.e. 94107)").focus(function(){
-					if($(this).val()=="Filter your data (i.e. 94107)"){
+				$("#" + oSettings.sTableId+"_filter input").val("Filter data results by keyword").attr("title", "Filter data results by keyword").focus(function(){
+					if($(this).val()=="Filter data results by keyword"){
 						$(this).val("");
 					}
 				});
@@ -2183,7 +2183,7 @@ function afterLogin(email){
 				$("#userPopupMenu").show()
 			}
 		})
-		.find(".ui-btn-text").html(email);
+		.find(".ui-btn-text").html("Account");
 				
 	//show upload data and tutorial button
 	$("#header a[href='#dialog_uploadData'], #header_tutorial").show();
@@ -2382,15 +2382,13 @@ function readTutorial(){
 			.oncomplete(function(){
 				console.log('tutorial complete')
 			});
-		console.log(app.introJS)
 	});
 }
 
 //show Tutorial
 function showTutorial(){
 	if(app.dataTable){
-		app.introJS.start()
-		console.log(app.introJS);
+		app.introJS.start();
 	}else{
 		showDemo('SAN DIEGO');
 	}
