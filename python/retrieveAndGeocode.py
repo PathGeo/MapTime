@@ -123,14 +123,14 @@ def getStatesFromZips(rows, zipCol):
 		out = zipsCol.find_one({'code': row[zipCol]})
 		if out:
 			doc['state'] = out['state']
+		else:
+			doc['state'] = ''
 	
 		results.append(doc)
 		
 	return results
 	
 	
-	
-
 def saveDatainMongo(geojson, fileName, username, oauth):
         collection=client["maptime"]["uploadData"]
         timestamp=str(int(time.mktime(time.gmtime()))) #using gmt timeStamp as dataID
@@ -235,11 +235,12 @@ elif geo:
 elif addr and city and (state or zip):
 	#only address is necessary to geocode, but check if city, state or zipcode are present
 	#and, if so, add them to out list of geocoding fields
+	otherFields = []
 	if not state and zip:
 		jsonRows = getStatesFromZips(jsonRows, zip)
-		otherFields = filter(lambda item: bool(item), [city, 'state', zip])
-	else:
-		otherFields = filter(lambda item: bool(item), [city, state, zip])
+		state = 'state'
+	
+	otherFields = filter(lambda item: bool(item), [city, state, zip])
 	geoFunc = functools.partial(geocodeRow, fields=[addr] + otherFields, geocoder=geocoder)	
 elif loc:
 	geoFunc = functools.partial(geocodeRow, fields=[loc], geocoder=geocoder)
