@@ -461,7 +461,7 @@ function init_UI(){
 	//$('#uploadData_form').submit( function() {
 	$('#submit_button').click(function() {
 		//var geoColumnVal = $("#uploadData_geocodingField").val();
-		var geoColumns = $.map($("#uploadData_geocodingFields").children(":checked"), function(item) { return item.id; });
+		var geoColumns = $.map($("#uploadData_field").children(":checked"), function(item) { return item.id; });
 		var checked = $("#uploadData_agreementCheck").prop("checked");
 		
 		if (!checked) {
