@@ -396,7 +396,7 @@ function init_UI(){
 			success: function (tableInfo) {
 				//if user's credit is not enough, a error msg will return back.
 				if(tableInfo && tableInfo.status && tableInfo.status=='error'){
-					$("#uploadData_condescription, #geocoding_loading").hide();
+					$("#uploadData_condescription, #uploadData_loading").hide();
 					
 					
 					//style the error msg

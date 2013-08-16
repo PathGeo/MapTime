@@ -286,9 +286,9 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #uploadData_confirm .ui-btn-inner {font-size:14px; }
 #uploadData_agreement {height:100px; padding:15px !important; overflow-y:auto; background-color:#ffffff; border:0px solid #cccccc; color:#555555;padding:15px;}
 
-#uploadData_field .ui-controlgroup-controls {height:200px; overflow:auto;}
+#uploadData_field .ui-controlgroup-controls {height:170px; overflow:auto;}
 #uploadData_field fieldset legend {font-size:14px; font-weight:bold; }
-#uploadData_field fieldset .ui-btn-text {font-size:12px; font-weight:normal }
+#uploadData_field fieldset .ui-btn-inner {font-size:12px; font-weight:normal }
 
 
 #uploadData_agreementCheck { height: 20px; }
