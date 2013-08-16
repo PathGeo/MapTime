@@ -235,8 +235,8 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 
 #dataTable_length {float:right; padding-right:30px;}
 #dataTable_filter {padding:0px 0px 0px 15px; }
-#dataTable_filter input {width:275px;height:26px;padding:0px 5px 0px 5px; -moz-border-radius:5px; -webkit-border-radius:5px;border-radius:5px;}
-#dataTable_filter label {font-weight:bold; color:#ffffff;}
+#dataTable_filter .ui-input-search {width:245px; margin:0px;}
+#dataTable_filter .ui-input-search input {font-size:13px; width:260px;}
 #dataTable { width: 100%; }
 #dataTable_chart {width:100%; }
 
@@ -266,12 +266,12 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #dialog_uploadData > form {padding-top:30px;width: 90%; margin: 0 auto; position:relative}
 
 .uploadDataContent {width:90%; height:66.2%; margin:0 auto; margin-top:0px;}
-.uploadDataContent > h2 {background-color:#888888; color:#ffffff; padding:15px; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
+.uploadDataContent > h2 {color:#333333; padding:15px; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
 .uploadDataContent > h2 label {font-size:12px; font-weight:normal; }
 
 /**uploadData_description*/
 #uploadData_description {}
-#uploadData_sampleData {width:100%; margin-top:50px; color:#333333; position:relative; }
+#uploadData_sampleData {width:100%; margin-top:30px; color:#333333; position:relative; padding-top:10px; border-top:1px solid #cccccc; }
 #uploadData_sampleData .ui-li-thumb {margin-left:5px; margin-top:9px; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
 #sampleData_loading {position:absolute; top:0px; right:0px; display:none;}
 #uploadData_loading {position:absolute; bottom:6px; right:6px; display:none; width:20px; }
@@ -280,24 +280,33 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /**uploadData_content*/
 #uploadData_confirm {display:none;}
 #uploadData_confirm ul {list-style:none; padding:0px; margin:0px;}
-#uploadData_confirm ul li {padding:2px; margin:5px 0px 5px 0px; 
-	-moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;
-}
+#uploadData_confirm > ul > li {position:relative; margin:10px 0px 10px 0px;  -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
 #uploadData_confirm .ui-btn-inner {font-size:14px; }
-#uploadData_agreement {height:100px; padding:15px !important; overflow-y:auto; background-color:#ffffff; border:0px solid #cccccc; color:#555555;padding:15px;}
 
+#uploadData_agreement {height:60px; padding:15px !important; overflow-y:auto; background-color:#ffffff; border:1px solid #cccccc; color:#555555;padding:15px;}
+
+#uploadData_field {float:left; width:54%; padding:10px; border:2px solid #cccccc; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
 #uploadData_field .ui-controlgroup-controls {height:170px; overflow:auto;}
 #uploadData_field fieldset legend {font-size:14px; font-weight:bold; }
-#uploadData_field fieldset .ui-btn-inner {font-size:12px; font-weight:normal }
+#uploadData_field fieldset .ui-btn-inner {font-size:11.5px; font-weight:normal }
+
+#uploadData_credit {float:right; width:40%;text-align:right;}
+#uploadData_credit ul li {border-bottom:1px solid #f1f1f1; padding:5px; }
+#uploadData_credit hr {background-color: #eeeeee; height: 1px; border: 0;}
 
 
+#uploadData_controls .ui-checkbox {float:left; }
+#uploadData_controls .ui-checkbox .ui-btn-inner {font-size:12px;}
+#uploadData_controls div.ui-btn:nth-child(2) {position:absolute; right:0px; width:30%;}
 #uploadData_agreementCheck { height: 20px; }
+
+
 #submit_button { height: 40px; }
 #uploatData_form { width: 90%; margin: 0 auto; }
 #geocoding_loading {position:absolute; top:45px; right:40px; display:none;}
 #img_loading {display:none;}
-#uploadData_controls .ui-checkbox {float:left; width:30%; }
-#uploadData_controls div.ui-btn:nth-child(2) {position:absolute; float:left; margin-left:30%; width:60%;}
+
+
 #uploadData_error {background-color:#FD4500; color:#ffffff; padding:20px; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
 
 #uploadData_input {font-size:14px;}

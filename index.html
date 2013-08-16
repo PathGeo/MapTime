@@ -397,26 +397,26 @@
 				<div id='uploadData_error' style='display:none'></div>	
 				
 				<ul>
-					<li>
+					<li style='height:240px;'>
 						<div id='uploadData_field'></div>
-						
-						<!--
-						<div data-role="fieldcontain">
-							<label for="uploadData_geocodingField"><b>Select geocoding column: </b></label>
-								
-							<!--<select id='uploadData_geocodingField' name='uploadData_geocodingField' data-mini='true'> </select>-->
-							<!--
-							<div id="uploadData_geocodingFields" style="height: 125px; background-color: white; color: black; padding-top: 10px; overflow: auto;"></div>
+						<div id='uploadData_credit'>
+							<h2>Credit: </h2>
+							<ul>
+								<li>Your credit: <span id='uploadDatat_yourCredit'>123</span></li>
+								<li>The row count of uploaded data: <span id='uploadDatat_rowCount'>123</span></li>
+								<li>Needed credit: <span id='uploadDatat_neededCredit'>123</span></li>
+								<hr>
+								<li>Balance: <span id='uploadDatat_balance'>123</span></li>
+								<hr>
+								<li>ps. </li>
+							</ul>
 						</div>
-						-->
 					</li>
-					<li id='uploadData_agreement'>
-					</li>
+					<li id='uploadData_agreement'></li>
 					<li id='uploadData_controls'>
 						<label for='uploadData_agreementCheck'>I agree</label>
 						<input type='checkbox' id='uploadData_agreementCheck' name='uploadData_agreementCheck' style="float: left; width: 100px;" />
-						<!-- NOTE: There seems to be an issue with Jquery Mobile and this button.  The click button doesn't always fire.  
-						Setting data-role to "none" means that it will not be processed by Jquery Mobile, and the event seems to work now. -->
+						
 						<input id="submit_button" type="button" value="Map Your Data" data-theme="b" style='float:right; '>
 						<img id='geocoding_loading' src="images/loading.gif" width=15px style="display: none;"  />
 					</li>

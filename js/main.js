@@ -1178,14 +1178,14 @@ function showTable(obj, options){
 			"iDisplayLength": 1000,
 			"sDom": '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"if><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rtS<>>', //DOM
 			"fnInitComplete": function(oSettings, json) {
-				$("#" + oSettings.sTableId+"_filter input").val("Filter data results by keyword").attr("title", "Filter data results by keyword").on({
-					focus: function(){
-						if ($(this).val() == "Filter data results by keyword") {$(this).val("");}
-					},
-					blur: function(){
-						if($(this).val()==""){$(this).val("Filter data results by keyword");}
-					}
-				});
+				$("#" + oSettings.sTableId+"_filter input")
+					//.val("Filter data results by keyword")
+					.attr({
+						"title": "Filter data results by keyword",
+						"placeholder": "Filter data results by keyword"
+					})
+					.prop("type","search")
+					.textinput();
 				
 				//need to wait a few time to adjust the column size
 				setTimeout(function (){
