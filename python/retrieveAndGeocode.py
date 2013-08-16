@@ -99,7 +99,7 @@ def geocodeRows(rows, locFunc):
 				features.append(doc)
 				
 		except Exception, e:
-			return json.dumps({ 'error': str(e), 'row': str(row) })
+			return { 'error': str(e), 'row': str(row) }
 
 	return features
 	
@@ -246,6 +246,11 @@ elif loc:
 	geoFunc = functools.partial(geocodeRow, fields=[loc], geocoder=geocoder)
 	
 features = geocodeRows(jsonRows, geoFunc)
+
+if 'error' in features:
+	print ''
+	print json.dumps(features)
+	exit(1)
 
 #save geocoded result in the Mongo DB
 dataID=saveDatainMongo(features, fname, username, oauth)
