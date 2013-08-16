@@ -286,13 +286,13 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #uploadData_agreement {height:60px; padding:15px !important; overflow-y:auto; background-color:#ffffff; border:1px solid #cccccc; color:#555555;padding:15px;}
 
 #uploadData_field {float:left; width:54%; padding:10px; border:2px solid #cccccc; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
-#uploadData_field .ui-controlgroup-controls {height:170px; overflow:auto;}
+#uploadData_field .ui-controlgroup-controls {height:185px; overflow:auto;}
 #uploadData_field fieldset legend {font-size:14px; font-weight:bold; }
 #uploadData_field fieldset .ui-btn-inner {font-size:11.5px; font-weight:normal }
 
 #uploadData_credit {float:right; width:40%;text-align:right;}
 #uploadData_credit ul li {border-bottom:1px solid #f1f1f1; padding:5px; }
-#uploadData_credit hr {background-color: #eeeeee; height: 1px; border: 0;}
+#uploadData_credit hr {background-color: #dddddd; height: 1px; border: 0;}
 
 
 #uploadData_controls .ui-checkbox {float:left; }

@@ -417,10 +417,9 @@ function init_UI(){
 				var rowCount=tableInfo.rowCount,
 					geocodeCount=tableInfo.geocodeCount;
 					
-				if(geocodeCount < rowCount){
-					var html="Your Credit is not enough!<p></p> <b>Your Credit: "+ geocodeCount + "<p></p>Needed Credit: "+ rowCount +"</b><p></p>Would you like to use your remaining credit to geocode top " + geocodeCount + " records?";
-					$("#uploadData_error").html(html).show();
-				}
+				
+				//calculate credit
+				calculateCredit(rowCount);
 				
 				//remove old options 
 				var $fieldset=$("#uploadData_field");
@@ -448,6 +447,7 @@ function init_UI(){
 								
 				$("#uploadData_description, #uploadData_loading").hide();
 				$("#uploadData_confirm").show();	
+				
 			}, error: function (error) {
 				console.log(error.responseText);
 			}
@@ -490,7 +490,7 @@ function init_UI(){
 					console.log(featureCollection.msg)
 					return;
 				}
-			
+				
 				//end time and track ProcessTime event
 				var endTime=Date.now(),
 					processTime=Math.round((endTime-startTime)/1000);
@@ -548,6 +548,23 @@ function init_UI(){
 		
 	});
 	$("#layer_selector").hide();
+}
+
+
+//calculate credit
+function calculateCredit(rowCount, isLatLon){
+	var credit=app.userInfo.credit,
+		neededCredit=(isLatLon)? Math.round(rowCount / 10) : rowCount,
+		geocodedRowCount=(credit < neededCredit)? credit : neededCredit,
+		deductCredit=(isLatLon)? Math.round(geocodedRowCount / 10) : geocodedRowCount,
+		balance = credit - deductCredit;
+								
+		//show
+		$("#uploadData_yourCredit").html(credit);
+		$("#uploadData_rowCount").html(rowCount);
+		$("#uploadDatat_neededCredit").html(neededCredit);
+		$("#uploadDatat_geocodedRowCount").html(geocodedRowCount);
+		$("#uploadDatat_balance").html(balance);
 }
 
 
