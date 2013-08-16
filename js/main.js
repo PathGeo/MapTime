@@ -386,10 +386,9 @@ function init_UI(){
 	//Submits form when user selects a file to upload
 	//The reponse is a list of column names, which are used to populate the drop-down menu
 	$("#uploadData_input").change(function() { 
-		$("#geocoding_loading").css({position:"absolute", top:"45px", right:"40px"}).show();
 		$("#uploadData_error").html('');
 		$("#uploadData_content").hide();
-		$("#uploadData_description").show();	
+		$("#uploadData_description, #uploadData_loading").show();	
 		
 		
 		$("#uploadData_form").ajaxSubmit({
@@ -422,22 +421,28 @@ function init_UI(){
 				}
 				
 				//remove old options 
-				$("#uploadData_geocodingFields").html("");
+				var $fieldset=$("#uploadData_field fieldset");
+				$fieldset.html("<legend>Select geocoding columns:</legend>");
+				//$("#uploadData_geocodingFields").html("");
 				
 				//var columns = tableInfo.columns;
-				var columns = tableInfo.jsonCols;
-				currentFileName = tableInfo.fileName;
+				var columns = tableInfo.jsonCols,
+					currentFileName = tableInfo.fileName;
 				
+				var html=''
 				//set new options according to the returned value names
 				for (var indx = 0; indx < columns.length; indx++) {
 					var column = columns[indx].name;
-
-					if (columns[indx].suggested) {
-						column += "   <span style='color: red;'>[Suggested field: " + columns[indx].suggested + "]</span>";
-					} 
-					var text = "<input type='checkbox' id='" + columns[indx].name + "'/>" + column + " <br>";
-					$("#uploadData_geocodingFields").append(text);
+					html+='<input type="checkbox" name="'+ column + '" id="' + column + '" checked="">'+
+						  '<label for="'+column+'">' + column ;
+					
+					if(columns[indx].suggested) {
+						html += "   <span style='color: red;'>[Suggested field: " + columns[indx].suggested + "]</span>";
+					}
+					
+					html+="</label>";
 				}	
+				$fieldset.append(html);
 								
 				$("#uploadData_description, #geocoding_loading").hide();
 				$("#uploadData_content").show();	

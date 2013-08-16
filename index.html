@@ -344,18 +344,16 @@
 			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
 			
 			<!--uploadData-->
-			<form action="python/saveTable.py" method="post" id="uploadData_form" enctype="multipart/form-data" style="width: 90%; margin: 0 auto;">
+			<form action="python/saveTable.py" method="post" id="uploadData_form" enctype="multipart/form-data" >
 				<fieldset>
 					<input type="file" name="photo" id="uploadData_input" size="70%">
 					<input type='hidden' id='uploadData_username' name='username' value=''/>
 					<input type='hidden' id='uploadData_oauth' name='oauth' value=''/>
 				</fieldset>
+				<img id='uploadData_loading' src="images/loading.gif"  />
 			</form>
 			
-			<!-- upload content -->
-			<!-- NOTE: STILL WORKING ON LAYOUT -->
-			
-			
+
 			<!--uploadData_intro-->
 			<div id='uploadData_description' class='uploadDataContent'>
 					<h2>Upload and Map Your Data:<p></p>
@@ -388,40 +386,42 @@
 								        <p>2012/07-09 Crime Sample Data from 'San Diego Regional Data Library'</p></a>
 								    </li>
 								</ul>
-								<img id='uploadData_loading' src='images/loading.gif' />
+								<img id='sampleData_loading' src='images/loading.gif' />
 					</div>
 			</div>
 			
 			
-			
 			<!--uploadData content-->
-			<div id='uploadData_content' class='uploadDataContent'>
+			<div id='uploadData_confirm' class='uploadDataContent'>
 				<!-- uploadData error msg-->
 				<div id='uploadData_error' style='display:none'></div>	
 				
-				<div id='uploadData_confirm'>
-							<!--<img id='img_loading' src="images/loading.gif" width=15px  />-->
-							
-							<div data-role="fieldcontain">
-								<label for="uploadData_geocodingField"><b>Select geocoding column: </b></label>
+				<ul>
+					<li id='uploadData_field'>
+						<fieldset data-role="controlgroup">
+						    <legend>Select geocoding columns:</legend>
+						</fieldset>
+						<!--
+						<div data-role="fieldcontain">
+							<label for="uploadData_geocodingField"><b>Select geocoding column: </b></label>
 								
-								<!--<select id='uploadData_geocodingField' name='uploadData_geocodingField' data-mini='true'> </select>-->
-								<div id="uploadData_geocodingFields" style="height: 125px; background-color: white; color: black; padding-top: 10px; overflow: auto;"></div>
-							</div>
-							
-							<div id='uploadData_agreement'></div>
-				</div>
-				
-					
-				<div id="uploadData_controls" style="width: 95.8%; padding-top: 10px; ">
+							<!--<select id='uploadData_geocodingField' name='uploadData_geocodingField' data-mini='true'> </select>-->
+							<!--
+							<div id="uploadData_geocodingFields" style="height: 125px; background-color: white; color: black; padding-top: 10px; overflow: auto;"></div>
+						</div>
+						-->
+					</li>
+					<li id='uploadData_agreement'>
+					</li>
+					<li id='uploadData_controls'>
 						<label for='uploadData_agreementCheck'>I agree</label>
 						<input type='checkbox' id='uploadData_agreementCheck' name='uploadData_agreementCheck' style="float: left; width: 100px;" />
 						<!-- NOTE: There seems to be an issue with Jquery Mobile and this button.  The click button doesn't always fire.  
 						Setting data-role to "none" means that it will not be processed by Jquery Mobile, and the event seems to work now. -->
 						<input id="submit_button" type="button" value="Map Your Data" data-theme="b" style='float:right; '>
-				</div>
-				
-				<img id='geocoding_loading' src="images/loading.gif" width=15px style="display: none;"  />
+						<img id='geocoding_loading' src="images/loading.gif" width=15px style="display: none;"  />
+					</li>
+				</ul>				
 			</div>
 							
 		</div>
