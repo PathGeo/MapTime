@@ -426,8 +426,8 @@ function init_UI(){
 				//$("#uploadData_geocodingFields").html("");
 				
 				//var columns = tableInfo.columns;
-				var columns = tableInfo.jsonCols,
-					currentFileName = tableInfo.fileName;
+				var columns = tableInfo.jsonCols;
+				currentFileName = tableInfo.fileName;
 				
 				var html="<fieldset data-role='controlgroup'><legend>Select geocoding columns:</legend>";
 				//set new options according to the returned value names
