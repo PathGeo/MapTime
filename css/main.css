@@ -264,7 +264,17 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
  */
 #dialog_uploadData {width:700px; height:500px; text-shadow:0 0px 0 #fff;}
 #dialog_uploadData form {padding-top:30px;}
-#uploadData_content {width:95.8%; height:66.2%; margin-top:10px; background-color:#777777; color:#ffffff; padding:15px;-moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
+
+.uploadDataContent {width:90%; height:66.2%; margin:0 auto; margin-top:0px;}
+.uploadDataContent > h2 {background-color:#888888; color:#ffffff; padding:15px; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
+.uploadDataContent > h2 label {font-size:12px; font-weight:normal; }
+
+#uploadData_sampleData {width:100%; margin-top:50px; color:#333333; position:relative; }
+#uploadData_sampleData .ui-li-thumb {margin-left:5px; margin-top:9px; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
+#uploadData_loading {position:absolute; top:0px; right:0px; display:none;}
+
+#uploadData_content {display:none;}
+
 #uploadData_agreement {height:100px; overflow-y:auto; background-color:#ffffff; border:1px solid #cccccc; color:#555555;padding:15px;}
 #uploadData_confirm .ui-checkbox {width:40%; float:left;}
 #uploadData_agreementCheck { height: 20px; }
@@ -275,10 +285,9 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #uploadData_controls .ui-checkbox {float:left; width:30%; }
 #uploadData_controls div.ui-btn:nth-child(2) {position:absolute; float:left; margin-left:30%; width:60%;}
 #uploadData_error {background-color:#FD4500; color:#ffffff; padding:20px; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
-#uploadData_sampleData {position:absolute; width:86%; margin-top:50px; color:#333333;  }
-#uploadData_sampleData .ui-li-thumb {margin-left:5px; margin-top:9px; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
+
 #uploadData_input {font-size:14px;}
-#uploadData_loading {position:absolute; right:-30px; display:none;}
+
 
 /**
  * lab

@@ -346,60 +346,46 @@
 			<!--uploadData-->
 			<form action="python/saveTable.py" method="post" id="uploadData_form" enctype="multipart/form-data" style="width: 90%; margin: 0 auto;">
 				<fieldset>
+				
 					<input type="file" name="photo" id="uploadData_input" size="70%">
 					<input type='hidden' id='uploadData_username' name='username' value=''/>
 					<input type='hidden' id='uploadData_oauth' name='oauth' value=''/>
-				</fieldset>
-			</form>
-			
-			<!-- upload content -->
-			<!-- NOTE: STILL WORKING ON LAYOUT -->
-			
-			
-			<!--uploadData_intro-->
-			<div id='uploadData_description' class='uploadDataContent'>
-					<h2>Upload and Map Your Data:<p></p>
-						<label>MapTime allows you to geocode and geo-analyze their data (with street addresses) into maps.<p></p>
-							   In the beta version, MapTime supports XLS, XLSX, or CSV file format. <br>
-							   MapTime will keep supporting more file formats in the near future.
-						</label>
-					</h2>
 					
+					<!-- upload content -->
+					<!-- NOTE: STILL WORKING ON LAYOUT -->
+					
+					<!-- uploadData error msg-->
+					<div id='uploadData_error' style='display:none'></div>	
+					
+					<div id='uploadData_content'>
+						<div id='uploadData_description' >
+							<h2>Upload and Map Your Data:</h2>
+							MapTime allows you to geocode and geo-analyze their data (with street addresses) into maps.<p></p>
+							In the beta version, MapTime supports XLS, XLSX, or CSV file format. <br>
+							MapTime will keep supporting more file formats in the near future.
 						
-					<!--sample data-->
-					<div id='uploadData_sampleData'>
-						<h2>Or See a tutorial to know how to use MapTime</h2>
+							<!--sample data-->
+							<div id='uploadData_sampleData'>
+								<h2>Or See a tutorial to know how to use MapTime</h2>
 								<ul data-role="listview" data-inset="true">
-								    <!--
-									<li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);showDemo("SAN DIEGO");}}, 100)'>
+								    <li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);showDemo("SAN DIEGO");}}, 100)'>
 								        <img src="images/sandiego.jpg">
 								        <h2>Tutorial: San Diego Crime Rate</h2>
 								        <p>2012/01 Crime Sample Data from 'San Diego Regional Data Library'</p></a>
 								    </li>
+									<!--
+								    <li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);showDemo("SAN FRANCISCO");}}, 100)'>
+								        <img src="images/sanfrancisco.JPG">
+								        <h2>San Francisco Shoe's Customer</h2>
+								        <p>Test GeoMask</p></a>
+								    </li>
 									-->
-								    <li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);showDemo("SD-NAVAJO");}}, 100)'>
-								        <img src="images/SD-Navoja.jpg">
-								        <h2>Tutorial: Crime Rate in Navajo, San Diego</h2>
-								        <p>2012/07-09 Crime Sample Data from 'San Diego Regional Data Library'</p></a>
-								    </li>
-									<li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);showDemo("SD-PACIFIC-BEACH");}}, 100)'>
-								        <img src="images/SD-PacificBeach.jpg">
-								        <h2>Tutorial: Crime Rate in Pacific Beach, San Diego</h2>
-								        <p>2012/07-09 Crime Sample Data from 'San Diego Regional Data Library'</p></a>
-								    </li>
 								</ul>
 								<img id='uploadData_loading' src='images/loading.gif' />
-					</div>
-			</div>
-			
-			
-			
-			<!--uploadData content-->
-			<div id='uploadData_content' class='uploadDataContent'>
-				<!-- uploadData error msg-->
-				<div id='uploadData_error' style='display:none'></div>	
-				
-				<div id='uploadData_confirm'>
+							</div>
+						</div>
+						
+						<div id='uploadData_confirm' style='display:none'>
 							<!--<img id='img_loading' src="images/loading.gif" width=15px  />-->
 							
 							<div data-role="fieldcontain">
@@ -410,20 +396,21 @@
 							</div>
 							
 							<div id='uploadData_agreement'></div>
-				</div>
-				
+						</div>
+					</div>
 					
-				<div id="uploadData_controls" style="width: 95.8%; padding-top: 10px; ">
+				
+					<div id="uploadData_controls" style="width: 95.8%; padding-top: 10px; display: none;">
 						<label for='uploadData_agreementCheck'>I agree</label>
 						<input type='checkbox' id='uploadData_agreementCheck' name='uploadData_agreementCheck' style="float: left; width: 100px;" />
 						<!-- NOTE: There seems to be an issue with Jquery Mobile and this button.  The click button doesn't always fire.  
 						Setting data-role to "none" means that it will not be processed by Jquery Mobile, and the event seems to work now. -->
 						<input id="submit_button" type="button" value="Map Your Data" data-theme="b" style='float:right; '>
-				</div>
-				
-				<img id='geocoding_loading' src="images/loading.gif" width=15px style="display: none;"  />
-			</div>
-							
+					</div>
+					
+				</fieldset>
+			</form>
+			<img id='geocoding_loading' src="images/loading.gif" width=15px style="display: none;"  />
 		</div>
 		
 		

@@ -382,13 +382,14 @@ function init_UI(){
 		return false;
 	});
 			
+			
 	//Submits form when user selects a file to upload
 	//The reponse is a list of column names, which are used to populate the drop-down menu
 	$("#uploadData_input").change(function() { 
 		$("#geocoding_loading").css({position:"absolute", top:"45px", right:"40px"}).show();
 		$("#uploadData_error").html('');
-		$("#uploadData_error, #uploadData_confirm").hide();
-		$("#uploadData_content, #uploadData_description").show();	
+		$("#uploadData_content").hide();
+		$("#uploadData_description").show();	
 		
 		
 		$("#uploadData_form").ajaxSubmit({
@@ -416,7 +417,7 @@ function init_UI(){
 					geocodeCount=tableInfo.geocodeCount;
 					
 				if(geocodeCount < rowCount){
-					var html="Your Credit is not enough!<p></p> <b>Your Credit: "+ geocodeCount + "<p></p>Needed Credit: "+ rowCount +"</b><p></p>Would you like to use your remaining credit to geocode top " + geocodeCount + " data?";
+					var html="Your Credit is not enough!<p></p> <b>Your Credit: "+ geocodeCount + "<p></p>Needed Credit: "+ rowCount +"</b><p></p>Would you like to use your remaining credit to geocode top " + geocodeCount + " records?";
 					$("#uploadData_error").html(html).show();
 				}
 				
@@ -438,14 +439,15 @@ function init_UI(){
 					$("#uploadData_geocodingFields").append(text);
 				}	
 								
-				$("#uploadData_description, #geocoding_loading, #uploadData_error").hide();
-				$("#uploadData_content, #uploadData_confirm, #uploadData_controls").show();	
+				$("#uploadData_description, #geocoding_loading").hide();
+				$("#uploadData_content").show();	
 			}, error: function (error) {
 				console.log(error.responseText);
 			}
 		});
 	
 	});
+	
 	
 	
 	//Submits upload file form and captures the response
@@ -2072,6 +2074,30 @@ function showDemo(demoType){
 				downloadLink: './geocoded_files/incidents-2013-small.csv',
 				keywords: [],
 				dataID:"1375413042"
+			}
+		break;
+		case "SD-NAVAJO":
+			obj = {
+				url: 'db/demo-SD-Navajo-201207-09.json',
+				title:'San Diego Navajo Crime rate (2012/07~09)',
+				column:{
+					statistics:"type"
+				},
+				downloadLink: './geocoded_files/2012-crime-navajo-three-month-7-9.xls',
+				keywords: [],
+				dataID:"1376671999"
+			}
+		break;
+		case "SD-PACIFIC-BEACH":
+			obj = {
+				url: 'db/demo-SD-PacificBeach-201207-09.json',
+				title:'San Diego Pacific Beach Crime rate (2012/07~09)',
+				column:{
+					statistics:"type"
+				},
+				downloadLink: './geocoded_files/2012-crime-pacific-beach-three-month-7-9.xls',
+				keywords: [],
+				dataID:"1376673065"
 			}
 		break;
 	}
