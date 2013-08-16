@@ -387,7 +387,7 @@ function init_UI(){
 	//The reponse is a list of column names, which are used to populate the drop-down menu
 	$("#uploadData_input").change(function() { 
 		$("#uploadData_error").html('');
-		$("#uploadData_content").hide();
+		$("#uploadData_confirm").hide();
 		$("#uploadData_description, #uploadData_loading").show();	
 		
 		
@@ -396,7 +396,8 @@ function init_UI(){
 			success: function (tableInfo) {
 				//if user's credit is not enough, a error msg will return back.
 				if(tableInfo && tableInfo.status && tableInfo.status=='error'){
-					$("#uploadData_content, #geocoding_loading").hide();
+					$("#uploadData_condescription, #geocoding_loading").hide();
+					
 					
 					//style the error msg
 					var html="";
@@ -421,31 +422,32 @@ function init_UI(){
 				}
 				
 				//remove old options 
-				var $fieldset=$("#uploadData_field fieldset");
-				$fieldset.html("<legend>Select geocoding columns:</legend>");
+				var $fieldset=$("#uploadData_field");
 				//$("#uploadData_geocodingFields").html("");
 				
 				//var columns = tableInfo.columns;
 				var columns = tableInfo.jsonCols,
 					currentFileName = tableInfo.fileName;
 				
-				var html=''
+				var html="<fieldset data-role='controlgroup'><legend>Select geocoding columns:</legend>";
 				//set new options according to the returned value names
 				for (var indx = 0; indx < columns.length; indx++) {
 					var column = columns[indx].name;
-					html+='<input type="checkbox" name="'+ column + '" id="' + column + '" checked="">'+
-						  '<label for="'+column+'">' + column ;
+					html+='<input type="checkbox" name="'+ column + '" id="' + column + '" ';
 					
 					if(columns[indx].suggested) {
-						html += "   <span style='color: red;'>[Suggested field: " + columns[indx].suggested + "]</span>";
+						html += 'checked >'  +'<label for="'+column+'">' + column +"   <span style='color: red;'>[Suggested field: " + columns[indx].suggested + "]</span>";
+					}else{
+						html+='>'+'<label for="'+column+'">' + column ;
 					}
 					
 					html+="</label>";
 				}	
-				$fieldset.append(html);
+				html+="</fieldset>";
+				$fieldset.append(html).trigger('create');
 								
 				$("#uploadData_description, #geocoding_loading").hide();
-				$("#uploadData_content").show();	
+				$("#uploadData_confirm").show();	
 			}, error: function (error) {
 				console.log(error.responseText);
 			}
