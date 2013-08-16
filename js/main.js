@@ -444,7 +444,7 @@ function init_UI(){
 					html+="</label>";
 				}	
 				html+="</fieldset>";
-				$fieldset.append(html).trigger('create');
+				$fieldset.html(html).trigger('create');
 								
 				$("#uploadData_description, #geocoding_loading").hide();
 				$("#uploadData_confirm").show();	
