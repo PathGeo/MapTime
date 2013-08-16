@@ -387,7 +387,7 @@ function init_UI(){
 	//The reponse is a list of column names, which are used to populate the drop-down menu
 	$("#uploadData_input").change(function() { 
 		$("#uploadData_error").html('');
-		$("#uploadData_confirm").hide();
+		$("#uploadData_confirm, #uploadData_error").hide();
 		$("#uploadData_description, #uploadData_loading").show();	
 		
 		
@@ -396,8 +396,8 @@ function init_UI(){
 			success: function (tableInfo) {
 				//if user's credit is not enough, a error msg will return back.
 				if(tableInfo && tableInfo.status && tableInfo.status=='error'){
-					$("#uploadData_condescription, #uploadData_loading").hide();
-					
+					$("#uploadData_description, #uploadData_loading, #uploadData_confirm ul").hide();
+					$("#uploadData_confirm").show();
 					
 					//style the error msg
 					var html="";
@@ -411,6 +411,7 @@ function init_UI(){
 					$("#uploadData_error").html(html).show();
 					return;
 				}
+				
 				
 				//check if geocodeCount < rowCount, show msg to say that only geocodeCount will be geocoded
 				var rowCount=tableInfo.rowCount,
@@ -429,7 +430,7 @@ function init_UI(){
 				var columns = tableInfo.jsonCols;
 				currentFileName = tableInfo.fileName;
 				
-				var html="<fieldset data-role='controlgroup'><legend>Select geocoding columns:</legend>";
+				var html="<fieldset data-role='controlgroup' data-mini='true'><legend>Select geocoding columns:</legend>";
 				//set new options according to the returned value names
 				for (var indx = 0; indx < columns.length; indx++) {
 					var column = columns[indx].name;
@@ -440,13 +441,12 @@ function init_UI(){
 					}else{
 						html+='>'+'<label for="'+column+'">' + column ;
 					}
-					
 					html+="</label>";
 				}	
 				html+="</fieldset>";
 				$fieldset.html(html).trigger('create');
 								
-				$("#uploadData_description, #geocoding_loading").hide();
+				$("#uploadData_description, #uploadData_loading").hide();
 				$("#uploadData_confirm").show();	
 			}, error: function (error) {
 				console.log(error.responseText);
