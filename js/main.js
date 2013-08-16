@@ -562,9 +562,9 @@ function calculateCredit(rowCount, isLatLon){
 		//show
 		$("#uploadData_yourCredit").html(credit);
 		$("#uploadData_rowCount").html(rowCount);
-		$("#uploadDatat_neededCredit").html(neededCredit);
-		$("#uploadDatat_geocodedRowCount").html(geocodedRowCount);
-		$("#uploadDatat_balance").html(balance);
+		$("#uploadData_neededCredit").html(neededCredit);
+		$("#uploadData_geocodedRowCount").html(geocodedRowCount);
+		$("#uploadData_balance").html(balance);
 }
 
 
