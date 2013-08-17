@@ -294,11 +294,13 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #uploadData_credit ul li {border-bottom:0px solid #f1f1f1; padding:5px; }
 #uploadData_credit ul li span{float:right; width:60px; }
 #uploadData_credit hr {background-color: #dddddd; height: 1px; border: 0;}
+#uploadData_credit .ui-btn  {float:right; width:120px;}
+#uploadData_credit .ui-btn .ui-btn-inner {font-size:12px;}
+#uploadData_balanceMsg {color:#ff0000;}
 
-
-#uploadData_controls .ui-checkbox {position:absolute; left:10px; top:2px;}
+#uploadData_controls .ui-checkbox {position:absolute; left:0px; top:2px;}
 #uploadData_controls .ui-checkbox .ui-btn-inner {font-size:12px;}
-#uploadData_controls div.ui-btn:nth-child(2) {position:absolute; right:0px; width:30%;}
+#uploadData_controls div.ui-btn:nth-child(2) {position:absolute; right:0px; width:300px;}
 #uploadData_agreementCheck { height: 20px; }
 
 

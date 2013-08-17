@@ -578,9 +578,22 @@ function calculateCredit(rowCount, isLatLon){
 		neededCredit=(isLatLon)? Math.round(rowCount / 10) : rowCount,
 		balance = credit - neededCredit,
 		msg=null;
-			
+		
+		//default value
+		$("#uploadData_controls").show();
+		$("#submit_button").val("Map Your Data (All records)");
+		
+		//check credit, if credit==0 > hide main tools
+		if(credit==0){
+			$("#uploadData_controls").hide();
+		}
+		
+		//check balance
 		if(balance < 0){
-			balance="<font style='color:#FF0000'>" + balance + "</font>";
+			var geocodeCount=(isLatLon)? credit * 10 : credit;
+			balance="<font style='color:#FF0000; font-weight:bold;'>" + balance + "</font>";
+			msg='Only top ' + geocodeCount + ' will be geocoded!<br>Or please buy some credits to geocode all records.';
+			$("#submit_button").val("Map Your Data (Only top " + geocodeCount + " records)")
 		}
 			
 		//show
@@ -588,6 +601,7 @@ function calculateCredit(rowCount, isLatLon){
 		$("#uploadData_rowCount").html(rowCount);
 		$("#uploadData_neededCredit").html(neededCredit);
 		$("#uploadData_balance").html(balance);
+		$("#uploadData_balanceMsg").html(msg);
 }
 
 
@@ -2393,9 +2407,11 @@ function print(){
 
 
 //show profile
-function showProfile(){
+function showProfile(tab){
+	if(!tab){tab='account'}
+	
 	//redirect url
-	$("#userMenu_iframe").attr("src", "common/accountManagement.html?email="+ app.userInfo.email + "&oauth="+app.userInfo.oauth+"&tab=account");
+	$("#userMenu_iframe").attr("src", "common/accountManagement.html?email="+ app.userInfo.email + "&oauth="+app.userInfo.oauth+"&tab="+tab);
 	$("#dialog_userMenu").popup("open");
 }
 
