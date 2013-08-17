@@ -291,7 +291,8 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #uploadData_field fieldset .ui-btn-inner {font-size:11.5px; font-weight:normal }
 
 #uploadData_credit {float:right; width:40%;text-align:right; padding:5px;}
-#uploadData_credit ul li {border-bottom:1px solid #f1f1f1; padding:5px; }
+#uploadData_credit ul li {border-bottom:0px solid #f1f1f1; padding:5px; }
+#uploadData_credit ul li span{float:right; width:60px; }
 #uploadData_credit hr {background-color: #dddddd; height: 1px; border: 0;}
 
 

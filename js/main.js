@@ -443,7 +443,28 @@ function init_UI(){
 					html+="</label>";
 				}	
 				html+="</fieldset>";
-				$fieldset.html(html).trigger('create');
+				$fieldset.html(html).trigger('create')
+				
+				//check default checked value
+				var candidates=["x","y","lat","lon","latitude","longitude", "geo", "coordinates", "coordinate"];
+				$fieldset.find("input:checked").each(function(){
+					if($.inArray(this.id, candidates)!=-1){
+						calculateCredit(rowCount, true);
+					}else{
+						calculateCredit(rowCount);
+					}
+				})
+				
+				//chkeckbox click event
+				$fieldset.find("input[type='checkbox']").click(function(){
+					calculateCredit(rowCount);
+					$fieldset.find("input:checked").each(function(){
+						if($.inArray(this.id, candidates)!=-1){
+							calculateCredit(rowCount, true);
+						}
+					})
+				})
+				
 								
 				$("#uploadData_description, #uploadData_loading").hide();
 				$("#uploadData_confirm").show();	
@@ -555,15 +576,17 @@ function init_UI(){
 function calculateCredit(rowCount, isLatLon){
 	var credit=app.userInfo.credit,
 		neededCredit=(isLatLon)? Math.round(rowCount / 10) : rowCount,
-		geocodedRowCount=(credit < neededCredit)? credit : neededCredit,
-		deductCredit=(isLatLon)? Math.round(geocodedRowCount / 10) : geocodedRowCount,
-		balance = credit - deductCredit;
-								
+		balance = credit - neededCredit,
+		msg=null;
+			
+		if(balance < 0){
+			balance="<font style='color:#FF0000'>" + balance + "</font>";
+		}
+			
 		//show
 		$("#uploadData_yourCredit").html(credit);
 		$("#uploadData_rowCount").html(rowCount);
 		$("#uploadData_neededCredit").html(neededCredit);
-		$("#uploadData_geocodedRowCount").html(geocodedRowCount);
 		$("#uploadData_balance").html(balance);
 }
 
