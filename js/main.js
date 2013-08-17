@@ -387,7 +387,7 @@ function init_UI(){
 	//The reponse is a list of column names, which are used to populate the drop-down menu
 	$("#uploadData_input").change(function() { 
 		$("#uploadData_error").html('');
-		$("#uploadData_confirm, #uploadData_error").hide();
+		$("#uploadData_confirm, #uploadData_error, #geocoding_loading").hide();
 		$("#uploadData_description, #uploadData_loading").show();	
 		
 		
