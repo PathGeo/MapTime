@@ -558,7 +558,9 @@ function init_UI(){
 				//showSumup(featureCollection)
 				
 				//update user account info
-				updateAccountInfo(app.userInfo.email)
+				updateAccountInfo(app.userInfo.email);
+				
+				$("#geocoding_loading").hide();
 				 
 			}, error: function (error) {
 				console.log("Error:");
