@@ -286,7 +286,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #uploadData_agreement {height:60px; padding:15px !important; overflow-y:auto; background-color:#ffffff; border:1px solid #cccccc; color:#555555;padding:15px;}
 
 #uploadData_field {float:left; width:53%; padding:10px; border:0px solid #cccccc; -moz-border-radius: 5px;-webkit-border-radius: 5px;border-radius: 5px;}
-#uploadData_field .ui-controlgroup-controls {height:290px; overflow:auto;}
+#uploadData_field .ui-controlgroup-controls {height:270px; overflow:auto;}
 #uploadData_field fieldset legend {font-size:14px; font-weight:bold; }
 #uploadData_field fieldset .ui-btn-inner {font-size:11.5px; font-weight:normal }
 
@@ -298,7 +298,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #uploadData_credit .ui-btn .ui-btn-inner {font-size:12px;}
 #uploadData_balanceMsg {color:#ff0000;}
 
-#uploadData_controls .ui-checkbox {position:absolute; left:0px; top:2px;}
+#uploadData_controls .ui-checkbox {position:absolute; left:10px; top:2px;}
 #uploadData_controls .ui-checkbox .ui-btn-inner {font-size:12px;}
 #uploadData_controls div.ui-btn:nth-child(2) {position:absolute; right:0px; width:300px;}
 #uploadData_agreementCheck { height: 20px; }
@@ -306,7 +306,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 
 #submit_button { height: 40px; }
 #uploatData_form { width: 90%; margin: 0 auto; }
-#geocoding_loading {position:absolute; top:45px; right:40px; display:none;}
+#geocoding_loading {position:absolute; top:15px; right:-25px; display:none; width:20px;}
 #img_loading {display:none;}
 
 

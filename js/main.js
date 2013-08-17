@@ -491,7 +491,7 @@ function init_UI(){
 		}
 		
 		//show geocoding loading icon
-		$("#geocoding_loading").css({top:"440px", right:"5px"}).show();
+		$("#geocoding_loading").show();
 		
 		//process time
 		var startTime=Date.now();
