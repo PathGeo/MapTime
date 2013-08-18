@@ -427,23 +427,27 @@ function init_UI(){
 				//$("#uploadData_geocodingFields").html("");
 				
 				//var columns = tableInfo.columns;
-				var columns = tableInfo.jsonCols;
+				var columns = tableInfo.jsonCols,
+					html_suggested="",
+					html_others="";
 				currentFileName = tableInfo.fileName;
 				
 				var html="<fieldset data-role='controlgroup' data-mini='true'><legend>Select geocoding columns:</legend>";
 				//set new options according to the returned value names
 				for (var indx = 0; indx < columns.length; indx++) {
 					var column = columns[indx].name;
-					html+='<input type="checkbox" name="'+ column + '" id="' + column + '" ';
+					html_suggested+='<input type="checkbox" name="'+ column + '" id="' + column + '" ';
+					html_others+='<input type="checkbox" name="'+ column + '" id="' + column + '" ';
 					
 					if(columns[indx].suggested) {
-						html += 'checked >'  +'<label for="'+column+'">' + column +"   <span style='color: red;'>[Suggested field: " + columns[indx].suggested + "]</span>";
+						html_selected += 'checked >'  +'<label for="'+column+'">' + column +"   <span style='color: red;'>[Suggested field: " + columns[indx].suggested + "]</span>";
 					}else{
-						html+='>'+'<label for="'+column+'">' + column ;
+						html_others+='>'+'<label for="'+column+'">' + column ;
 					}
-					html+="</label>";
-				}	
-				html+="</fieldset>";
+					html_suggested+="</label>";
+					html_others+="</label>";
+				}
+				html+=html_suggested + html_others +"</fieldset>";
 				$fieldset.html(html).trigger('create')
 				
 				//check default checked value
@@ -1007,8 +1011,8 @@ function showLayer(obj, options){
 					//set up heatmap slider		
 					$("#heatmap_slider").attr({
 						'min': 50,
-						'max':  5050,
-						'step': (5050-50)/20,
+						'max': 3050,
+						'step': (3050-50)/50,
 						'value': getRadius(0)
 					}).on("slidestop", function(e){
 						var radius=e.currentTarget.value;
