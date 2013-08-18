@@ -139,7 +139,8 @@ var app={
 	oauthWindow:null,
 	tutorial:null,
 	introJS:null,
-	geomask:false
+	geomask:false,
+	highlightMarker:new L.Marker([0,0])
 }
 
 
@@ -687,8 +688,8 @@ function changeMarkerIcon(img_src, width, height){
 				return "images/1374595382_marker_rounded_red.png"
 			}
 		})(),
-		iconSize: [width, height],//[12.5, 21],
-		iconAnchor: [width/2, height/2]// [6.25, 10.5]
+		iconSize: [width*1.5, height*1.5],//[12.5, 21],
+		iconAnchor: [width*0.75, height*0.75]// [6.25, 10.5]
 	});
 	
 
@@ -819,8 +820,9 @@ function showLayer(obj, options){
 											showLocalInfo(e.target.feature.properties._featureID, {scrollToRow:true, zoomToCenter:false, showPopup:false});
 										},
 										mouseout: function(e){
-											e.target.setIcon(e.target.options.iconDefault)
+											//e.target.setIcon(e.target.options.iconDefault)
 											//app.map.closePopup();
+											//app.map.removeLayer(app.highlightMarker);
 										},
 										click:function(e){
 											//show local info
@@ -849,16 +851,18 @@ function showLayer(obj, options){
 									}
 									
 									
+									var width=16, height=21.6;
+									
 									var icon=new L.icon({
-											iconUrl: "images/1374596320_marker_rounded_light_blue.png",
-											iconSize: [16, 16],//[12.5, 21],
-											iconAnchor: [8, 8]// [6.25, 10.5]
+											iconUrl: "images/marker/blue/5.png", //"images/1374596320_marker_rounded_light_blue.png",//"images/1374590792_bullet-black.png", //
+											iconSize: [width, height],//[12.5, 21],
+											iconAnchor: [width/2, height/2]// [6.25, 10.5]
 									});
 									
 									var iconHover=new L.icon({
-										iconUrl: "images/1374595382_marker_rounded_red.png",
-										iconSize: [18, 18], //[26, 26],
-									   	iconAnchor: [9, 9] //[13, 13]
+										iconUrl: "images/marker/Magenta/5.png", //"images/1374590745_bullet-red.png", //
+										iconSize: [width*1.5, height*1.5], //[26, 26],
+									   	iconAnchor: [width*0.75, height*0.75] //[13, 13]
 									})
 									return new L.marker(latlng, {icon: icon, iconHover:iconHover, iconDefault:icon, draggable:true})
 								},
@@ -1587,8 +1591,10 @@ function showLocalInfo(fid, options){
 		app.$tr.closest("[_featureID=" + fid + "]").css(app.css["dataTable_highlightRow"]);
 		
 		
-		//change marker icon
-		layer.setIcon(layer.options.iconHover);
+		//show highlight marker
+		app.highlightMarker.setIcon(layer.options.iconHover).setLatLng(layer.getLatLng()).addTo(app.map);
+		
+		//layer.setIcon(layer.options.iconHover);
 		
 		
 		//trigger businessActions type to directly show the first option and draw its google chart
