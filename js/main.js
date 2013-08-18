@@ -413,12 +413,9 @@ function init_UI(){
 				}
 				
 				
-				//check if geocodeCount < rowCount, show msg to say that only geocodeCount will be geocoded
-				var rowCount=tableInfo.rowCount,
-					geocodeCount=tableInfo.geocodeCount;
-					
+				var rowCount=tableInfo.rowCount;
 				
-				//calculate credit
+				//check rowCount and calculate credit
 				calculateCredit(rowCount);
 				
 				//remove old options 

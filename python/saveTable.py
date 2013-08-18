@@ -155,7 +155,7 @@ msg={
 
 if(username is not None):
         #get user's credit
-        credit=getUserCredit(username, oauth)
+        #credit=getUserCredit(username, oauth)
 
         #Get DataTable object, and convert rows to JSON
         table = DataTableFactory.getDataTable(fileStream=file, fileName=name)
@@ -172,23 +172,25 @@ if(username is not None):
             else:
                 jsonCols.append({'name': c})
 		
-				
-		
+
+			
+        pickle.dump(jsonRows, open(os.path.abspath(__file__).replace(__file__, name + ".p"), "w"))
+        msg={'columns': [col for col in table.getColumnNames() if col], 'fileName': name, 'jsonCols': jsonCols, 'rowCount': len(jsonRows) }	
 		
 		
         #if credit is not None
-        if(credit is not None):
+        #if(credit is not None):
                 #if credit is enough
-                if(credit>0):
-                        pickle.dump(jsonRows, open(os.path.abspath(__file__).replace(__file__, name + ".p"), "w"))
-                        msg={'columns': [col for col in table.getColumnNames() if col], 'fileName': name, 'jsonCols': jsonCols, 'rowCount': len(jsonRows), 'geocodeCount': len(jsonRows) }
+                #if(credit>0):
+                        #pickle.dump(jsonRows, open(os.path.abspath(__file__).replace(__file__, name + ".p"), "w"))
+                        #msg={'columns': [col for col in table.getColumnNames() if col], 'fileName': name, 'jsonCols': jsonCols, 'rowCount': len(jsonRows), 'geocodeCount': len(jsonRows) }
 
-                        if(credit < len(jsonRows)):
-                                msg["geocodeCount"]=len(jsonRows) - credit;
-                else:
-                        msg["msg"]="Your credit is not enough at this time. <br>Total needed credit: "+ str(len(jsonRows))+"<br>Your credit: "+ str(credit)+"<br>Needed credit: "+ str(len(jsonRows)-credit)+"<br>Please buy some credit first. Thank you."
-        else:
-                msg["msg"]="The account,'" + username + "', does not have credit field"
+                        #if(credit < len(jsonRows)):
+                               # msg["geocodeCount"]=len(jsonRows) - credit;
+                #else:
+                        #msg["msg"]="Your credit is not enough at this time. <br>Total needed credit: "+ str(len(jsonRows))+"<br>Your credit: "+ str(credit)+"<br>Needed credit: "+ str(len(jsonRows)-credit)+"<br>Please buy some credit first. Thank you."
+        #else:
+                #msg["msg"]="The account,'" + username + "', does not have credit field"
 
 print ''
 print json.dumps(msg)
