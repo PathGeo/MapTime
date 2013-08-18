@@ -9,6 +9,8 @@ from os import path
 from pymongo import MongoClient
 
 client=MongoClient()
+pathgeoUser=client["pathgeo"]["user"]
+pathgeoTransaction=client["pathgeo"]["transaction"]
 
 
 #Functions to check potential location fields (are all these functions necessary?  just pass pattern as argument!)
@@ -62,11 +64,12 @@ def geomask(val):
 	
 	return val + r
 		
-def geocodeRows(rows, locFunc):
+def geocodeRows(rows, locFunc, maxRow):
 	features = []
 
 	#Go through each row and geocode location field.
-	for row in rows:
+	for i in range(maxRow):
+		row=rows[i]
 		try: 
 			#convert any whole number floats into string
 			#must convert to int first, in order to trim off decimal values
@@ -103,6 +106,7 @@ def geocodeRows(rows, locFunc):
 
 	return features
 	
+
 	
 def geocodeRow(row, fields=None, geocoder=None):
 	if not geocoder or not fields:
@@ -111,6 +115,7 @@ def geocodeRow(row, fields=None, geocoder=None):
 	place, (llat, llon) = geocoder.lookup(' '.join([row[field] for field in fields]))
 	
 	return place, (llat, llon)
+
 
 
 def getStatesFromZips(rows, zipCol):
@@ -147,19 +152,29 @@ def saveDatainMongo(geojson, fileName, username, oauth):
         return timestamp
 
 
+
+#get users' credit
+def getUserCredit(username, oauth):
+        user=pathgeoUser.find_one({"email":username, "oauth": oauth})
+
+        if(user is not None):
+                return user["credit"]
+        else:
+                return None
+
+
+
 def deductUserCredit(username, oauth, usedCredit, filename):
-        collection=client["pathgeo"]["user"]
-        transaction=client["pathgeo"]["transaction"]
-        user=collection.find_one({"email":username, "oauth": oauth})
+        user=pathgeoUser.find_one({"email":username, "oauth": oauth})
 
         if(user is not None):
                 if(user["credit"] is not None):
                         if(user["credit"] >= usedCredit):
                                 user["credit"]=user["credit"] - usedCredit
-                                collection.save(user)
+                                pathgeoUser.save(user)
 
                                 #transaction
-                                transaction.insert({
+                                pathgeoTransaction.insert({
                                         "email": username,
                                         "oauth": oauth, 
                                         "date": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S %Z"),
@@ -174,6 +189,8 @@ def deductUserCredit(username, oauth, usedCredit, filename):
                         return "no credit field"
         else:
                 return "no such user"
+
+
 
 
 
@@ -200,6 +217,8 @@ loc = getField(geoColumns, IS_LOCATION)
 #geo just temporary for the angelina jolie tweets
 geo = getField(geoColumns, IS_GEO)
 
+#check if geocodingColumn is lat/lon
+isLatLon=False
 
 #Note: Username and PW for geocoder.US does not currently seem to work with geopy
 #so this is not actually using our account right now...
@@ -207,7 +226,7 @@ geocoder = AddressGeocoder(username='PathGeo2', password='PGGe0C0der')
 
 geoFunc = None
 
-#still just serializing the python object for excel data.  should save to DB?
+#still just serializing the python object for excel data.  
 jsonRows = pickle.load(open(os.path.abspath(__file__).replace(__file__, fname + ".p")))
 os.remove(os.path.abspath(__file__).replace(__file__, fname + ".p"))
 
@@ -221,7 +240,8 @@ if lat and lon:
 			return None, (None, None)
 		
 	geoFunc = functools.partial(getByLatLon, latField=lat, lonField=lon)
-	
+
+	isLatLon=True
 elif geo:
 	def getByLatLon(row, geoField=None):
 		try: 
@@ -231,7 +251,8 @@ elif geo:
 			return None, (None, None)
 		
 	geoFunc = functools.partial(getByLatLon, geoField=geo)
-	
+
+	isLatLon=True
 elif addr and city and (state or zip):
 	#only address is necessary to geocode, but check if city, state or zipcode are present
 	#and, if so, add them to out list of geocoding fields
@@ -244,35 +265,57 @@ elif addr and city and (state or zip):
 	geoFunc = functools.partial(geocodeRow, fields=[addr] + otherFields, geocoder=geocoder)	
 elif loc:
 	geoFunc = functools.partial(geocodeRow, fields=[loc], geocoder=geocoder)
-	
-features = geocodeRows(jsonRows, geoFunc)
-
-if 'error' in features:
-	print ''
-	print json.dumps(features)
-	exit(1)
-
-#save geocoded result in the Mongo DB
-dataID=saveDatainMongo(features, fname, username, oauth)
-
-fname = fname.lower().replace('.xlsx', '.xls')
-
-if features:
-	saveDataAsExcel(map(lambda item: item['properties'], features), '..\\geocoded_files\\' + fname)
-
-featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': '' if not features else './geocoded_files/' + fname, 'dataID': dataID }
 
 
-#deduct users' credit
-outcome=deductUserCredit(username, oauth, len(features), fname)
+
+#check user's credit
+credit=int(getUserCredit(username, oauth))
+rowCount=len(jsonRows)
+needCredit=int(round(rowCount/10)) if isLatLong else rowCount
+geocodeCount=rowCount
+
+msg={
+     "status":"error",
+     "msg":""   
+}
+
+if credit==0:
+        msg["msg"]="No enough credit. Please add some credit" 
+else:
+        #if credit is less than needCredit, than only geocode top credit(*10 if latlng) rows
+        if(credit < needCredit):
+                geocodeCount= credit*10 if isLatLon else credit
+
+        #geocode
+        features = geocodeRows(jsonRows, geoFunc, geocodeCount)      
+
+        if 'error' in features:
+                print ''
+                print json.dumps(features)
+                exit(1)
+
+        
+        #save geocoded result in the Mongo DB
+        dataID=saveDatainMongo(features, fname, username, oauth)
+
+        fname = fname.lower().replace('.xlsx', '.xls')
+
+        if features:
+                saveDataAsExcel(map(lambda item: item['properties'], features), '..\\geocoded_files\\' + fname)
+
+        featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': '' if not features else './geocoded_files/' + fname, 'dataID': dataID }
+
+
+        #deduct users' credit
+        outcome=deductUserCredit(username, oauth, needCredit, fname)
+
+        if (outcome=='succeed'):
+                msg=featureSet
+        else:
+                msg["msg"]=outcome
+
+
+
 
 print ''
-if(outcome=='succeed'):
-        print json.dumps(featureSet)
-else:
-        print {
-                "status":"error",
-                "msg":outcome
-        }
-
-
+print json.dumps(msg)
