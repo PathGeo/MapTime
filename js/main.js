@@ -178,7 +178,7 @@ $(document).on({
 	
 	   	init_map();
 		
-		getClientGeo();
+		//getClientGeo();
 		
 		readTutorial();
 	},
@@ -245,7 +245,8 @@ function init_map(){
 	
 	//change leaflet attribution
 	$(".leaflet-control-attribution a:first-child").attr("href", "http://www.pathgeo.com").html("PathGeo");
-	$(".leaflet-control-attribution").append(" and <a href='http://www.maxmind.com/en/javascript'>GeoIP2 JavaScript from MaxMind</a>")
+	//$(".leaflet-control-attribution").append(" and <a href='http://www.maxmind.com/en/javascript'>GeoIP2 JavaScript from MaxMind</a>")
+	$(".leaflet-control-attribution").append(" & Icon from <a href='http://medialoot.com/item/free-vector-map-location-pins/' target='_blank'>MediaLoot</a>")
 	app.map.on("baselayerchange", function(e){
 		$(".leaflet-control-attribution a:first-child").attr("href", "http://www.pathgeo.com").html("PathGeo");
 	})
@@ -683,14 +684,15 @@ function changeMarkerIcon(img_src, width, height){
 	
 	var iconHover=new L.icon({
 		iconUrl: (function(){
-			if(img_src.split("bullet").length>1){
-				return "images/1374590745_bullet-red.png"
-			}else{
-				return "images/1374595382_marker_rounded_red.png"
-			}
+			return "images/marker/Magenta/5.png"
+//			if(img_src.split("bullet").length>1){
+//				return "images/1374590745_bullet-red.png"
+//			}else{
+//				return "images/1374595382_marker_rounded_red.png"
+//			}
 		})(),
-		iconSize: [width*1.5, height*1.5],//[12.5, 21],
-		iconAnchor: [width*0.75, height*0.75]// [6.25, 10.5]
+		iconSize: [width, height],//[12.5, 21],
+		iconAnchor: [width/2, height/2]// [6.25, 10.5]
 	});
 	
 
@@ -862,8 +864,8 @@ function showLayer(obj, options){
 									
 									var iconHover=new L.icon({
 										iconUrl: "images/marker/Magenta/5.png", //"images/1374590745_bullet-red.png", //
-										iconSize: [width*1.5, height*1.5], //[26, 26],
-									   	iconAnchor: [width*0.75, height*0.75] //[13, 13]
+										iconSize: [width, height], //[26, 26],
+									   	iconAnchor: [width/2, height/2] //[13, 13]
 									})
 									return new L.marker(latlng, {icon: icon, iconHover:iconHover, iconDefault:icon, draggable:true})
 								},

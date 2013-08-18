@@ -103,10 +103,13 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 
 #mapPopup_geoJsonLayer {top:50px; right:10px; }
 #mapPopup_geoJsonLayer .mapPopupWidget_content label {margin-left:10px;}
-#mapPopup_geoJsonLayer .mapPopupWidget_content ul {list-style:none; padding:0px; margin:0px; margin-top:8px;}
-#mapPopup_geoJsonLayer .mapPopupWidget_content ul li {padding:0px 10px 0px 10px; float:left; }
+#mapPopup_geoJsonLayer .mapPopupWidget_content ul {list-style:none; padding:0px; margin:0px; margin-top:8px; width:100%;}
+#mapPopup_geoJsonLayer .mapPopupWidget_content ul li {padding:3px 10px 3px 10px; float:left;width:12%; text-align:center; }
 #mapPopup_geoJsonLayer .mapPopupWidget_content ul li:hover {background-color:#777777; }
-#mapPopup_geoJsonLayer .mapPopupWidget_content ul li img {width:25px; height:25px; }
+/**#mapPopup_geoJsonLayer .mapPopupWidget_content ul li img {width:25px; height:25px; }*/
+#mapPopup_geoJsonLayer .mapPopupWidget_content ul li img.small{width:12px; height:17.5px;}
+#mapPopup_geoJsonLayer .mapPopupWidget_content ul li img.mid {width:16px; height:21.5px;}
+#mapPopup_geoJsonLayer .mapPopupWidget_content ul li img.big {width:20px; height:25.5px;}
 
 /**
  * gallery
