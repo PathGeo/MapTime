@@ -432,7 +432,6 @@ function init_UI(){
 					html_others="";
 				currentFileName = tableInfo.fileName;
 				
-				var html="<fieldset data-role='controlgroup' data-mini='true'><legend>Select geocoding columns:</legend>";
 				//set new options according to the returned value names
 				for (var indx = 0; indx < columns.length; indx++) {
 					var column = columns[indx].name;
@@ -440,10 +439,12 @@ function init_UI(){
 					if(columns[indx].suggested) {
 						html_suggested+='<input type="checkbox" name="'+ column + '" id="' + column + '" checked ><label for="'+column+'">' + column +"   <span style='color: red;'>[Suggested field: " + columns[indx].suggested + "]</span></label>";
 					}else{
-						html_others+='<input type="checkbox" name="'+ column + '" id="' + column + '"><label for="'+column+'">' + column ;
+						html_others+='<input type="checkbox" name="'+ column + '" id="' + column + '"><label for="'+column+'">' + column +"</label>" ;
 					}
 				}
-				html+=html_suggested + html_others +"</fieldset>";
+				var html="<fieldset data-role='controlgroup' data-mini='true'><legend>Select geocoding columns:</legend>"+
+						 html_suggested + html_others +
+						 "</fieldset>";
 				$fieldset.html(html).trigger('create')
 				
 				//check default checked value
