@@ -436,16 +436,12 @@ function init_UI(){
 				//set new options according to the returned value names
 				for (var indx = 0; indx < columns.length; indx++) {
 					var column = columns[indx].name;
-					html_suggested+='<input type="checkbox" name="'+ column + '" id="' + column + '" ';
-					html_others+='<input type="checkbox" name="'+ column + '" id="' + column + '" ';
 					
 					if(columns[indx].suggested) {
-						html_selected += 'checked >'  +'<label for="'+column+'">' + column +"   <span style='color: red;'>[Suggested field: " + columns[indx].suggested + "]</span>";
+						html_suggested+='<input type="checkbox" name="'+ column + '" id="' + column + '" checked ><label for="'+column+'">' + column +"   <span style='color: red;'>[Suggested field: " + columns[indx].suggested + "]</span></label>";
 					}else{
-						html_others+='>'+'<label for="'+column+'">' + column ;
+						html_others+='<input type="checkbox" name="'+ column + '" id="' + column + '"><label for="'+column+'">' + column ;
 					}
-					html_suggested+="</label>";
-					html_others+="</label>";
 				}
 				html+=html_suggested + html_others +"</fieldset>";
 				$fieldset.html(html).trigger('create')
