@@ -322,10 +322,7 @@ function init_UI(){
 		}
 	})
 	
-	//setup agreement
-	if(_agreement){
-		$("#uploadData_agreement").html(_agreement)
-	}
+
 	
 	 
 	//when mouse click on otherplace, hide dataTable_menu
@@ -389,6 +386,12 @@ function init_UI(){
 		$("#uploadData_error").html('');
 		$("#uploadData_confirm, #uploadData_error, #geocoding_loading").hide();
 		$("#uploadData_description, #uploadData_loading").show();	
+		
+		//if no file is selected
+		if($(this).val()==''){
+			$("#uploadData_loading").hide();
+			return;
+		}
 		
 		
 		$("#uploadData_form").ajaxSubmit({
@@ -591,7 +594,7 @@ function calculateCredit(rowCount, isLatLon){
 		if(balance < 0){
 			var geocodeCount=(isLatLon)? credit * 10 : credit;
 			balance="<font style='color:#FF0000; font-weight:bold;'>" + balance + "</font>";
-			msg='Only top ' + geocodeCount + ' will be geocoded!<br>Or please buy some credits to geocode all records.';
+			msg='Only top ' + geocodeCount + ' will be geocoded!<br>Or buy some credits to geocode all records.';
 			$("#submit_button").val("Map Your Data (Only top " + geocodeCount + " records)")
 		}
 			

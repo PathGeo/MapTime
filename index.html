@@ -59,8 +59,6 @@
 	<!--<script src="db/sanFran.js"></script>-->
 	<!--<script src="db/ACS_Sanfrancisco.js"></script>-->
 	
-	<!-- Agreement-->
-	<script src='db/agreement.js'></script>
 	
 	
     <!-- main -->
@@ -416,7 +414,7 @@
 					</li>
 					<!--<li id='uploadData_agreement'></li>-->
 					<li id='uploadData_controls'>
-						<label for='uploadData_agreementCheck'>I acknowledge <a href='common/agreement.html' target='_blank'>MapTime agreement</a></label>
+						<label for='uploadData_agreementCheck'>I acknowledge <a href='common/agreement.html' onclick='window.open("common/agreement.html", "_blank")' target='_blank'>MapTime agreement</a></label>
 						<input type='checkbox' id='uploadData_agreementCheck' name='uploadData_agreementCheck' style="float: left; width: 100px;" />
 						
 						<input id="submit_button" type="button" value="Map Your Data (All records)" data-theme="b" style='float:right; '>
