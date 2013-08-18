@@ -271,7 +271,7 @@ elif loc:
 #check user's credit
 credit=int(getUserCredit(username, oauth))
 rowCount=len(jsonRows)
-needCredit=int(round(rowCount/10)) if isLatLong else rowCount
+needCredit=int(round(rowCount/10)) if isLatLon else rowCount
 geocodeCount=rowCount
 
 msg={
@@ -279,12 +279,14 @@ msg={
      "msg":""   
 }
 
+
 if credit==0:
         msg["msg"]="No enough credit. Please add some credit" 
 else:
         #if credit is less than needCredit, than only geocode top credit(*10 if latlng) rows
         if(credit < needCredit):
                 geocodeCount= credit*10 if isLatLon else credit
+                needCredit=credit
 
         #geocode
         features = geocodeRows(jsonRows, geoFunc, geocodeCount)      
