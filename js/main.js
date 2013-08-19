@@ -2489,15 +2489,20 @@ function download() {
 
 	if(downloadType=='all'){
 		window.open(app.geocodingResult.downloadLink);
+		$("#dialog_download").popup("close");
+		return
 	}else{
-		var dataID=null, filterRowID=null, filterTerm=null,
+		var filterRowID=null, filterTerm=null,
 			obj = app.geocodingResult;
 		
-		if (obj.filterRowID && obj.dataID && obj.filterTerm && obj.filterTerm!='') {
-			dataID=obj.dataID;
+		if (obj.filterRowID && obj.filterTerm && obj.filterTerm!='' && downloadType!='all+geomask') {
 			filterRowID=obj.filterRowID;
 			filterTerm=obj.filterTerm;
 		}
+		
+		//show loading image
+		$("#download_loading").show();
+		
 		
 		//get link url
 		$.ajax({
@@ -2505,7 +2510,7 @@ function download() {
 			data:{
 				username: app.userInfo.email,
 				oauth:app.userInfo.oauth,
-				table:dataID,
+				table:app.geocodingResult.dataID,
 				rows:filterRowID,
 				term:filterTerm,
 				geomask:hasGeomask
@@ -2515,6 +2520,11 @@ function download() {
 			success: function(json){
 				if (json && json.URL_xls && json.URL_xls != '') {
 					window.open(json.URL_xls)
+					
+					//hide download image
+					//show loading image
+					$("#download_loading").hide();
+					$("#dialog_download").popup("close");
 				}
 			},
 			error: function(e){
@@ -2524,7 +2534,7 @@ function download() {
 	}
 	
 
-	$("#dialog_download").popup("close");
+	
 }
 
 //oath callback

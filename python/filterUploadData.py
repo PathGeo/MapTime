@@ -52,12 +52,14 @@ collection=client["maptime"]["uploadData"]
 
 #get url parameter
 username=getParameterValue("username")
-rows=getParameterValue("rows").split(",")
+rows=getParameterValue("rows")
 tableID=getParameterValue("table")
 term=getParameterValue("term")
 oauth=getParameterValue("oauth")
 geomask=getParameterValue("geomask")
 
+if rows is not None:
+    rows=rows.split(",")
 
 msg={
     "status":"error",
@@ -70,25 +72,34 @@ if(username is not None):
 
    if(table is not None):
         results=table["geojson"]
-        filePath='..\\geocoded_files\\' + table["name"] 
+        filePath= table["name"] 
        
         #geomask
         if(geomask.upper()=='TRUE'):
-            results=map(lambda f: {"geometry": f["geomasked_geometry"], "properties":f["properties"]}, result)
+            results=[]
+            properties={}
+            coordinates={}
+            for f in table["geojson"]:
+                properties=f["properties"]
+                coordinates=f["geomasked_geometry"]["coordinates"]
+                properties["lat"]=coordinates[1]
+                properties["lon"]=coordinates[0]
+                f["geometry"]=f["geomasked_geometry"]
+                results.append(f)
             filePath+="_geomasked"
             
         #selected
-        if(rows is not None and tableID is not None and term is not None):
-            results=map(lambda row: data[int(row)], rows)
+        if(rows is not None and term is not None):
+            results=map(lambda row: results[int(row)], rows)
             filePath+='_' + term
 
         filePath+='.xls'
         
         #save as excel
         if results:
-            saveDataAsExcel(map(lambda item: item['properties'], results), filePath)
+            saveDataAsExcel(map(lambda item: item['properties'], results), '..\\geocoded_files\\'+filePath)
 
-        msg={'type': 'FeatureCollection', 'features': results, 'URL_xls': '' if not results else filePath }
+        msg={'type': 'FeatureCollection', 'features': results, 'URL_xls': '' if not results else './geocoded_files/' + filePath }
 
 
 print simplejson.dumps(msg)
