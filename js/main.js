@@ -1405,7 +1405,7 @@ function showTable(obj, options) {
 				
 					//check if user filter some data
 					if (app.geocodingResult.filterRowID && app.geocodingResult.filterTerm) {
-						enable("downloadType_selected");
+						$("#downloadType_selected").checkboxradio('enable');
 						
 						if(app.geomask){
 							$("#downloadType_selected_geomask").checkboxradio('enable');
