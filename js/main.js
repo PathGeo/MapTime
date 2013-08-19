@@ -1396,12 +1396,11 @@ function showTable(obj, options) {
 			switch (title) {
 				case "download":
 					//disabled selected and geomask
-					$("#downloadType_all_geomask, #downloadType_selected, #downloadType_selected_geomask").attr("disabled");
-					$("#downloadType_all_geomask, #downloadType_selected, #downloadType_selected_geomask").parent().addClass("ui-disabled");
+					$("#downloadType_all_geomask, #downloadType_selected, #downloadType_selected_geomask").checkboxradio('disable');
 				
 					//check if geomask
 					if(app.geomask){
-						enable("downloadType_all_geomask");
+						$("#downloadType_all_geomask").checkboxradio('enable');
 					}
 				
 					//check if user filter some data
@@ -1409,21 +1408,10 @@ function showTable(obj, options) {
 						enable("downloadType_selected");
 						
 						if(app.geomask){
-							enable("downloadType_selected_geomask");
+							$("#downloadType_selected_geomask").checkboxradio('enable');
 						}
-					}
+					}
 					$("#dialog_download").popup('open');
-					
-					//enable button
-					function enable(id){
-						$id=$("#"+id);
-						$id.removeAttr('disabled');
-						$id.parent().removeClass("ui-disabled");
-					}
-					
-					
-					
-					
 					break;
 				case "print":
 					//window.open("print.html", "Map Time", "width=800, height=500, status=no, toolbar=no, fullscreen=yes, channelmode=yes, location=no, menubar=no, titlebar=no")
