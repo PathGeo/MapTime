@@ -7,6 +7,7 @@ urlParameter=cgi.FieldStorage()
 
 print "Content-Type: text/html \n"
 
+
 #get value from URL parameter--------------------------------------------
 def getParameterValue(name):
     value=None
@@ -19,6 +20,7 @@ def getParameterValue(name):
     
     return value
 #--------------------------------------------------------------------------
+
 
 #save data as excel--------------------------------------------------------
 def saveDataAsExcel(data, outputFileName):
@@ -54,6 +56,7 @@ rows=getParameterValue("rows").split(",")
 tableID=getParameterValue("table")
 term=getParameterValue("term")
 oauth=getParameterValue("oauth")
+geomask=getParameterValue("geomask")
 
 
 msg={
@@ -62,14 +65,30 @@ msg={
 }
 
 
-if(username is not None and rows is not None and tableID is not None and term is not None):
+if(username is not None):
    table=collection.find_one({"email":username, "timestamp":tableID, "oauth": oauth})
 
    if(table is not None):
-        results=map(lambda row: table["geojson"][int(row)], rows)
-        if results:
-            saveDataAsExcel(map(lambda item: item['properties'], results), '..\\geocoded_files\\' + table["name"] + '_' + term +'.xls')
+        results=table["geojson"]
+        filePath='..\\geocoded_files\\' + table["name"] 
+       
+        #geomask
+        if(geomask.upper()=='TRUE'):
+            results=map(lambda f: {"geometry": f["geomasked_geometry"], "properties":f["properties"]}, result)
+            filePath+="_geomasked"
+            
+        #selected
+        if(rows is not None and tableID is not None and term is not None):
+            results=map(lambda row: data[int(row)], rows)
+            filePath+='_' + term
 
-        msg={'type': 'FeatureCollection', 'features': results, 'URL_xls': '' if not results else './geocoded_files/' + table["name"] + '_' + term + '.xls' }
+        filePath+='.xls'
+        
+        #save as excel
+        if results:
+            saveDataAsExcel(map(lambda item: item['properties'], results), filePath)
+
+        msg={'type': 'FeatureCollection', 'features': results, 'URL_xls': '' if not results else filePath }
+
 
 print simplejson.dumps(msg)

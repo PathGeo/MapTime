@@ -473,7 +473,7 @@
 		</div>
 		
 		<!--user log in-->
-		<div id='dialog_login' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
+		<div id='dialog_login' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true">
              <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
 			 
 			 <iframe id='oauth_login' src='common/login.html?product=maptime'></iframe>
@@ -483,7 +483,7 @@
 		
 		
 		<!--dialog oauth-->
-		<div id='dialog_oauth' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
+		<div id='dialog_oauth' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true">
             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
 			
 			<iframe id='oauth_iframe'></iframe>
@@ -491,7 +491,7 @@
 		
 		
 		<!-- dialog user-->
-		<div id='dialog_userMenu' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
+		<div id='dialog_userMenu' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true">
             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
 			
 			<iframe id='userMenu_iframe'></iframe>
@@ -501,7 +501,7 @@
 		
 
 		<!-- sum up-->
-		<div id='dialog_sumup' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
+		<div id='dialog_sumup' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true">
             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
 			
 			<h3>Select a field to map your data</h3>
@@ -614,16 +614,23 @@
 		
 		
 		<!-- dialog_download-->
-		<div id='dialog_download' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
+		<div id='dialog_download' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true">
             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
             <h2>Download your data: </h2>
 			
             <fieldset data-role="controlgroup">
             	<legend></legend>
-		        <input type="radio" name="downloadType" id="downloadType_all" value="all" checked="checked">
+		        <input type="radio" name="downloadType" id="downloadType_all"  value="all" checked="checked">
 		        <label for="downloadType_all">Download All Data<br><font size=1>Download your data with latitude and longitude</font></label>
+		        
+		        <input type="radio" name="downloadType" id="downloadType_all_geomask"  value="all+geomask"  disabled>
+		        <label for="downloadType_all_geomask">Download All Data + Geomask<br><font size=1>If geomasking function is not activated, this options is disabled.</font></label>
+		        
 		        <input type="radio" name="downloadType" id="downloadType_selected" value="selected" disabled>
 		        <label for="downloadType_selected">Download Selected Data<br><font size=1>If you did not filter your data, this option is disabled.</font></label>
+		        
+		        <input type="radio" name="downloadType" id="downloadType_selected_geomask" value="selected+geomask" disabled>
+		        <label for="downloadType_selected_geomask">Download Selected Data + Geomask<br><font size=1>If geomasking function is not activated, this options is disabled.</font></label>
 		    </fieldset>
 			
 			<p></p><br>
@@ -632,16 +639,16 @@
 		
 
 		<!-- dialog_geomask-->
-		<div id='dialog_geomask' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
+		<div id='dialog_geomask' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true">
             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
-            <h2>GeoMask: </h2>
+            <h2>GeoMask: <p>MapTime can conceal locations by randomly selecting a coordinate in a radius to protect customers' privacy.</p></h2>
 			
             <fieldset data-role="controlgroup">
             	<legend></legend>
 		        <input type="radio" name="geomaskType" id="geomask_default" value="default" checked="checked" onclick='geomask()'>
 		        <label for="geomask_default">Default<br><font size=1>Original coodinates</font></label>
 		        <input type="radio" name="geomaskType" id="geomask_geomask" value="geomask" onclick='geomask()'>
-		        <label for="geomask_geomask">GeoMask<br><font size=1>MapTime will mask coordinates into 100 meter accuracy to protect customers' privacy.</font></label>
+		        <label for="geomask_geomask">GeoMask 100m<br><font size=1>Geomasking coordinates in 100 meters</font></label>
 		    </fieldset>
 			
 			<p></p>
@@ -649,7 +656,7 @@
 		
 		
 		<!--dialog logout-->
-		<div id='dialog_logout' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
+		<div id='dialog_logout' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true">
 			<h3 style='margin-top:10px;'>Are you sure? </h3>
 			<p style='margin-top:30px; '>
 				<a href="#" data-role="button" data-inline="true" data-theme="b" onclick='logout()'>Log out</a>
