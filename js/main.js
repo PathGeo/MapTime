@@ -369,6 +369,8 @@ function init_UI() {
 		$target.show();
 	});
 
+
+
 	//Keep track of currently uploaded file
 	var currentFileName = '';
 
@@ -1259,12 +1261,8 @@ function showTable(obj, options) {
 					})
 
 					//resize map to show the dataTable
-					resizeMap({
-						height : "75%"
-					}, {
-						height : "25%"
-					});
-
+					resizeMap({height : "75%"}, {height : "25%"});
+					
 				}, 10);
 
 			},
@@ -1310,6 +1308,13 @@ function showTable(obj, options) {
 					//to avoid refresh too frequently to mark high CPU usage
 					setTimeout(function() {
 						if (me.$('tr', {"filter" : "applied"}).length == $selectedData.length) {
+							//dataTable info
+							var $info=$("#dataTable_info"), infoHtml=$info.html(), splits=infoHtml.split("(filtered");
+							if(splits.length>0){
+								console.log(infoHtml)
+							}
+							
+							
 							//read selected layers
 							var zipcodes = {}, zipcode = '', filterRowIDs = [];
 							
