@@ -1310,8 +1310,13 @@ function showTable(obj, options) {
 						if (me.$('tr', {"filter" : "applied"}).length == $selectedData.length) {
 							//dataTable info
 							var $info=$("#dataTable_info"), infoHtml=$info.html(), splits=infoHtml.split("(filtered");
-							if(splits.length>0){
-								console.log(infoHtml)
+							if(splits.length>0 && splits[1]){
+								if(splits[0].split('<br>').length==1){
+									infoHtml=splits[0]+"<br>(filtered"+splits[1];
+									$info.html(infoHtml).css({"margin-top":"2px"})
+								}
+							}else{
+								$info.css({"margin-top":"13px"})
 							}
 							
 							
