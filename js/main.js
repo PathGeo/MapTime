@@ -40,9 +40,9 @@ var app = {
 	controls : {
 		mapGallery : L.Control.extend({
 			options : {
-				collapsed : true,
-				position : 'topright',
-				text : 'Map Gallery',
+				"collapsed" : true,
+				"position" : 'topright',
+				"text" : 'Map Gallery'
 			},
 			initialize : function(options) {
 				L.Util.setOptions(this, options);
@@ -95,8 +95,8 @@ var app = {
 		toc : null,
 		legend : L.Control.extend({
 			options : {
-				position : 'bottomright',
-				text : 'Legend',
+				"position" : 'bottomright',
+				"text" : 'Legend'
 			},
 			initialize : function(options) {
 				L.Util.setOptions(this, options);
