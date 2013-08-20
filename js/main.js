@@ -661,12 +661,13 @@ function changeMarkerIcon(img_src, width, height) {
 
 	var iconHover = new L.icon({
 		iconUrl : (function() {
-			return "images/marker/Magenta/5.png"
-			//			if(img_src.split("bullet").length>1){
-			//				return "images/1374590745_bullet-red.png"
-			//			}else{
-			//				return "images/1374595382_marker_rounded_red.png"
-			//			}
+			
+			if(img_src.split("bullet").length>1){
+				return "images/1374590745_bullet-red.png"
+			}else{
+				return "images/marker/Magenta/5.png"
+				//return "images/1374595382_marker_rounded_red.png"
+			}
 		})(),
 		iconSize : [width, height], //[12.5, 21],
 		iconAnchor : [width / 2, height / 2]// [6.25, 10.5]
