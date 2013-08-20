@@ -67,6 +67,10 @@ var app = {
 							});
 						} else {
 							layer.addTo(app.map);
+							
+							//make the markerclusterlayer more priority
+							if(value=='markerClusterLayer'){layer.bringToFront();}
+							
 							$this.css({
 								"background-color" : '#5B92C0'
 							});
@@ -680,6 +684,11 @@ function changeMarkerIcon(img_src, width, height) {
 		marker.options.iconDefault = icon;
 		marker.options.iconHover = iconHover;
 	})
+	
+	//hide hightlight marker
+	if(app.highlightMarker){
+		app.highlightMarker.setIcon(iconHover)
+	}
 }
 
 //load geojson
