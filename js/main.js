@@ -508,7 +508,7 @@ function init_UI() {
 				oauth : app.userInfo.oauth
 			},
 			success : function(featureCollection) {
-				console.log(featureCollection.columns);
+				//console.log(featureCollection.columns);
 				//error handler
 				if (featureCollection && featureCollection.status && featureCollections.status == 'error') {
 					console.log(featureCollection.msg)
@@ -548,6 +548,7 @@ function init_UI() {
 					column : {
 						statistics : ""
 					},
+					columns : featureCollection.columns,
 					downloadLink : (featureCollection["URL_xls"] && featureCollection["URL_xls"] != "") ? featureCollection["URL_xls"] : null,
 					dataID : featureCollection.dataID,
 					hasGeomask : (featureCollection.features[0].geomasked_geometry) ? true : false
@@ -1193,12 +1194,13 @@ function showTable(obj, options) {
 		//convert geojson properties to array
 		if (!obj.dataTable) {
 			obj.dataTable = pathgeo.util.geojsonPropertiesToArray(obj.json, {
-				statisticsColumn : obj.column.statistics
+				statisticsColumn : obj.column.statistics,
+				orderedColumns: obj.columns
 			});
 		}
 
 		var dataTable = obj.dataTable;
-
+		
 		//hide columns
 		var hiddenColumns = ["Coordinates"];
 		$.each(dataTable.columns_dataTable, function(i, column) {
