@@ -307,6 +307,9 @@ else:
         if features:
                 saveDataAsExcel(map(lambda item: item['properties'], features), '..\\geocoded_files\\' + fname, columns=columns)
 
+		if 'latitude' in features[0]['properties'] and 'longitude' in features[0]['properties']:
+			columns = columns + ['latitude', 'longitude']
+				
         featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': '' if not features else './geocoded_files/' + fname, 'dataID': dataID, 'columns': columns }
 
 

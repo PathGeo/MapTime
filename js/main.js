@@ -508,7 +508,7 @@ function init_UI() {
 				oauth : app.userInfo.oauth
 			},
 			success : function(featureCollection) {
-				//console.log(featureCollection);
+				console.log(featureCollection.columns);
 				//error handler
 				if (featureCollection && featureCollection.status && featureCollections.status == 'error') {
 					console.log(featureCollection.msg)
