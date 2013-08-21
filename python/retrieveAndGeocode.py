@@ -40,13 +40,13 @@ def getField(items, checker):
 	return None if not found else found.pop()
 
 	
-def saveDataAsExcel(data, outputFileName):
+def saveDataAsExcel(data, outputFileName, columns=None):
 	import xlwt
 
 	book = xlwt.Workbook(encoding="UTF-8")
 	sheet = book.add_sheet('Data')
 	
-	columns = data[0].keys()
+	columns = columns or data[0].keys()
 	for colIndx, column in enumerate(columns):
 		sheet.write(0, colIndx, column)
 
@@ -227,7 +227,9 @@ geocoder = AddressGeocoder(username='PathGeo2', password='PGGe0C0der')
 geoFunc = None
 
 #still just serializing the python object for excel data.  
-jsonRows = pickle.load(open(os.path.abspath(__file__).replace(__file__, fname + ".p")))
+jsonTable = pickle.load(open(os.path.abspath(__file__).replace(__file__, fname + ".p")))
+jsonRows = jsonTable['rows']
+columns = jsonTable['columns']
 os.remove(os.path.abspath(__file__).replace(__file__, fname + ".p"))
 
 
@@ -303,7 +305,7 @@ else:
         fname = fname.lower().replace('.xlsx', '.xls')
 
         if features:
-                saveDataAsExcel(map(lambda item: item['properties'], features), '..\\geocoded_files\\' + fname)
+                saveDataAsExcel(map(lambda item: item['properties'], features), '..\\geocoded_files\\' + fname, columns=columns)
 
         featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': '' if not features else './geocoded_files/' + fname, 'dataID': dataID }
 

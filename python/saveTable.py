@@ -60,10 +60,10 @@ def isLatLon(val):
 	except:
 		return False
 		
-def isLat(val):
+def isLon(val):
 	return isFloat(val) and WEST <= float(val) <= EAST
 	
-def isLon(val):
+def isLat(val):
 	return isFloat(val) and SOUTH <= float(val) <= NORTH
 
 '''
@@ -172,9 +172,10 @@ if(username is not None):
             else:
                 jsonCols.append({'name': c})
 		
-
+		
+		jsonTable = dict(columns=table.getColumnNames(), rows=jsonRows)
 			
-        pickle.dump(jsonRows, open(os.path.abspath(__file__).replace(__file__, name + ".p"), "w"))
+        pickle.dump(jsonTable, open(os.path.abspath(__file__).replace(__file__, name + ".p"), "w"))
         msg={'columns': [col for col in table.getColumnNames() if col], 'fileName': name, 'jsonCols': jsonCols, 'rowCount': len(jsonRows) }	
 		
 		
