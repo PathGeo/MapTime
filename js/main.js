@@ -184,13 +184,13 @@ pathgeo.service.demographicData({
 });
 
 //load getSatisfiction help
-$.getScript("https://loader.engage.gsfn.us/loader.js", function(scipt) {
-	if ( typeof GSFN !== "undefined") {
-		GSFN.loadWidget(5632, {
-			"containerId" : "getsat-widget-5632"
-		});
-	}
-});
+// $.getScript("https://loader.engage.gsfn.us/loader.js", function(scipt) {
+	// if ( typeof GSFN !== "undefined") {
+		// GSFN.loadWidget(5632, {
+			// "containerId" : "getsat-widget-5632"
+		// });
+	// }
+// });
 
 //init
 $(document).on({
@@ -2288,7 +2288,7 @@ function showDemo(demoType) {
 			//showSumup(json);
 			showTable(app.geocodingResult, {
 				callback : function() {
-					setTimeout(showTutorial, 1000);
+					//setTimeout(showTutorial, 1000);
 				}
 			});
 		});
@@ -2581,7 +2581,8 @@ function showTutorial() {
 	if (app.dataTable) {
 		app.introJS.start();
 	} else {
-		showDemo('SAN DIEGO');
+		//showDemo('SAN DIEGO');
+		alert("Please upload data first or check out our sample data!");
 	}
 }
 
