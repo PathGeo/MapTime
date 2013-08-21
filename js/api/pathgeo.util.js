@@ -142,13 +142,27 @@ pathgeo.util={
 				columns[0]="ID";
 			}
 			
-			$.each(feature.properties, function(k,v){
-				if(needColumns){
-					columns_dataTable.push({"sTitle": k})
-					columns.push(k);
+			if (!options.orderedColumns) {
+				$.each(feature.properties, function(k,v){
+					if(needColumns){
+						columns_dataTable.push({"sTitle": k})
+						columns.push(k);
+					}
+					datas.push(v);
+				});
+			} else {
+				for (var i = 0; i < options.orderedColumns.length; i++) {
+					var col = options.orderedColumns[i];
+					if (!feature.properties[col]) 
+						continue;
+					
+					if (needColumns) {
+						columns_dataTable.push({"sTitle": col});
+						columns.push(col)
+					}
+					datas.push(feature.properties[col]);
 				}
-				datas.push(v);
-			});
+			}
 			
 			//add coordinates
 			if(feature.geometry.type=="Point"){
