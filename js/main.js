@@ -3,8 +3,10 @@ google.load("visualization", "1", {
 	packages : ["corechart", "table"]
 });
 
-//var locationY;
-//var locationX;
+
+//use json in the cookie
+$.cookie.json=true;
+
 
 var app = {
 	map : null,
@@ -217,7 +219,8 @@ $(document).on({
 //init login and read cookie
 function init_login() {
 	if ($.cookie("PathGeo")) {
-		var email = app.userInfo.email = $.cookie("PathGeo").split("email=")[1];
+		var email = app.userInfo.email = $.cookie("PathGeo").email,
+			oauth = app.userInfo.oauth = $.cookie("PathGeo").oauth;
 
 		//get user account info
 		getAccountInfo(email);
@@ -1290,6 +1293,18 @@ function showTable(obj, options) {
 			},
 			fnDrawCallback : function(oSettings) {
 
+				//dataTable info
+				var $info=$("#dataTable_info"), infoHtml=$info.html(), splits=infoHtml.split("(filtered");
+				if(splits.length>0 && splits[1]){
+					if(splits[0].split('<br>').length==1){
+						infoHtml=splits[0]+"<br>(filtered"+splits[1];
+						$info.html(infoHtml).css({"margin-top":"2px"})
+					}
+				}else{
+					$info.css({"margin-top":"13px"})
+				}
+
+
 				//only works while filter input box is focused!!
 				if ($(".dataTables_filter input").is(":focus")) {
 					//console.log('filter refresh map');
@@ -1317,17 +1332,6 @@ function showTable(obj, options) {
 					//to avoid refresh too frequently to mark high CPU usage
 					setTimeout(function() {
 						if (me.$('tr', {"filter" : "applied"}).length == $selectedData.length) {
-							//dataTable info
-							var $info=$("#dataTable_info"), infoHtml=$info.html(), splits=infoHtml.split("(filtered");
-							if(splits.length>0 && splits[1]){
-								if(splits[0].split('<br>').length==1){
-									infoHtml=splits[0]+"<br>(filtered"+splits[1];
-									$info.html(infoHtml).css({"margin-top":"2px"})
-								}
-							}else{
-								$info.css({"margin-top":"13px"})
-							}
-							
 							
 							//read selected layers
 							var zipcodes = {}, zipcode = '', filterRowIDs = [];
@@ -2549,7 +2553,10 @@ function download() {
 function oauth_callback(accountInfo) {
 	//close window
 	app.oauthWindow.close();
-
+	
+	//save cookie
+	$.cookie("PathGeo", {'email': accountInfo.email, 'oauth': accountInfo.oauth}, { expires: 7, path: '/' });
+	
 	writeAccountInfo(accountInfo);
 }
 
