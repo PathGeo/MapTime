@@ -307,7 +307,7 @@ else:
         if features:
                 saveDataAsExcel(map(lambda item: item['properties'], features), '..\\geocoded_files\\' + fname, columns=columns)
 
-        featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': '' if not features else './geocoded_files/' + fname, 'dataID': dataID }
+        featureSet = {'type': 'FeatureCollection', 'features': features, 'URL_xls': '' if not features else './geocoded_files/' + fname, 'dataID': dataID, 'columns': columns }
 
 
         #deduct users' credit
