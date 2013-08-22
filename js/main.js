@@ -37,7 +37,8 @@ var app = {
 		column : {
 			statistics : ""
 		},
-		keywords : []
+		keywords : [],
+		showLayerNames:[]
 	},
 	controls : {
 		mapGallery : L.Control.extend({
@@ -714,6 +715,7 @@ function showLayer(obj, options) {
 	//layers
 	obj.layers = [];
 
+
 	//show layer
 	switch(obj.type) {
 		case "GEOJSON":
@@ -733,19 +735,8 @@ function showLayer(obj, options) {
 
 			//parse geojson
 			function parseGeojson(obj) {
-				//remove layers
-				var layerNames = ["geoJsonLayer", "markerClusterLayer", "heatMapLayer"], showLayerNames = [];
-				$.each(layerNames, function(i, layerName) {
-					var layer = obj[layerName];
-					if (layer) {
-						//if layer._map has map object, that means the layer is shown in the map
-						if (layer._map) {
-							showLayerNames.push(layerName);
-							app.map.removeLayer(layer);
-						}
-						app.controls.toc.removeLayer(layer);
-					}
-				});
+				//clear layers
+				clearLayers();
 
 				var layers = [], zipcodes = {}, statisticsColumn = obj.column.statistics || null, totalSum = 0;
 
@@ -1034,10 +1025,10 @@ function showLayer(obj, options) {
 				//showLayerNames
 				//if this is the first time to load layers, the showLayerNames will be emplty.
 				//so the default layer is geoJsonLayer
-				if (showLayerNames.length == 0) {
-					showLayerNames.push("geoJsonLayer");
+				if (obj.showLayerNames.length == 0) {
+					obj.showLayerNames.push("geoJsonLayer");
 				};
-				$.each(showLayerNames, function(i, name) {
+				$.each(obj.showLayerNames, function(i, name) {
 					obj.layers.push(obj[name]);
 				})
 			}//end parseGeojson
@@ -1148,6 +1139,32 @@ function removeLayers() {
 	}
 }
 
+
+
+//clear all default layers
+function clearLayers(){
+	var obj=app.geocodingResult;
+	
+	obj.showLayerNames=[];
+	
+	//remove layers
+	var layerNames = ["geoJsonLayer", "markerClusterLayer", "heatMapLayer"];
+	$.each(layerNames, function(i, layerName) {
+		var layer = obj[layerName];
+		console.log(layer)
+		if (layer) {
+			//if layer._map has map object, that means the layer is shown on the map
+			if (layer._map) {
+				obj.showLayerNames.push(layerName);
+				app.map.removeLayer(layer);
+			}
+			app.controls.toc.removeLayer(layer);
+		}
+	});
+}
+
+
+
 //switch basemap
 function switchBaseLayer(layer) {
 	if (app.map.hasLayer(layer)) {
@@ -1174,7 +1191,12 @@ function showTable(obj, options) {
 		app.map.removeLayer(app.layers.selectedZipcodeLayer);
 		app.layers.selectedZipcodeLayer.clearLayers();
 	}
-
+	
+	//remove highlighamrker
+	if(app.highlightMarker){
+		app.map.removeLayer(app.highlightMarker);
+	}
+	
 	if (!obj.json) {
 		$.getJSON(obj.url, function(json) {
 			//if json is an array of features
@@ -1275,7 +1297,7 @@ function showTable(obj, options) {
 					//resize map to show the dataTable
 					resizeMap({height : "75%"}, {height : "25%"});
 					
-				}, 10);
+				}, 50);
 
 			},
 			"fnRowCallback" : function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -2205,24 +2227,24 @@ function showDemo(demoType) {
 	//show loading image
 	$("#uploadData_loading").show();
 
-	//clear all layers
-	if (app.geocodingResult.layers) {
-		var layerNames = ["geoJsonLayer", "markerClusterLayer", "heatMapLayer"];
-
-		$.each(layerNames, function(i, layerName) {
-			var layer = app.geocodingResult[layerName];
-			if (layer) {
-				//if layer._map has map object, that means the layer is shown in the map
-				if (layer._map) {
-					app.map.removeLayer(layer);
-
-					//restore the default background color for the button of map gallery
-					$(".leaflet-control-mapGallery ul li[layer='" + layerName + "']").css('background-color', '');
-				}
-				app.controls.toc.removeLayer(layer);
-			}
-		});
-	}
+	// //clear all layers
+	// if (app.geocodingResult.layers) {
+		// var layerNames = ["geoJsonLayer", "markerClusterLayer", "heatMapLayer"];
+// 
+		// $.each(layerNames, function(i, layerName) {
+			// var layer = app.geocodingResult[layerName];
+			// if (layer) {
+				// //if layer._map has map object, that means the layer is shown in the map
+				// if (layer._map) {
+					// app.map.removeLayer(layer);
+// 
+					// //restore the default background color for the button of map gallery
+					// $(".leaflet-control-mapGallery ul li[layer='" + layerName + "']").css('background-color', '');
+				// }
+				// app.controls.toc.removeLayer(layer);
+			// }
+		// });
+	// }
 
 	switch(demoType) {
 		case "SAN FRANCISCO":
