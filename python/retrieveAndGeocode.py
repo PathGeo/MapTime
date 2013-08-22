@@ -64,7 +64,7 @@ def geomask(val):
 	
 	return val + r
 		
-def geocodeRows(rows, locFunc, maxRow):
+def geocodeRows(rows, locFunc, maxRow, orderedColumns):
 	features = []
 
 	#Go through each row and geocode location field.
@@ -74,13 +74,19 @@ def geocodeRows(rows, locFunc, maxRow):
 			#convert any whole number floats into string
 			#must convert to int first, in order to trim off decimal values
 			for k,v in row.iteritems():
+                
 				if type(v) is float and v.is_integer():
 					row[k] = str(int(v))
 				elif type(v) is unicode:
 					row[k] = v.encode('ascii', 'ignore')
 				else:
 					row[k] = str(v)
-						
+
+                        #reorder by orderedColumns
+			from collections import OrderedDict
+                        row=OrderedDict(sorted(row.iteritems(), key=lambda k: orderedColumns.index(k[0])))
+                       
+                			
 			if '' in row:
 				del row['']
 			
@@ -291,8 +297,8 @@ else:
                 needCredit=credit
 
         #geocode
-        features = geocodeRows(jsonRows, geoFunc, geocodeCount)      
-
+        features = geocodeRows(jsonRows, geoFunc, geocodeCount, columns)      
+        
         if 'error' in features:
                 print ''
                 print json.dumps(features)

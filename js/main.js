@@ -538,7 +538,7 @@ function init_UI() {
 				if (app.geocodingResult.geoJsonLayer) {
 					app.map.removeLayer(app.geocodingResult.geoJsonLayer);
 				}
-
+				
 				app.geocodingResult = {
 					type : "GEOJSON",
 					json : featureCollection,
@@ -548,7 +548,6 @@ function init_UI() {
 					column : {
 						statistics : ""
 					},
-					columns : featureCollection.columns,
 					downloadLink : (featureCollection["URL_xls"] && featureCollection["URL_xls"] != "") ? featureCollection["URL_xls"] : null,
 					dataID : featureCollection.dataID,
 					hasGeomask : (featureCollection.features[0].geomasked_geometry) ? true : false
@@ -1194,8 +1193,7 @@ function showTable(obj, options) {
 		//convert geojson properties to array
 		if (!obj.dataTable) {
 			obj.dataTable = pathgeo.util.geojsonPropertiesToArray(obj.json, {
-				statisticsColumn : obj.column.statistics,
-				orderedColumns: obj.columns
+				statisticsColumn : obj.column.statistics
 			});
 		}
 
