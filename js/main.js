@@ -741,7 +741,14 @@ function showLayer(obj, options) {
 					totalSum = obj.dataTable.statisticsColumn[statisticsColumn].sum;
 				}
 
-				//marker layer
+				//get current marker icon
+				var currentMarkerIcon=null, defaultMarkerIcon=null;
+				if(options.isFilter){
+					//get first child of layers
+					var _layers=obj.geoJsonLayer._layers;
+					currentMarkerIcon=_layers[Object.keys(_layers)[0]].options.icon;
+				}
+
 				obj.geoJsonLayer = new L.geoJson(obj.json, {
 					onEachFeature : function(feature, layer) {
 						var html = pathgeo.util.objectToHtml(feature.properties, ["_featureID", "_rowID"]);
@@ -830,7 +837,7 @@ function showLayer(obj, options) {
 
 						var width = 16, height = 21.6;
 
-						var icon = new L.icon({
+						var icon = defaultMarkerIcon=new L.icon({
 							iconUrl : "images/marker/blue/5.png", //"images/1374596320_marker_rounded_light_blue.png",//"images/1374590792_bullet-black.png", //
 							iconSize : [width, height], //[12.5, 21],
 							iconAnchor : [width / 2, height / 2]// [6.25, 10.5]
@@ -840,9 +847,11 @@ function showLayer(obj, options) {
 							iconUrl : "images/marker/Magenta/5.png", //"images/1374590745_bullet-red.png", //
 							iconSize : [width, height], //[26, 26],
 							iconAnchor : [width / 2, height / 2] //[13, 13]
-						})
+						});
+						
+						
 						return new L.marker(latlng, {
-							icon : icon,
+							icon : (currentMarkerIcon)?currentMarkerIcon:icon,
 							iconHover : iconHover,
 							iconDefault : icon,
 							draggable : true
@@ -946,13 +955,8 @@ function showLayer(obj, options) {
 
 					//pointToLayer
 					pointToLayer : function(feature, latlng) {
-						var icon = new L.icon({
-							iconUrl : "images/1368754654_stock_draw-circle.png",
-							iconSize : [12, 12], //[12.5, 21],
-							iconAnchor : [6, 6]// [6.25, 10.5]
-						});
 						return new L.marker(latlng, {
-							icon : icon
+							icon : (currentMarkerIcon)?currentMarkerIcon:defaultMarkerIcon
 						})
 					},
 					
@@ -983,15 +987,20 @@ function showLayer(obj, options) {
 					}
 				});
 				app.controls.toc.addOverlay(obj.markerClusterLayer, "Cluster Map");
+				
 
 				//heatmap
-				//heatmap
+				//get current radius if obj.heatmaplayer exist (that means it is triggered by dataTable filter)
+				var currentRadius=null;
+				if(options.isFilter){
+					currentRadius=obj.heatMapLayer.options.radius.value;
+				}
 				var zoomLevel = app.map.getBoundsZoom(obj.geoJsonLayer.getBounds());
 				var getRadius = function(i) {
 					var radius = 6.25 * Math.pow(2, (17 - zoomLevel + i));
 					radius = (radius >= 5000) ? 5000 : radius;
 					radius = (radius >= 50) ? radius : 50;
-					return radius;
+					return (currentRadius)?currentRadius:radius;
 				};
 				//app.controls.toc.removeLayer(obj.heatMapLayer);
 				obj.heatMapLayer = pathgeo.layer.heatMap(obj.json, getRadius(0), {
@@ -999,44 +1008,44 @@ function showLayer(obj, options) {
 					layerName:"heatMapLayer"
 				});
 				app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
-
+				
+				
 				//set up heatmap slider
-				$("#heatmap_slider").attr({
-					'min' : 50,
-					'max' : 3050,
-					'step' : (3050 - 50) / 50,
-					'value' : getRadius(0)
-				}).on("slidestop", function(e) {
-					var radius = e.currentTarget.value;
-					var geocodingResult = app.geocodingResult;
-					//remove existing heatmap
-					if (geocodingResult.heatMapLayer._map) {
-						app.map.removeLayer(geocodingResult.heatMapLayer);
-					}
-					app.controls.toc.removeLayer(geocodingResult.heatMapLayer);
-
-					geocodingResult.heatMapLayer = pathgeo.layer.heatMap(geocodingResult.json, radius, {
-						opacity : 0.55
-					});
-					geocodingResult.heatMapLayer.addTo(app.map);
-					app.controls.toc.addOverlay(geocodingResult.heatMapLayer, "Heat Map");
-				}).keypress(function(e) {
-					//disable any actions
-					return false;
-				}).slider('refresh');
-				$("#heatmap_radius .ui-input-text").html("Change Hot Spot's Radius (unit: Feet)");
+				if(!options.isFilter){
+					$("#heatmap_slider").attr({
+						'min' : 50,
+						'max' : 3050,
+						'step' : (3050 - 50) / 50,
+						'value' : getRadius(0)
+					}).on("slidestop", function(e) {
+						var radius = e.currentTarget.value;
+						var geocodingResult = app.geocodingResult;
+						//remove existing heatmap
+						if (geocodingResult.heatMapLayer._map) {
+							app.map.removeLayer(geocodingResult.heatMapLayer);
+						}
+						app.controls.toc.removeLayer(geocodingResult.heatMapLayer);
+	
+						geocodingResult.heatMapLayer = pathgeo.layer.heatMap(geocodingResult.json, radius, {
+							opacity : 0.55,
+							layerName:"heatMapLayer"
+						});
+						geocodingResult.heatMapLayer.addTo(app.map);
+						app.controls.toc.addOverlay(geocodingResult.heatMapLayer, "Heat Map");
+					}).keypress(function(e) {
+						//disable any actions
+						return false;
+					}).slider('refresh');
+					$("#heatmap_radius .ui-input-text").html("Change Hot Spot's Radius (unit: Feet)");
+				}
+				
 
 
 				//showLayerNames
 				//if this is the first time to load layers, the showLayerNames should be emplty.
 				//so the default layer is geoJsonLayer
-				if (obj.showLayerNames.length == 0) {
-					obj.showLayerNames.push("geoJsonLayer");
-				};
-				
-				$.each(obj.showLayerNames, function(i, name) {
-					obj.layers.push(obj[name]);
-				})
+				if (obj.showLayerNames.length == 0) {obj.showLayerNames.push("geoJsonLayer");};
+				$.each(obj.showLayerNames, function(i, name) {obj.layers.push(obj[name]);})
 			}//end parseGeojson
 
 
@@ -1182,6 +1191,11 @@ function clearLayers(){
 			app.controls.toc.removeLayer(layer);
 		}
 	});
+	
+	//remove highlightMarker
+	if(app.highlightMarker){
+		app.map.removeLayer(app.highlightMarker);
+	}
 }
 
 
@@ -2249,29 +2263,9 @@ function showDemo(demoType) {
 	//show loading image
 	$("#uploadData_loading").show();
 
-
 	//clear all layers
 	clearLayers();
 	
-	// //clear all layers
-	// if (app.geocodingResult.layers) {
-		// var layerNames = ["geoJsonLayer", "markerClusterLayer", "heatMapLayer"];
-// 
-		// $.each(layerNames, function(i, layerName) {
-			// var layer = app.geocodingResult[layerName];
-			// if (layer) {
-				// //if layer._map has map object, that means the layer is shown in the map
-				// if (layer._map) {
-					// app.map.removeLayer(layer);
-// 
-					// //restore the default background color for the button of map gallery
-					// $(".leaflet-control-mapGallery ul li[layer='" + layerName + "']").css('background-color', '');
-				// }
-				// app.controls.toc.removeLayer(layer);
-			// }
-		// });
-	// }
-
 	switch(demoType) {
 		case "SAN FRANCISCO":
 			obj = {
