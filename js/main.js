@@ -59,24 +59,20 @@ var app = {
 				$(container).html(html).find("ul li").on({
 					click : function() {
 						var $this = $(this), value = $this.attr("layer"), layer = app.geocodingResult[value];
-
+						
 						//if this layer is already shown on the map, hide the layer and change the color
 						if (layer._map) {
 							//if(value=='heatMapLayer') alert(value);
 							//document.getElementById('slider').style.opacity = "0";
 							app.map.removeLayer(layer);
-							$this.css({
-								"background-color" : ''
-							});
+							$this.css({"background-color" : ''});
 						} else {
 							layer.addTo(app.map);
 							
 							//make the markerclusterlayer more priority
 							if(value=='markerClusterLayer'){layer.bringToFront();}
 							
-							$this.css({
-								"background-color" : '#5B92C0'
-							});
+							$this.css({"background-color" : app.css.mapGalleryHighlightColor});
 
 							//show map popup window
 							$("#mapPopup_" + value).show();
@@ -152,7 +148,8 @@ var app = {
 		},
 		"dataTable_height" : function() {
 			return $("#dataPanel").height() - 70
-		}
+		},
+		mapGalleryHighlightColor:"#5B92C0"
 	},
 	$tr : null,
 	userInfo : {
@@ -536,9 +533,8 @@ function init_UI() {
 					return;
 				}
 
-				if (app.geocodingResult.geoJsonLayer) {
-					app.map.removeLayer(app.geocodingResult.geoJsonLayer);
-				}
+				//clear all layers
+				clearLayers();
 				
 				app.geocodingResult = {
 					type : "GEOJSON",
@@ -703,6 +699,7 @@ function showLayer(obj, options) {
 	}
 	options.isShow = ( typeof options.isShow === 'undefined') ? false : options.isShow;
 	options.zoomToExtent = ( typeof options.zoomToExtent === 'undefined') ? true : options.zoomToExtent;
+	options.isFilter = ( typeof options.isFilter === 'undefined') ? false : options.isFilter;
 
 	//show title
 	if (obj.title) {
@@ -714,6 +711,9 @@ function showLayer(obj, options) {
 
 	//layers
 	obj.layers = [];
+	
+	//clear layers
+	clearLayers();
 
 
 	//show layer
@@ -735,9 +735,6 @@ function showLayer(obj, options) {
 
 			//parse geojson
 			function parseGeojson(obj) {
-				//clear layers
-				clearLayers();
-
 				var layers = [], zipcodes = {}, statisticsColumn = obj.column.statistics || null, totalSum = 0;
 
 				if (statisticsColumn && statisticsColumn != '') {
@@ -862,9 +859,12 @@ function showLayer(obj, options) {
 						} else {
 							return false;
 						}
-					}
+					},
+					
+					layerName:"geoJsonLayer"
 				});
 				obj.geoJsonLayer.layers = layers;
+			
 
 				//zipcodes
 				//sort based on the count of customers('extra-count')
@@ -907,11 +907,11 @@ function showLayer(obj, options) {
 						//showZipcodeChart("zipcodeChart", properties["ZIP"], properties["extra-" + statisticsColumn + "_sum"], totalColumnValue);
 					});
 				});
-
 				obj.zipcodeLayer = zipcodes;
 
 				//add geojsonlayer to toc
 				app.controls.toc.addOverlay(obj.geoJsonLayer, "Marker Map");
+
 
 				//markercluster layer
 				obj.markerClusterLayer = pathgeo.layer.markerCluster(obj.json, {
@@ -954,7 +954,10 @@ function showLayer(obj, options) {
 						return new L.marker(latlng, {
 							icon : icon
 						})
-					}
+					},
+					
+					//layerName
+					layerName:"markerClusterLayer"
 				}, {
 					//clusterclick event
 					clusterclick : function(e) {
@@ -992,7 +995,8 @@ function showLayer(obj, options) {
 				};
 				//app.controls.toc.removeLayer(obj.heatMapLayer);
 				obj.heatMapLayer = pathgeo.layer.heatMap(obj.json, getRadius(0), {
-					opacity : 0.55
+					opacity : 0.55,
+					layerName:"heatMapLayer"
 				});
 				app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
 
@@ -1022,16 +1026,20 @@ function showLayer(obj, options) {
 				}).slider('refresh');
 				$("#heatmap_radius .ui-input-text").html("Change Hot Spot's Radius (unit: Feet)");
 
+
 				//showLayerNames
-				//if this is the first time to load layers, the showLayerNames will be emplty.
+				//if this is the first time to load layers, the showLayerNames should be emplty.
 				//so the default layer is geoJsonLayer
 				if (obj.showLayerNames.length == 0) {
 					obj.showLayerNames.push("geoJsonLayer");
 				};
+				
 				$.each(obj.showLayerNames, function(i, name) {
 					obj.layers.push(obj[name]);
 				})
 			}//end parseGeojson
+
+
 
 			//main part
 			if (!obj.json) {
@@ -1074,7 +1082,13 @@ function showLayer(obj, options) {
 			$.each(obj.layers, function(i, layer) {
 				layer.addTo(app.map);
 				app.showLayers.push(layer);
+				
+				if(options.isFilter && layer.options.layerName){
+					//change the color of map gallery
+					$(".leaflet-control-mapGallery ul li[layer='" + layer.options.layerName + "']").css('background-color', app.css.mapGalleryHighlightColor);
+				}
 			})
+			
 			if (options.zoomToExtent) {
 				app.map.fitBounds(obj.geoJsonLayer.getBounds());
 			}
@@ -1092,7 +1106,11 @@ function showLayer(obj, options) {
 		//show mapGallery button
 		$(".leaflet-control-mapGallery").show();
 
-		$("#mapPopup_geoJsonLayer").show();
+		//show geojsonlayer popup menu
+		if(!options.isFilter){
+			$("#mapPopup_geoJsonLayer").show();
+		}
+		
 	}
 
 }
@@ -1151,12 +1169,15 @@ function clearLayers(){
 	var layerNames = ["geoJsonLayer", "markerClusterLayer", "heatMapLayer"];
 	$.each(layerNames, function(i, layerName) {
 		var layer = obj[layerName];
-		console.log(layer)
+		
 		if (layer) {
 			//if layer._map has map object, that means the layer is shown on the map
 			if (layer._map) {
 				obj.showLayerNames.push(layerName);
 				app.map.removeLayer(layer);
+				
+				//restore the default background color for the button of map gallery
+				$(".leaflet-control-mapGallery ul li[layer='" + layerName + "']").css('background-color', '');
 			}
 			app.controls.toc.removeLayer(layer);
 		}
@@ -1392,7 +1413,8 @@ function showTable(obj, options) {
 							if (geojson.features.length > 0) {
 								obj.json = geojson;
 								showLayer(obj, {
-									isShow : true
+									isShow : true,
+									isFilter: true
 								});
 
 								//re-draw Chart
@@ -2227,6 +2249,10 @@ function showDemo(demoType) {
 	//show loading image
 	$("#uploadData_loading").show();
 
+
+	//clear all layers
+	clearLayers();
+	
 	// //clear all layers
 	// if (app.geocodingResult.layers) {
 		// var layerNames = ["geoJsonLayer", "markerClusterLayer", "heatMapLayer"];

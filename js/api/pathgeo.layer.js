@@ -14,6 +14,11 @@ pathgeo.layer={
 	markerCluster: function(geojson, L_geojson_options, events){
 		var markercluster= new L.MarkerClusterGroup({spiderfyOnMaxZoom: false, showCoverageOnHover: true, zoomToBoundsOnClick: false });
 		
+		//add L_geojson_options to markerCluster options
+		$.each(L_geojson_options, function(k,v){
+			markercluster.options[k]=v;
+		});
+		
 		if(L_geojson_options.onEachFeature){
 			var clone_onEachFeature=L_geojson_options.onEachFeature;
 			L_geojson_options.onEachFeature=function(feature, layer){
