@@ -30,8 +30,10 @@ def saveDataAsExcel(data, outputFileName):
 	sheet = book.add_sheet('Data')
 	
 	columns = data[0].keys()
+	
 	for colIndx, column in enumerate(columns):
 		sheet.write(0, colIndx, column)
+		
 
 	for rowIndx, row in enumerate(data):
 		for colIndx, column in enumerate(columns):
@@ -72,7 +74,8 @@ if(username is not None):
 
    if(table is not None):
         results=table["geojson"]
-        filePath= table["name"] 
+        filePath= table["name"]
+        orderedColumns=table["orderedColumns"]
        
         #geomask
         if(geomask.upper()=='TRUE'):
@@ -94,12 +97,27 @@ if(username is not None):
             filePath+='_' + term
 
         filePath+='.xls'
-        
+
+                       
         #save as excel
         if results:
-            saveDataAsExcel(map(lambda item: item['properties'], results), '..\\geocoded_files\\'+filePath)
+            from collections import OrderedDict
 
-        msg={'type': 'FeatureCollection', 'features': results, 'URL_xls': '' if not results else './geocoded_files/' + filePath }
+            properties=[]
+            for i, row in enumerate(results):
+                prop=row["properties"];
+                
+                #order the columns
+                if(orderedColumns is not None):
+                    prop=OrderedDict(sorted(prop.iteritems(), key=lambda k: orderedColumns.index(k[0])))
+                    results[i]["properties"]=prop
+
+                properties.append(prop)  
+
+            #save as excel
+            saveDataAsExcel(properties, '..\\geocoded_files\\'+filePath)
+
+            msg={'type': 'FeatureCollection', 'features': results, 'URL_xls': '' if not results else './geocoded_files/' + filePath }
 
 
 print simplejson.dumps(msg)

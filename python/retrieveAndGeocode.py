@@ -142,7 +142,7 @@ def getStatesFromZips(rows, zipCol):
 	return results
 	
 	
-def saveDatainMongo(geojson, fileName, username, oauth):
+def saveDatainMongo(geojson, fileName, username, oauth, orderedColumns):
         collection=client["maptime"]["uploadData"]
         timestamp=str(int(time.mktime(time.gmtime()))) #using gmt timeStamp as dataID
         obj={
@@ -150,11 +150,12 @@ def saveDatainMongo(geojson, fileName, username, oauth):
                 "email":username,
                 "timestamp": timestamp,
                 "geojson": geojson,
-                "oauth":oauth
+                "oauth":oauth,
+                "orderedColumns": orderedColumns + ["zip_code", "latitude", "longitude"]
         }
 
         collection.insert(obj)
-        
+
         return timestamp
 
 
@@ -306,7 +307,7 @@ else:
 
         
         #save geocoded result in the Mongo DB
-        dataID=saveDatainMongo(features, fname, username, oauth)
+        dataID=saveDatainMongo(features, fname, username, oauth, columns)
 
         fname = fname.lower().replace('.xlsx', '.xls')
 
