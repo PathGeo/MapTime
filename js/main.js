@@ -1258,12 +1258,15 @@ function showTable(obj, options) {
 		var dataTable = obj.dataTable;
 		
 		//hide columns
-		var hiddenColumns = ["Coordinates"];
+		var hiddenColumns = ["Coordinates", "latitude", "longitude"];
 		$.each(dataTable.columns_dataTable, function(i, column) {
 			$.each(hiddenColumns, function(j, columnName) {
 				if (columnName == column.sTitle) {
-					column.bVisible = false;
-					column.bSearchable = false
+					if(columnName=='Coordinate'){
+						column.bVisible = false;
+					}
+					column.bSearchable = false;
+					column.bSortable=false;
 				}
 			});
 		});
@@ -1286,19 +1289,41 @@ function showTable(obj, options) {
 			"sPaginationType" : "two_button", //"full_numbers",    //page number
 			"sScrollY" : app.css.dataTable_height(),
 			"sScrollX" : "100%",
-			//"bDeferRender": true,
+			"bDeferRender": true,
 			"oLanguage" : {
 				"sSearch" : ""
 			},
 			"iDisplayLength" : 1000,
 			"sDom" : '<"dataTable_toolbar"<"dataTable_nav"><"dataTable_tools"if><"dataTable_menu"<"infobox_triangle"><"infobox">>><"dataTable_table"rtS<>>', //DOM
 			"fnInitComplete" : function(oSettings, json) {
+				var searchWait = 0;
+				var searchWaitInterval;
 				$("#" + oSettings.sTableId + "_filter input")
-				//.val("Filter data results by keyword")
-				.attr({
-					"title" : "Filter data results by keyword",
-					"placeholder" : "Filter data results by keyword"
-				}).prop("type", "search").textinput();
+					//.val("Filter data results by keyword")
+					.attr({
+						"title" : "Filter data results by keyword",
+						"placeholder" : "Filter data results by keyword"
+					})
+					.prop("type", "search")
+					.textinput()
+					//delay filter to increase performance
+					.unbind('keypress keyup')
+					.bind('keypress keyup', function(e){
+					    var item = $(this);
+					    searchWait = 0;
+					    if(!searchWaitInterval){
+							searchWaitInterval = setInterval(function(){
+								if (searchWait >= 3) {
+									clearInterval(searchWaitInterval);
+									searchWaitInterval = '';
+									searchTerm = $(item).val();
+									app.dataTable.fnFilter(searchTerm);
+									searchWait = 0;
+								}
+								searchWait++;
+							}, 100);
+						}
+					});
 
 				//need to wait a few time to adjust the column size
 				setTimeout(function() {
@@ -1309,6 +1334,7 @@ function showTable(obj, options) {
 
 					//ajust column width
 					app.dataTable.fnAdjustColumnSizing();
+					
 
 					//get all tr
 					app.$tr = $(".dataTable tr");
@@ -1448,7 +1474,7 @@ function showTable(obj, options) {
 								}
 							}
 						}
-					}, 500)
+					}, 0)
 				}
 
 			}//end drawCallback
