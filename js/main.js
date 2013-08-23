@@ -1306,7 +1306,7 @@ function showTable(obj, options) {
 					})
 					.prop("type", "search")
 					.textinput()
-					//delay filter to increase performance
+					//delay filter to increase performance from http://stackoverflow.com/questions/5548893/jquery-datatables-delay-search-until-3-characters-been-typed-or-a-button-clicke
 					.unbind('keypress keyup')
 					.bind('keypress keyup', function(e){
 					    var item = $(this);
@@ -2322,7 +2322,7 @@ function showDemo(demoType) {
 				},
 				downloadLink : './geocoded_files/2012-crime-navajo-three-month-7-9.xls',
 				keywords : [],
-				dataID : "1376671999"
+				dataID : "1377287606"
 			}
 			break;
 		case "SD-PACIFIC-BEACH":
@@ -2334,7 +2334,7 @@ function showDemo(demoType) {
 				},
 				downloadLink : './geocoded_files/2012-crime-pacific-beach-three-month-7-9.xls',
 				keywords : [],
-				dataID : "1376673065"
+				dataID : "1377287686"
 			}
 			break;
 	}
