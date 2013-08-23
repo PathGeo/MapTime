@@ -525,7 +525,7 @@ function init_UI() {
 					_gaq.push(['_trackEvent', 'Data', "Format-" + extName, app.userInfo.email]);
 				}
 
-				//close dialog_menu
+				//close dialog_uploadData
 				$("#dialog_uploadData").popup('close');
 
 				if (!featureCollection || featureCollection.features.length <= 0) {
@@ -1044,6 +1044,7 @@ function showLayer(obj, options) {
 				//showLayerNames
 				//if this is the first time to load layers, the showLayerNames should be emplty.
 				//so the default layer is geoJsonLayer
+				
 				if (obj.showLayerNames.length == 0) {obj.showLayerNames.push("geoJsonLayer");};
 				$.each(obj.showLayerNames, function(i, name) {obj.layers.push(obj[name]);})
 			}//end parseGeojson
@@ -1350,21 +1351,18 @@ function showTable(obj, options) {
 			},
 			fnDrawCallback : function(oSettings) {
 
-				//dataTable info
-				var $info=$("#dataTable_info"), infoHtml=$info.html(), splits=infoHtml.split("(filtered");
-				if(splits.length>0 && splits[1]){
-					if(splits[0].split('<br>').length==1){
-						infoHtml=splits[0]+"<br>(filtered"+splits[1];
-						$info.html(infoHtml).css({"margin-top":"2px"})
-					}
-				}else{
-					$info.css({"margin-top":"13px"})
-				}
-
-
 				//only works while filter input box is focused!!
 				if ($(".dataTables_filter input").is(":focus")) {
 					//console.log('filter refresh map');
+					
+					//dataTable info
+					var $info=$("#dataTable_info"), infoHtml=$info.html(), splits=infoHtml.split("(filtered");
+					if(splits.length>0 && splits[1]){
+						$info.html(infoHtml).css({"margin-top":"2px"})
+					}else{
+						$info.css({"margin-top":"13px"})
+					}
+
 
 					//get filter data,
 					var me = this, 
@@ -2640,6 +2638,7 @@ function geomask() {
 
 	showLayer(app.geocodingResult, {
 		isShow : true,
-		zoomToExtent : false
+		zoomToExtent : false,
+		isFilter:true
 	})
 }
