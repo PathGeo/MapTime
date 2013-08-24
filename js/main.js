@@ -37,8 +37,7 @@ var app = {
 		column : {
 			statistics : ""
 		},
-		keywords : [],
-		showLayerNames:[]
+		keywords : []
 	},
 	controls : {
 		mapGallery : L.Control.extend({
@@ -61,14 +60,38 @@ var app = {
 						var $this = $(this), value = $this.attr("layer"), layer = app.geocodingResult[value];
 						
 						//if this layer is already shown on the map, hide the layer and change the color
-						if (layer._map) {
-							//if(value=='heatMapLayer') alert(value);
-							//document.getElementById('slider').style.opacity = "0";
-							app.map.removeLayer(layer);
-							$this.css({"background-color" : ''});
-						} else {
-							layer.addTo(app.map);
+						if (layer.options.visible) {
+							//hide layers
+							//if geoJsonLayer >> hide all _icon. Other layers, remove layer from map
+							if(value=='geoJsonLayer'){  
+								$.each(layer._layers,function(k,v){
+									$(v._icon).hide();
+								});
+							}else{
+								app.map.removeLayer(layer)
+							}
 							
+//							app.map.removeLayer(layer);
+							$this.css({"background-color" : ''});
+							
+							layer.options.visible=false;
+						} else {
+							//if the layer has not added on the map, add it first. If the layer alreayd has _map, directly show it
+							if(!layer._map){
+								layer.addTo(app.map)
+							}else{
+								//show layer
+								//if geojsonLayer >> show all _icon. Other layers, add on the map
+								if(value=='geoJsonLayer'){  
+									$.each(layer._layers,function(k,v){
+										$(v._icon).show();
+									});
+								}else{
+									layer.addTo(app.map)
+								}
+							}
+							
+						
 							//make the markerclusterlayer more priority
 							if(value=='markerClusterLayer'){layer.bringToFront();}
 							
@@ -76,6 +99,8 @@ var app = {
 
 							//show map popup window
 							$("#mapPopup_" + value).show();
+							
+							layer.options.visible=true;
 						}
 					},
 					mouseover : function() {
@@ -83,7 +108,7 @@ var app = {
 						var $this = $(this), value = $this.attr("layer"), layer = app.geocodingResult[value];
 
 						//only the layer is activated
-						if (layer._map) {
+						if (layer.options.visible) {
 							//show map popup window
 							$("#mapPopup_" + value).show();
 						}
@@ -715,6 +740,30 @@ function showLayer(obj, options) {
 	//clear layers
 	clearLayers();
 
+	//get existing settings of layers, if options.isFilter is true
+	var userSetting={
+		visibleLayerNames:null,
+		markerIcon:null,
+		radius:null
+	};
+	if(options.isFilter){
+		userSetting={
+			visibleLayerNames: (function(){
+				var names=[];
+				$.each(["geoJsonLayer", "markerClusterLayer", "heatMapLayer"], function(i,name){
+					if(obj[name].options.visible){names.push(name);}
+				})
+				return names;
+			})(),
+			markerIcon: (function(){
+				//get first child of layers
+				var _layers=obj.geoJsonLayer._layers;
+				return _layers[Object.keys(_layers)[0]].options.icon;
+			})(),
+			radius: obj.heatMapLayer.options.radius.value
+		}
+	}
+
 
 	//show layer
 	switch(obj.type) {
@@ -725,9 +774,6 @@ function showLayer(obj, options) {
 			function showGeojson(object) {
 				parseGeojson(object);
 				addLayer(object);
-
-				//make geojsonLayer as the default layer > change the background-color of the map gallery icon
-				$('.leaflet-control-mapGallery ul li[layer="geoJsonLayer"]').css('background-color', "#5B92C0");
 
 				//hide loadData dialog
 				$("#dialog_uploadData").popup("close");
@@ -741,13 +787,8 @@ function showLayer(obj, options) {
 					totalSum = obj.dataTable.statisticsColumn[statisticsColumn].sum;
 				}
 
-				//get current marker icon
-				var currentMarkerIcon=null, defaultMarkerIcon=null;
-				if(options.isFilter){
-					//get first child of layers
-					var _layers=obj.geoJsonLayer._layers;
-					currentMarkerIcon=_layers[Object.keys(_layers)[0]].options.icon;
-				}
+
+				var defaultMarkerIcon=null;
 
 				obj.geoJsonLayer = new L.geoJson(obj.json, {
 					onEachFeature : function(feature, layer) {
@@ -851,7 +892,7 @@ function showLayer(obj, options) {
 						
 						
 						return new L.marker(latlng, {
-							icon : (currentMarkerIcon)?currentMarkerIcon:icon,
+							icon : (userSetting.markerIcon)?userSetting.markerIcon:icon,
 							iconHover : iconHover,
 							iconDefault : icon,
 							draggable : true
@@ -870,7 +911,8 @@ function showLayer(obj, options) {
 						}
 					},
 					
-					layerName:"geoJsonLayer"
+					layerName:"geoJsonLayer",
+					visible:true
 				});
 				obj.geoJsonLayer.layers = layers;
 			
@@ -956,12 +998,13 @@ function showLayer(obj, options) {
 					//pointToLayer
 					pointToLayer : function(feature, latlng) {
 						return new L.marker(latlng, {
-							icon : (currentMarkerIcon)?currentMarkerIcon:defaultMarkerIcon
+							icon : (userSetting.markerIcon)? userSetting.markerIcon:defaultMarkerIcon
 						})
 					},
 					
 					//layerName
-					layerName:"markerClusterLayer"
+					layerName:"markerClusterLayer",
+					visible:false
 				}, {
 					//clusterclick event
 					clusterclick : function(e) {
@@ -987,25 +1030,22 @@ function showLayer(obj, options) {
 					}
 				});
 				app.controls.toc.addOverlay(obj.markerClusterLayer, "Cluster Map");
-				
+	
+
 
 				//heatmap
-				//get current radius if obj.heatmaplayer exist (that means it is triggered by dataTable filter)
-				var currentRadius=null;
-				if(options.isFilter){
-					currentRadius=obj.heatMapLayer.options.radius.value;
-				}
 				var zoomLevel = app.map.getBoundsZoom(obj.geoJsonLayer.getBounds());
 				var getRadius = function(i) {
 					var radius = 6.25 * Math.pow(2, (17 - zoomLevel + i));
 					radius = (radius >= 5000) ? 5000 : radius;
 					radius = (radius >= 50) ? radius : 50;
-					return (currentRadius)?currentRadius:radius;
+					return (userSetting.radius)?userSetting.radius:radius;
 				};
 				//app.controls.toc.removeLayer(obj.heatMapLayer);
 				obj.heatMapLayer = pathgeo.layer.heatMap(obj.json, getRadius(0), {
 					opacity : 0.55,
-					layerName:"heatMapLayer"
+					layerName:"heatMapLayer",
+					visible:false
 				});
 				app.controls.toc.addOverlay(obj.heatMapLayer, "Heat Map");
 				
@@ -1028,7 +1068,8 @@ function showLayer(obj, options) {
 	
 						geocodingResult.heatMapLayer = pathgeo.layer.heatMap(geocodingResult.json, radius, {
 							opacity : 0.55,
-							layerName:"heatMapLayer"
+							layerName:"heatMapLayer",
+							visible:true
 						});
 						geocodingResult.heatMapLayer.addTo(app.map);
 						app.controls.toc.addOverlay(geocodingResult.heatMapLayer, "Heat Map");
@@ -1040,13 +1081,11 @@ function showLayer(obj, options) {
 				}
 				
 
-
-				//showLayerNames
-				//if this is the first time to load layers, the showLayerNames should be emplty.
-				//so the default layer is geoJsonLayer
-				
-				if (obj.showLayerNames.length == 0) {obj.showLayerNames.push("geoJsonLayer");};
-				$.each(obj.showLayerNames, function(i, name) {obj.layers.push(obj[name]);})
+				//the default layer is geoJsonLayer
+				if(!options.isFilter){
+					userSetting.visibleLayerNames=["geoJsonLayer"];
+				}
+				$.each(userSetting.visibleLayerNames, function(i, name) {obj.layers.push(obj[name]);})
 			}//end parseGeojson
 
 
@@ -1091,13 +1130,18 @@ function showLayer(obj, options) {
 		if (options.isShow) {
 			$.each(obj.layers, function(i, layer) {
 				layer.addTo(app.map);
-				app.showLayers.push(layer);
-				
+				layer.options.visible=true;
+			
 				if(options.isFilter && layer.options.layerName){
 					//change the color of map gallery
 					$(".leaflet-control-mapGallery ul li[layer='" + layer.options.layerName + "']").css('background-color', app.css.mapGalleryHighlightColor);
 				}
-			})
+			});
+			
+			//make geojsonLayer as the default layer > change the background-color of the map gallery icon
+			if(!options.isFilter){
+				$('.leaflet-control-mapGallery ul li[layer="geoJsonLayer"]').css('background-color', app.css.mapGalleryHighlightColor);
+			}
 			
 			if (options.zoomToExtent) {
 				app.map.fitBounds(obj.geoJsonLayer.getBounds());
@@ -1125,55 +1169,12 @@ function showLayer(obj, options) {
 
 }
 
-//switch layer
-function switchVisualization(types) {
-	//remove all shown layers on the map
-	removeLayers();
-
-	var layer;
-	$.each(types, function(i, type) {
-		switch(type) {
-			case "MARKERCLUSTER":
-				layer = app.geocodingResult.markerClusterLayer.addTo(app.map);
-				break;
-			case "HEATMAP":
-				layer = app.geocodingResult.heatMapLayer.addTo(app.map);
-				break;
-			case "GEOJSON":
-				layer = app.geocodingResult.geoJsonLayer.addTo(app.map);
-				break;
-		}
-		app.showLayers.push(layer);
-
-		//google anlytics tracking event
-		_gaq.push(['_trackEvent', 'Visualization', type, app.userInfo.email]);
-	});
-
-}
-
-//remove all layers on the map
-function removeLayers() {
-
-	if (app.showLayers.length > 0) {
-		$.each(app.showLayers, function(i, layer) {
-			//if toc contains the layer
-			if (app.controls.toc._layers[layer._leaflet_id]) {
-				app.controls.toc.removeLayer(layer);
-			}
-			//remove layer from the map
-			app.map.removeLayer(layer);
-		});
-		app.showLayers = [];
-	}
-}
 
 
 
 //clear all default layers
 function clearLayers(){
 	var obj=app.geocodingResult;
-	
-	obj.showLayerNames=[];
 	
 	//remove layers
 	var layerNames = ["geoJsonLayer", "markerClusterLayer", "heatMapLayer"];
@@ -1183,7 +1184,6 @@ function clearLayers(){
 		if (layer) {
 			//if layer._map has map object, that means the layer is shown on the map
 			if (layer._map) {
-				obj.showLayerNames.push(layerName);
 				app.map.removeLayer(layer);
 				
 				//restore the default background color for the button of map gallery
@@ -1488,12 +1488,9 @@ function showTable(obj, options) {
 		var html = "<ul>" +
 		//"<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
 		((obj.downloadLink) ? "<li><img src='images/1365858910_download.png' title='download'/><span>Download</span></li>" : "") +
-		//"<li><img src='images/1365858910_download.png' title='download selected data'/><span>Download Selected Data</span></li>" +
 		//"<li><img src='images/1365858892_print.png' title='print'/><span>Print</span></li>" +
 		"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/><span>Show/hide Columns</span></li>" + ((obj.hasGeomask) ? "<li><img src='images/1376481601_Security.png' title='geomask'/><span>GeoMask</span></li>" : "") + "<li><img src='images/1375655879_br_up.png' title='More Table'/><span>More Table</span></li>" +
 		//"<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
-		//"<li><img src='images/1365978110_gallery2.png' title='map gallery'/></li>" +
-		//"<li><img src='images/1365872733_sq_br_down.png' title='maximum map'/></li>"+
 		"</ul>";
 		$(".dataTable_tools").append(html).find("ul li").click(function() {
 			var $this = $(this), $img = $this.find("img"), $span = $this.find("span"), title = $img.attr('title');
@@ -1618,42 +1615,17 @@ function showInfobox(type, css, dom) {
 				var isShow = ($(".dataTable th:contains('" + columnName + "')").length > 0) ? 'checked' : '';
 				html += "<li><input type='checkbox' id=" + i + " " + isShow + " onclick='app.dataTable.fnSetColumnVis(this.id, this.checked); ColVis.fnRebuild(app.dataTable);' />&nbsp; &nbsp; " + columnName + "</li>";
 			});
-			break;
+		break;
 		case "demographic data":
 			//get all columns name from table
 			$.each(app.demographicData, function(k, v) {
 				html += "<li><input type='radio' name='demographic' value=" + k + " onclick='if(this.checked){app.layers.demographicData.redrawStyle(this.value); app.layers.demographicData.addTo(app.map);}' />&nbsp; &nbsp; " + v + "</li>";
 			});
-			break;
-		case "map gallery":
-			var mapGalleries = [{
-				label : "marker map",
-				value : "GEOJSON",
-				layerName : "geoJsonLayer"
-			}, {
-				label : "cluster map",
-				value : "MARKERCLUSTER",
-				layerName : "markerClusterLayer"
-			}, {
-				label : "heat map",
-				value : "HEATMAP",
-				layerName : "heatMapLayer"
-			}];
-
-			$.each(mapGalleries, function(i, gallery) {
-				html += "<li><input type='radio' name='mapGallery' value='" + gallery.value + "' " + ((app.geocodingResult[gallery.layerName]._map) ? "checked=checked" : "") + " onclick='if(this.checked){switchVisualization([this.value]);}' />&nbsp; &nbsp; " + gallery.label + "</li>";
-			});
-			break;
-		case "canned report":
-			var reports = ["demographic data report", "social media report"];
-			$.each(reports, function(i, report) {
-				html += "<li><input type='radio' name='mapGallery' value='" + report + "' " + " onclick='' />&nbsp; &nbsp; " + report + "</li>";
-			});
-			break;
+		break;
 		case "print":
 			window.print();
 			return;
-			break;
+		break;
 
 	}
 	html += "</ul>";
