@@ -74,11 +74,11 @@ if(username is not None):
     if(tableID=='1377287606' or tableID=='1375413042'):
         username='pathgeodemo'
         oauth=None
-
+        
     #get data in the MongoDB
     table=collection.find_one({"email":username, "timestamp":tableID, "oauth": oauth})
 
-   if(table is not None):
+    if(table is not None):
         results=table["geojson"]
         filePath= table["name"]
         orderedColumns=table["orderedColumns"]
