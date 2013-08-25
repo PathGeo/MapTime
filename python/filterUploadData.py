@@ -70,7 +70,13 @@ msg={
 
 
 if(username is not None):
-   table=collection.find_one({"email":username, "timestamp":tableID, "oauth": oauth})
+    #exception to download sample data
+    if(tableID=='1377287606' or tableID=='1375413042'):
+        username='pathgeodemo'
+        oauth=None
+
+    #get data in the MongoDB
+    table=collection.find_one({"email":username, "timestamp":tableID, "oauth": oauth})
 
    if(table is not None):
         results=table["geojson"]
