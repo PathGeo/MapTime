@@ -714,6 +714,7 @@ function changeMarkerIcon(img_src, width, height) {
 	if(app.highlightMarker){
 		app.highlightMarker.setIcon(iconHover)
 	}
+		
 }
 
 //load geojson
@@ -876,7 +877,7 @@ function showLayer(obj, options) {
 							latlng = new L.LatLng(coords[1], coords[0]);
 						}
 
-						var width = 16, height = 21.6;
+						var width = 10, height = 13.5;
 
 						var icon = defaultMarkerIcon=new L.icon({
 							iconUrl : "images/marker/blue/5.png", //"images/1374596320_marker_rounded_light_blue.png",//"images/1374590792_bullet-black.png", //
@@ -1037,8 +1038,8 @@ function showLayer(obj, options) {
 				var zoomLevel = app.map.getBoundsZoom(obj.geoJsonLayer.getBounds());
 				var getRadius = function(i) {
 					var radius = 6.25 * Math.pow(2, (17 - zoomLevel + i));
-					radius = (radius >= 5000) ? 5000 : radius;
-					radius = (radius >= 50) ? radius : 50;
+					radius = (radius >= 3025) ? 3025 : radius;
+					radius = (radius >= 25) ? radius : 25;
 					return (userSetting.radius)?userSetting.radius:radius;
 				};
 				//app.controls.toc.removeLayer(obj.heatMapLayer);
@@ -1053,9 +1054,9 @@ function showLayer(obj, options) {
 				//set up heatmap slider
 				if(!options.isFilter){
 					$("#heatmap_slider").attr({
-						'min' : 50,
-						'max' : 3050,
-						'step' : (3050 - 50) / 50,
+						'min' : 25,
+						'max' : 3025,
+						'step' : (3025 - 25) / 50,
 						'value' : getRadius(0)
 					}).on("slidestop", function(e) {
 						var radius = e.currentTarget.value;

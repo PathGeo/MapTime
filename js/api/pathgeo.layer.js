@@ -12,7 +12,7 @@ pathgeo.layer={
 	 * @return {object} return object includes .markercluster and .layer(L.geojson)
 	 */
 	markerCluster: function(geojson, L_geojson_options, events){
-		var markercluster= new L.MarkerClusterGroup({spiderfyOnMaxZoom: false, showCoverageOnHover: true, zoomToBoundsOnClick: false });
+		var markercluster= new L.MarkerClusterGroup({spiderfyOnMaxZoom: true, showCoverageOnHover: true, zoomToBoundsOnClick: false });
 		
 		//add L_geojson_options to markerCluster options
 		$.each(L_geojson_options, function(k,v){
