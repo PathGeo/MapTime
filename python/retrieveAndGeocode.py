@@ -70,7 +70,7 @@ def geocodeRows(rows, locFunc, maxRow, orderedColumns):
 	#Go through each row and geocode location field.
 	for i in range(maxRow):
 		row=rows[i]
-		try: 
+		try:
 			#convert any whole number floats into string
 			#must convert to int first, in order to trim off decimal values
 			for k,v in row.iteritems():
@@ -85,7 +85,7 @@ def geocodeRows(rows, locFunc, maxRow, orderedColumns):
                         #reorder by orderedColumns
 			from collections import OrderedDict
                         row=OrderedDict(sorted(row.iteritems(), key=lambda k: orderedColumns.index(k[0])))
-                       
+                        
                 			
 			if '' in row:
 				del row['']
@@ -236,7 +236,7 @@ geoFunc = None
 #still just serializing the python object for excel data.  
 jsonTable = pickle.load(open(os.path.abspath(__file__).replace(__file__, fname + ".p")))
 jsonRows = jsonTable['rows']
-columns = jsonTable['columns']
+columns = map(lambda item: item.replace(' ', '_'), jsonTable['columns'])
 os.remove(os.path.abspath(__file__).replace(__file__, fname + ".p"))
 
 
