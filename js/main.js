@@ -1364,15 +1364,8 @@ function showTable(obj, options) {
 
 			},
 			"fnRowCallback" : function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-				//check each td in the nRow if it contains "http://" or "https://"
-				var $nRow=$(nRow), $td=$nRow.find("td:contains('http'), td:contains('https')");
-				if($td.length>0){
-					$td.each(function(){
-						$(this).text("<a href='" + $.text([this]) + "' target='_blank'>" + $.text([this]) + "</a>");
-					});
-				}
-
-							
+				var $nRow=$(nRow);
+				
 				//only give the attr "_featureID" into each tr at the first time
 				if ($nRow.attr("_featureID") == undefined) {
 					$nRow.attr({

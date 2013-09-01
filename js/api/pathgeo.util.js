@@ -144,8 +144,20 @@ pathgeo.util={
 			
 			//if (!options.orderedColumns) {
 			$.each(feature.properties, function(k,v){
+				//check if td contains http hyperlink
+				var hasHyperlink=false;
+				if(v.toUpperCase().split("HTTP://").length>1 || v.toUpperCase().splig("HTTPS://").length>1){
+					v="<a href='"+v+"' target='_blank'>"+v+"</a>";
+					hasHyperlink=true;
+				}
+				
 				if(needColumns){
-					columns_dataTable.push({"sTitle": k})
+					var obj={"sTitle": k};
+					
+					if(hasHyperlink){
+						obj.sType='html';
+					}
+					columns_dataTable.push(obj)
 					columns.push(k);
 				}
 				datas.push(v);
