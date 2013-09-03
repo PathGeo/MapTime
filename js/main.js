@@ -23,11 +23,18 @@ var app = {
 			attribution : "Map Provided by <a href='http://www.openstreetmap.org/' target='_blank'>Open Street Map</a>",
 			title : "Open Street Map"
 		}),
-		"ESRI Imagery Map" : L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/{serviceName}/MapServer/tile/{z}/{y}/{x}", {
-			serviceName: "World_Imagery",
-			attribution : "Map Provided by <a href='http://www.arcgis.com/' target='_blank'>ESRI</a>",
-			title : "ESRI Imagery Map"
-		}),
+		"ESRI Imagery Map" : L.layerGroup([
+			L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/{serviceName}/MapServer/tile/{z}/{y}/{x}", {
+				serviceName: "World_Imagery",
+				attribution : "Map Provided by <a href='http://www.arcgis.com/' target='_blank'>ESRI</a>",
+				title : "ESRI Imagery Map"
+			}),
+			L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/{serviceName}/MapServer/tile/{z}/{y}/{x}", {
+				serviceName: "Reference/World_Boundaries_and_Places",
+				attribution : "Map Provided by <a href='http://www.arcgis.com/' target='_blank'>ESRI</a>",
+				title : "ESRI Imagery Map"
+			})
+		]),
 		"ESRI Street Map" : L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/{serviceName}/MapServer/tile/{z}/{y}/{x}", {
 			serviceName: "World_Street_Map",
 			attribution : "Map Provided by <a href='http://www.arcgis.com/' target='_blank'>ESRI</a>",
@@ -38,11 +45,18 @@ var app = {
 			attribution : "Map Provided by <a href='http://www.arcgis.com/' target='_blank'>ESRI</a>",
 			title : "ESRI National Geographic Map"
 		}),
-		"ESRI Terrain Map" : L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/{serviceName}/MapServer/tile/{z}/{y}/{x}", {
-			serviceName: "World_Terrain_Base",
-			attribution : "Map Provided by <a href='http://www.arcgis.com/' target='_blank'>ESRI</a>",
-			title : "ESRI Terrain Map"
-		}),
+		"ESRI Terrain Map" : L.layerGroup([
+			L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/{serviceName}/MapServer/tile/{z}/{y}/{x}", {
+				serviceName: "World_Terrain_Base",
+				attribution : "Map Provided by <a href='http://www.arcgis.com/' target='_blank'>ESRI</a>",
+				title : "ESRI Terrain Map"
+			}),
+			L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/{serviceName}/MapServer/tile/{z}/{y}/{x}", {
+				serviceName: "Reference/World_Reference_Overlay",
+				attribution : "Map Provided by <a href='http://www.arcgis.com/' target='_blank'>ESRI</a>",
+				title : "ESRI Terrain Map"
+			}),
+		]),
 		"ESRI Topographic Map" : L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/{serviceName}/MapServer/tile/{z}/{y}/{x}", {
 			serviceName: "World_Topo_Map",
 			attribution : "Map Provided by <a href='http://www.arcgis.com/' target='_blank'>ESRI</a>",
@@ -340,7 +354,7 @@ function init_map() {
 			//			}
 		},
 		'baselayerchange' : function(e) {
-			var name = e.layer.options.title;
+			var name = (e.layer.options)?e.layer.options.title:null;
 			if (name && name != "" && app.userInfo.email && app.userInfo.email != '') {
 				_gaq.push(['_trackEvent', 'BaseMap', name, app.userInfo.email]);
 			}
