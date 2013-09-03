@@ -219,7 +219,7 @@ var app = {
 	oauthWindow : null,
 	tutorial : null,
 	introJS : null,
-	geomask : false,
+	geomask : true, //default is true for geomasking 100meter
 	highlightMarker : new L.Marker([0, 0])
 }
 
