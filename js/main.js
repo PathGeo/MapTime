@@ -22,6 +22,36 @@ var app = {
 		"OpenStreet Map" : L.tileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 			attribution : "Map Provided by <a href='http://www.openstreetmap.org/' target='_blank'>Open Street Map</a>",
 			title : "Open Street Map"
+		}),
+		"ESRI Imagery Map" : L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/{serviceName}/MapServer/tile/{z}/{y}/{x}", {
+			serviceName: "World_Imagery",
+			attribution : "Map Provided by <a href='http://www.arcgis.com/' target='_blank'>ESRI</a>",
+			title : "ESRI Imagery Map"
+		}),
+		"ESRI Street Map" : L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/{serviceName}/MapServer/tile/{z}/{y}/{x}", {
+			serviceName: "World_Street_Map",
+			attribution : "Map Provided by <a href='http://www.arcgis.com/' target='_blank'>ESRI</a>",
+			title : "ESRI Street Map"
+		}),
+		"ESRI National Geographic Map" : L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/{serviceName}/MapServer/tile/{z}/{y}/{x}", {
+			serviceName: "NatGeo_World_Map",
+			attribution : "Map Provided by <a href='http://www.arcgis.com/' target='_blank'>ESRI</a>",
+			title : "ESRI National Geographic Map"
+		}),
+		"ESRI Terrain Map" : L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/{serviceName}/MapServer/tile/{z}/{y}/{x}", {
+			serviceName: "World_Terrain_Base",
+			attribution : "Map Provided by <a href='http://www.arcgis.com/' target='_blank'>ESRI</a>",
+			title : "ESRI Terrain Map"
+		}),
+		"ESRI Topographic Map" : L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/{serviceName}/MapServer/tile/{z}/{y}/{x}", {
+			serviceName: "World_Topo_Map",
+			attribution : "Map Provided by <a href='http://www.arcgis.com/' target='_blank'>ESRI</a>",
+			title : "ESRI Topographic Map"
+		}),
+		"ESRI Light Gray Map" : L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/{serviceName}/MapServer/tile/{z}/{y}/{x}", {
+			serviceName: "Canvas/World_Light_Gray_Base",
+			attribution : "Map Provided by <a href='http://www.arcgis.com/' target='_blank'>ESRI</a>",
+			title : "ESRI Light Gray Map"
 		})
 		//"Google Streetmap":L.tileLayer("https://mts{s}.googleapis.com/vt?lyrs=m@207265067&src=apiv3&hl=zh-TW&x={x}&y={y}&z={z}&s=Ga&style=api%7Csmartmaps",{subdomains:"123", attribution:"Map Source from Google"})
 	},
