@@ -59,10 +59,10 @@ def saveDataAsExcel(data, outputFileName, columns=None):
 	book.save(curDir + "\\" + outputFileName)
 		
 def geomask(val):
-	val = round(val, 4)
+	rounded = round(val, 4)
 	r = random.randint(-9, 9) * 1/100000.0
 	
-	return val + r
+	return rounded + r
 		
 def geocodeRows(rows, locFunc, maxRow, orderedColumns):
 	features = []
