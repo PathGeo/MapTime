@@ -72,6 +72,11 @@ var app = {
 			title : "ESRI Light Gray Map",
 			maxZoom:16
 		})
+//		"test":L.tileLayer("http://maps.nlsc.gov.tw/S_Maps/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER={layer}&STYLE=_null&TILEMATRIXSET=EPSG:3857&TILEMATRIX=EPSG:3857:{z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png", {
+//			layer: "EMAP",
+//			attribution : "",
+//			title : "TEST"
+//		})
 		//"Google Streetmap":L.tileLayer("https://mts{s}.googleapis.com/vt?lyrs=m@207265067&src=apiv3&hl=zh-TW&x={x}&y={y}&z={z}&s=Ga&style=api%7Csmartmaps",{subdomains:"123", attribution:"Map Source from Google"})
 	},
 	layers : {
@@ -363,6 +368,7 @@ function init_map() {
 			if (name && name != "" && app.userInfo.email && app.userInfo.email != '') {
 				_gaq.push(['_trackEvent', 'BaseMap', name, app.userInfo.email]);
 			}
+			console.log(app.controls.toc)
 		}
 	});
 }
@@ -1260,6 +1266,8 @@ function switchBaseLayer(layer) {
 	}
 }
 
+
+
 //show pivot table
 //This first populates the table, then draws the geojson features
 function showTable(obj, options) {
@@ -1716,7 +1724,7 @@ function showLocalInfo(fid, options) {
 		//zoom to the layer, shift lng a little bit to east
 		if (options.zoomToCenter) {
 			var latlng = layer._latlng;
-			app.map.setView(new L.LatLng(latlng.lat, latlng.lng - 0.0025), 14)
+			app.map.setView(new L.LatLng(latlng.lat, latlng.lng - 0.0025), (app.map.getZoom()>=14)?app.map.getZoom():14)
 		}
 
 		//open popup
