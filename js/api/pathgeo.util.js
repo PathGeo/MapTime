@@ -145,9 +145,10 @@ pathgeo.util={
 			//if (!options.orderedColumns) {
 			$.each(feature.properties, function(k,v){
 				//check if td contains http hyperlink
-				var hasHyperlink=false;
-				if(String(v).toUpperCase().split("HTTP://").length>1 || String(v).toUpperCase().split("HTTPS://").length>1){
-					v="<a href='"+v+"' target='_blank'>"+v+"</a>";
+				var hasHyperlink=false, value=String(v).toUpperCase();
+				if(value.indexOf("HTTP://")>=0 || value.indexOf("HTTPS://")>=0){
+					//start from http://
+					v=pathgeo.util.linkify(String(v));
 					hasHyperlink=true;
 				}
 				
@@ -178,7 +179,27 @@ pathgeo.util={
 			
 			return {columns:columns, columns_dataTable:columns_dataTable, datas:datas}
 		}
+	},
+	
+	/**
+	 * convert text to link if contains http, https, ftp, mailto
+	 * from http://stackoverflow.com/questions/247479/jquery-text-to-link-script
+	 * @param {String} content
+	 */
+	linkify: function(content){
+		var url1 = /(^|&lt;|\s)(www\..+?\..+?)(\s|&gt;|$)/g,
+      		url2 = /(^|&lt;|\s)(((https?|ftp):\/\/|mailto:).+?)(\s|&gt;|$)/g;
+		
+		content = content.replace(/&/g, '&amp;')
+                         .replace(/</g, '&lt;')
+                         .replace(/>/g, '&gt;')
+                         .replace(url1, '$1<a href="http://$2">$2</a>$3')
+                         .replace(url2, '$1<a href="$2">$2</a>$5');
+						 
+		return content
 	}
+	
+	
 	
 		
 }
