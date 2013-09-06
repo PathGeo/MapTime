@@ -1258,7 +1258,10 @@ function showLayer(obj, options) {
 
 		//show mapGallery button
 		$(".leaflet-control-mapGallery").show();
-
+		
+		//adjust toc css
+		$(".leaflet-control-tocThumbnail #basemapWidget").css({top:"-180px"})
+		
 		//show geojsonlayer popup menu
 		if(!options.isFilter){
 			$("#mapPopup_geoJsonLayer").show();
