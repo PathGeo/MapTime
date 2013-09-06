@@ -71,6 +71,12 @@ var app = {
 			attribution : "Map Provided by <a href='http://www.arcgis.com/' target='_blank'>ESRI</a>",
 			title : "ESRI Light Gray Map",
 			maxZoom:16
+		}),
+		"ESRI Ocean Map" : L.tileLayer("http://server.arcgisonline.com/ArcGIS/rest/services/{serviceName}/MapServer/tile/{z}/{y}/{x}", {
+			serviceName: "Ocean_Basemap",
+			attribution : "Map Provided by <a href='http://www.arcgis.com/' target='_blank'>ESRI</a>",
+			title : "ESRI Ocean Map",
+			maxZoom:12
 		})
 //		"test":L.tileLayer("http://maps.nlsc.gov.tw/S_Maps/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER={layer}&STYLE=_null&TILEMATRIXSET=EPSG:3857&TILEMATRIX=EPSG:3857:{z}&TILEROW={y}&TILECOL={x}&FORMAT=image/png", {
 //			layer: "EMAP",
@@ -175,6 +181,39 @@ var app = {
 			}
 		}),
 		toc : null,
+		tocThumbnail: L.Control.extend({
+			options : {
+				"position" : 'topright',
+				"text" : 'Change Base Maps'
+			},
+			initialize : function(options) {L.Util.setOptions(this, options);},
+			onAdd : function(map) {
+				//create div element
+				var mainContent=L.DomUtil.create('div', 'leaflet-control-tocThumbnail'),
+					html="<a class='leaflet-control-layers-toggle' href='#' title='Layers'></a>"+ $("#basemapWidget")[0].outerHTML;
+				
+				$(mainContent).html(html)
+					.addClass('leaflet-control-layers')
+					.on({
+						"mouseover":mouseoverEvent,
+						"click": mouseoverEvent
+					})
+					.find("ul li").click(function(){
+						switchBaseLayer($(this).attr('title'));
+					});
+
+				//monuseoverEvent on the basemapWidget
+				function mouseoverEvent(e){
+					$("#basemapWidget").show().on({
+						"mouseleave":function(){
+							$(this).hide();
+						}
+					});
+				}
+				
+				return mainContent;
+			}
+		}),
 		legend : L.Control.extend({
 			options : {
 				"position" : 'bottomright',
@@ -326,6 +365,10 @@ function init_map() {
 		trackResize : true
 	});
 
+	//set up current basemap
+	app.map.currentBasemap=app.basemaps["Light Gray Background Map"];
+	
+
 	//move the location of zoomcontrol to the bottom right
 	app.map.zoomControl.setPosition("bottomright");
 
@@ -336,7 +379,7 @@ function init_map() {
 	$.each(app.controls, function(k, v) {
 		//toc is hidden in the map
 		if (k == "toc") {
-			app.map.addControl(v);
+			//app.map.addControl(v); //disable add default toc
 		} else {
 			app.map.addControl(new v());
 		}
@@ -368,7 +411,7 @@ function init_map() {
 			if (name && name != "" && app.userInfo.email && app.userInfo.email != '') {
 				_gaq.push(['_trackEvent', 'BaseMap', name, app.userInfo.email]);
 			}
-			console.log(app.controls.toc)
+			//console.log(app.controls.toc)
 		}
 	});
 }
@@ -1258,11 +1301,19 @@ function clearLayers(){
 
 
 //switch basemap
-function switchBaseLayer(layer) {
-	if (app.map.hasLayer(layer)) {
-		app.map.removeLayer(layer)
-	} else {
-		layer.addTo(app.map);
+function switchBaseLayer(type){
+	var layer = app.basemaps[type] || null,
+		map=app.map;
+	
+	if(layer){
+		if(app.map.currentBasemap){
+			map.removeLayer(app.map.currentBasemap);
+		}
+		map.addLayer(layer);
+		app.map.currentBasemap=layer;
+		
+		//fire baselayerchange event
+		map.fire('baselayerchange', {layer: layer});
 	}
 }
 

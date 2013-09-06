@@ -123,6 +123,18 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 
 
 
+/** 
+ * toc thumbnail
+ */
+.leaflet-control-tocThumbnail {position:relative}
+.leaflet-control-tocThumbnail #basemapWidget {display:none; position:absolute; top:0px; right:0px; width:300px; }
+.leaflet-control-tocThumbnail #basemapWidget ul {list-style:none;padding:0px; margin:0 auto;width:99.9%; height:100%; }
+.leaflet-control-tocThumbnail #basemapWidget ul li {text-align:center; width:33%; padding-top:5px; margin:5px 0px 5px 0px; float:left; height:86px;}
+.leaflet-control-tocThumbnail #basemapWidget ul li:hover {background-color:#f7f7f7; cursor:pointer;}
+.leaflet-control-tocThumbnail #basemapWidget ul li img {width:80px; height:60px; border:1px solid #ffffff;  box-shadow: 0 1px 7px #999; -moz-border-radius: 8px;-webkit-border-radius: 8px;border-radius: 8px;}
+.leaflet-control-tocThumbnail #basemapWidget ul li p {font-size:11px; color:#333333; margin:0px; }
+
+
 /**
  * 	legend
  */
