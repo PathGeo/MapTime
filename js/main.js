@@ -8,6 +8,7 @@ google.load("visualization", "1", {
 $.cookie.json=true;
 
 
+
 var app = {
 	map : null,
 	basemaps : {
@@ -314,15 +315,17 @@ $(document).on({
 
 	},
 	"pageshow" : function() {
-		init_login();
+		if(!checkIE()){
+			init_login();
 
-		init_UI();
-
-		init_map();
-
-		//getClientGeo();
-
-		readTutorial();
+			init_UI();
+	
+			init_map();
+	
+			//getClientGeo();
+	
+			readTutorial();
+		};
 	},
 	"pageinit" : function() {
 		//popup not use history to avoid the problem that the dialog cannot be closed and may be redirected to other page
@@ -2754,3 +2757,33 @@ function geomask() {
 		isFilter:true
 	})
 }
+
+
+//check browser version
+function checkIE(){
+	//check browser version, if IE version < 10, then show browser error dilaog and redirect to pathgeo homepage
+	isIE=false;
+	if($.browser.msie){
+		if(parseFloat($.browser.version)<10){
+			$("#dialog_ieError").popup("open");
+			
+			var $countdown=$("#ieError_countdown"),
+				number=10,
+				countdownInterval=setInterval(function(){
+				if(number>0){
+					$countdown.html(number)
+					number--;
+				}else{
+					//redirect webpage to pathgeo homepage
+					window.location.href="https://www.pathgeo.com";
+					clearInterval(countdownInterval);
+				}
+			}, 1000);
+			
+			isIE=true
+		}
+	}
+	
+	return isIE
+}
+
