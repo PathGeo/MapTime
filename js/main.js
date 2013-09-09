@@ -2587,6 +2587,7 @@ function getAccountInfo(email, update) {
 
 //write account info
 function writeAccountInfo(account, options) {
+
 	//options
 	if(!options){options={}}
 	options.status=options.status || 'login';
@@ -2735,14 +2736,15 @@ function download() {
 }
 
 //oath callback
-function oauth_callback(accountInfo) {
+function oauth_callback(accountInfo, status) {
+
 	//close window
 	app.oauthWindow.close();
 	
 	//save cookie
 	$.cookie("PathGeo", {'email': accountInfo.email, 'oauth': accountInfo.oauth}, { expires: 7, path: '/' });
 	
-	writeAccountInfo(accountInfo, {signup:true});
+	writeAccountInfo(accountInfo, {status:status});
 }
 
 //read tutorial
