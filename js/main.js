@@ -2543,18 +2543,22 @@ function afterLogin(email, status) {
 
 	setTimeout(function() {
 		if(status=='login'){
+			app.userInfo.oauth="google"
 			//depends on signup or oauth by app.userInfo.oauth
-			var html="<h2>Hi! " + app.userInfo.email +"<p></p>Welcome to Maptime !</h2>";
+			var html="<h3>Hi! " + app.userInfo.email +"</h3><p></p><h2>Welcome to Maptime !</h2><img src='images/1378761331_06.png' />";
 			if(app.userInfo.oauth){
-				html+="We are gald to inform you that you already won 2000 FREE credits. ";
+				html+="<h2>Congratulations! You win 2000 FREE credits.</h2>Please go to account to get the gift.";
 			}else{
-				html+="You will receive a verification email from PathGeo. Please check your mailbox and verify your email account to win 2000 FREE credits.";
+				html+="<h2>Don't forget to verify your account to win 2000 FREE credit.</h2>A verified email is waiting for you to verify in your mailbox.";
 			}
 			
-			html+='<p></p>Please click on <a href="#" data-role="button" data-mini="true" data-inline="true" data-icon="check" data-theme="b">Map Data</a> or <a href="#" data-role="button" data-mini="true" data-inline="true" data-icon="check" data-theme="b">Tutorial</a> to start a tour in MapTime.'
-			
 			$("#welcomeContent").html(html).find("a").buttonMarkup();
-			$("#dialog_welcome").popup("open");
+			$("#dialog_welcome").popup("open").find("a[data-rel='back']").click(function(){
+				//open dialog_uploadData when closing the dialog
+				setTimeout(function(){
+					$("#dialog_uploadData").popup('open');
+				},500);
+			});
 		}else{
 			$("#dialog_uploadData").popup("open");
 		}

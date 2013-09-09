@@ -528,9 +528,11 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /**
  * 	dialog welcome
  */
-#dialog_welcome {width:500px; height:210px; padding:20px;font-size:14px; }
-#welcomeContent {color:#333333; }
-
+#dialog_welcome {width:500px; height:250px; padding:20px;font-size:14px;}
+#welcomeContent {color:#333333; line-height:30px; }
+#welcomeContent h2 {margin-top:30px; }
+#welcomeContent img {position:absolute; top:30px; right:30px; height:100px; }
+#welcomeContent .ui-btn-inner {padding:0px 10px 0px 10px; }
 
 
 /**
