@@ -2542,8 +2542,7 @@ function afterLogin(email, status) {
 	$("#uploadData_oauth").attr("value", app.userInfo.oauth)
 
 	setTimeout(function() {
-		if(status=='login'){
-			app.userInfo.oauth="google"
+		if(status=='signup'){
 			//depends on signup or oauth by app.userInfo.oauth
 			var html="<h3>Hi! " + app.userInfo.email +"</h3><p></p><h2>Welcome to Maptime !</h2><img src='images/1378761331_06.png' />";
 			if(app.userInfo.oauth){
