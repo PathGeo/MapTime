@@ -2515,7 +2515,9 @@ function logout() {
 }
 
 //after login
-function afterLogin(email) {
+function afterLogin(email, status) {
+	if(!status){status='login'}
+	
 	//close login dialog
 	$('#dialog_login').popup('close');
 
@@ -2540,9 +2542,25 @@ function afterLogin(email) {
 	$("#uploadData_oauth").attr("value", app.userInfo.oauth)
 
 	setTimeout(function() {
-		$("#dialog_uploadData").popup("open");
+		if(status=='login'){
+			//depends on signup or oauth by app.userInfo.oauth
+			var html="<h2>Hi! " + app.userInfo.email +"<p></p>Welcome to Maptime</h2>";
+			if(app.userInfo.oauth){
+				html+="We are gald to inform you that you win 2000 FREE credits. ";
+			}else{
+				html+="Please verify your email account by clicking the PathGeo email in your mailbox to win 2000 FREE credits.";
+			}
+			
+			html+="<p></p>You are free to map your data by clicking on the 'Map Data' or see tutorial for more details."
+			
+			$("#welcomeContent").html(html);
+			$("#dialog_welcome").popup("open");
+		}else{
+			$("#dialog_uploadData").popup("open");
+		}
 	}, 500);
 }
+
 
 //get Account info
 function getAccountInfo(email, update) {
@@ -2555,7 +2573,7 @@ function getAccountInfo(email, update) {
 		dataType : "json",
 		success : function(json) {
 			if (json && json.status && json.status == 'ok' && json.account) {
-				writeAccountInfo(json.account, update)
+				writeAccountInfo(json.account, {update:update})
 			}
 		},
 		error : function(e) {
@@ -2565,23 +2583,32 @@ function getAccountInfo(email, update) {
 }
 
 //write account info
-function writeAccountInfo(account, update) {
+function writeAccountInfo(account, options) {
+	//options
+	if(!options){options={}}
+	options.status=options.status || 'login';
+	options.update=options.update || false;
+	
 	//load account info
 	$.each(account, function(k, v) {
 		if ( k in app.userInfo) {
 			app.userInfo[k] = v
 		}
 	})
+	
+	//refresh account info
+	refreshAccountInfo();
+	
+
 	//after login
-	if (!update) {
-		afterLogin(app.userInfo.email);
+	if (!options.update) {
+		afterLogin(app.userInfo.email, options.status);
 
 		//set up account management iframe
 		$("#userMenu_iframe").attr("src", 'common/accountManagement.html?email=' + app.userInfo.email + "&oauth=" + app.userInfo.oauth)
 	}
 
-	//refresh account info
-	refreshAccountInfo();
+	
 }
 
 //update account info
@@ -2712,7 +2739,7 @@ function oauth_callback(accountInfo) {
 	//save cookie
 	$.cookie("PathGeo", {'email': accountInfo.email, 'oauth': accountInfo.oauth}, { expires: 7, path: '/' });
 	
-	writeAccountInfo(accountInfo);
+	writeAccountInfo(accountInfo, {signup:true});
 }
 
 //read tutorial
