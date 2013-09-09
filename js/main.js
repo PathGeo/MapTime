@@ -2544,16 +2544,16 @@ function afterLogin(email, status) {
 	setTimeout(function() {
 		if(status=='login'){
 			//depends on signup or oauth by app.userInfo.oauth
-			var html="<h2>Hi! " + app.userInfo.email +"<p></p>Welcome to Maptime</h2>";
+			var html="<h2>Hi! " + app.userInfo.email +"<p></p>Welcome to Maptime !</h2>";
 			if(app.userInfo.oauth){
-				html+="We are gald to inform you that you win 2000 FREE credits. ";
+				html+="We are gald to inform you that you already won 2000 FREE credits. ";
 			}else{
-				html+="Please verify your email account by clicking the PathGeo email in your mailbox to win 2000 FREE credits.";
+				html+="You will receive a verification email from PathGeo. Please check your mailbox and verify your email account to win 2000 FREE credits.";
 			}
 			
-			html+="<p></p>You are free to map your data by clicking on the 'Map Data' or see tutorial for more details."
+			html+='<p></p>Please click on <a href="#" data-role="button" data-mini="true" data-inline="true" data-icon="check" data-theme="b">Map Data</a> or <a href="#" data-role="button" data-mini="true" data-inline="true" data-icon="check" data-theme="b">Tutorial</a> to start a tour in MapTime.'
 			
-			$("#welcomeContent").html(html);
+			$("#welcomeContent").html(html).find("a").buttonMarkup();
 			$("#dialog_welcome").popup("open");
 		}else{
 			$("#dialog_uploadData").popup("open");
