@@ -2546,9 +2546,9 @@ function afterLogin(email, status) {
 			//depends on signup or oauth by app.userInfo.oauth
 			var html="<h3>Hi! " + app.userInfo.email +"</h3><p></p><h2>Welcome to Maptime !</h2><img src='images/1378761331_06.png' />";
 			if(app.userInfo.oauth){
-				html+="<h2>Congratulations! You win 2000 FREE credits.</h2>Please go to account to get the gift.";
+				html+="<h2>Congratulations! You win 1500 FREE credits.</h2>Please go to account to get the gift.";
 			}else{
-				html+="<h2>Don't forget to verify your account to win 2000 FREE credit.</h2>A verified email is waiting for you to verify in your mailbox.";
+				html+="<h2>Don't forget to verify your account to win 1500 FREE credit.</h2>A verified email is waiting for you to verify in your mailbox.";
 			}
 			
 			$("#welcomeContent").html(html).find("a").buttonMarkup();
