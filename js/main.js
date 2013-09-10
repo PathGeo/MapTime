@@ -113,7 +113,11 @@ var app = {
 			onAdd : function(map) {
 				// create the control container with a particular class name
 				var container = L.DomUtil.create('div', 'leaflet-control-mapGallery');
-				var html = "<ul><li title='Showing markers' layer='geoJsonLayer' style='background-color:#5B92C0'><img src='images/marker-icon.png' /></li><li title='Cluster Map' layer='markerClusterLayer'><img src='images/gallery-cluster.png' /></li><li title='Hotspots' layer='heatMapLayer'><img src='images/gallery-heatmap.png' /></li></ul>";
+				var html = "<ul>"+
+							"<li title='Showing markers' layer='geoJsonLayer' style='background-color:#5B92C0'><img src='images/marker-icon.png' /></li>"+
+							"<li title='Cluster Map' layer='markerClusterLayer'><img src='images/gallery-cluster.png' /></li>"+
+							"<li title='Hotspots' layer='heatMapLayer'><img src='images/gallery-heatmap.png' /></li>"+
+						   "</ul>";
 
 				//click map gallery event
 				$(container).html(html).find("ul li").on({
@@ -165,7 +169,7 @@ var app = {
 						}
 					},
 					mouseover : function() {
-						$(".mapPopupWidget").hide();
+						$(".mapPopupWidget, #basemapWidget").hide();
 						var $this = $(this), value = $this.attr("layer"), layer = app.geocodingResult[value];
 
 						//only the layer is activated
@@ -467,7 +471,7 @@ function init_UI() {
 
 	//when mouse click on otherplace, hide dataTable_menu
 	$(document).mouseup(function(e) {
-		var $container = $(".dataTable_menu, #dataTable_chartControlMenu, .mapPopupWidget, #userPopupMenu");
+		var $container = $(".dataTable_menu, #dataTable_chartControlMenu, .mapPopupWidget, #userPopupMenu, #basemapWidget");
 		if (!$container.is(e.target) && $container.has(e.target).length === 0) {
 			$container.hide();
 		}
