@@ -1164,8 +1164,17 @@ function showLayer(obj, options) {
 						'step' : (3025 - 25) / 50,
 						'value' : getRadius(0)
 					}).on("slidestop", function(e) {
-						var radius = e.currentTarget.value;
+						var radius = parseInt(e.currentTarget.value);
 						var geocodingResult = app.geocodingResult;
+						
+						//if raidus>3025 or radius <25 or radius is NaN, make radius value as default
+						if(radius >3025 || radius <25 || isNaN(radius)){
+							if(radius>3025){radius=3025}
+							if(radius<25 || isNaN(radius)){radius=25}
+							$(this).val(radius).trigger('keyup')
+							return;	
+						}			
+						
 						//remove existing heatmap
 						if (geocodingResult.heatMapLayer._map) {
 							app.map.removeLayer(geocodingResult.heatMapLayer);
@@ -1180,10 +1189,17 @@ function showLayer(obj, options) {
 						geocodingResult.heatMapLayer.addTo(app.map);
 						app.controls.toc.addOverlay(geocodingResult.heatMapLayer, "Heat Map");
 					}).keypress(function(e) {
-						//disable any actions
-						return false;
+						if(e.charCode==13){return false;}
+					}).keyup(function(e){
+						var me=this, $me=$(me);
+
+						clearTimeout($.data(this, 'timer'));
+					  	var wait = setTimeout(function(){
+							$me.trigger("slidestop");
+						}, 300);
+					  	$(this).data('timer', wait);
 					}).slider('refresh');
-					$("#heatmap_radius .ui-input-text").html("Change Hot Spot's Radius (unit: Feet)");
+					$("#heatmap_radius .ui-input-text").html("Change Hot Spot's Radius from 25 meter to 3025 meter");
 				}
 				
 
