@@ -162,7 +162,7 @@ if(username is not None):
         jsonRows = table.getRowsAsJSON()
 
         cols = [col for col in table.getColumnNames() if col]
-        locs = findLocColumns(jsonRows[:20])
+        locs = findLocColumns(jsonRows)
 		
         jsonCols = []
         for c in cols:
