@@ -352,12 +352,15 @@ function init_login() {
 		_gaq.push(['_trackEvent', 'Account', 'Login', email]);
 	} else {
 		//$("#dialog_login").popup("open");
+		var num=0
 		var interval = setInterval(function() {
 			if ($("#dialog_login-popup").css("top") != "-99999px") {
-				clearInterval(interval);
-			} else {
-				$("#dialog_login").popup("open");
-			}
+				num++;
+				if(num>=3){
+					clearInterval(interval);
+				}
+			}	
+			$("#dialog_login").popup("open");
 		}, 500);
 	}
 }
