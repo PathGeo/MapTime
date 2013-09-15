@@ -356,7 +356,7 @@ function init_login() {
 		var interval = setInterval(function() {
 			if ($("#dialog_login-popup").css("top") != "-99999px") {
 				num++;
-				if(num>=3){
+				if(num>=5){
 					clearInterval(interval);
 				}
 			}	
