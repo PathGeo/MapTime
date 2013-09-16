@@ -8,6 +8,7 @@ import cgitb, os, pickle, time, datetime
 from os import path
 from pymongo import MongoClient
 
+
 client=MongoClient()
 pathgeoUser=client["pathgeo"]["user"]
 pathgeoTransaction=client["pathgeo"]["transaction"]
@@ -328,8 +329,6 @@ else:
         else:
                 msg["msg"]=outcome
 
-
-
-
 print ''
 print json.dumps(msg)
+
