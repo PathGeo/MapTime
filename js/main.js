@@ -665,7 +665,13 @@ function init_UI() {
 					alert("No rows could be geocoded.  Please make sure you have selected the correct location column.");
 					return;
 				}
-
+				
+				//refresh account info
+				if(featureCollection.accountInfo){
+					writeAccountInfo(featureCollection.accountInfo, {update:true});
+				}
+				
+				
 				//clear all layers
 				clearLayers();
 				

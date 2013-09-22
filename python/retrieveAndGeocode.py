@@ -190,7 +190,15 @@ def deductUserCredit(username, oauth, usedCredit, filename):
                                         "transaction": usedCredit * -1,
                                         "balance": user["credit"]
                                 })
-                                return "succeed"
+
+                                #account info
+                                #define which field need to be sent back to client
+                                infos=["email", "dateRegister", "accountType", "credit", "oauth"]
+                                accountInfo={}
+                                for info in infos:
+                                    accountInfo[info]=obj[info]
+                                
+                                return "succeed", accountInfo
                         else:
                                 return "no enough credit"
                 else:
@@ -322,9 +330,11 @@ else:
 
 
         #deduct users' credit
-        outcome=deductUserCredit(username, oauth, needCredit, fname)
+        outcome, accountInfo=deductUserCredit(username, oauth, needCredit, fname)
 
         if (outcome=='succeed'):
+                if(accountInfo is not None):
+                        featureSet["accountInfo"]=accountInfo
                 msg=featureSet
         else:
                 msg["msg"]=outcome
