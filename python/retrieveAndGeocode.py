@@ -196,7 +196,7 @@ def deductUserCredit(username, oauth, usedCredit, filename):
                                 infos=["email", "dateRegister", "accountType", "credit", "oauth"]
                                 accountInfo={}
                                 for info in infos:
-                                    accountInfo[info]=obj[info]
+                                    accountInfo[info]=user[info]
                                 
                                 return "succeed", accountInfo
                         else:
