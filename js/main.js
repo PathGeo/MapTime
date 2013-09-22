@@ -1629,7 +1629,9 @@ function showTable(obj, options) {
 		//"<li><img src='images/1365859519_cog.png' title='setting'/></li>"+
 		((obj.downloadLink) ? "<li><img src='images/1365858910_download.png' title='download'/><span>Download</span></li>" : "") +
 		//"<li><img src='images/1365858892_print.png' title='print'/><span>Print</span></li>" +
-		"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/><span>Show/hide Columns</span></li>" + ((obj.hasGeomask) ? "<li><img src='images/1376481601_Security.png' title='geomask'/><span>GeoMask</span></li>" : "") + "<li><img src='images/1375655879_br_up.png' title='More Table'/><span>More Table</span></li>" +
+		"<li><img src='images/1365859564_3x3_grid_2.png' title='show / hide columns'/><span>Show/hide Columns</span></li>" + 
+		((obj.hasGeomask && app.userInfo.accountType!='free') ? "<li><img src='images/1376481601_Security.png' title='geomask'/><span>GeoMask</span></li>" : "") + 
+		"<li><img src='images/1375655879_br_up.png' title='More Table'/><span>More Table</span></li>" +
 		//"<li><img src='images/1365860260_chart_bar.png' title='demographic data'/></li>"+
 		"</ul>";
 		$(".dataTable_tools").append(html).find("ul li").click(function() {
@@ -2536,6 +2538,8 @@ function logout() {
 	//	$("#dialog_userMenu").popup('close');
 	//	$("#dialog_logout").popup('close');
 }
+
+
 
 //after login
 function afterLogin(email, status) {
