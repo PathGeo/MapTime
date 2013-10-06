@@ -65,6 +65,7 @@ def geomask(val):
 	
 	return rounded + r
 		
+		
 def geocodeRows(rows, locFunc, maxRow, orderedColumns):
 	features = []
 
@@ -108,8 +109,8 @@ def geocodeRows(rows, locFunc, maxRow, orderedColumns):
 				
 				features.append(doc)
 				
-		except Exception, e:
-			return { 'error': str(e), 'row': str(row) }
+		except Exception, e:			
+			return { 'error': str(e), 'row': str(row), 'stack': stack }
 
 	return features
 	
@@ -118,13 +119,14 @@ def geocodeRows(rows, locFunc, maxRow, orderedColumns):
 def geocodeRow(row, fields=None, geocoder=None):
 	if not geocoder or not fields:
 		return None, (None, None)
-	
-	place, (llat, llon) = geocoder.lookup(' '.join([row[field] for field in fields]))
+
+	location = ' '.join([row[field] for field in fields])
+	location = re.sub(re.compile(r'\s+'), ' ', location)
+	place, (llat, llon) = geocoder.lookup(location)
 	
 	return place, (llat, llon)
 
-
-
+	
 def getStatesFromZips(rows, zipCol):
 	zipsCol = MongoClient().test.zip_codes
 	
@@ -271,7 +273,7 @@ elif geo:
 	geoFunc = functools.partial(getByLatLon, geoField=geo)
 
 	isLatLon=True
-elif addr and city and (state or zip):
+elif addr:	
 	#only address is necessary to geocode, but check if city, state or zipcode are present
 	#and, if so, add them to out list of geocoding fields
 	otherFields = []
