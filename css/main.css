@@ -220,7 +220,9 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 #dataPanel_introUploadData {text-align:center; color:#ffffff; margin-top:30px; padding:20px; cursor:pointer;}
 #dataPanel_introUploadData:hover {border:1px solid #777777 !important;}
 #dataTable {font-size:12px; background-color:#ffffff;}
-#dataTable tr:hover{background-color:#5e87b0; color:#000000; cursor:pointer;}
+#dataTable tr:hover{background-color:#5e87b0; color:#ffffff; cursor:pointer;}
+#dataTable tr:hover a {color:#ffffff;}
+
 
 .dataTable tr:first-child {background-color:#ffffff;}
 #dataTable th, #dataTable td {white-space: nowrap; padding:6px 10px 6px 10px; }
