@@ -102,8 +102,8 @@ def findLocColumns(rows):
 	
 	columns = rows[0].keys() 	
 	twoKeyCombos = list(itertools.permutations(columns, 2))
-	threeKeyCombos = list(itertools.permutations(columns, 3))
-	fourKeyCombos = list(itertools.permutations(columns, 4))
+	#threeKeyCombos = list(itertools.permutations(columns, 3))
+	#fourKeyCombos = list(itertools.permutations(columns, 4))
 	
 	latLonCombinedCandidate = mostCommon([key for row in rows for key in columns if isLatLon(row[key])])
 	lonLatCombinedCandidate = mostCommon([key for row in rows for key in columns if isLonLat(row[key])])
