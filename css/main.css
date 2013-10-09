@@ -439,7 +439,7 @@ html, body {width:100%; height:100%; padding:0px; margin:0px;overflow:hidden; fo
 /**
  * 	help menu
  */
-#dialog_help {width:900px; height:455px; padding:20px}
+#dialog_help {width:700px; height:520px; padding:20px}
 #dialog_help iframe {width:100%; height:100%; border:0px; }
 
 
