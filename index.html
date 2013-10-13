@@ -101,14 +101,12 @@
 			
 			<a href="#dialog_login" id='header_login' data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="home" class="" data-mini="true" style='float:right'>Log in</a>
 			<a href="#dialog_contact" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="check" class="" data-mini="true" style='float:right'>Contact us</a>
-	        <a href="#dialog_help" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right'>Help</a>
-			<a href="#" data-rel='' id='header_tutorial' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="edit" class="" data-mini="true" style='float:right; display:none;' onclick='showTutorial()'>Tutorial</a>
-			<!--<a href="#dialog_sumup" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right'>test</a>-->
+	        <a href="#dialog_feedback" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="edit" class="" data-mini="true" style='float:right'>Feedback</a>
+			<!--<a href="#" data-rel='' id='header_tutorial' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right; display:none;' onclick='showTutorial()'>Help</a>-->
+			<a href="#dialog_tutorial" data-rel='popup' id='header_tutorial' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right; display:none;' onclick=''>Help</a>
 			<a href="#dialog_uploadData" id='header_uploadData' data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right; display:none'>Map Data</a>
 		</div>
-		
-
-		
+				
 		
 		<!-- content-->
 		<div id='content'>
@@ -313,9 +311,10 @@
 			<!--uploadData_intro-->
 			<div id='uploadData_description' class='uploadDataContent'>
 					<h2>Upload and Map Your Data:<p></p>
-						<label>MapTime allows you to geocode and geo-analyze their data (with street addresses) into maps.<p></p>
-							   In the beta version, MapTime supports XLS, XLSX, or CSV file format. <br>
-							   MapTime will keep supporting more file formats in the near future.
+						<label>MapTime allows you to geocode and geo-analyze their data (with street addresses) into maps. 
+							   In the beta version, MapTime supports <b>XLS, XLSX, or CSV </b>file format. 
+							   For the best performance, your data can have <b>up to 1200 records </b>to be converted. Each 500 address conversion will take five seconds. 
+							   If you have problems converting your file, please feel free to contact us at <a href='mailto:info@pathgeo.com'>info@pathgeo.com</a>
 						</label>
 					</h2>
 					
@@ -404,8 +403,8 @@
 		</div>
 		
 		
-		<!--help-->
-		<div id='dialog_help' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true" style=''>
+		<!--feedback-->
+		<div id='dialog_feedback' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true" style=''>
 			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
 			
 			<!--google form help-->
@@ -414,6 +413,26 @@
 			<!--
 			<div id="getsat-widget-5632"></div>
 			-->
+		</div>
+
+
+		<!--help-->
+		<div id='dialog_tutorial' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true" style=''>
+			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+			
+			<!--video-->
+			<div id='tutorial_video'>
+				<iframe width="100%" src="//www.youtube.com/embed/Hgf5i1fpRgQ" frameborder="0" allowfullscreen></iframe>
+			</div>
+			
+			<!-- tutorials -->
+			<div id='tutorial_buttons'>
+				<div data-role="controlgroup" data-type="horizontal">
+				    <a href="#" data-role="button" onclick='window.open("tutorial/Maptime-Tutorial-Oct08-new.pdf")'>Download Tutorial<p>Download Tutorial PDF</p></a>
+				    <a href="#" data-role="button" onclick='window.open("tutorial/SteveJobs-GoogleSearch-Demo.xlsx")'>Download Dataset<p>Download Tutorial Dataset</p></a>
+				    <a href="#" data-role="button" onclick='showTutorial()'>Show Step-By-Step<p>Show Step-By-Step Tutorial</p></a>
+				</div>
+			</div>
 		</div>
 		
 		
