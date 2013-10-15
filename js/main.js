@@ -2796,6 +2796,7 @@ function readTutorial() {
 	});
 }
 
+
 //show Tutorial
 function showTutorial() {
 	if (app.dataTable) {

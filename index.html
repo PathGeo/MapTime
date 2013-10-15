@@ -247,7 +247,7 @@
 		<!-- dialog -->	
 		<!-- businessAction-->
 		<div id='dialog_businessAction' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false">
-            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left" >Close</a>
 			
 			<!-- select business actions-->
 			<div id='businessActions_select'  class='businessActions_tabs'>
@@ -295,7 +295,7 @@
 		
 		<!-- upload data -->
 		<div id='dialog_uploadData' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="false" style=''>
-			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left">Close</a>
 			
 			<!--uploadData-->
 			<form action="python/saveTable.py" method="post" id="uploadData_form" enctype="multipart/form-data" >
@@ -322,27 +322,31 @@
 					<!--sample data-->
 					<div id='uploadData_sampleData'>
 						<h2>Or Try Some Sample Data: </h2>
-								<ul data-role="listview" data-inset="true">
-								    <!--
-									<li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);showDemo("SAN DIEGO");}}, 100)'>
-								        <img src="images/sandiego.jpg">
-								        <h2>Tutorial: San Diego Crime Rate</h2>
-								        <p>2012/01 Crime Sample Data from 'San Diego Regional Data Library'</p></a>
-								    </li>
-									-->
-								    <li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);showDemo("SD-NAVAJO");}}, 100)'>
-								        <img src="images/SD-Navoja.jpg">
-								        <h2>Tutorial: Crime Rate in Navajo, San Diego</h2>
-								        <p>2012/07-09 Crime Sample Data from 'San Diego Regional Data Library'</p></a>
-								    </li>
-									<li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);showDemo("SD-PACIFIC-BEACH");}}, 100)'>
-								        <img src="images/SD-PacificBeach.jpg">
-								        <h2>Tutorial: Crime Rate in Pacific Beach, San Diego</h2>
-								        <p>2012/07-09 Crime Sample Data from 'San Diego Regional Data Library'</p></a>
-								    </li>
-								</ul>
-								<img id='sampleData_loading' src='images/loading.gif' />
-								<label id='acknowledge'>Special Thank to <a href='http://www.sandiegodata.org/' target='_blank'>San Diego Regional Data Library</a> providing Regional Crime Incidents records for MapTime.<br>More crime records can be downloaded from <a href='http://www.sandiegodata.org/' target='_blank'>http://data.sandiegodata.org/</a></label>
+						
+						<a id='uploadData_tutorial' target='_blank' href='tutorial/0-Maptime-Tutorial-crime-data.pdf'>See Tutorial</a>
+						
+						<ul data-role="listview" data-inset="true">
+							<!--
+							<li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);showDemo("SAN DIEGO");}}, 100)'>
+								<img src="images/sandiego.jpg">
+								<h2>Tutorial: San Diego Crime Rate</h2>
+								<p>2012/01 Crime Sample Data from 'San Diego Regional Data Library'</p></a>
+							</li>
+							-->
+							<li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);showDemo("SD-NAVAJO");}}, 100)'>
+								<img src="images/SD-Navoja.jpg">
+								<h2>Tutorial: Crime Rate in Navajo, San Diego</h2>
+								<p>2012/07-09 Crime Sample Data from 'San Diego Regional Data Library'</p></a>
+							</li>
+							<li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);showDemo("SD-PACIFIC-BEACH");}}, 100)'>
+								<img src="images/SD-PacificBeach.jpg">
+								<h2>Tutorial: Crime Rate in Pacific Beach, San Diego</h2>
+								<p>2012/07-09 Crime Sample Data from 'San Diego Regional Data Library'</p></a>
+							</li>
+						</ul>
+										
+						<img id='sampleData_loading' src='images/loading.gif' />
+						<label id='acknowledge'>Special Thank to <a href='http://www.sandiegodata.org/' target='_blank'>San Diego Regional Data Library</a> providing Regional Crime Incidents records for MapTime.<br>More crime records can be downloaded from <a href='http://www.sandiegodata.org/' target='_blank'>http://data.sandiegodata.org/</a></label>
 					</div>
 			</div>
 			
@@ -389,7 +393,7 @@
 		
 		<!--lab-->
 		<div id='dialog_lab' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true" style=''>
-				<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right">Close</a>
+				<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left">Close</a>
 				
 				<h2>MapTime Lab: we are working on some new and fun functions for social media!</h2>
 				
@@ -405,7 +409,7 @@
 		
 		<!--feedback-->
 		<div id='dialog_feedback' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true" style=''>
-			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left" >Close</a>
 			
 			<!--google form help-->
 			<iframe src="https://docs.google.com/forms/d/1Ch30AoHw_jBxIZUo9XzF9g139dsFd76c7liibIDU2TM/viewform?embedded=true" width="100%" height="100%" frameborder="0" marginheight="0" marginwidth="0">Loading...</iframe>
@@ -418,7 +422,7 @@
 
 		<!--help-->
 		<div id='dialog_tutorial' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true" style=''>
-			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left" >Close</a>
 			
 			<!--video-->
 			<div id='tutorial_video'>
@@ -429,7 +433,7 @@
 			<div id='tutorial_buttons'>
 				<div data-role="controlgroup" data-type="horizontal">
 				    <a href="#" data-role="button" onclick='window.open("tutorial/Maptime-Tutorial-Oct08-new.pdf")'>Download Tutorial<p>Download Tutorial PDF</p></a>
-				    <a href="#" data-role="button" onclick='window.open("tutorial/SteveJobs-GoogleSearch-Demo.xlsx")'>Download Dataset<p>Download Tutorial Dataset</p></a>
+				    <a href="#" data-role="button" onclick='window.open("tutorial/MapTime-Tutorial-Dataset.zip")'>Download Dataset<p>Download Tutorial Dataset</p></a>
 				    <a href="#" data-role="button" onclick='showTutorial()'>Show Step-By-Step<p>Show Step-By-Step Tutorial</p></a>
 				</div>
 			</div>
@@ -438,7 +442,7 @@
 		
 		<!--contact us-->
 		<div id='dialog_contact' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true" style=''>
-			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left" >Close</a>
 			<img src='images/PathGeo-color.png' style='height:60px;' onclick='window.open("https://www.pathgeo.com")'/>
 			<!--<p>PathGeo is a spinoff of a $1.3 million San Diego State University project funded by the National Science Foundation. PathGeo's team members include marketing experts, Web GIS programmers, spatial statisticians, cartographers, social media API programmers, and natural language processing developers. The team is led by Dr. Ming-Hsiang Tsou, a renowned Internet GIS expert and SDSU Geography Professor.
 			<p>  <br>-->
@@ -452,7 +456,7 @@
 		
 		<!--user log in-->
 		<div id='dialog_login' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true">
-             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+             <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left" >Close</a>
 			 
 			 <iframe id='oauth_login' src='common/login.html?product=maptime'></iframe>
 		</div>
@@ -462,7 +466,7 @@
 		
 		<!--dialog oauth-->
 		<div id='dialog_oauth' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true">
-            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left" >Close</a>
 			
 			<iframe id='oauth_iframe'></iframe>
 		</div>
@@ -470,7 +474,7 @@
 		
 		<!-- dialog user-->
 		<div id='dialog_userMenu' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true">
-            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left" >Close</a>
 			
 			<iframe id='userMenu_iframe'></iframe>
 		</div>
@@ -480,7 +484,7 @@
 
 		<!-- sum up-->
 		<div id='dialog_sumup' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true">
-            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left" >Close</a>
 			
 			<h3>Select a field to map your data</h3>
 			<p>Maptime can map and sum up your data based on the zip-code area. <br> <br>For example, you will know how many sales in 94107 zip-code area if "sales" field is selected in your data. 
@@ -593,7 +597,7 @@
 		
 		<!-- dialog_download-->
 		<div id='dialog_download' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true">
-            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left" >Close</a>
             <h2>Download your data: </h2>
 			
             <fieldset data-role="controlgroup">
@@ -619,7 +623,7 @@
 
 		<!-- dialog_geomask-->
 		<div id='dialog_geomask' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true">
-            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left" >Close</a>
             <h2>GeoMask: <p>MapTime can conceal locations by randomly selecting a coordinate in a radius to protect customers' privacy.</p></h2>
 			
             <fieldset data-role="controlgroup">
@@ -712,7 +716,7 @@
 		
 		<!--Welcome dialog-->
 		<div id='dialog_welcome' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true">
-			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-right" >Close</a>
+			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left" >Close</a>
             <div id='welcomeContent'></div>
 		</div>
 		
