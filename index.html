@@ -422,11 +422,11 @@
 
 		<!--help-->
 		<div id='dialog_tutorial' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true" style=''>
-			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left" >Close</a>
+			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left" onclick='stopVideo()' >Close</a>
 			
 			<!--video-->
 			<div id='tutorial_video'>
-				<iframe width="100%" src="//www.youtube.com/embed/Hgf5i1fpRgQ" frameborder="0" allowfullscreen></iframe>
+				<iframe id='iframe_video' width="100%" src="//www.youtube.com/embed/qDpkRwf2py0" frameborder="0" allowfullscreen></iframe>
 			</div>
 			
 			<!-- tutorials -->
@@ -474,7 +474,7 @@
 		
 		<!-- dialog user-->
 		<div id='dialog_userMenu' data-role="popup" data-overlay-theme="a" data-theme="c" data-dismissible="true">
-            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left" >Close</a>
+            <a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left" onclick='stopVideo()'>Close</a>
 			
 			<iframe id='userMenu_iframe'></iframe>
 		</div>

@@ -2856,3 +2856,14 @@ function checkIE(){
 	return isIE
 }
 
+
+//stop video
+function stopVideo(id){
+	if(!id){id="#iframe_video"}
+	
+	var $video=$(id),
+		src = $video.attr("src");
+	$video.attr("src","");
+	$video.attr("src",src);
+}
+
