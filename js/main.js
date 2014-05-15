@@ -370,13 +370,13 @@ function init_map() {
 	app.map = L.map("div_map", {
 		center : app.initCenterLatLng,
 		zoom : app.initCenterZoom,
-		layers : [app.basemaps["Light Gray Background Map"]],
+		layers : [app.basemaps["ESRI National Geographic Map"]],
 		attributionControl : true,
 		trackResize : true
 	});
 
 	//set up current basemap
-	app.map.currentBasemap=app.basemaps["Light Gray Background Map"];
+	app.map.currentBasemap=app.basemaps["ESRI National Geographic Map"];
 	
 
 	//move the location of zoomcontrol to the bottom right
@@ -2455,6 +2455,24 @@ function showDemo(demoType) {
 				downloadLink : './geocoded_files/2012-crime-pacific-beach-three-month-7-9.xls',
 				keywords : [],
 				dataID : "1377287686"
+			}
+			break;
+		case "SD-WILDFIRE":
+			now=new Date();
+			today=now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate();
+			yesterday=new Date(now.getTime()-1000*60*60*24)
+			yesterday=yesterday.getFullYear()+"-"+(yesterday.getMonth()+1)+"-"+yesterday.getDate();
+			
+			
+			obj = {
+				url : 'python/searchStreaming.py?keywords=wildfire&dateFrom='+yesterday+"&dateTo="+today,
+				title : yesterday + ' tweets about San Diego wildfires',
+				column : {
+					statistics : "type"
+				},
+				downloadLink : '',
+				keywords : [],
+				dataID : ""
 			}
 			break;
 	}
