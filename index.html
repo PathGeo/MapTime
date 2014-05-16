@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>PathGeo-MapTime</title>
+    <title>PathGeo-2014 San Diego Wildfires</title>
     <meta name="viewport" http-equiv="Content-Type" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	
 	<!--facebook metadata-->
@@ -80,7 +80,7 @@
 	<!--google analytics-->
 	<script>
 	   var _gaq = _gaq || [];
-	  _gaq.push(['_setAccount', 'UA-39694033-2']);
+	  _gaq.push(['_setAccount', 'UA-39694033-8']);
 	  _gaq.push(['_trackPageview']);
 	
 	  (function() {
@@ -94,7 +94,7 @@
 	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 	
-	  ga('create', 'UA-39694033-2', 'pathgeo.com');
+	  ga('create', 'UA-39694033-8', 'pathgeo.com');
 	  ga('send', 'pageview');
 	</script>
 	
@@ -108,15 +108,21 @@
 		<div id='header' class='ui-bar ui-bar-b'  >
 			<h1>
 				<img src='images/PathGeo-color.png' height=35px onclick='window.open("https://www.pathgeo.com")'/>
-				<div>MapTime : <label id='lbl_dataName'></label></div>
+				<div><label id='lbl_dataName'></label></div>
 			</h1>
 			
-			<a href="#dialog_login" id='header_login' data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="home" class="" data-mini="true" style='float:right'>Log in</a>
+			<!--<a href="#dialog_login" id='header_login' data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="home" class="" data-mini="true" style='float:right'>Log in</a>-->
 			<a href="#dialog_contact" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="check" class="" data-mini="true" style='float:right'>Contact us</a>
 	        <a href="#dialog_feedback" data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="edit" class="" data-mini="true" style='float:right'>Feedback</a>
 			<!--<a href="#" data-rel='' id='header_tutorial' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right; display:none;' onclick='showTutorial()'>Help</a>-->
-			<a href="#dialog_tutorial" data-rel='popup' id='header_tutorial' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right; display:none;' onclick=''>Help</a>
-			<a href="#dialog_uploadData" id='header_uploadData' data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right; display:none'>Map Data</a>
+			<!--<a href="#dialog_tutorial" data-rel='popup' id='header_tutorial' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="info" class="" data-mini="true" style='float:right; display:none;' onclick=''>Help</a>-->
+			<a href="#dialog_uploadData" id='header_uploadData' data-rel='popup' data-role='button' data-position-to="window" data-inline="true" data-transition="fade" data-icon="grid" class="" data-mini="true" style='float:right;'>Menu</a>
+			
+			<!--
+			<div id='header_date'>
+				<label for="date">Date:</label><input type="date" name="date" id="date" value="">
+			</div>
+			-->
 		</div>
 				
 		
@@ -310,6 +316,7 @@
 			<a href="#" data-rel="back" data-role="button" data-theme="a" data-icon="delete" data-iconpos="notext" class="ui-btn-left">Close</a>
 			
 			<!--uploadData-->
+			<!--
 			<form action="python/saveTable.py" method="post" id="uploadData_form" enctype="multipart/form-data" >
 				<fieldset>
 					<input type="file" name="photo" id="uploadData_input" size="70%">
@@ -318,24 +325,28 @@
 				</fieldset>
 				<img id='uploadData_loading' src="images/loading.gif"  />
 			</form>
+			-->
+			
 			
 
 			<!--uploadData_intro-->
 			<div id='uploadData_description' class='uploadDataContent'>
-					<h2>Upload and Map Your Data:<p></p>
-						<label>MapTime allows you to geocode and geo-analyze their data (with street addresses) into maps. 
-							   In the beta version, MapTime supports <b>XLS, XLSX, or CSV </b>file format. 
-							   For the best performance, your data can have <b>up to 1200 records </b>to be converted. Each 500 address conversion will take five seconds. 
-							   If you have problems converting your file, please feel free to contact us at <a href='mailto:info@pathgeo.com'>info@pathgeo.com</a>
+					
+					<h2>2014 San Diego Wildfires<p></p>
+						<label>Pathgeo, as a social & GIS company in San Diego, has a responsibility to provide a Web-mapping platform <br>for all citizens to monitor the changes of 2014 San Diego Wildfires from Twitter. 
+							<p></p>If you would like to share your tweets with us, please 
+							<br><b>1) Active GPS for Twitter App in your Mobile Device, and 
+							<br>2) Share photos / videos / links / comments in the Twitter App. </b>
+							<p></p>PathGeo can get your tweets and show in the map in every 20 minutes. 
 						</label>
 					</h2>
 					
 						
 					<!--sample data-->
 					<div id='uploadData_sampleData'>
-						<h2>Or Try Some Sample Data: </h2>
+						<h2>Select a date: </h2>
 						
-						<a id='uploadData_tutorial' target='_blank' href='tutorial/0-Maptime-Tutorial-crime-data.pdf'>See Tutorial</a>
+						<!--<a id='uploadData_tutorial' target='_blank' href='tutorial/0-Maptime-Tutorial-crime-data.pdf'>See Tutorial</a>-->
 						
 						<ul data-role="listview" data-inset="true">
 							<!--
@@ -345,20 +356,16 @@
 								<p>2012/01 Crime Sample Data from 'San Diego Regional Data Library'</p></a>
 							</li>
 							-->
-							<li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);showDemo("SD-WILDFIRE");}}, 100)'>
+							<li><a href="#" onclick='showDemo("SD-WILDFIRE");'>
 								<img src="images/1400213775_Fire.png">
-								<h2>Tutorial: Yesterday's tweets about San Diego Wildfire</h2>
+								<h2>2014/5/14 tweets about San Diego Wildfire</h2>
 								<p>2014 San Diego Wildfire Tweets</p></a>
-							</li>
-							<li><a href="#" onclick='var init_interval=setInterval(function(){if(app.layers.demographicData){clearInterval(init_interval);showDemo("SD-PACIFIC-BEACH");}}, 100)'>
-								<img src="images/SD-PacificBeach.jpg">
-								<h2>Tutorial: Crime Rate in Pacific Beach, San Diego</h2>
-								<p>2012/07-09 Crime Sample Data from 'San Diego Regional Data Library'</p></a>
 							</li>
 						</ul>
 										
 						<img id='sampleData_loading' src='images/loading.gif' />
-						<label id='acknowledge'>Special Thank to <a href='http://www.sandiegodata.org/' target='_blank'>San Diego Regional Data Library</a> providing Regional Crime Incidents records for MapTime.<br>More crime records can be downloaded from <a href='http://www.sandiegodata.org/' target='_blank'>http://data.sandiegodata.org/</a></label>
+						<!--<label id='acknowledge'>Special Thank to <a href='http://www.sandiegodata.org/' target='_blank'>San Diego Regional Data Library</a> providing Regional Crime Incidents records for MapTime.<br>More crime records can be downloaded from <a href='http://www.sandiegodata.org/' target='_blank'>http://data.sandiegodata.org/</a></label>
+						-->
 					</div>
 			</div>
 			

@@ -320,7 +320,9 @@ $(document).on({
 	},
 	"pageshow" : function() {
 		if(!checkIE()){
-			init_login();
+			//init_login();
+			
+			init_demoData();
 
 			init_UI();
 	
@@ -329,6 +331,8 @@ $(document).on({
 			//getClientGeo();
 	
 			readTutorial();
+			
+			$("#dialog_uploadData").popup("open");
 		};
 	},
 	"pageinit" : function() {
@@ -426,6 +430,43 @@ function init_map() {
 	});
 }
 
+
+
+//init demoData
+function init_demoData(){
+	var $target=$("#uploadData_sampleData > ul"),
+		sinceTime=new Date(2014,4,13).getTime(),
+		today=new Date(),
+		todayTime=new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+		diffTime=todayTime-sinceTime,
+		diffDays=diffTime / (1000*60*60*24),
+		html="",
+		thisDate='';
+		
+		if(diffDays>0){
+			for(var i=1;i<=diffDays;i++){
+				thisDate=new Date(todayTime-(i*86400000));
+				thisDate=thisDate.getFullYear() +"-"+(thisDate.getMonth()+1)+"-"+thisDate.getDate();
+				
+				html+="<li><a href='#' onclick='showDemo(\"SD-WILDFIRE\", \""+thisDate+"\");'><img src='images/1400213775_Fire.png'><h2>"+thisDate+" tweets about San Diego Wildfire</h2><p>2014 San Diego Wildfire Tweets</p></a></li>";
+			}
+			$target.html(html).listview( "refresh" );	
+		}
+		
+		
+}
+
+
+
+
+
+
+
+
+
+
+
+
 //init UI
 function init_UI() {
 
@@ -437,7 +478,7 @@ function init_UI() {
 	//JQM said this is the bug from webkit(Goolge chrome) https://github.com/jquery/jquery-mobile/issues/5775
 	setTimeout(function() {
 		//$("#dialog_uploadData").popup("open");
-	}, 1000);
+	}, 1000);	
 
 	//adjust infoPanel height
 	$(".infoPanel").css({
@@ -2401,7 +2442,7 @@ function searchBusinessIntelligent(geoname) {
 }
 
 //show demo
-function showDemo(demoType) {
+function showDemo(demoType, date) {
 	var obj = null;
 
 	//show loading image
@@ -2458,15 +2499,15 @@ function showDemo(demoType) {
 			}
 			break;
 		case "SD-WILDFIRE":
-			now=new Date();
-			today=now.getFullYear()+"-"+(now.getMonth()+1)+"-"+now.getDate();
-			yesterday=new Date(now.getTime()-1000*60*60*24)
-			yesterday=yesterday.getFullYear()+"-"+(yesterday.getMonth()+1)+"-"+yesterday.getDate();
+			var dates=date.split("-"),
+				nextDateTime=new Date(dates[0], dates[1]-1, dates[2]).getTime() + 86400000,
+				nextDate=new Date(nextDateTime),
+				nextDate=nextDate.getFullYear()+"-"+(nextDate.getMonth()+1)+"-"+nextDate.getDate();
 			
 			
 			obj = {
-				url : 'python/searchStreaming.py?keywords=wildfire,fire,evacuation&dateFrom='+yesterday+"&dateTo="+today+"&hideColumns=screen_name,utc_offset,friends_count,created_at,time_zone,followers_count,_id,Id,Coordinates&limit=1000",
-				title : yesterday + ' tweets about San Diego wildfires',
+				url : 'python/searchStreaming.py?keywords=wildfire,fire,evacuation&dateFrom='+date+"&dateTo="+nextDate+"&hideColumns=screen_name,utc_offset,friends_count,created_at,time_zone,followers_count,_id,Id,Coordinates&limit=1000",
+				title : date + ' tweets about San Diego wildfires',
 				column : {
 					statistics : "type"
 				},
