@@ -78,7 +78,10 @@ for i, tweet in enumerate(tweets):
 
 
       #convert to geojson
-      results.append(convertToGeojson(tweet, "lat", "lon", geoMasking=True))
+      feature=convertToGeojson(tweet, "lat", "lon", geoMasking=True))
+      feature['properties'].pop("lat","None")
+      feature['properties'].pop("lon","None")
+      results.append(feature)
       
 
 
