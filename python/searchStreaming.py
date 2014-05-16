@@ -42,6 +42,7 @@ dateFrom=getURLParameter('dateFrom', params)
 dateTo=getURLParameter('dateTo', params)
 bbox=getURLParameter('bbox', params)
 hideColumns=getURLParameter('hideColumns', params)
+limit=None if getURLParameter('limit', params) is None else int(getURLParameter('limit', params))
 
 #change data type
 dateFrom=datetime.strptime(dateFrom, "%Y-%m-%d")
@@ -65,7 +66,11 @@ tweets=col.find(query)
 
 #parse tweet
 results=[]
-for tweet in tweets:
+for i, tweet in enumerate(tweets):
+      if limit:
+            if (i>limit):
+                  break
+      
       if(hideColumns):
             for column in hideColumns:
                   tweet.pop(column,"None") 

@@ -1168,18 +1168,18 @@ function showLayer(obj, options) {
 				//set up heatmap slider
 				if(!options.isFilter){
 					$("#heatmap_slider").attr({
-						'min' : 25,
-						'max' : 3025,
-						'step' : (3025 - 25) / 50,
+						'min' : 265,
+						'max' : 685,
+						'step' : (685 - 265) / 10,
 						'value' : getRadius(0)
 					}).on("slidestop", function(e) {
 						var radius = parseInt(e.currentTarget.value);
 						var geocodingResult = app.geocodingResult;
 						
 						//if raidus>3025 or radius <25 or radius is NaN, make radius value as default
-						if(radius >3025 || radius <25 || isNaN(radius)){
-							if(radius>3025){radius=3025}
-							if(radius<25 || isNaN(radius)){radius=25}
+						if(radius >685 || radius <265 || isNaN(radius)){
+							if(radius>685){radius=685}
+							if(radius<265 || isNaN(radius)){radius=265}
 							$(this).val(radius).trigger('keyup')
 							return;	
 						}			
@@ -2465,7 +2465,7 @@ function showDemo(demoType) {
 			
 			
 			obj = {
-				url : 'python/searchStreaming.py?keywords=wildfire,fire,evacuation&dateFrom='+yesterday+"&dateTo="+today+"&hideColumns=screen_name,timezone",
+				url : 'python/searchStreaming.py?keywords=wildfire,fire,evacuation&dateFrom='+yesterday+"&dateTo="+today+"&hideColumns=screen_name,utc_offset,friends_count,create_at,time_zone,followers_count,_id,id,coordinates&limit=1000",
 				title : yesterday + ' tweets about San Diego wildfires',
 				column : {
 					statistics : "type"
