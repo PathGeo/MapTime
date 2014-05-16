@@ -69,7 +69,7 @@ tweets=col.find(query)
 results=[]
 for i, tweet in enumerate(tweets):
       if limit:
-            if (i>limit):
+            if (i>=limit):
                   break
       
       if(hideColumns):
