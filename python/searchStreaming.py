@@ -13,6 +13,7 @@ def getURLParameter(key, cgiFieldStorage):
 
 #geomasking
 def geomask(val):
+      import random
       rounded = round(val, 4)
       r = random.randint(-9, 9) * 1/100000.0
       return rounded + r
@@ -77,7 +78,7 @@ for i, tweet in enumerate(tweets):
 
 
       #convert to geojson
-      results.append(convertToGeojson(tweet), "lat", "lon", geoMasking=True)
+      results.append(convertToGeojson(tweet, "lat", "lon", geoMasking=True))
       
 
 
