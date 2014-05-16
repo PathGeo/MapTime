@@ -2465,7 +2465,7 @@ function showDemo(demoType) {
 			
 			
 			obj = {
-				url : 'python/searchStreaming.py?keywords=wildfire&dateFrom='+yesterday+"&dateTo="+today+"&hideColumns=screen_name,timezone",
+				url : 'python/searchStreaming.py?keywords=wildfire,fire,evacuation&dateFrom='+yesterday+"&dateTo="+today+"&hideColumns=screen_name,timezone",
 				title : yesterday + ' tweets about San Diego wildfires',
 				column : {
 					statistics : "type"
