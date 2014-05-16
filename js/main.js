@@ -1406,7 +1406,7 @@ function showTable(obj, options) {
 		$.each(dataTable.columns_dataTable, function(i, column) {
 			$.each(hiddenColumns, function(j, columnName) {
 				if (columnName == column.sTitle) {
-					if(columnName=='Coordinate'){
+					if(columnName=='Coordinates'){
 						column.bVisible = false;
 					}
 					column.bSearchable = false;
