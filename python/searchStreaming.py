@@ -11,24 +11,25 @@ def getURLParameter(key, cgiFieldStorage):
       return None if not key in cgiFieldStorage or cgiFieldStorage[key].value=='' else cgiFieldStorage[key].value
 
 
+#geomasking
+def geomask(val):
+      rounded = round(val, 4)
+      r = random.randint(-9, 9) * 1/100000.0
+      return rounded + r
+
+
+
 #convert to geojson
-def convertToGeojson(obj_array, latFieldName, lonFieldName, hideColumns=None):
-        import json
-        
-        dthandler = lambda obj: (obj.isoformat() if isinstance(obj, datetime) or isinstance(obj, date) else None)
-        results=[]
+def convertToGeojson(obj, latFieldName, lonFieldName, geoMasking=None):
+      lat=obj[latFieldName]
+      lon=obj[lonFieldName]
 
-        for obj in obj_array:
-                lat=obj[latFieldName]
-                lon=obj[lonFieldName]
+      doc=dict(type="Feature", geometry=dict(type="Point", coordinates=[lon,lat]), properties=obj)
+      
+      if(geoMasking):
+            doc['geomasked_geometry'] = dict(type="Point", coordinates=[geomask(lon), geomask(lat)])
 
-                if(hideColumns):
-                      for column in hideColumns:
-                            obj.pop(column,"None")
-                
-                results.append(dict(type="Feature", geometry=dict(type="Point", coordinates=[lon,lat]), properties=obj))
-
-        return json.dumps({"type":"FeatureCollection", "count":obj_array.count(), "features":results}, default=dthandler)
+      return doc
 
 
 
@@ -63,5 +64,17 @@ query={
 tweets=col.find(query)
 
 #parse tweet
-	
-print convertToGeojson(tweets, 'lat', 'lon', hideColumns=hideColumns)
+results=[]
+for tweet in tweets:
+      if(hideColumns):
+            for column in hideColumns:
+                  tweet.pop(column,"None") 
+
+
+      #convert to geojson
+      results.append(convertToGeojson(tweet), "lat", "lon", geoMasking=True)
+      
+
+
+dthandler = lambda obj: (obj.isoformat() if isinstance(obj, datetime) or isinstance(obj, date) else None)	
+print json.dumps({"type":"FeatureCollection", "count":tweets.count(), "features":results}, default=dthandler)
