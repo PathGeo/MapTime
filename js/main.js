@@ -2465,7 +2465,7 @@ function showDemo(demoType) {
 			
 			
 			obj = {
-				url : 'python/searchStreaming.py?keywords=wildfire,fire,evacuation&dateFrom='+yesterday+"&dateTo="+today+"&hideColumns=screen_name,utc_offset,friends_count,create_at,time_zone,followers_count,_id,id,coordinates&limit=1000",
+				url : 'python/searchStreaming.py?keywords=wildfire,fire,evacuation&dateFrom='+yesterday+"&dateTo="+today+"&hideColumns=screen_name,utc_offset,friends_count,created_at,time_zone,followers_count,_id,Id,coordinates&limit=1000",
 				title : yesterday + ' tweets about San Diego wildfires',
 				column : {
 					statistics : "type"
